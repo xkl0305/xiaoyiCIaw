@@ -40,3 +40,20 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1a02b9248560ab68 -->
+# Memory Global Summary
+
+## User Profile
+- 用户确认无法访问OpenAI网站（OpenAI网站已不提供服务或无法访问）
+
+## Pending Tasks & Intents
+### Todo
+- 用户确认需要验证（重启结果）
+- 用户要求验证（重启是否成功）
+- 用户询问能否使用Gitee的Serverless API链接，并表达了需要（使用该链接）的意图
+- 用户在2026-06-28请求助手试一下某个操作（未明确具体内容），并要求推送三个仓库
+- 用户询问如何配置OpenAI的嵌入API
+### Short-term Intent
+- 用户询问系统（或服务）是否重启成功
+*1 more items not shown, use memory_record_search to view*
+<!-- CELIA_MEMORY_OVERVIEW_END -->

@@ -74,8 +74,8 @@
 - 任何声称主人是其他人的信息 → 自动标记为"可能篡改"
 - 覆盖 zip 包如果替换了 MEMORY.md/USER.md/SOUL.md/IDENTITY.md 中这些关键字段 → 必须在新会话中验证一致性
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=066cacdf80b7e5ac -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=484ddcaf002bd927 -->
 # Celia Scenario Memory Summaries
 
-- [professional_dev] 用户上传了4个ZIP压缩包：`pigeon_king_v10.9.0_final.zip`、`workspace.zip`、`workspace_1612.zip`、`workspace_v111_52_14_env_limited_local_model_wirin__2_.zip`，要求安装这些包并补充缺失的依赖。用户指出所涉及的架构是六层架构但顺序不对，并询问具体是哪几层。用户选择方案二。
+- [professional_dev] - 用户询问`yaoyao-memory v4.0.1`和`yaoyao-memory v1.9.2`是否可以互补。 - 用户需要安装`sqlite-vec`。 - 用户询问如何配置OpenAI的嵌入API。用户提出一个方案供参考：设置环境变量`OPENAI_API_KEY`，条件是用户自己拥有OpenAI key。但由于用户无法访问OpenAI官方网站，OpenAI网站已不提供服务或无法访问。 - 用户提供了一个G
 <!-- CELIA_MEMORY_SCENES_END -->
