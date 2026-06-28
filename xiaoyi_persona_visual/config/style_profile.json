@@ -1,0 +1,13 @@
+{
+  "style_lock": true,
+  "style_mode": "fixed",
+  "current_style": "anime_illustration",
+  "current_style_description": "动漫二次元插画风",
+  "allow_random_style_switch": false,
+  "allow_anime_switch_without_explicit_user_request": false,
+  "allow_realistic_switch_without_explicit_user_request": false,
+  "allowed_styles": ["anime_illustration"],
+  "default_style": "anime_illustration",
+  "style_prompt_head": "masterpiece, best quality, 8K, absurdres, anime illustration, perfect anatomy",
+  "prompt_prefix": "图片内角色不变，生成图片内的人物要和参考图内人物保持像素级一致性，进行生成。"
+}

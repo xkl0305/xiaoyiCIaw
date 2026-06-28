@@ -1,0 +1,42 @@
+{
+  "theme_id": "space_explorer",
+  "theme_name": "星际探索者",
+  "version": "1.0",
+  "author": "官方",
+  
+  "nutrition_names": {
+    "calories": {
+      "name": "星能值",
+      "icon": "⭐",
+      "description": "星际旅行的能量储备"
+    },
+    "protein": {
+      "name": "护盾强度",
+      "icon": "🛡️",
+      "description": "保护你的能量护盾"
+    },
+    "carbs": {
+      "name": "推进燃料",
+      "icon": "🚀",
+      "description": "飞船前进的动力"
+    },
+    "fat": {
+      "name": "能量储备",
+      "icon": "📦",
+      "description": "长途旅行的备用能源"
+    },
+    "fiber": {
+      "name": "净化离子",
+      "icon": "✨",
+      "description": "清理身体的纳米机器人"
+    }
+  },
+  
+  "food_category_names": {
+    "breakfast": "发射准备",
+    "lunch": "轨道补给",
+    "dinner": "星际巡航",
+    "snack": "太空零食",
+    "drink": "能量液体"
+  }
+}

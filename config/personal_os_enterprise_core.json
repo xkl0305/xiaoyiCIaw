@@ -1,0 +1,11 @@
+{
+  "version": "V111.52.1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD",
+  "enabled": true,
+  "defaultProfile": "always_connected_enterprise",
+  "standingConnectionMode": "always_connected",
+  "connectorAuthPromptPolicy": "once_per_connector_or_config_change",
+  "requireSideEffectProof": true,
+  "proofOneTimeUse": true,
+  "runtimeSecretPath": ".openclaw/state/personal_os_enterprise/secrets",
+  "runtimeStateExcludedFromPackage": true
+}

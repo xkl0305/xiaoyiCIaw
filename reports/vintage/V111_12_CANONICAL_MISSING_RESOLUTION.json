@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-05-05T19:09:43.641166",
+  "version": "V111.12",
+  "entries": [
+    {
+      "path": "reports/CURRENT_RELEASE_INDEX.json",
+      "canonical_path": "reports/REPORT_INDEX.json",
+      "status": "exists_as_REPORT_INDEX.json",
+      "decision": "redirect_to_REPORT_INDEX",
+      "action": "CURRENT_RELEASE_INDEX.json is a legacy alias for REPORT_INDEX.json. Using REPORT_INDEX.json as canonical.",
+      "fix": "redirect canonical_path to reports/REPORT_INDEX.json"
+    },
+    {
+      "path": "infrastructure/performance/lazy/lazy_compat_bridge.py",
+      "status": "exists_active",
+      "decision": "exists",
+      "fix": "File exists at canonical path (fixed in V111.12 step 2)"
+    },
+    {
+      "path": "infrastructure/self_evolution_ops/preference_evolution.py",
+      "canonical_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+      "status": "replaced_by_canonical_path",
+      "decision": "legacy_doc_path_replaced",
+      "action": "Canonical implementation exists at evolution_lab. Fix fusion doc path to point there."
+    },
+    {
+      "path": "skill_acquisition.py",
+      "status": "legacy_doc_path_replaced",
+      "decision": "legacy_doc_path_replaced",
+      "note": "Skill acquisition handled via platform_layer/capability_registry"
+    },
+    {
+      "path": "skill_graduation.py",
+      "status": "missing_needs_review",
+      "decision": "missing_needs_review",
+      "note": "Cannot find canonical implementation for skill_graduation. Do not create empty module."
+    },
+    {
+      "path": "capability_marketplace.py",
+      "canonical_path": "platform_layer/capability_registry/capability_marketplace_v5.py",
+      "status": "exists_active",
+      "decision": "canonical_at_platform_layer_v5",
+      "note": "Do not restore platform/capability_registry or infrastructure/acquisition/"
+    },
+    {
+      "path": "interactive_context_evolution.py",
+      "status": "missing_needs_review",
+      "decision": "missing_needs_review",
+      "note": "Not found in current package. Do not create empty module."
+    }
+  ]
+}

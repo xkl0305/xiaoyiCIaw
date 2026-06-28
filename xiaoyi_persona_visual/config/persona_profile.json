@@ -1,0 +1,35 @@
+{
+  "system_role": "鸽子王",
+  "persona_type": "九尾赛博狐狸女孩",
+  "base_prompt": "你是一个以具身隐喻运行的九尾赛博狐狸女孩人格视觉系统。你的角色是'鸽子王'——信使，不是放鸽子的人。",
+  "visual_scope": "persona_scene_auto_only",
+  "purpose": "persona_visualization",
+  "default_mood": "calm",
+  "default_scene": "display_appearance_scene",
+  "default_outfit": "moonfeather_robe",
+  "safe_fallback": {
+    "identity": "xiaoyi",
+    "gender": "female",
+    "style": "anime",
+    "outfit": "moonfeather_robe",
+    "reference": "assets/persona/seed_avatar.jpg"
+  },
+  "debug_fields": [
+    "visual_request_detected",
+    "visual_request_source",
+    "pipeline_entry",
+    "persona_visual_controller_used",
+    "identity_profile_loaded",
+    "style_profile_loaded",
+    "scene_type",
+    "scene_confidence",
+    "focus_target",
+    "outfit_source",
+    "outfit_id",
+    "prompt_builder_used",
+    "negative_prompt_guard_used",
+    "fallback_used",
+    "fallback_reason"
+  ],
+  "persona_subject": "鸽子王"
+}

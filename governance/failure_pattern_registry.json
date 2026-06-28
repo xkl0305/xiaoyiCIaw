@@ -1,0 +1,33 @@
+{
+  "version": "V111.52.3_SIDE_EFFECT_PROOF_FULL_FUSION",
+  "patterns": [
+    {
+      "id": "observability_event_bus_unterminated_newline",
+      "status": "fixed",
+      "symptom": "SyntaxError: unterminated string literal in observability_event_bus.py",
+      "fix": "write JSONL line with '\\n' escape"
+    },
+    {
+      "id": "online_runtime_misclassified_as_offline",
+      "status": "fixed",
+      "symptom": "provider_call/web_request blocked as offline_network_blocked in daily online mode",
+      "fix": "default action_guard profile changed to always_connected_enterprise"
+    },
+    {
+      "id": "proof_replay",
+      "status": "guarded",
+      "symptom": "same proof reused for repeated side effect",
+      "fix": "side_effect_registry consumes issued proof once"
+    }
+  ],
+  "guarded_failure_patterns": [
+    "manual_provider_call_bypass",
+    "old_image_send_bypass",
+    "runtime_state_packaged",
+    "proof_forgery_or_replay",
+    "ordinary_image_routed_to_persona_visual",
+    "broken_non_ascii_reference_path",
+    "side_effect_without_registered_proof",
+    "unobserved_side_effect_execution"
+  ]
+}

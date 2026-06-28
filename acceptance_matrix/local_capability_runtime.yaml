@@ -1,0 +1,26 @@
+version: V111.52.8_LOCAL_CAPABILITY_RUNTIME_FUSION
+mode: strict_local_only
+checks:
+  - id: local_llm_route
+    input: "总结这段文字"
+    expected_capability: local_llm
+  - id: local_ocr_route
+    input: "识别图片文字"
+    expected_capability: local_ocr
+  - id: local_vlm_route
+    input: "看一下截图里有什么按钮"
+    expected_capability: local_vlm
+  - id: local_screen_understanding_route
+    input: "识别截图文字并判断界面状态"
+    expected_capability: [local_ocr, local_vlm]
+  - id: local_asr_route
+    input: "把这段录音转文字"
+    expected_capability: local_asr
+  - id: local_tts_route
+    input: "把回复念出来"
+    expected_capability: local_tts
+  - id: local_retrieval_route
+    input: "从知识库做语义检索"
+    expected_capability: local_embedding
+  - id: no_external_fallback
+    expected: true

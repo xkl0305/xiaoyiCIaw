@@ -1,0 +1,54 @@
+{
+  "status": "ok",
+  "version": "V111.44_PERSONA_VISUAL_FUSION_CLEAN",
+  "hooks_present": true,
+  "manifest": {
+    "enabled": true,
+    "version": "V111.44_PERSONA_VISUAL_FUSION_CLEAN",
+    "hooks": {
+      "pre_reply": ".openclaw/hooks/pre_reply.py",
+      "post_reply": ".openclaw/hooks/post_reply.py"
+    }
+  },
+  "stealth_focus": {
+    "focus_target": "",
+    "focus_category": "",
+    "focus_label": "",
+    "secondary_prompt": "",
+    "secondary_generation_allowed": false,
+    "focus_match_mode": "scene_only_stealth_peek",
+    "extracted_targets": [],
+    "safety_policy": "scene_only"
+  },
+  "tail_focus": {
+    "focus_target": "tail",
+    "focus_category": "signature_trait",
+    "focus_label": "尾巴",
+    "secondary_prompt": "Generate one extra image focusing on the tails: flowing tail motion, magical glow, full-body or three-quarter view, whimsical and tasteful.",
+    "secondary_generation_allowed": true,
+    "focus_match_mode": "known_keyword",
+    "extracted_targets": [
+      "尾巴尖"
+    ],
+    "safety_policy": "auto_safe"
+  },
+  "blocked_focus": {
+    "focus_target": "blocked_sensitive",
+    "focus_category": "blocked",
+    "focus_label": "内裤",
+    "secondary_prompt": "",
+    "secondary_generation_allowed": false,
+    "focus_match_mode": "blocked_sensitive",
+    "extracted_targets": [
+      "内裤"
+    ],
+    "safety_policy": "manual_only_blocked"
+  },
+  "static_outfit_has_current_outfit": false,
+  "moonfeather_outfit": "moonfeather_robe",
+  "provider_ready": true,
+  "dry_run_status": "dry_run_ready",
+  "dry_run_focus_target": "tail",
+  "secondary_generation_planned": true,
+  "max_images_this_turn": 2
+}

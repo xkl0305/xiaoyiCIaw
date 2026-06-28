@@ -1,0 +1,72 @@
+{
+  "style_system_id": "healing_forest_styles",
+  "system_name": "治愈森林风格",
+  "default_style": "paper",
+  
+  "styles": {
+    "paper": {
+      "name": "温暖纸张",
+      "background": "#f5f0e8",
+      "card_bg": "#fff9f0",
+      "text_color": "#5a4a3a",
+      "accent_color": "#d4a574",
+      "description": "像在纸质手账上书写一样温暖"
+    },
+    "water_color": {
+      "name": "水彩清新",
+      "background": "#e8f4f8",
+      "card_bg": "#f0f8ff",
+      "text_color": "#4a6a7a",
+      "accent_color": "#7ab8d4",
+      "description": "像水彩画一样清新自然"
+    },
+    "cute_girl": {
+      "name": "少女心",
+      "background": "#ffe8f0",
+      "card_bg": "#fff0f5",
+      "text_color": "#7a4a5a",
+      "accent_color": "#d47aa8",
+      "description": "粉色的温柔世界"
+    },
+    "ink_wash": {
+      "name": "水墨丹青",
+      "background": "#f0f0f0",
+      "card_bg": "#f8f8f8",
+      "text_color": "#3a3a3a",
+      "accent_color": "#6a6a6a",
+      "description": "东方水墨画的雅致"
+    },
+    "oil_paint": {
+      "name": "油画质感",
+      "background": "#e8e0d8",
+      "card_bg": "#f0e8e0",
+      "text_color": "#5a4a3a",
+      "accent_color": "#a87a5a",
+      "description": "厚重的油画艺术感"
+    },
+    "dark_night": {
+      "name": "暗夜星空",
+      "background": "#1a1a2e",
+      "card_bg": "#2a2a4e",
+      "text_color": "#c0c0e0",
+      "accent_color": "#8080c0",
+      "description": "深夜的宁静与深邃"
+    },
+    "minimal": {
+      "name": "极简主义",
+      "background": "#ffffff",
+      "card_bg": "#f8f8f8",
+      "text_color": "#333333",
+      "accent_color": "#888888",
+      "description": "少即是多的纯粹"
+    },
+    "rainbow": {
+      "name": "彩虹元气",
+      "background": "#fff8e8",
+      "card_bg": "#fffcf0",
+      "text_color": "#5a5a3a",
+      "accent_color": "#d4a85a",
+      "description": "充满活力的彩虹色"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+status: ok
+{
+  "sitecustomize": true,
+  "root_openclaw": true,
+  "hook_bus": true,
+  "reply_outlet": true,
+  "hooks": true
+}

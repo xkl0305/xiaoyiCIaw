@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-05-05T19:43:37.474357",
+  "version": "V111.11",
+  "old_path": "approvals/lobster/",
+  "canonical_path": "governance/evidence_gate/approvals/lobster/",
+  "status": "already_clean",
+  "old_dir_empty": true,
+  "canonical_exists_and_has_files": true,
+  "files_in_canonical": [
+    "session-recovery.lobster.jsonl",
+    "memory-store.lobster.jsonl",
+    "heartbeat-full.lobster.jsonl"
+  ],
+  "action_taken": "approvals/lobster/ already empty, no files to archive"
+}

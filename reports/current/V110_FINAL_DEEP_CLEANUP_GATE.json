@@ -1,0 +1,20 @@
+{
+  "version": "V110.0",
+  "status": "partial",
+  "full_import_sweep_pass": true,
+  "path_cwd_cleanup_pass": true,
+  "security_bypass_retest_pass": true,
+  "realistic_task_replay_pass": true,
+  "current_release_index_consistent": true,
+  "registry_of_registries_ready": false,
+  "clean_release_manifest_ready": true,
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "external_api_calls": 0,
+  "real_side_effects": 0,
+  "remaining_failures": [
+    "registry_not_pass"
+  ]
+}

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>薪酬个税计算报告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    line-height: 1.6;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+.header {
+    text-align: center; padding: 40px 20px;
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border: 1px solid #30363d; border-radius: 12px; margin-bottom: 24px;
+}
+.header h1 { font-size: 28px; color: #f0f6fc; margin-bottom: 8px; }
+.subtitle { color: #8b949e; font-size: 13px; }
+.section {
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    padding: 24px; margin-bottom: 20px;
+}
+.section h2 { font-size: 18px; color: #f0f6fc; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #21262d; }
+
+/* 工资流转 */
+.salary-flow { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.flow-item { text-align: center; padding: 16px 24px; border-radius: 10px; min-width: 140px; }
+.flow-item.gross { background: #1a2332; border: 1px solid #58a6ff; }
+.flow-item.net { background: #1a2e1a; border: 1px solid #3fb950; }
+.flow-amount { font-size: 24px; font-weight: bold; color: #f0f6fc; }
+.flow-label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+.flow-arrow { font-size: 24px; color: #484f58; }
+.flow-deductions { text-align: left; padding: 12px 16px; background: #1a161b; border: 1px solid #30363d; border-radius: 8px; min-width: 180px; }
+.flow-detail { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+.deduct { color: #ff7b72; }
+.flow-total-deduct { border-top: 1px solid #21262d; margin-top: 8px; padding-top: 6px; font-weight: bold; font-size: 13px; color: #ff7b72; }
+
+/* 明细网格 */
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.detail-item { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+.detail-label { color: #8b949e; font-size: 13px; }
+.detail-value { color: #f0f6fc; font-weight: bold; font-size: 16px; }
+.detail-value.highlight { color: #d2a8ff; }
+
+/* 图表 */
+.chart-container { text-align: center; padding: 10px; }
+.chart-container svg { max-width: 100%; }
+
+/* 个税公式 */
+.tax-formula { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 16px; }
+.formula-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.formula-line.result { border-top: 1px solid #30363d; margin-top: 8px; padding-top: 10px; font-weight: bold; }
+.formula-label { color: #8b949e; }
+.formula-value { color: #c9d1d9; }
+.formula-value.highlight { color: #3fb950; font-size: 18px; }
+
+/* 汇总卡片 */
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.summary-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; text-align: center; }
+.summary-card.critical { border-color: #da3633; background: #1a0f0f; }
+.summary-card.warning { border-color: #d2991d; background: #1a160f; }
+.summary-card.info { border-color: #58a6ff; }
+.card-number { font-size: 36px; font-weight: bold; color: #f0f6fc; }
+.summary-card.critical .card-number { color: #ff7b72; }
+.summary-card.warning .card-number { color: #d2991d; }
+.card-label { font-size: 13px; color: #8b949e; margin-top: 6px; }
+
+/* 异常卡片 */
+.anomaly-card { border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid #30363d; }
+.anomaly-critical { border-color: #da3633; background: #1a0f0f; }
+.anomaly-warning { border-color: #d2991d; background: #1a160f; }
+.anomaly-info { border-color: #58a6ff; }
+.anomaly-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.anomaly-name { font-weight: bold; font-size: 16px; color: #f0f6fc; }
+.anomaly-type { font-size: 12px; color: #8b949e; padding: 2px 8px; background: #21262d; border-radius: 4px; }
+.anomaly-detail { font-size: 14px; color: #c9d1d9; margin-bottom: 10px; }
+.anomaly-fields { display: flex; flex-direction: column; gap: 6px; }
+.anomaly-field { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #21262d; }
+.field-label { color: #8b949e; min-width: 80px; }
+.field-values { color: #c9d1d9; }
+.field-change { font-weight: bold; }
+.field-change.critical { color: #ff7b72; }
+.field-change.warning { color: #d2991d; }
+
+/* 表格 */
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #0d1117; color: #8b949e; font-weight: 600; padding: 12px 14px; text-align: left; border-bottom: 2px solid #30363d; }
+td { padding: 10px 14px; border-bottom: 1px solid #21262d; }
+tr:hover td { background: #1c2128; }
+.positive { color: #3fb950; }
+.negative { color: #ff7b72; }
+.net-highlight { color: #3fb950; font-weight: bold; }
+
+/* 页脚 */
+.footer { text-align: center; padding: 20px; color: #484f58; font-size: 12px; border-top: 1px solid #21262d; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>💰 薪酬个税计算报告</h1>
+        <div class="subtitle">生成时间：2026-05-22 13:40:28 | 共 5 人</div>
+    </div>
+    
+    <div class="section">
+        <h2>👤 张三 工资明细</h2>
+        <div class="salary-flow">
+            <div class="flow-item gross">
+                <div class="flow-amount">¥25,000.00</div>
+                <div class="flow-label">税前工资</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-deductions">
+                <div class="flow-detail">
+                    <span>社保</span><span class="deduct">-¥2,625.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>公积金</span><span class="deduct">-¥1,250.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>个税</span><span class="deduct">-¥1,215.00</span>
+                </div>
+                <div class="flow-total-deduct">合计扣款 ¥5,090.00</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item net">
+                <div class="flow-amount">¥19,910.00</div>
+                <div class="flow-label">实发工资</div>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">应纳税所得额</span>
+                <span class="detail-value">¥13,125.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">社保（个人）</span>
+                <span class="detail-value">¥2,625.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公积金（个人）</span>
+                <span class="detail-value">¥1,250.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公司总成本</span>
+                <span class="detail-value highlight">¥33,125.00</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>👤 李四 工资明细</h2>
+        <div class="salary-flow">
+            <div class="flow-item gross">
+                <div class="flow-amount">¥18,000.00</div>
+                <div class="flow-label">税前工资</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-deductions">
+                <div class="flow-detail">
+                    <span>社保</span><span class="deduct">-¥1,575.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>公积金</span><span class="deduct">-¥1,050.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>个税</span><span class="deduct">-¥627.50</span>
+                </div>
+                <div class="flow-total-deduct">合计扣款 ¥3,252.50</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item net">
+                <div class="flow-amount">¥14,747.50</div>
+                <div class="flow-label">实发工资</div>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">应纳税所得额</span>
+                <span class="detail-value">¥8,375.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">社保（个人）</span>
+                <span class="detail-value">¥1,575.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公积金（个人）</span>
+                <span class="detail-value">¥1,050.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公司总成本</span>
+                <span class="detail-value highlight">¥23,175.00</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>👤 王五 工资明细</h2>
+        <div class="salary-flow">
+            <div class="flow-item gross">
+                <div class="flow-amount">¥35,000.00</div>
+                <div class="flow-label">税前工资</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-deductions">
+                <div class="flow-detail">
+                    <span>社保</span><span class="deduct">-¥3,675.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>公积金</span><span class="deduct">-¥1,750.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>个税</span><span class="deduct">-¥2,705.00</span>
+                </div>
+                <div class="flow-total-deduct">合计扣款 ¥8,130.00</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item net">
+                <div class="flow-amount">¥26,870.00</div>
+                <div class="flow-label">实发工资</div>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">应纳税所得额</span>
+                <span class="detail-value">¥20,575.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">社保（个人）</span>
+                <span class="detail-value">¥3,675.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公积金（个人）</span>
+                <span class="detail-value">¥1,750.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公司总成本</span>
+                <span class="detail-value highlight">¥46,375.00</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>👤 赵六 工资明细</h2>
+        <div class="salary-flow">
+            <div class="flow-item gross">
+                <div class="flow-amount">¥12,000.00</div>
+                <div class="flow-label">税前工资</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-deductions">
+                <div class="flow-detail">
+                    <span>社保</span><span class="deduct">-¥1,260.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>公积金</span><span class="deduct">-¥600.00</span>
+                </div>
+                <div class="flow-detail">
+                    <span>个税</span><span class="deduct">-¥204.00</span>
+                </div>
+                <div class="flow-total-deduct">合计扣款 ¥2,064.00</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item net">
+                <div class="flow-amount">¥9,936.00</div>
+                <div class="flow-label">实发工资</div>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">应纳税所得额</span>
+                <span class="detail-value">¥4,140.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">社保（个人）</span>
+                <span class="detail-value">¥1,260.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公积金（个人）</span>
+                <span class="detail-value">¥600.00</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公司总成本</span>
+                <span class="detail-value highlight">¥15,900.00</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>👤 孙七 工资明细</h2>
+        <div class="salary-flow">
+            <div class="flow-item gross">
+                <div class="flow-amount">¥50,000.00</div>
+                <div class="flow-label">税前工资</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-deductions">
+                <div class="flow-detail">
+                    <span>社保</span><span class="deduct">-¥3,704.71</span>
+                </div>
+                <div class="flow-detail">
+                    <span>公积金</span><span class="deduct">-¥4,233.96</span>
+                </div>
+                <div class="flow-detail">
+                    <span>个税</span><span class="deduct">-¥5,355.33</span>
+                </div>
+                <div class="flow-total-deduct">合计扣款 ¥13,294.00</div>
+            </div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-item net">
+                <div class="flow-amount">¥36,706.00</div>
+                <div class="flow-label">实发工资</div>
+            </div>
+        </div>
+        <div class="detail-grid">
+            <div class="detail-item">
+                <span class="detail-label">应纳税所得额</span>
+                <span class="detail-value">¥32,061.33</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">社保（个人）</span>
+                <span class="detail-value">¥3,704.71</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公积金（个人）</span>
+                <span class="detail-value">¥4,233.96</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">公司总成本</span>
+                <span class="detail-value highlight">¥63,936.77</span>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <h2>📊 全员汇总</h2>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>姓名</th><th>税前工资</th><th>社保</th><th>公积金</th><th>个税</th><th>实发工资</th><th>公司成本</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+        <tr>
+            <td>张三</td>
+            <td>¥25,000.00</td>
+            <td>¥2,625.00</td>
+            <td>¥1,250.00</td>
+            <td>¥1,215.00</td>
+            <td class="net-highlight">¥19,910.00</td>
+            <td>¥33,125.00</td>
+        </tr>
+        <tr>
+            <td>李四</td>
+            <td>¥18,000.00</td>
+            <td>¥1,575.00</td>
+            <td>¥1,050.00</td>
+            <td>¥627.50</td>
+            <td class="net-highlight">¥14,747.50</td>
+            <td>¥23,175.00</td>
+        </tr>
+        <tr>
+            <td>王五</td>
+            <td>¥35,000.00</td>
+            <td>¥3,675.00</td>
+            <td>¥1,750.00</td>
+            <td>¥2,705.00</td>
+            <td class="net-highlight">¥26,870.00</td>
+            <td>¥46,375.00</td>
+        </tr>
+        <tr>
+            <td>赵六</td>
+            <td>¥12,000.00</td>
+            <td>¥1,260.00</td>
+            <td>¥600.00</td>
+            <td>¥204.00</td>
+            <td class="net-highlight">¥9,936.00</td>
+            <td>¥15,900.00</td>
+        </tr>
+        <tr>
+            <td>孙七</td>
+            <td>¥50,000.00</td>
+            <td>¥3,704.71</td>
+            <td>¥4,233.96</td>
+            <td>¥5,355.33</td>
+            <td class="net-highlight">¥36,706.00</td>
+            <td>¥63,936.77</td>
+        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="footer">
+        <p>薪酬个税计算器 · 数据仅供参考，以实际发放为准 · 生成于 2026-05-22</p>
+    </div>
+</div>
+</body>
+</html>

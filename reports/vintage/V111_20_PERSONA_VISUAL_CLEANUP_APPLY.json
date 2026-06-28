@@ -1,0 +1,143 @@
+{
+  "version": "V111.20",
+  "status": "applied",
+  "root": "/home/sandbox/.openclaw/workspace",
+  "seed": {
+    "ok": true,
+    "status": "avatar_bound_as_persona_visual_seed",
+    "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+    "seed_avatar_abs_path": "/home/sandbox/.openclaw/workspace/assets/persona/seed_avatar.jpg",
+    "sha256": "498cee7c4efe9facda6852afb7597b0aa40986afd3ecaaa03acc7fa900181c50",
+    "size_bytes": 965360,
+    "manifest": {
+      "version": "V111.20",
+      "status": "bound",
+      "seed_role": "persona_visual_seed_image",
+      "avatar_binding": "direct_avatar_equals_seed",
+      "canonical_seed_avatar_path": "assets/persona/seed_avatar.jpg",
+      "resolved_seed_avatar_path": "assets/persona/seed_avatar.jpg",
+      "sha256": "498cee7c4efe9facda6852afb7597b0aa40986afd3ecaaa03acc7fa900181c50",
+      "size_bytes": 965360,
+      "updated_at": "2026-05-06 10:48:05",
+      "source": "canonical_existing",
+      "identity_rules": [
+        "Use this avatar image as the only character identity source.",
+        "Text prompts may only control mood, pose, lighting, props, and scene.",
+        "Never replace identity with long body/appearance prose.",
+        "Every generated persona visual must include this seed/reference image."
+      ]
+    },
+    "configs": {
+      "openclaw_personaVisual": {
+        "enabled": true,
+        "predictiveSuggestion": true,
+        "generationConsentMode": "auto_with_budget",
+        "autoGenerate": true,
+        "autoGenerateRequiresBudget": true,
+        "confidenceThreshold": 0.82,
+        "cooldownTurns": 0,
+        "dailyAutoGenerateLimit": 100,
+        "externalProvider": "seedream",
+        "seedAvatarPath": "assets/persona/seed_avatar.jpg",
+        "defaultMode": "auto_with_budget",
+        "userStandingConsent": true,
+        "strongThreshold": 0.82,
+        "midHighThreshold": 0.65,
+        "midLowThreshold": 0.5,
+        "recordOnlyThreshold": 0.3,
+        "sceneTriggerMode": "semantic_scene",
+        "seedIdentityConsistency": "strict",
+        "seedReferenceRequired": true,
+        "seedReferenceWeight": 100,
+        "canonicalSeedPath": "assets/persona/seed_avatar.jpg",
+        "avatarSeedBinding": "direct_avatar_equals_seed",
+        "identitySource": "seed_avatar_image_only",
+        "identityTextPromptMode": "seed_lock_only",
+        "activeRuntime": "memory_context.persona_runtime",
+        "legacyRuntimePolicy": "shim_only"
+      },
+      "visual_config": {
+        "version": "V111.20",
+        "enabled": true,
+        "default_trigger_mode": "auto",
+        "scene_trigger_mode": "semantic_scene",
+        "auto_image_requires_explicit_user_request": false,
+        "allow_external_image_api": true,
+        "image_skill_id": "seedream-image-gen",
+        "prompt_skill_id": "claw-art",
+        "seed_avatar_required": true,
+        "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+        "seed_image_path": "assets/persona/seed_avatar.jpg",
+        "canonical_seed_path": "assets/persona/seed_avatar.jpg",
+        "avatar_seed_binding": "direct_avatar_equals_seed",
+        "identity_source": "seed_avatar_image_only",
+        "identity_text_prompt_mode": "seed_lock_only",
+        "reference_strategy": "always_use_avatar_seed_image",
+        "image_model_version": "seedream5",
+        "image_action_name": "seedreamBatch5",
+        "reference_weight": 100,
+        "seed_image_search_paths": [
+          "assets/persona/seed_avatar.jpg",
+          "assets/persona/seed_avatar.png",
+          "assets/persona/seed_avatar.webp",
+          "assets/persona/avatar.jpg",
+          "assets/persona/avatar.png",
+          ".persona_visual/seed_avatar.jpg",
+          ".persona_visual/avatar_seed.jpg"
+        ],
+        "cache_enabled": true,
+        "cache_ttl_days": 30,
+        "max_prompt_chars": 1200,
+        "return_mode": "render_plan",
+        "never_generate_without_user_trigger": false,
+        "safety": {
+          "no_real_payment": true,
+          "no_real_send": true,
+          "no_real_device": true,
+          "no_external_api_global_unlock": true
+        }
+      }
+    }
+  },
+  "configs_normalized": true,
+  "mood_mapping_policy": "clean_seed_avatar_identity_only",
+  "active_runtime": "memory_context.persona_runtime",
+  "legacy_paths": "shim_only",
+  "backed_up": [
+    "openclaw.json",
+    ".persona_visual/visual_config.json",
+    "assets/persona/persona_avatar_manifest.json",
+    "memory_context/persona_runtime/visual_mood_mappings.json",
+    "memory_context/persona/visual_mood_mappings.json",
+    ".visual_persona_state/visual_generation_token_state.json"
+  ],
+  "backup_root": "archive/persona_visual_cleanup_backup/V111_20_20260506_104805",
+  "archived_superseded_scripts": [
+    "scripts/v111_persona_visualization_gate.py",
+    "scripts/v111_apply_persona_visualization.py",
+    "scripts/v111_1_persona_visual_seed_avatar_fix_apply.py",
+    "scripts/v111_1_persona_visual_seed_avatar_fix_gate.py",
+    "scripts/v111_2_persona_visual_external_approval_gate.py",
+    "scripts/v111_2_3_persona_visual_approval_prediction_bundle_apply.py",
+    "scripts/v111_2_3_persona_visual_approval_prediction_bundle_gate.py",
+    "scripts/v111_3_persona_visual_prediction_gate.py",
+    "scripts/v111_4_persona_visual_auto_consent_gate.py",
+    "scripts/v111_13_persona_visual_auto_generation_gate.py",
+    "scripts/v111_16_persona_visual_mood_trigger_gate.py",
+    "scripts/v111_17_persona_visual_mood_trigger_gate.py",
+    "scripts/v111_18_persona_visual_borrowed_gate.py",
+    "scripts/v111_19_persona_visual_scene_consistency_gate.py"
+  ],
+  "removed_cache_entries": [
+    "memory_context/persona_runtime/__pycache__",
+    "infrastructure/__pycache__",
+    "infrastructure/common/__pycache__",
+    "governance/__pycache__",
+    "scripts/__pycache__"
+  ],
+  "token_state": {
+    "token_state_reset": true,
+    "previous_token_count": 22
+  },
+  "next_gate": "python scripts/v111_20_persona_visual_cleanup_gate.py"
+}

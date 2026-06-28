@@ -1,0 +1,72 @@
+{
+  "version": "V111.8_final_cover_package",
+  "generated_at": "2026-05-05 05:25:02",
+  "compile_error_count": 0,
+  "broken_shim_count": 0,
+  "placeholder_count": 3,
+  "single_source_migrations": [
+    {
+      "old_path": "memory",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/memory",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "governance/audit",
+      "canonical_path": "governance/evidence_gate/audit",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/governance/audit",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "approvals",
+      "canonical_path": "governance/evidence_gate/approvals",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/approvals",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "orchestration/router",
+      "canonical_path": "orchestration/skill_runtime/router",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/orchestration/router",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "orchestration/workflow",
+      "canonical_path": "execution/task_runtime/workflow",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/orchestration/workflow",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "orchestration/workflows",
+      "canonical_path": "execution/task_runtime/workflows",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/orchestration/workflows",
+      "decision": "single_source_canonical_with_compat_shims"
+    },
+    {
+      "old_path": "infrastructure/optimization/performance/performance_monitor.py",
+      "canonical_path": "infrastructure/monitoring/performance_monitor.py",
+      "legacy_backup": "",
+      "decision": "created_missing_canonical_target"
+    },
+    {
+      "old_path": "platform/capability_registry",
+      "canonical_path": "platform_layer/capability_registry",
+      "legacy_backup": "legacy_readonly/V111_8_pre_final_cover/platform/capability_registry",
+      "decision": "removed_stdlib_shadow_risk_old_copy"
+    },
+    {
+      "old_path": "archive/runtime_backups/.repair_state/v92_contract_hotfix_20260501_150210/memory_context/preference_evolution_model_v7.py",
+      "canonical_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+      "legacy_backup": "",
+      "decision": "recovered_real_implementation_from_runtime_backup"
+    }
+  ],
+  "shim_count_created_or_refreshed": 49,
+  "created_or_copied_files_count": 7,
+  "conflicts_preserved_count": 48,
+  "remaining_manual_items": [
+    "memory_context/continuity/memory_recall_bootstrap.py",
+    "memory_context/continuity/session_handoff.py",
+    "memory_context/continuity/context_capsule.py"
+  ],
+  "post_wrapper_compile_fix": "archive numeric module wrapper imports converted to importlib; see NUMERIC_WRAPPER_IMPORT_FIX.json"
+}

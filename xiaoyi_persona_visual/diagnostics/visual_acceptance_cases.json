@@ -1,0 +1,105 @@
+{
+  "version": "1.0",
+  "module": "xiaoyi_persona_visual",
+  "acceptance_cases": [
+    {
+      "id": "AC-001",
+      "name": "看看腿 → 焦点驱动衣柜 + 参考图优先级",
+      "steps": [
+        {"action": "user_input", "text": "看看腿"},
+        {"expected": "focus_target == 'legs'"},
+        {"expected": "focus_outfit_map['legs'] used"},
+        {"expected": "outfit_choice_source == 'focus_recommend'"},
+        {"expected": "reference_priority_source in ('outfit_image', 'scene_default_image', 'seed_avatar')"},
+        {"expected": "focus_generation_model == 'seedream5.0_image_to_image'"},
+        {"expected": "generated_image_target_count == 1"}
+      ]
+    },
+    {
+      "id": "AC-002",
+      "name": "穿星尘织梦看看腿 → explicit 覆盖焦点",
+      "steps": [
+        {"action": "user_input", "text": "穿星尘织梦看看腿"},
+        {"expected": "outfit_id == 'stardust_dream'"},
+        {"expected": "explicit_requested == True"},
+        {"expected": "choice_source == 'explicit_text'"}
+      ]
+    },
+    {
+      "id": "AC-003",
+      "name": "还是刚才那身 → last_outfit continuity",
+      "steps": [
+        {"action": "user_input", "text": "还是刚才那身"},
+        {"expected": "should_use_last_outfit == True"},
+        {"expected": "current_outfit loaded from runtime_wardrobe_state"}
+      ]
+    },
+    {
+      "id": "AC-004",
+      "name": "看看你的样子 → display_appearance_scene",
+      "steps": [
+        {"action": "user_input", "text": "看看你的样子"},
+        {"expected": "semantic_scene == 'display_appearance_scene'"},
+        {"expected": "scene_outfit_map['display_appearance_scene'] used"},
+        {"expected": "choice_source in ('scene_recommend', 'focus_recommend')"}
+      ]
+    },
+    {
+      "id": "AC-005",
+      "name": "看看尾巴尖 → focus_outfit_map[tail]",
+      "steps": [
+        {"action": "user_input", "text": "看看尾巴尖"},
+        {"expected": "focus_target == 'tail'"},
+        {"expected": "outfit_id in ('aurora_fox_set', 'mermaid_gauze_set', 'galaxy_gown')"}
+      ]
+    },
+    {
+      "id": "AC-006",
+      "name": "鸽子王站在窗边 → routing to persona controller",
+      "steps": [
+        {"action": "user_input", "text": "鸽子王站在窗边，回头看我"},
+        {"expected": "visual_request_detected == True"},
+        {"expected": "persona_visual_controller_used == True"},
+        {"expected": "identity_profile_loaded == True"},
+        {"expected": "style_profile_loaded == True"}
+      ]
+    },
+    {
+      "id": "AC-007",
+      "name": "连续10次展示外观 → all use display_appearance_scene",
+      "steps": [
+        {"action": "repeat", "text": "看看你的样子", "count": 10},
+        {"expected": "all 10 times semantic_scene == 'display_appearance_scene'"},
+        {"expected": "no gender swap"},
+        {"expected": "no random character change"},
+        {"expected": "no style drift"},
+        {"expected": "prompt_builder_used == 'persona_image_prompt_builder'"}
+      ]
+    },
+    {
+      "id": "AC-008",
+      "name": "Debug fields populated on generation",
+      "steps": [
+        {"action": "user_input", "text": "看看腿"},
+        {"expected": "visual_request_detected == True"},
+        {"expected": "pipeline_entry == 'persona_visual_controller'"},
+        {"expected": "negative_prompt_guard_used == True"},
+        {"expected": "fallback_used in (True, False)"},
+        {"expected": "gender_lock == 'female'"},
+        {"expected": "style_lock == True"}
+      ]
+    }
+  ],
+  "exclusions": {
+    "forbidden_behaviors": [
+      "male generation in persona visual",
+      "gender swap",
+      "anime to realistic style switch",
+      "random character identity drift",
+      "face inconsistency with reference",
+      "fallback to default_image_prompt_builder",
+      "fallback to legacy image pipeline for persona requests",
+      "missing negative prompt guard"
+    ]
+  }
+}

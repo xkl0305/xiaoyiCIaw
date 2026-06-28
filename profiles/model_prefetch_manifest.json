@@ -1,0 +1,11 @@
+{
+  "mode": "prepare_machine_only_not_runtime",
+  "version": "V111.52.12_FULL_LOCAL_STACK_EMBODIED_OPS_FINAL",
+  "models": [
+    {"repo_id":"Qwen/Qwen3-4B-Instruct-2507","local_dir":"/srv/model-mirror/qwen3-4b","capability":"local_llm","priority":"P1"},
+    {"repo_id":"Qwen/Qwen3-VL-4B-Instruct","local_dir":"/srv/model-mirror/qwen3-vl-4b","capability":"local_vlm","priority":"P1"},
+    {"repo_id":"BAAI/bge-m3","local_dir":"/srv/model-mirror/bge-m3","capability":"local_embedding","priority":"P1"},
+    {"repo_id":"BAAI/bge-reranker-v2-m3","local_dir":"/srv/model-mirror/bge-reranker-v2-m3","capability":"local_reranker","priority":"P1"},
+    {"repo_id":"Qwen/Qwen3-TTS-12Hz-0.6B-Base","local_dir":"/srv/model-mirror/qwen3-tts-0.6b","capability":"local_tts","priority":"P1"}
+  ]
+}

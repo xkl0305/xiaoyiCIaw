@@ -1,0 +1,24 @@
+{
+  "timestamp": "2026-05-05T15:13:39.507895",
+  "version": "V111.9",
+  "actions": [
+    "Moved platform/capability_registry/ -> legacy_readonly/platform_old/ (clean migration, no timestamp dir needed)",
+    "Deleted platform/__init__.py (was absent)",
+    "Kept only README.md in platform/ root"
+  ],
+  "old_path": "platform/capability_registry/",
+  "new_archive_path": "legacy_readonly/platform_old/",
+  "overlap_handling": "none_needed",
+  "files_preserved": [
+    "capability_marketplace_v5.py",
+    "capability_registry.py",
+    "capability_registry.json",
+    "legacy/",
+    "schemas/",
+    "skills_registry/"
+  ],
+  "platform_readme_intact": true,
+  "platform_init_absent": true,
+  "platform_layer_intact": true,
+  "verification": "platform/ no longer masks stdlib 'import platform'"
+}

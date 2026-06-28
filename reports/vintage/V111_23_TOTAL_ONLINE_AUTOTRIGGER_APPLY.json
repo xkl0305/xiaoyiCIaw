@@ -1,0 +1,31 @@
+{
+  "version": "V111.23",
+  "status": "applied",
+  "applied_at": "2026-05-06T23:16:34",
+  "purpose": "online_lobster_output_autotrigger_fuzzy_persona_visual",
+  "openclaw_online": {
+    "NO_EXTERNAL_API": false,
+    "OFFLINE_MODE": false,
+    "ONLINE_MODE": true
+  },
+  "personaVisual": {
+    "sceneTriggerMode": "semantic_scene_fuzzy_turn_observer",
+    "triggerSourcePolicy": "assistant_lobster_output_first",
+    "fuzzyMatchingEnabled": true,
+    "nearSynonymMatchingEnabled": true,
+    "dailyAutoGenerateLimit": 100,
+    "cooldownTurns": 0,
+    "seedAvatarPath": "assets/persona/seed_avatar.jpg"
+  },
+  "connectedRuntime": {
+    "enabled": true,
+    "alwaysConnected": true,
+    "defaultMode": "always_online",
+    "noPerActionOnlineAuthorization": true,
+    "xiaoyiCapabilitiesAlwaysConnected": true,
+    "endSideCapabilitiesAlwaysConnected": true,
+    "deviceBridgeAlwaysConnected": true,
+    "allowExternalProvidersWithStandingConsent": true,
+    "offlineModeRemoved": true
+  }
+}

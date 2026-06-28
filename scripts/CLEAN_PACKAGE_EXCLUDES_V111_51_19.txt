@@ -1,0 +1,23 @@
+# V111.51.19 clean package final excludes
+*.pyc
+*.pyo
+__pycache__/
+.pytest_cache/
+*.jsonl
+cache/
+logs/
+generated-images/
+.openclaw/hook_state/
+.persona_visual/generated/
+.persona_visual/*.jsonl
+.persona_visual/runtime_wardrobe_state.json
+.v98_state/
+.v107_state/
+.lazy_state/
+.context_state/
+V*_overlay/
+V*_overlay.zip
+V*_overlay.tar.gz
+*_overlay/
+*_overlay.zip
+*_overlay.tar.gz

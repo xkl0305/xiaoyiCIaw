@@ -1,0 +1,13 @@
+{
+  "version": "V111.51.9",
+  "name": "pigeonking_view_conditioned_identity_no_fox_ears_overlay",
+  "based_on": "V111.51.8_full_persona_visual_cumulative_overlay",
+  "changes": [
+    "固定身份块去掉九尾狐少女，避免模型默认生成狐狸耳朵",
+    "固定身份块去掉锁骨下嵌蓝宝石，改为前视角可见细节块",
+    "背面/侧背面焦点自动加入前胸不可见、不显示背部宝石/错位宝石约束",
+    "negative prompt 扩展 fox ears/animal ears/kemonomimi 等兽耳屏蔽词",
+    "背面焦点条件追加 gem on back/back jewel/misplaced clavicle gem 等错位宝石屏蔽词",
+    "保留默认外观块和动态衣柜优先级，不破坏 V111.51.8 主链"
+  ]
+}

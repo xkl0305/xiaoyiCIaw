@@ -1,0 +1,16 @@
+version: V111.52.13_ENTERPRISE_REPORT_REMAINING_CLOSE_FINAL
+source_report: 个人 OS 代理具身智能系统企业级升级实施报告
+cases:
+  - offline_boot
+  - mainchain_proof_issue
+  - mainchain_proof_replay
+  - manual_provider_blocked
+  - stale_file_send
+  - missing_file_send
+  - provider_domain_fallback
+  - transport_fallback
+  - ocr_vlm_consistency
+  - persona_anatomy_tail_anchor
+  - wardrobe_state
+  - secret_packaged_scan
+  - observability_complete

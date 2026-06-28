@@ -1,0 +1,43 @@
+{
+  "timestamp": "2026-05-05T22:36:20.028929",
+  "version": "V111.17",
+  "compile_all_errors": 0,
+  "import_checks": [
+    {
+      "module": "memory_context.persona_runtime.persona_visual_intent_predictor",
+      "status": "OK"
+    },
+    {
+      "module": "memory_context.persona_runtime.persona_visual_prediction_hook",
+      "status": "OK"
+    },
+    {
+      "module": "memory_context.persona_runtime.persona_visual_auto_generation_bridge",
+      "status": "OK"
+    },
+    {
+      "module": "memory_context.persona_runtime.visual_persona_renderer",
+      "status": "OK"
+    },
+    {
+      "module": "governance.persona_visual_external_policy",
+      "status": "OK"
+    },
+    {
+      "module": "governance.persona_visual_budget_guard",
+      "status": "OK"
+    },
+    {
+      "module": "skills.seedream_image_gen.scripts.generate_seedream",
+      "status": "OK"
+    }
+  ],
+  "test_results": "51/51 passed",
+  "config_verification": {
+    "dailyAutoGenerateLimit": 100,
+    "cooldownTurns": 0,
+    "autoGenerate": true,
+    "NO_EXTERNAL_API": true,
+    "OFFLINE_MODE": true
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-05T19:13:27.109788",
+  "version": "V111.12",
+  "compileall_errors": 0,
+  "import_pass": 14,
+  "import_fail": 0,
+  "platform_stdlib": "Linux",
+  "migration_placeholder_hits": 0,
+  "platform_capability_registry_hits_in_active_paths": 0,
+  "lazy_compat_bridge_quote_bug": 0,
+  "compat_exports": {
+    "core.autonomy": 5,
+    "core.personal_agent": 3
+  },
+  "canonical_missing_resolved": 7,
+  "notes": "All 14 key module imports pass. All 7 canonical missing paths resolved/classified."
+}

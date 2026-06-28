@@ -1,0 +1,119 @@
+[
+  {
+    "old_path": "memory_context/continuity/session_handoff.py",
+    "new_path": "memory_context/continuity/session_handoff.py",
+    "canonical_path": "memory_context/continuity/session_handoff.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/continuity/context_capsule.py",
+    "new_path": "memory_context/continuity/context_capsule.py",
+    "canonical_path": "memory_context/continuity/context_capsule.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/continuity/memory_recall_bootstrap.py",
+    "new_path": "memory_context/continuity/memory_recall_bootstrap.py",
+    "canonical_path": "memory_context/continuity/memory_recall_bootstrap.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/relationship_memory.py",
+    "new_path": "memory_context/persona_runtime/relationship_memory.py",
+    "canonical_path": "memory_context/persona_runtime/relationship_memory.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/persona_consistency_checker.py",
+    "new_path": "memory_context/persona_runtime/persona_consistency_checker.py",
+    "canonical_path": "memory_context/persona_runtime/persona_consistency_checker.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/persona_voice_stabilizer.py",
+    "new_path": "memory_context/persona_runtime/persona_voice_stabilizer.py",
+    "canonical_path": "memory_context/persona_runtime/persona_voice_stabilizer.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/persona_state_machine.py",
+    "new_path": "memory_context/persona_runtime/persona_state_machine.py",
+    "canonical_path": "memory_context/persona_runtime/persona_state_machine.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/continuity_summary.py",
+    "new_path": "memory_context/persona_runtime/continuity_summary.py",
+    "canonical_path": "memory_context/persona_runtime/continuity_summary.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/self_reflection_log.py",
+    "new_path": "memory_context/persona_runtime/self_reflection_log.py",
+    "canonical_path": "memory_context/persona_runtime/self_reflection_log.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/emotion_tagged_memory.py",
+    "new_path": "memory_context/persona_runtime/emotion_tagged_memory.py",
+    "canonical_path": "memory_context/persona_runtime/emotion_tagged_memory.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "memory_context/persona_runtime/persona_voice_renderer.py",
+    "new_path": "memory_context/persona_runtime/persona_voice_renderer.py",
+    "canonical_path": "memory_context/persona_runtime/persona_voice_renderer.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+    "new_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+    "canonical_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+    "shim_path": "",
+    "suggested_layer": "L3 Orchestration",
+    "decision": "merged",
+    "golden_path": true
+  },
+  {
+    "old_path": "intelligence/knowledge_memory/knowledge_graph/personal_knowledge_graph_v5.py",
+    "new_path": "intelligence/knowledge_memory/knowledge_graph/personal_knowledge_graph_v5.py",
+    "canonical_path": "intelligence/knowledge_memory/knowledge_graph/personal_knowledge_graph_v5.py",
+    "shim_path": "",
+    "suggested_layer": "L2 Memory",
+    "decision": "merged",
+    "golden_path": true
+  }
+]

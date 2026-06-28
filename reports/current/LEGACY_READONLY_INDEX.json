@@ -1,0 +1,22 @@
+[
+  {
+    "old_path": "infrastructure/capability_marketplace_v5.py",
+    "legacy_path": "legacy_readonly/infrastructure/capability_marketplace_v5.py",
+    "reason": "old_differed_from_canonical"
+  },
+  {
+    "old_path": "infrastructure/acquisition/capability_marketplace.py",
+    "legacy_path": "legacy_readonly/infrastructure/acquisition/capability_marketplace.py",
+    "reason": "old_differed_from_canonical"
+  },
+  {
+    "old_path": "infrastructure/platform_adapter/capability_registry.py",
+    "legacy_path": "legacy_readonly/infrastructure/platform_adapter/capability_registry.py",
+    "reason": "old_differed_from_canonical"
+  },
+  {
+    "old_path": "governance/skill_profile_schema.py",
+    "legacy_path": "legacy_readonly/governance/skill_profile_schema.py",
+    "reason": "old_differed_from_canonical"
+  }
+]

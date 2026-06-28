@@ -1,0 +1,130 @@
+{
+  "description": "各城市五险一金缴费比例及基数上下限（2025-2026年参考值）",
+  "note": "以下数据为参考值，实际以各地人社局/公积金中心最新公布为准。建议通过联网搜索获取最新政策。",
+  "last_updated": "2025-09-01",
+  "cities": {
+    "北京": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 6821, "base_max": 35283},
+        "medical": {"personal": 0.02, "company": 0.098, "base_min": 6821, "base_max": 35283},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 6821, "base_max": 35283},
+        "injury": {"personal": 0.0, "company": 0.004, "base_min": 6821, "base_max": 35283},
+        "maternity": {"personal": 0.0, "company": 0.008, "base_min": 6821, "base_max": 35283}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2420, "base_max": 35283}
+    },
+    "上海": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 7310, "base_max": 36549},
+        "medical": {"personal": 0.02, "company": 0.10, "base_min": 7310, "base_max": 36549},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 7310, "base_max": 36549},
+        "injury": {"personal": 0.0, "company": 0.0016, "base_min": 7310, "base_max": 36549},
+        "maternity": {"personal": 0.0, "company": 0.01, "base_min": 7310, "base_max": 36549}
+      },
+      "housing_fund": {"personal_min": 0.07, "personal_max": 0.07, "company_min": 0.07, "company_max": 0.07, "base_min": 2590, "base_max": 36549}
+    },
+    "广州": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.14, "base_min": 5284, "base_max": 26421},
+        "medical": {"personal": 0.02, "company": 0.0545, "base_min": 5284, "base_max": 26421},
+        "unemployment": {"personal": 0.002, "company": 0.008, "base_min": 5284, "base_max": 26421},
+        "injury": {"personal": 0.0, "company": 0.002, "base_min": 5284, "base_max": 26421},
+        "maternity": {"personal": 0.0, "company": 0.0085, "base_min": 5284, "base_max": 26421}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2300, "base_max": 39579}
+    },
+    "深圳": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.14, "base_min": 3523, "base_max": 26421},
+        "medical": {"personal": 0.02, "company": 0.06, "base_min": 6475, "base_max": 32376},
+        "unemployment": {"personal": 0.003, "company": 0.007, "base_min": 3523, "base_max": 26421},
+        "injury": {"personal": 0.0, "company": 0.0014, "base_min": 3523, "base_max": 26421},
+        "maternity": {"personal": 0.0, "company": 0.0045, "base_min": 3523, "base_max": 26421}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2360, "base_max": 43659}
+    },
+    "杭州": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.14, "base_min": 4462, "base_max": 24060},
+        "medical": {"personal": 0.02, "company": 0.095, "base_min": 4462, "base_max": 24060},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 4462, "base_max": 24060},
+        "injury": {"personal": 0.0, "company": 0.004, "base_min": 4462, "base_max": 24060},
+        "maternity": {"personal": 0.0, "company": 0.008, "base_min": 4462, "base_max": 24060}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2280, "base_max": 41184}
+    },
+    "成都": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4246, "base_max": 21228},
+        "medical": {"personal": 0.02, "company": 0.0685, "base_min": 4246, "base_max": 21228},
+        "unemployment": {"personal": 0.004, "company": 0.006, "base_min": 4246, "base_max": 21228},
+        "injury": {"personal": 0.0, "company": 0.002, "base_min": 4246, "base_max": 21228},
+        "maternity": {"personal": 0.0, "company": 0.008, "base_min": 4246, "base_max": 21228}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2100, "base_max": 31364}
+    },
+    "武汉": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4224, "base_max": 21120},
+        "medical": {"personal": 0.02, "company": 0.08, "base_min": 4224, "base_max": 21120},
+        "unemployment": {"personal": 0.003, "company": 0.007, "base_min": 4224, "base_max": 21120},
+        "injury": {"personal": 0.0, "company": 0.0048, "base_min": 4224, "base_max": 21120},
+        "maternity": {"personal": 0.0, "company": 0.007, "base_min": 4224, "base_max": 21120}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2010, "base_max": 33333}
+    },
+    "南京": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4879, "base_max": 24396},
+        "medical": {"personal": 0.02, "company": 0.078, "base_min": 4879, "base_max": 24396},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 4879, "base_max": 24396},
+        "injury": {"personal": 0.0, "company": 0.004, "base_min": 4879, "base_max": 24396},
+        "maternity": {"personal": 0.0, "company": 0.008, "base_min": 4879, "base_max": 24396}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2280, "base_max": 39900}
+    },
+    "天津": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4751, "base_max": 23757},
+        "medical": {"personal": 0.02, "company": 0.10, "base_min": 4751, "base_max": 23757},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 4751, "base_max": 23757},
+        "injury": {"personal": 0.0, "company": 0.004, "base_min": 4751, "base_max": 23757},
+        "maternity": {"personal": 0.0, "company": 0.005, "base_min": 4751, "base_max": 23757}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2180, "base_max": 27525}
+    },
+    "重庆": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4118, "base_max": 20587},
+        "medical": {"personal": 0.02, "company": 0.085, "base_min": 4118, "base_max": 20587},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 4118, "base_max": 20587},
+        "injury": {"personal": 0.0, "company": 0.006, "base_min": 4118, "base_max": 20587},
+        "maternity": {"personal": 0.0, "company": 0.005, "base_min": 4118, "base_max": 20587}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2100, "base_max": 29362}
+    },
+    "苏州": {
+      "social_insurance": {
+        "pension": {"personal": 0.08, "company": 0.16, "base_min": 4879, "base_max": 24396},
+        "medical": {"personal": 0.02, "company": 0.07, "base_min": 4879, "base_max": 24396},
+        "unemployment": {"personal": 0.005, "company": 0.005, "base_min": 4879, "base_max": 24396},
+        "injury": {"personal": 0.0, "company": 0.005, "base_min": 4879, "base_max": 24396},
+        "maternity": {"personal": 0.0, "company": 0.008, "base_min": 4879, "base_max": 24396}
+      },
+      "housing_fund": {"personal_min": 0.05, "personal_max": 0.12, "company_min": 0.05, "company_max": 0.12, "base_min": 2280, "base_max": 34700}
+    }
+  },
+  "default_social_insurance": {
+    "_comment": "无具体城市数据时的通用默认值",
+    "pension": {"personal": 0.08, "company": 0.16},
+    "medical": {"personal": 0.02, "company": 0.08},
+    "unemployment": {"personal": 0.005, "company": 0.005},
+    "injury": {"personal": 0.0, "company": 0.005},
+    "maternity": {"personal": 0.0, "company": 0.008}
+  },
+  "default_housing_fund": {
+    "_comment": "默认公积金比例（按7%计算）",
+    "personal": 0.07,
+    "company": 0.07
+  }
+}

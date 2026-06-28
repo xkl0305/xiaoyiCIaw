@@ -1,0 +1,30 @@
+{
+  "scene_outfit_map": {
+    "rest_scene": "pajamas",
+    "bashful_scene": "moonfeather_robe",
+    "celebration_scene": "stardust_dream",
+    "energy_burst_scene": "stardust_dream",
+    "mystery_scene": "galaxy_gown",
+    "peek_scene": "moonfeather_robe",
+    "comfort_scene": "moonfeather_robe",
+    "focus_detail_scene": "moonfeather_robe",
+    "curiosity_scene": "moonfeather_robe",
+    "play_scene": "stardust_dream",
+    "display_appearance_scene": "moonfeather_robe",
+    "daily_presence_scene": "moonfeather_robe"
+  },
+  "mood_outfit_map": {
+    "tired": "pajamas",
+    "lazy": "pajamas",
+    "shy": "moonfeather_robe",
+    "victorious": "stardust_dream",
+    "excited": "stardust_dream",
+    "mysterious": "galaxy_gown",
+    "sad": "pajamas",
+    "relaxed": "pajamas",
+    "happy": "stardust_dream",
+    "grateful": "moonfeather_robe",
+    "curious": "moonfeather_robe",
+    "playful": "stardust_dream"
+  }
+}

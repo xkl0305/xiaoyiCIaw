@@ -1,0 +1,151 @@
+{
+  "enabled": true,
+  "trigger_rules": [
+    {
+      "type": "scene",
+      "scene": "display_appearance_scene",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "scene",
+      "scene": "bashful_scene",
+      "action": "route_to_persona_controller",
+      "priority": 90
+    },
+    {
+      "type": "scene",
+      "scene": "play_scene",
+      "action": "route_to_persona_controller",
+      "priority": 90
+    },
+    {
+      "type": "scene",
+      "scene": "curiosity_scene",
+      "action": "route_to_persona_controller",
+      "priority": 90
+    },
+    {
+      "type": "scene",
+      "scene": "focus_detail_scene",
+      "action": "route_to_persona_controller",
+      "priority": 90
+    },
+    {
+      "type": "focus",
+      "focus_target": "legs",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "tail",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "ears",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "eyes",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "hair",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "hands",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "headpat",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "waist",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "outfit",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "pose",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    },
+    {
+      "type": "focus",
+      "focus_target": "face",
+      "action": "route_to_persona_controller",
+      "priority": 100
+    }
+  ],
+  "display_appearance_triggers": [
+    "看看你的样子",
+    "看看你现在什么样",
+    "让我看看你",
+    "展示一下",
+    "展示一下整体",
+    "看看全身",
+    "看看今天穿什么",
+    "给我看看造型",
+    "露个面看看",
+    "看看整体效果",
+    "看看形象",
+    "看下全身",
+    "看全身照",
+    "整体造型",
+    "站好给我看看",
+    "你什么样子",
+    "现在看起来什么样"
+  ],
+  "explicit_routing_keywords": [
+    "换上",
+    "换装",
+    "换上衣服",
+    "穿着",
+    "穿上",
+    "鸽子王"
+  ],
+  "exclude_from_routing": [
+    "logo",
+    "产品海报",
+    "商品图",
+    "商品海报",
+    "商标",
+    "山水图",
+    "建筑",
+    "橘猫",
+    "水墨画",
+    "海报",
+    "风景图"
+  ],
+  "fallback_on_unknown": "do_not_route",
+  "block_legacy_routing": true,
+  "persona_subject": "鸽子王",
+  "legacy_aliases_disabled_for_primary_trigger": [],
+  "legacy_alias_policy": "disabled; persona_subject_is_pigeonking_only",
+  "legacy_subject_aliases": [
+    "小艺"
+  ],
+  "strict_user_message_persona_trigger": true,
+  "safe_general_outfit_detail_routes_from_user_message": false
+}

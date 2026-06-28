@@ -1,0 +1,13 @@
+V111.51.9 覆盖说明：视角条件身份块 + 狐狸耳朵/背部宝石修复
+
+本覆盖包基于 V111.51.8 累计包继续修复：
+1. 固定身份块不再写“九尾狐少女”，避免模型默认生成狐狸耳朵。
+2. 固定身份块不再写“锁骨下嵌蓝宝石”，避免背面图把宝石画到背上。
+3. 新增 front_view_only_details：锁骨下嵌蓝宝石只在正面/半正面/上半身正面时启用。
+4. back_outfit_tail_detail 自动加入：前胸与锁骨区域不可见、不显示背部宝石或错位宝石。
+5. 负向词扩展 fox ears / animal ears / kemonomimi / cat ears / wolf ears / beast ears 等。
+6. 背面焦点额外屏蔽 gem on back / back jewel / misplaced clavicle gem。
+
+覆盖后验收：
+python xiaoyi_persona_visual/diagnostics/verify_v111_51_9_view_conditioned_identity.py
+python xiaoyi_persona_visual/diagnostics/post_overlay_check.py

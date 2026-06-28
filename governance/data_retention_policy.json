@@ -1,0 +1,39 @@
+{
+  "default_debug_log_redaction": true,
+  "levels": {
+    "S0": {
+      "examples": [
+        "runtime secret",
+        "age private key"
+      ],
+      "packaged": false,
+      "ttl_days": 0
+    },
+    "S1": {
+      "examples": [
+        "raw screenshot",
+        "raw audio",
+        "chat body"
+      ],
+      "packaged": false,
+      "ttl_days": 7
+    },
+    "S2": {
+      "examples": [
+        "embedding cache",
+        "ocr cache"
+      ],
+      "packaged": false,
+      "ttl_days": 30
+    },
+    "S3": {
+      "examples": [
+        "public prompt template",
+        "model manifest"
+      ],
+      "packaged": true,
+      "ttl_days": 365
+    }
+  },
+  "version": "V111.52.8_LOCAL_CAPABILITY_RUNTIME_FUSION"
+}

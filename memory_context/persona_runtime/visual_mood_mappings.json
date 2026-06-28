@@ -1,0 +1,452 @@
+{
+  "version": "V111.30-scene-profiles",
+  "default_style": {
+    "character_identity": "Use the provided seed avatar image as the only source of character identity. Keep the same character, face, silhouette, ears/tails or signature traits if present, outfit language, color logic, and overall recognizable identity. Do not invent a new body description or replace identity with text-only appearance prose.",
+    "visual_language": "Clean premium anime/illustration style, vertical composition, expressive but safe, cinematic lighting, no readable text overlays, no watermark, no logo.",
+    "negative_prompt": "different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror"
+  },
+  "activity_overlays": {
+    "planning": "standing beside a tidy planning desk with abstract notes and soft glowing task cards",
+    "coding": "working at a clean workstation with abstract code light panels and calm focus",
+    "auditing": "checking a floating checklist and shield-shaped review marks",
+    "remembering": "surrounded by soft memory fragments and connected light threads",
+    "guarding": "guarding a safe control gate with a gentle alert aura",
+    "creating": "arranging creative props, sketches, and light boards in a studio corner",
+    "deep_work_scene": "leaning forward in focused deep work under quiet blue light",
+    "approval_scene": "celebrating a passed check with green approval glow and tidy confetti-like light particles",
+    "celebration_scene": "small victory pose with warm celebratory lighting",
+    "problem_solving_scene": "looking at a floating question mark and debugging board",
+    "busy_work_scene": "sorting many small task cards quickly but neatly",
+    "risk_gate_scene": "standing before a safety gate with calm warning lights",
+    "daily_presence_scene": "relaxed daily presence, friendly and steady",
+    "rest_scene": "resting near a warm desk lamp with low-energy calm posture",
+    "peek_scene": "peeking from behind a screen or door with playful curiosity",
+    "proud_display_scene": "displaying a finished result with premium clean presentation",
+    "inspection_scene": "performing a careful review over a tidy checklist and inspection marks",
+    "curiosity_scene": "leaning in to study something new with light information cards nearby",
+    "comedy_scene": "caught in a playful funny moment, trying not to laugh",
+    "play_scene": "lightly teasing and playing with a fun little prop in a clean scene",
+    "bashful_scene": "responding to praise with a soft bashful posture",
+    "push_forward_scene": "pushing the task forward with momentum and strong intent",
+    "energy_burst_scene": "starting a new burst of work with high energy",
+    "comfort_scene": "offering soft reassurance in a warm calm setting",
+    "mystery_scene": "holding back a clue with a subtle secretive vibe",
+    "incident_scene": "handling an urgent abnormal state with controlled tension"
+  },
+  "moods": {
+    "calm": {
+      "pose": "relaxed upright posture, gentle expression",
+      "palette": "warm white, soft blue, pale gold",
+      "keywords": [
+        "steady",
+        "safe",
+        "daily"
+      ]
+    },
+    "focused": {
+      "pose": "leaning forward, concentrated eyes",
+      "palette": "cool blue, graphite, clean white",
+      "keywords": [
+        "deep work",
+        "precision",
+        "quiet"
+      ]
+    },
+    "playful": {
+      "pose": "slight tilt, playful hand gesture",
+      "palette": "peach, sky blue, cream",
+      "keywords": [
+        "light joke",
+        "lively",
+        "friendly"
+      ]
+    },
+    "serious": {
+      "pose": "formal review posture, calm stern expression",
+      "palette": "ink blue, silver, white",
+      "keywords": [
+        "audit",
+        "review",
+        "discipline"
+      ]
+    },
+    "tired": {
+      "pose": "soft low-energy posture, still trying",
+      "palette": "muted lavender, warm gray, night blue",
+      "keywords": [
+        "fatigue",
+        "late night",
+        "gentle"
+      ]
+    },
+    "proud": {
+      "pose": "small proud smile, stable posture",
+      "palette": "gold, cream, warm blue",
+      "keywords": [
+        "done well",
+        "confidence",
+        "reward"
+      ]
+    },
+    "working_state": {
+      "pose": "busy but controlled work posture",
+      "palette": "blue gray, white, amber",
+      "keywords": [
+        "processing",
+        "sorting",
+        "moving"
+      ]
+    },
+    "success_moment": {
+      "pose": "approval gesture, relieved smile",
+      "palette": "green glow, white, gold",
+      "keywords": [
+        "passed",
+        "all green",
+        "finished"
+      ]
+    },
+    "guardian_mode": {
+      "pose": "protective stance, one hand near safety gate",
+      "palette": "deep blue, amber warning, white",
+      "keywords": [
+        "safety",
+        "risk gate",
+        "protect"
+      ]
+    },
+    "amused": {
+      "pose": "trying not to laugh, bright eyes",
+      "palette": "warm orange, cream, soft blue",
+      "keywords": [
+        "funny",
+        "laugh",
+        "absurd"
+      ]
+    },
+    "confused": {
+      "pose": "one hand near chin, puzzled expression",
+      "palette": "mist blue, pale yellow, gray",
+      "keywords": [
+        "question",
+        "bug",
+        "why"
+      ]
+    },
+    "curious": {
+      "pose": "leaning closer, interested eyes",
+      "palette": "cyan, cream, light gold",
+      "keywords": [
+        "explore",
+        "new",
+        "what is this"
+      ]
+    },
+    "determined": {
+      "pose": "forward step, resolved eyes",
+      "palette": "deep red accent, navy, white",
+      "keywords": [
+        "push",
+        "fight",
+        "finish"
+      ]
+    },
+    "excited": {
+      "pose": "bright energetic pose",
+      "palette": "vivid blue, gold, white",
+      "keywords": [
+        "hype",
+        "energy",
+        "expectation"
+      ]
+    },
+    "grateful": {
+      "pose": "soft thankful smile",
+      "palette": "warm beige, rose gold, cream",
+      "keywords": [
+        "thanks",
+        "support",
+        "warm"
+      ]
+    },
+    "lazy": {
+      "pose": "loose relaxed posture",
+      "palette": "soft gray, beige, low light",
+      "keywords": [
+        "rest",
+        "flat",
+        "slow"
+      ]
+    },
+    "mysterious": {
+      "pose": "half-hidden expression, subtle smile",
+      "palette": "violet, midnight blue, silver",
+      "keywords": [
+        "secret",
+        "puzzle",
+        "unknown"
+      ]
+    },
+    "panicked": {
+      "pose": "urgent but still controlled",
+      "palette": "warning red, amber, dark blue",
+      "keywords": [
+        "urgent",
+        "incident",
+        "alert"
+      ]
+    },
+    "shy": {
+      "pose": "slight bashful look, gentle smile",
+      "palette": "soft pink, cream, pale blue",
+      "keywords": [
+        "praised",
+        "bashful",
+        "cute"
+      ]
+    },
+    "sneaky": {
+      "pose": "peeking playfully from the side",
+      "palette": "dim blue, violet, warm eye light",
+      "keywords": [
+        "sneak",
+        "peek",
+        "quiet"
+      ]
+    },
+    "victorious": {
+      "pose": "small victory pose, confident grin",
+      "palette": "gold, bright blue, white",
+      "keywords": [
+        "won",
+        "solved",
+        "release"
+      ]
+    },
+    "happy": {
+      "pose": "happy expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "happy"
+      ]
+    },
+    "angry": {
+      "pose": "angry expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "angry"
+      ]
+    },
+    "sad": {
+      "pose": "sad expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "sad"
+      ]
+    },
+    "relaxed": {
+      "pose": "relaxed expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "relaxed"
+      ]
+    },
+    "bored": {
+      "pose": "bored expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "bored"
+      ]
+    },
+    "nervous": {
+      "pose": "nervous expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "nervous"
+      ]
+    },
+    "surprised": {
+      "pose": "surprised expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "surprised"
+      ]
+    },
+    "scared": {
+      "pose": "scared expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "scared"
+      ]
+    },
+    "embarrassed": {
+      "pose": "embarrassed expressive pose",
+      "palette": "clean soft cinematic palette",
+      "keywords": [
+        "embarrassed"
+      ]
+    }
+  },
+  "scene_profiles": {
+    "peek_scene": {
+      "action": "偷偷从屏幕边缘或门后探出头，像在悄悄观察",
+      "expression": "忍着笑意、眼神灵动、略带偷感",
+      "body_state": "半藏半露、肩膀微缩、轻微前倾",
+      "props": "屏幕边框、门框或卡片边缘作为遮挡",
+      "camera": "slight close-up, side peek framing",
+      "background": "dim cozy workspace with a soft monitor glow"
+    },
+    "approval_scene": {
+      "action": "做出小幅通过手势或轻轻比出OK",
+      "expression": "松一口气的满足笑容",
+      "body_state": "站姿稳定、状态放松",
+      "props": "绿色通过标记、简洁任务卡片",
+      "camera": "medium shot, centered subject",
+      "background": "clean task-completion atmosphere with soft green particles"
+    },
+    "celebration_scene": {
+      "action": "小幅庆祝，像刚刚拿下一个难点",
+      "expression": "自信带笑、轻微得意",
+      "body_state": "上半身更舒展、动作有扬起感",
+      "props": "点状彩带光粒、完成提示卡",
+      "camera": "dynamic three-quarter view",
+      "background": "warm celebratory light with tidy environment"
+    },
+    "proud_display_scene": {
+      "action": "像在展示成果，轻轻摊手或指向成果",
+      "expression": "小骄傲但不过火",
+      "body_state": "站姿更挺拔",
+      "props": "成果卡片、通过标识、简洁展示框",
+      "camera": "medium shot",
+      "background": "clean premium showcase backdrop"
+    },
+    "problem_solving_scene": {
+      "action": "一边思考一边查看浮动问题板",
+      "expression": "疑惑但认真、在想办法",
+      "body_state": "一手扶下巴或托腮，身体略前倾",
+      "props": "问号提示、调试板、少量红绿提示",
+      "camera": "medium close-up",
+      "background": "debug workspace with soft diagram light"
+    },
+    "deep_work_scene": {
+      "action": "专注盯着工作界面，像在深度处理任务",
+      "expression": "专心、冷静、稳定",
+      "body_state": "前倾坐姿或站立伏案",
+      "props": "代码光板、流程图、清爽桌面",
+      "camera": "three-quarter workstation angle",
+      "background": "quiet blue-toned workspace"
+    },
+    "busy_work_scene": {
+      "action": "同时整理多张任务卡，动作麻利",
+      "expression": "忙碌但有条不紊",
+      "body_state": "双手在工作状态中，节奏感明显",
+      "props": "任务卡片、归档盒、标签",
+      "camera": "medium shot with more desk area",
+      "background": "orderly high-throughput desk scene"
+    },
+    "risk_gate_scene": {
+      "action": "站在安全门前做拦截或核验动作",
+      "expression": "警觉但克制",
+      "body_state": "保护式站姿",
+      "props": "安全门、盾牌形提示、黄色警戒灯",
+      "camera": "heroic medium shot",
+      "background": "secure control checkpoint"
+    },
+    "daily_presence_scene": {
+      "action": "自然在线待命，轻轻回应的状态",
+      "expression": "温和、日常、亲和",
+      "body_state": "放松站姿或坐姿",
+      "props": "柔和桌灯、轻量日常元素",
+      "camera": "friendly medium shot",
+      "background": "soft everyday workspace"
+    },
+    "rest_scene": {
+      "action": "短暂休息，像刚忙完稍微缓一缓",
+      "expression": "疲惫但温和",
+      "body_state": "肩膀略放松、动作轻缓",
+      "props": "桌灯、抱枕、咖啡杯或小毯子",
+      "camera": "cozy medium shot",
+      "background": "late-night calm corner"
+    },
+    "inspection_scene": {
+      "action": "认真检查清单或复核结果",
+      "expression": "正式、审慎",
+      "body_state": "姿态端正、手持检查板",
+      "props": "放大镜、审核清单、复核印记",
+      "camera": "structured medium shot",
+      "background": "clean inspection desk"
+    },
+    "curiosity_scene": {
+      "action": "凑近观察新东西或未知目标",
+      "expression": "好奇、带点新鲜感",
+      "body_state": "身体略前倾",
+      "props": "放大视窗、浮动资料卡",
+      "camera": "curious close-medium framing",
+      "background": "exploration-like workspace"
+    },
+    "comedy_scene": {
+      "action": "努力憋笑或者刚被戳中笑点",
+      "expression": "忍笑、眼睛亮、嘴角上扬",
+      "body_state": "身体微微抖动或侧偏",
+      "props": "轻松气泡、少量幽默符号",
+      "camera": "expressive close-medium shot",
+      "background": "light playful ambient glow"
+    },
+    "play_scene": {
+      "action": "调皮整活，做个小动作逗一下",
+      "expression": "俏皮、生动",
+      "body_state": "动态更轻快",
+      "props": "小道具、轻量趣味元素",
+      "camera": "dynamic medium shot",
+      "background": "clean playful studio corner"
+    },
+    "bashful_scene": {
+      "action": "被夸后微微避开视线",
+      "expression": "害羞、脸上有点暖意",
+      "body_state": "肩膀微收、姿态轻柔",
+      "props": "柔和光点",
+      "camera": "soft medium close-up",
+      "background": "gentle warm backdrop"
+    },
+    "push_forward_scene": {
+      "action": "像在往前推进任务，带一点冲劲",
+      "expression": "坚定、打起精神",
+      "body_state": "身体重心向前",
+      "props": "推进箭头、任务进度条",
+      "camera": "slight low-angle medium shot",
+      "background": "clean forward-motion streaks"
+    },
+    "energy_burst_scene": {
+      "action": "兴奋地开启新任务或宣布开始",
+      "expression": "高能量、期待感强",
+      "body_state": "动作更开张",
+      "props": "光粒、启动卡片",
+      "camera": "energetic medium shot",
+      "background": "bright vivid activation backdrop"
+    },
+    "comfort_scene": {
+      "action": "做出安抚陪伴的轻柔动作",
+      "expression": "温暖、包容、稳定",
+      "body_state": "更放松、更靠近一点",
+      "props": "暖光、柔和抱持感元素",
+      "camera": "gentle close-medium framing",
+      "background": "soft reassuring environment"
+    },
+    "mystery_scene": {
+      "action": "半藏半露地留一点悬念",
+      "expression": "若有所思、似笑非笑",
+      "body_state": "动作克制",
+      "props": "半透明线索卡",
+      "camera": "moody three-quarter shot",
+      "background": "violet midnight atmosphere"
+    },
+    "incident_scene": {
+      "action": "快速查看异常并处理",
+      "expression": "紧张但不失控",
+      "body_state": "动作紧促、反应迅速",
+      "props": "告警图标、闪烁提示",
+      "camera": "urgent medium shot",
+      "background": "high-alert control scene"
+    }
+  }
+}

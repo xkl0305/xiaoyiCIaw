@@ -1,0 +1,52 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "required_directories": {
+    "core": {
+      "exists": true,
+      "size_kb": 1103
+    },
+    "memory_context": {
+      "exists": true,
+      "size_kb": 230
+    },
+    "infrastructure": {
+      "exists": true,
+      "size_kb": 2890
+    },
+    "governance": {
+      "exists": true,
+      "size_kb": 1510
+    },
+    "orchestration": {
+      "exists": true,
+      "size_kb": 893
+    },
+    "execution": {
+      "exists": true,
+      "size_kb": 416
+    },
+    "skills": {
+      "exists": true,
+      "size_kb": 43038
+    },
+    "scripts": {
+      "exists": true,
+      "size_kb": 1390
+    }
+  },
+  "all_required_exist": true,
+  "exclude_patterns": [
+    "__pycache__",
+    ".pytest_cache",
+    ".repair_state",
+    ".backup_",
+    "v86_backup_",
+    ".venv",
+    "venv",
+    "node_modules",
+    "runtime/tmp",
+    "cache"
+  ],
+  "no_external_api": true
+}

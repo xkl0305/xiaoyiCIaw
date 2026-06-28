@@ -1,0 +1,24 @@
+# 大龙虾 V111.38 在线运行态 + 清洁交付硬门禁最终命令
+
+# 1. 覆盖后，在项目根目录执行
+PYTHONNOUSERSITE=1 python3 -S scripts/apply_v111_38_online_runtime_and_clean_release.py --yes
+
+# 2. 看环境自愈是否仍然有效
+python3 scripts/dlx_env.py --show
+
+# 3. 主审计：检查在线运行态、真实副作用保护、环境自愈、根目录清洁度
+PYTHONNOUSERSITE=1 python3 -S scripts/audit_v111_38_online_clean_release.py
+cat reports/V111_38_ONLINE_CLEAN_RELEASE_AUDIT.txt
+
+# 4. 受控 pytest collect：不会无限卡死
+PYTHONNOUSERSITE=1 python3 -S scripts/dlx_pytest_collect_guard.py --timeout 60
+cat reports/V111_38_PYTEST_COLLECT_GUARD.json
+
+# 5. 生成最终 clean 包，并自动验证包内无 repo/venv/pycache/旧版本残留
+bash scripts/package_clean_source_v111_38.sh workspace_v11138_final_clean.tar.gz
+
+# 6. 对最终包二次审计
+PYTHONNOUSERSITE=1 python3 -S scripts/audit_v111_38_online_clean_release.py --package workspace_v11138_final_clean.tar.gz
+cat reports/V111_38_ONLINE_CLEAN_RELEASE_AUDIT.txt
+
+# 定型原则：产品运行态一直在线；测试/依赖安装默认不联网；真实付款/发送/设备控制保持保护；源码包不带运行时环境和旧版本残留。

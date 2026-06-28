@@ -1,0 +1,299 @@
+{
+  "metadata": {
+    "detection_time": "2026-05-22T13:42:32.955328",
+    "config": {
+      "zscore_threshold": 2.0,
+      "zscore_high_threshold": 3.0,
+      "abs_change_threshold": 5000,
+      "pct_change_threshold": 0.3,
+      "pct_change_high": 0.5,
+      "min_employees_for_stats": 3
+    },
+    "prev_count": 5,
+    "curr_count": 5
+  },
+  "summary": {
+    "total_employees": 6,
+    "existing": 4,
+    "new": 1,
+    "departed": 1,
+    "anomalies_critical": 2,
+    "anomalies_warning": 1,
+    "anomalies_info": 1,
+    "anomalies_total": 3
+  },
+  "statistics": {
+    "gross": {
+      "mean": 1875.0,
+      "std": 3424.787098005753,
+      "count": 4
+    },
+    "net_pay": {
+      "mean": 143.0,
+      "std": 2131.453181908218,
+      "count": 4
+    },
+    "tax_amount": {
+      "mean": 345.75,
+      "std": 768.62924525851,
+      "count": 4
+    },
+    "si_personal": {
+      "mean": 22.5,
+      "std": 26.299556396765833,
+      "count": 4
+    },
+    "fund_personal": {
+      "mean": 6.25,
+      "std": 12.5,
+      "count": 4
+    },
+    "si_company": {
+      "mean": 62.5,
+      "std": 75.0,
+      "count": 4
+    },
+    "fund_company": {
+      "mean": 6.25,
+      "std": 12.5,
+      "count": 4
+    },
+    "company_cost": {
+      "mean": 1943.75,
+      "std": 3452.19585915979,
+      "count": 4
+    }
+  },
+  "comparisons": [
+    {
+      "name": "周八",
+      "status": "new",
+      "prev": null,
+      "curr": {
+        "name": "周八",
+        "gross": 22000,
+        "net_pay": 17650,
+        "tax_amount": 850,
+        "si_personal": 2300,
+        "fund_personal": 1100,
+        "si_company": 6150,
+        "fund_company": 1100,
+        "company_cost": 29250
+      },
+      "info": "🆕 周八 为本月新增员工"
+    },
+    {
+      "name": "孙七",
+      "status": "departed",
+      "prev": {
+        "name": "孙七",
+        "gross": 50000,
+        "net_pay": 34530,
+        "tax_amount": 7280,
+        "si_personal": 3780,
+        "fund_personal": 4234,
+        "si_company": 10079,
+        "fund_company": 4234,
+        "company_cost": 64313
+      },
+      "curr": null,
+      "warning": "⚠️ 孙七 本月不在工资表中（可能离职）"
+    },
+    {
+      "name": "张三",
+      "prev_gross": 25000,
+      "curr_gross": 25500,
+      "change_gross": 500,
+      "prev_net_pay": 19910,
+      "curr_net_pay": 20275,
+      "change_net_pay": 365,
+      "prev_tax_amount": 1215,
+      "curr_tax_amount": 1265,
+      "change_tax_amount": 50,
+      "prev_si_personal": 2625,
+      "curr_si_personal": 2675,
+      "change_si_personal": 50,
+      "prev_fund_personal": 1250,
+      "curr_fund_personal": 1275,
+      "change_fund_personal": 25,
+      "prev_si_company": 6875,
+      "curr_si_company": 7025,
+      "change_si_company": 150,
+      "prev_fund_company": 1250,
+      "curr_fund_company": 1275,
+      "change_fund_company": 25,
+      "prev_company_cost": 33125,
+      "curr_company_cost": 33800,
+      "change_company_cost": 675,
+      "status": "existing"
+    },
+    {
+      "name": "李四",
+      "prev_gross": 18000,
+      "curr_gross": 25000,
+      "change_gross": 7000,
+      "prev_net_pay": 14963,
+      "curr_net_pay": 17670,
+      "change_net_pay": 2707,
+      "prev_tax_amount": 689,
+      "curr_tax_amount": 2180,
+      "change_tax_amount": 1491,
+      "prev_si_personal": 1700,
+      "curr_si_personal": 1740,
+      "change_si_personal": 40,
+      "prev_fund_personal": 1050,
+      "curr_fund_personal": 1050,
+      "change_fund_personal": 0,
+      "prev_si_company": 4580,
+      "curr_si_company": 4680,
+      "change_si_company": 100,
+      "prev_fund_company": 1050,
+      "curr_fund_company": 1050,
+      "change_fund_company": 0,
+      "prev_company_cost": 23630,
+      "curr_company_cost": 30730,
+      "change_company_cost": 7100,
+      "status": "existing"
+    },
+    {
+      "name": "王五",
+      "prev_gross": 35000,
+      "curr_gross": 35000,
+      "change_gross": 0,
+      "prev_net_pay": 26184,
+      "curr_net_pay": 26184,
+      "change_net_pay": 0,
+      "prev_tax_amount": 3156,
+      "curr_tax_amount": 3156,
+      "change_tax_amount": 0,
+      "prev_si_personal": 3612,
+      "curr_si_personal": 3612,
+      "change_si_personal": 0,
+      "prev_fund_personal": 1750,
+      "curr_fund_personal": 1750,
+      "change_fund_personal": 0,
+      "prev_si_company": 9375,
+      "curr_si_company": 9375,
+      "change_si_company": 0,
+      "prev_fund_company": 1750,
+      "curr_fund_company": 1750,
+      "change_fund_company": 0,
+      "prev_company_cost": 45475,
+      "curr_company_cost": 45475,
+      "change_company_cost": 0,
+      "status": "existing"
+    },
+    {
+      "name": "赵六",
+      "prev_gross": 12000,
+      "curr_gross": 12000,
+      "change_gross": 0,
+      "prev_net_pay": 9992,
+      "curr_net_pay": 7492,
+      "change_net_pay": -2500,
+      "prev_tax_amount": 158,
+      "curr_tax_amount": 0,
+      "change_tax_amount": -158,
+      "prev_si_personal": 1250,
+      "curr_si_personal": 1250,
+      "change_si_personal": 0,
+      "prev_fund_personal": 600,
+      "curr_fund_personal": 600,
+      "change_fund_personal": 0,
+      "prev_si_company": 3380,
+      "curr_si_company": 3380,
+      "change_si_company": 0,
+      "prev_fund_company": 600,
+      "curr_fund_company": 600,
+      "change_fund_company": 0,
+      "prev_company_cost": 15980,
+      "curr_company_cost": 15980,
+      "change_company_cost": 0,
+      "status": "existing"
+    }
+  ],
+  "anomalies": [
+    {
+      "name": "周八",
+      "level": "info",
+      "type": "人员变动",
+      "detail": "🆕 周八 为本月新增员工"
+    },
+    {
+      "name": "孙七",
+      "level": "warning",
+      "type": "人员变动",
+      "detail": "⚠️ 孙七 本月不在工资表中（可能离职）"
+    },
+    {
+      "name": "李四",
+      "level": "critical",
+      "type": "工资异常",
+      "fields": [
+        {
+          "field": "gross",
+          "label": "税前工资",
+          "level": "warning",
+          "direction": "↑",
+          "prev_value": 18000,
+          "curr_value": 25000,
+          "change": 7000,
+          "change_pct": 0.3888888888888889,
+          "reasons": [
+            "绝对变化 ¥7,000（≥¥5,000）",
+            "变化 39%（≥30%）"
+          ]
+        },
+        {
+          "field": "tax_amount",
+          "label": "个税",
+          "level": "critical",
+          "direction": "↑",
+          "prev_value": 689,
+          "curr_value": 2180,
+          "change": 1491,
+          "change_pct": 2.1640058055152394,
+          "reasons": [
+            "变化 216%（≥50%）"
+          ]
+        },
+        {
+          "field": "company_cost",
+          "label": "公司总成本",
+          "level": "warning",
+          "direction": "↑",
+          "prev_value": 23630,
+          "curr_value": 30730,
+          "change": 7100,
+          "change_pct": 0.30046550994498517,
+          "reasons": [
+            "绝对变化 ¥7,100（≥¥5,000）",
+            "变化 30%（≥30%）"
+          ]
+        }
+      ],
+      "summary": "李四: 税前工资 ↑¥+7,000.00; 个税 ↑¥+1,491.00; 公司总成本 ↑¥+7,100.00"
+    },
+    {
+      "name": "赵六",
+      "level": "critical",
+      "type": "工资异常",
+      "fields": [
+        {
+          "field": "tax_amount",
+          "label": "个税",
+          "level": "critical",
+          "direction": "↓",
+          "prev_value": 158,
+          "curr_value": 0,
+          "change": -158,
+          "change_pct": 1.0,
+          "reasons": [
+            "变化 100%（≥50%）"
+          ]
+        }
+      ],
+      "summary": "赵六: 个税 ↓¥-158.00"
+    }
+  ]
+}

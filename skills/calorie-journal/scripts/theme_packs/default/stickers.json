@@ -1,0 +1,150 @@
+{
+  "sticker_system_id": "forest_stickers",
+  "system_name": "森林贴纸",
+  
+  "preset_stickers": {
+    "little_fox": {
+      "name": "小狐狸",
+      "emoji": "🦊",
+      "description": "治愈森林的守护者",
+      "rarity": "legendary",
+      "positions": ["top_left", "top_right", "center"]
+    },
+    "flower": {
+      "name": "小花",
+      "emoji": "🌸",
+      "description": "春天的温柔",
+      "rarity": "common",
+      "positions": ["any"]
+    },
+    "star": {
+      "name": "星星",
+      "emoji": "⭐",
+      "description": "夜晚的祝福",
+      "rarity": "common",
+      "positions": ["any"]
+    },
+    "heart": {
+      "name": "爱心",
+      "emoji": "❤️",
+      "description": "满满的爱",
+      "rarity": "common",
+      "positions": ["any"]
+    },
+    "leaf": {
+      "name": "树叶",
+      "emoji": "🍃",
+      "description": "自然的气息",
+      "rarity": "common",
+      "positions": ["any"]
+    },
+    "rainbow": {
+      "name": "彩虹",
+      "emoji": "🌈",
+      "description": "雨后的希望",
+      "rarity": "rare",
+      "positions": ["top_center", "bottom_center"]
+    },
+    "sun": {
+      "name": "小太阳",
+      "emoji": "☀️",
+      "description": "温暖的光芒",
+      "rarity": "rare",
+      "positions": ["top_left", "top_right"]
+    },
+    "moon": {
+      "name": "月亮",
+      "emoji": "🌙",
+      "description": "深夜的陪伴",
+      "rarity": "rare",
+      "positions": ["top_left", "top_right"]
+    },
+    "mushroom": {
+      "name": "小蘑菇",
+      "emoji": "🍄",
+      "description": "森林里的小可爱",
+      "rarity": "uncommon",
+      "positions": ["bottom_left", "bottom_right"]
+    },
+    "acorn": {
+      "name": "橡果",
+      "emoji": "🌰",
+      "description": "秋天的礼物",
+      "rarity": "uncommon",
+      "positions": ["bottom_left", "bottom_right"]
+    },
+    "butterfly": {
+      "name": "蝴蝶",
+      "emoji": "🦋",
+      "description": "自由的精灵",
+      "rarity": "rare",
+      "positions": ["any"]
+    },
+    "bird": {
+      "name": "小鸟",
+      "emoji": "🐦",
+      "description": "清晨的歌声",
+      "rarity": "rare",
+      "positions": ["top_left", "top_right"]
+    },
+    "squirrel": {
+      "name": "小松鼠",
+      "emoji": "🐿️",
+      "description": "勤劳的小家伙",
+      "rarity": "rare",
+      "positions": ["bottom_left", "bottom_right"]
+    },
+    "rabbit": {
+      "name": "小兔子",
+      "emoji": "🐰",
+      "description": "软萌的朋友",
+      "rarity": "epic",
+      "positions": ["center"]
+    },
+    "deer": {
+      "name": "小鹿",
+      "emoji": "🦌",
+      "description": "森林的精灵",
+      "rarity": "epic",
+      "positions": ["center"]
+    },
+    "cake": {
+      "name": "小蛋糕",
+      "emoji": "🍰",
+      "description": "甜蜜的奖励",
+      "rarity": "uncommon",
+      "positions": ["any"]
+    },
+    "cookie": {
+      "name": "饼干",
+      "emoji": "🍪",
+      "description": "酥脆的快乐",
+      "rarity": "common",
+      "positions": ["any"]
+    },
+    "coffee": {
+      "name": "咖啡",
+      "emoji": "☕",
+      "description": "温暖的时光",
+      "rarity": "common",
+      "positions": ["any"]
+    }
+  },
+  
+  "sticker_rules": {
+    "max_per_card": 3,
+    "rare_chance": 0.1,
+    "epic_chance": 0.03,
+    "legendary_chance": 0.01
+  },
+  
+  "positions": [
+    "top_left",
+    "top_center",
+    "top_right",
+    "center",
+    "bottom_left",
+    "bottom_center",
+    "bottom_right"
+  ]
+}

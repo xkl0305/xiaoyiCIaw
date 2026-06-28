@@ -1,0 +1,126 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "total_critical": 28,
+  "passed": 28,
+  "fatal": 0,
+  "results": [
+    {
+      "module": "governance.unified_governance_gate",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_intelligence_engine",
+      "status": "pass"
+    },
+    {
+      "module": "governance.proactive_skill_matcher",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_rule_engine",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_profile_generator",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_priority_scorer",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_registration_pipeline",
+      "status": "pass"
+    },
+    {
+      "module": "governance.skill_usage_feedback",
+      "status": "pass"
+    },
+    {
+      "module": "governance.unified_authorization_privacy_gate",
+      "status": "pass"
+    },
+    {
+      "module": "orchestration.unified_task_lifecycle_engine",
+      "status": "pass"
+    },
+    {
+      "module": "orchestration.unified_system_bus",
+      "status": "pass"
+    },
+    {
+      "module": "orchestration.single_runtime_entrypoint",
+      "status": "pass"
+    },
+    {
+      "module": "memory_context.unified_continuity_engine",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_observability_ledger",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_connector_gateway",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.capability_evolution_engine",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.context_loading_engine",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.mainline_hook",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_runtime_config",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_artifact_router",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_model_gateway",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_monitoring_health",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.unified_release_packaging_manager",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.offline_runtime_guard",
+      "status": "pass"
+    },
+    {
+      "module": "infrastructure.common.path_utils",
+      "status": "pass"
+    },
+    {
+      "module": "execution.unified_action_adapter_engine",
+      "status": "pass"
+    },
+    {
+      "module": "execution.unified_tool_execution_gateway",
+      "status": "pass"
+    },
+    {
+      "module": "execution.unified_capability_gateway",
+      "status": "pass"
+    }
+  ],
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "remaining_failures": []
+}

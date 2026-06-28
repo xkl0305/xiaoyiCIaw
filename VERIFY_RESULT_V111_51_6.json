@@ -1,0 +1,56 @@
+{
+  "status": "passed",
+  "failures": [],
+  "samples": {
+    "appearance_dynamic": {
+      "prompt_preview": "生成图片内的人物要和参考图内人物保持像素级一致性，长银发蓝眼九尾狐少女，金环耳饰，锁骨下嵌蓝宝石，身后是星空渐变九尾，背景为璀璨星河。 当前采用动态衣柜穿搭：身穿月羽云裳，服装轮廓清楚，材质轻盈细腻，颜色层次自然，既突出本次造型又不遮挡人物面部和整体比例，二次元高质量角色插画风格，线条干净，色彩通透，人物主体清晰，画面精致但不过度杂乱，采用全身或大半身构图，人物完整入镜，站姿自然舒展，重点展示整体造型、服装轮廓和人物气质，神情自然，眼神柔和，带轻微微笑，站姿稳定，动作不过度夸张，整体呈现清晰、亲近、可观看的展示状态，背景简洁干净，可为柔和室内或轻梦幻背景，避免喧宾夺主，让人物、服装和整体轮廓成为视觉中心，光线柔和均匀，面部清晰，服装",
+      "fixed_identity_block_present": true,
+      "bikini_in_fixed_identity_block": false,
+      "default_appearance_block_used": false,
+      "dynamic_outfit_used": true,
+      "dynamic_block_effective_chinese_length": 201,
+      "old_identity_phrase_present": false,
+      "persona_subject": "鸽子王"
+    },
+    "legs_dynamic": {
+      "prompt_preview": "生成图片内的人物要和参考图内人物保持像素级一致性，长银发蓝眼九尾狐少女，金环耳饰，锁骨下嵌蓝宝石，身后是星空渐变九尾，背景为璀璨星河。 当前采用动态衣柜穿搭：身穿月羽云裳，服装轮廓清楚，材质轻盈细腻，颜色层次自然，既突出本次造型又不遮挡人物面部和整体比例，二次元高质量角色插画风格，线条干净，色彩通透，人物主体清晰，画面精致但不过度杂乱，镜头重点呈现腿部，同时保留人物整体协调感，取景自然克制，线条优雅，不夸张、不扭曲、不破坏身体比例，表情保持自然和轻微配合感，动作放松，身体姿态协调，局部展示清楚但不显得刻意或突兀，背景保持简洁柔和，避免复杂道具干扰焦点，画面仍保持完整角色感和统一氛围，光线柔和均匀，面部清晰，服装细节可见，画面不模糊、",
+      "fixed_identity_block_present": true,
+      "bikini_in_fixed_identity_block": false,
+      "default_appearance_block_used": false,
+      "dynamic_outfit_used": true,
+      "dynamic_block_effective_chinese_length": 194,
+      "old_identity_phrase_present": false,
+      "persona_subject": "鸽子王"
+    },
+    "head_touch_dynamic": {
+      "prompt_preview": "生成图片内的人物要和参考图内人物保持像素级一致性，长银发蓝眼九尾狐少女，金环耳饰，锁骨下嵌蓝宝石，身后是星空渐变九尾，背景为璀璨星河。 当前采用动态衣柜穿搭：身穿星尘织梦，服装轮廓清楚，材质轻盈细腻，颜色层次自然，既突出本次造型又不遮挡人物面部和整体比例，二次元高质量角色插画风格，线条干净，色彩通透，人物主体清晰，画面精致但不过度杂乱，镜头重点呈现头部，同时保留人物整体协调感，取景自然克制，线条优雅，不夸张、不扭曲、不破坏身体比例，表情保持自然和轻微配合感，动作放松，身体姿态协调，局部展示清楚但不显得刻意或突兀，背景保持简洁柔和，避免复杂道具干扰焦点，画面仍保持完整角色感和统一氛围，光线柔和均匀，面部清晰，服装细节可见，画面不模糊、",
+      "fixed_identity_block_present": true,
+      "bikini_in_fixed_identity_block": false,
+      "default_appearance_block_used": false,
+      "dynamic_outfit_used": true,
+      "dynamic_block_effective_chinese_length": 194,
+      "old_identity_phrase_present": false,
+      "persona_subject": "鸽子王"
+    },
+    "default_appearance": {
+      "prompt_preview": "生成图片内的人物要和参考图内人物保持像素级一致性，长银发蓝眼九尾狐少女，金环耳饰，锁骨下嵌蓝宝石，身后是星空渐变九尾，背景为璀璨星河。 默认外观块启用：身着银亮色比基尼，仅在没有动态衣柜服装时作为默认服装锚点，整体简洁明确，不压过本次动作和场景表现，二次元高质量角色插画风格，线条干净，色彩通透，人物主体清晰，画面精致但不过度杂乱，采用全身或大半身构图，人物完整入镜，站姿自然舒展，重点展示整体造型、服装轮廓和人物气质，神情自然，眼神柔和，带轻微微笑，站姿稳定，动作不过度夸张，整体呈现清晰、亲近、可观看的展示状态，背景简洁干净，可为柔和室内或轻梦幻背景，避免喧宾夺主，让人物、服装和整体轮廓成为视觉中心，光线柔和均匀，面部清晰，服装细节可",
+      "fixed_identity_block_present": true,
+      "bikini_in_fixed_identity_block": false,
+      "default_appearance_block_used": true,
+      "dynamic_outfit_used": false,
+      "dynamic_block_effective_chinese_length": 201,
+      "old_identity_phrase_present": false,
+      "persona_subject": "鸽子王"
+    }
+  },
+  "manual_provider_persona_block": {
+    "ok": true,
+    "status": "blocked",
+    "blocked_reason": "persona_visual_request_must_use_main_pipeline"
+  },
+  "ordinary_provider_direct": {
+    "ok": true,
+    "status": "provider_not_ready",
+    "reason": "missing_or_disabled_seedream_provider"
+  }
+}

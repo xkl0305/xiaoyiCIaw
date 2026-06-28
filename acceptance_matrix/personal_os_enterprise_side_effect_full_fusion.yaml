@@ -1,0 +1,13 @@
+version: V111.52.3_SIDE_EFFECT_PROOF_FULL_FUSION
+objective: 全局副作用治理完整融合，不再只停留在旁路模块。
+checks:
+  - side_effect_proof_issue_and_register
+  - action_guard_missing_proof_blocks
+  - action_guard_registered_proof_allows_once
+  - action_guard_replay_blocks
+  - high_risk_requires_explicit_approval
+  - execute_side_effect_does_not_call_executor_when_blocked
+  - observability_events_written
+  - local_capability_registry_contains_guarded_actions
+  - failure_pattern_registry_contains_legacy_failures
+  - package_runtime_state_not_required

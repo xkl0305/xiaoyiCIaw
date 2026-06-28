@@ -1,0 +1,28 @@
+version: V111.52.6_ENTERPRISE_HARDENING_FULL_CLOSE_FINAL
+persona_subject: 鸽子王
+anatomical_anchors:
+  tail_root: tailbone_sacrum_lower_back_center
+  tail_attachment_rule: 九条星空渐变尾巴必须从尾骨与后腰中央自然连接，尾巴根部清晰可见，不允许漂浮在背景层或与身体脱离。
+  ears_root: normal_human_ears_only
+  animal_ears_policy: forbidden
+  clavicle_gem: front_view_only_below_clavicle_not_chest_not_back
+view_rules:
+  frontal: 允许锁骨下蓝宝石；禁止狐狸耳朵；尾巴从身后展开。
+  profile: 尾巴根部仍需连接后腰；蓝宝石仅在正面可见角度出现。
+  back: 不出现锁骨下蓝宝石；尾巴根部连接尾骨/后腰中央；重点展示背部服饰和尾巴层次。
+occlusion_rules:
+  appendage_must_attach_to_body_silhouette: true
+  no_floating_tail: true
+  no_detached_tail: true
+  no_background_only_tail: true
+outfit_layers:
+  inner: 默认外观块，非绝对永久身份
+  outer: 衣柜穿搭
+  accessories: 金环耳饰、正面可见蓝宝石
+pose_joints:
+  - spine
+  - pelvis
+  - tailbone
+  - knees
+  - ankles
+  - shoulders

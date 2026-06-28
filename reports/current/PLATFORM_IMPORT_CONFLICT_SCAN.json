@@ -1,0 +1,8 @@
+[
+  {
+    "moved_old_platform_package_to": "legacy_readonly/platform/capability_registry_original"
+  },
+  {
+    "rewrote": "governance/fused_modules/doc_fusion_capability_marketplace_registry_v20260505.json"
+  }
+]

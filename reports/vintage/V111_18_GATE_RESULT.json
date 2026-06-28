@@ -1,0 +1,10 @@
+{
+  "status": "ok",
+  "borrowed_modules": [
+    "persona_visual_ledger",
+    "persona_visual_feedback",
+    "persona_visual_rccam_loop",
+    "xiaoyi_visual_entry"
+  ],
+  "notes": "Borrowed package content merged into final overlay."
+}

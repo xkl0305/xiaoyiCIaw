@@ -1,0 +1,26 @@
+{
+  "status": "ok",
+  "version": "V111.41",
+  "bus_status": {
+    "status": "ok",
+    "enabled": true,
+    "hook_dir": "/home/sandbox/.openclaw/workspace/.openclaw/hooks",
+    "manifest_exists": true,
+    "pre_reply_exists": true,
+    "post_reply_exists": true,
+    "event_ledger": "/home/sandbox/.openclaw/workspace/.openclaw/hook_state/hook_events.jsonl",
+    "recent_event_count": 20
+  },
+  "dedupe_key_equal_across_request_id": true,
+  "direct_post_generation_status": "dry_run_ready",
+  "reply_outlet_generation_status": "deduped_skip",
+  "scene_default_auto_image_send": false,
+  "seedream_provider_module_installed": true,
+  "persona_visual_config": {
+    "generateOnlyOnPhase": "post_reply",
+    "preventDuplicateImageSend": true,
+    "fallbackToSceneDefault": false,
+    "dedupeKeyPolicy": null,
+    "providerInstallPolicy": null
+  }
+}

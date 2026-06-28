@@ -1,0 +1,34 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "state_dirs_found": [
+    ".v98_hook_state",
+    ".github",
+    ".clawhub",
+    ".fusion_engine_v2_state",
+    ".knowledge_graph_state",
+    ".offline_state",
+    ".v98_state",
+    ".lazy_state",
+    ".self_evolution_ops_state",
+    ".preference_evolution_state",
+    ".self_evolution_state"
+  ],
+  "state_files_found": [],
+  "note": "State dirs found in workspace root (runtime artifacts). These should be excluded from clean release.",
+  "exclude_for_clean_release": [
+    ".v98_hook_state",
+    ".github",
+    ".clawhub",
+    ".fusion_engine_v2_state",
+    ".knowledge_graph_state",
+    ".offline_state",
+    ".v98_state",
+    ".lazy_state",
+    ".self_evolution_ops_state",
+    ".preference_evolution_state",
+    ".self_evolution_state"
+  ],
+  "no_external_api": true,
+  "remaining_failures": []
+}

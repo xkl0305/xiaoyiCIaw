@@ -1,0 +1,16 @@
+{
+  "old_dir": "platform/capability_registry/",
+  "new_dir": "platform_layer/capability_registry/",
+  "files_moved": [
+    "capability_marketplace_v5.py",
+    "capability_registry.py",
+    "capability_registry.json",
+    "schemas/skill_profile_schema.py",
+    "legacy/capability_marketplace.py",
+    "skills_registry/skill_registry.py"
+  ],
+  "shim_files_updated": 4,
+  "import_refs_cleaned": 0,
+  "platform_stdlib_working": true,
+  "compileall_passed": true
+}

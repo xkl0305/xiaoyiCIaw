@@ -1,0 +1,19 @@
+{
+  "version": "V111.52.3_SIDE_EFFECT_PROOF_FULL_FUSION",
+  "metrics": [
+    "side_effect_proof_issued_total",
+    "side_effect_proof_consumed_total",
+    "side_effect_proof_replay_blocked_total",
+    "action_guard_blocked_total",
+    "network_profile_blocked_total",
+    "high_risk_approval_required_total"
+  ],
+  "personal_os_enterprise_metrics": {
+    "side_effect_proof_issued_total": "count of registered side effect proofs",
+    "action_guard_allowed_total": "count of allowed guarded actions",
+    "action_guard_blocked_total": "count of blocked guarded actions",
+    "side_effect_replay_blocked_total": "count of replayed proof blocks",
+    "side_effect_execution_failed_total": "count of executor failures",
+    "capability_registry_declared_total": "count of declared local capabilities"
+  }
+}

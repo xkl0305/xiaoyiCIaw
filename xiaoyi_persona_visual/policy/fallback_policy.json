@@ -1,0 +1,35 @@
+{
+  "fallback_policy": {
+    "mode": "fail_closed",
+    "safe_persona_visual_fallback": {
+      "enabled": true,
+      "identity": "xiaoyi",
+      "gender": "female",
+      "style": "anime_illustration",
+      "outfit": "moonfeather_robe",
+      "reference": "assets/persona/seed_avatar.jpg"
+    },
+    "fallback_conditions": {
+      "missing_profile_config": "use_safe_fallback",
+      "missing_wardrobe_config": "use_safe_fallback",
+      "missing_prompt_builder": "use_safe_fallback",
+      "missing_identity_profile": "use_safe_fallback",
+      "missing_style_profile": "use_safe_fallback",
+      "missing_negative_guard": "use_safe_fallback",
+      "provider_unavailable": "use_safe_fallback",
+      "generation_failed": "use_safe_fallback"
+    },
+    "forbidden_fallbacks": [
+      "default_image_prompt_builder",
+      "legacy_image_prompt_builder",
+      "raw_image_prompt_builder",
+      "simple_image_generator",
+      "default_pipeline"
+    ],
+    "error_reporting": {
+      "require_audit_log": true,
+      "fallback_reason_required": true,
+      "debug_fields_populated": true
+    }
+  }
+}

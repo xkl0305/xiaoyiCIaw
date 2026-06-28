@@ -1,0 +1,60 @@
+{
+  "description": "个人所得税专项附加扣除标准（2023年起执行）",
+  "effective_date": "2023-01-01",
+  "source": "《国务院关于提高个人所得税有关专项附加扣除标准的通知》（国发〔2023〕13号）",
+  "deductions": {
+    "children_education": {
+      "name": "子女教育",
+      "amount_per_child_monthly": 2000,
+      "note": "每个子女每月2000元（3岁至博士研究生阶段）",
+      "applicable": "纳税人的子女接受全日制学历教育的相关支出",
+      "parent_split": "父母可选择一方100%扣除，或双方各50%"
+    },
+    "infant_care": {
+      "name": "3岁以下婴幼儿照护",
+      "amount_per_child_monthly": 2000,
+      "note": "每个婴幼儿每月2000元",
+      "applicable": "纳税人照护3岁以下婴幼儿子女的相关支出",
+      "parent_split": "父母可选择一方100%扣除，或双方各50%"
+    },
+    "continuing_education": {
+      "name": "继续教育",
+      "amount_monthly": 400,
+      "amount_yearly_certificate": 3600,
+      "note": "学历（学位）继续教育每月400元（最长48个月）；职业资格证书取得当年3600元",
+      "applicable": "纳税人在中国境内接受学历（学位）继续教育或取得技能人员/专业技术人员职业资格证书"
+    },
+    "housing_loan_interest": {
+      "name": "住房贷款利息",
+      "amount_monthly": 1000,
+      "note": "每月1000元（最长240个月）",
+      "applicable": "纳税人本人或配偶单独或共同使用商业银行或住房公积金个人住房贷款购买中国境内住房发生的首套住房贷款利息支出",
+      "couple_rule": "夫妻双方可选择一方100%扣除"
+    },
+    "housing_rent": {
+      "name": "住房租金",
+      "amount_by_city_tier": {
+        "tier1": {"cities": ["北京", "上海", "广州", "深圳"], "amount_monthly": 1500},
+        "tier2": {"cities_example": ["杭州", "南京", "成都", "武汉", "天津", "重庆", "苏州", "郑州", "西安", "长沙", "青岛", "大连", "宁波", "厦门", "济南", "合肥", "福州"], "amount_monthly": 1100},
+        "tier3": {"description": "其他城市", "amount_monthly": 800}
+      },
+      "note": "与住房贷款利息不可同时享受",
+      "applicable": "纳税人在主要工作城市没有自有住房而发生的住房租金支出"
+    },
+    "elderly_support": {
+      "name": "赡养老人",
+      "amount_monthly": 3000,
+      "note": "独生子女每月3000元；非独生子女与兄弟姐妹分摊每月3000元（每人不超过1500元）",
+      "applicable": "纳税人赡养年满60岁的父母，或子女均已去世的年满60岁的祖父母、外祖父母"
+    },
+    "serious_illness": {
+      "name": "大病医疗",
+      "amount_yearly": "据实扣除",
+      "note": "医保目录范围内自付部分超过15000元的部分，在80000元限额内据实扣除（年度汇算清缴时申报）",
+      "applicable": "纳税人本人或其配偶、未成年子女发生的大病医疗支出"
+    }
+  },
+  "summary": {
+    "max_monthly_deduction_estimate": "独生子女最高约11000元/月（子女教育4000+继续教育400+房贷1000+租房1500+赡养老人3000+婴幼儿照护4000），实际因人而异"
+  }
+}

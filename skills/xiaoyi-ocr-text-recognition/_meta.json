@@ -1,0 +1,9 @@
+{
+  "schema": "exec",
+  "bin": "scripts/ocr_recognition.py",
+  "env": [],
+  "name": "xiaoyi-ocr-text-recognition",
+  "description": "小艺OCR文字识别",
+  "tags": ["image", "vision", "OCR", "recognition"],
+  "autoLoad": true
+}

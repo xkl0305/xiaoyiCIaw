@@ -1,0 +1,161 @@
+{
+  "status": "ok",
+  "cases": {
+    "sneaky": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.99,
+      "confidence_level": "strong",
+      "predicted_visual_type": "sneaky",
+      "mood": "sneaky",
+      "semantic_scene": "peek_scene",
+      "reason": "semantic_scene:peek_scene",
+      "trigger_signals": [
+        "偷偷看看你",
+        "偷偷看你",
+        "偷看你"
+      ],
+      "signals": [
+        "偷偷看看你",
+        "偷偷看你",
+        "偷看你"
+      ],
+      "matched_scene_groups": [
+        "sneaky_peek"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    },
+    "happy": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.586,
+      "confidence_level": "mid_low",
+      "predicted_visual_type": "happy",
+      "mood": "happy",
+      "semantic_scene": "energy_burst_scene",
+      "reason": "semantic_scene:energy_burst_scene",
+      "trigger_signals": [
+        "开心"
+      ],
+      "signals": [
+        "开心"
+      ],
+      "matched_scene_groups": [
+        "happy_direct"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    },
+    "angry": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.586,
+      "confidence_level": "mid_low",
+      "predicted_visual_type": "angry",
+      "mood": "angry",
+      "semantic_scene": "incident_scene",
+      "reason": "semantic_scene:incident_scene",
+      "trigger_signals": [
+        "生气"
+      ],
+      "signals": [
+        "生气"
+      ],
+      "matched_scene_groups": [
+        "angry_direct"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    },
+    "sad": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.766,
+      "confidence_level": "mid_high",
+      "predicted_visual_type": "sad",
+      "mood": "sad",
+      "semantic_scene": "comfort_scene",
+      "reason": "semantic_scene:comfort_scene",
+      "trigger_signals": [
+        "难过",
+        "委屈"
+      ],
+      "signals": [
+        "难过",
+        "委屈"
+      ],
+      "matched_scene_groups": [
+        "sad_direct"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    },
+    "wardrobe": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.99,
+      "confidence_level": "strong",
+      "predicted_visual_type": "playful",
+      "mood": "playful",
+      "semantic_scene": "play_scene",
+      "reason": "semantic_scene:play_scene",
+      "trigger_signals": [
+        "打开衣柜",
+        "衣柜",
+        "穿睡衣",
+        "换睡衣"
+      ],
+      "signals": [
+        "打开衣柜",
+        "衣柜",
+        "穿睡衣",
+        "换睡衣"
+      ],
+      "matched_scene_groups": [
+        "wardrobe_switch"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    },
+    "tired": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "record_only_candidate": false,
+      "confidence": 0.586,
+      "confidence_level": "mid_low",
+      "predicted_visual_type": "tired",
+      "mood": "tired",
+      "semantic_scene": "rest_scene",
+      "reason": "semantic_scene:rest_scene",
+      "trigger_signals": [
+        "累趴了"
+      ],
+      "signals": [
+        "累趴了"
+      ],
+      "matched_scene_groups": [
+        "tired_late_night"
+      ],
+      "matching_mode": "scene_family_plus_direct_mood_plus_wardrobe_fuzzy",
+      "visual_scope": "persona_scene_auto_only",
+      "purpose": "persona_visualization"
+    }
+  }
+}

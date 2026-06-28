@@ -1,0 +1,47 @@
+{
+  "theme_id": "healing_forest",
+  "theme_name": "治愈森林",
+  "version": "1.0",
+  "author": "官方",
+  
+  "nutrition_names": {
+    "calories": {
+      "name": "元气值",
+      "icon": "✨",
+      "description": "这顿饭给你的能量"
+    },
+    "protein": {
+      "name": "肌肉小马达",
+      "icon": "💪",
+      "description": "给肌肉的营养"
+    },
+    "carbs": {
+      "name": "快乐能量站",
+      "icon": "😊",
+      "description": "大脑最爱的燃料"
+    },
+    "fat": {
+      "name": "温柔小油箱",
+      "icon": "🛡️",
+      "description": "给身体的保护层"
+    },
+    "fiber": {
+      "name": "清肠小羽毛",
+      "icon": "🌿",
+      "description": "肠道的小帮手"
+    }
+  },
+  
+  "food_category_names": {
+    "breakfast": "清晨阳光",
+    "lunch": "午后能量",
+    "dinner": "星夜温柔",
+    "snack": "小确幸",
+    "drink": "滋润时光"
+  },
+  
+  "unit_names": {
+    "kcal": "元气",
+    "g": "小份"
+  }
+}

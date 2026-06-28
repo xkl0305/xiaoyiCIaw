@@ -1,0 +1,28 @@
+{
+  "last_outfit_policy": {
+    "enabled": true,
+    "allow_auto_continuity": false,
+    "require_explicit_continuity_request": true,
+    "continuity_keywords": [
+      "还是刚才那身", "继续刚才", "不换", "保持上一套", "就用刚才那个",
+      "刚才那样", "不要换", "保持一样", "继续之前的", "保持不变",
+      "别换衣服", "还穿这个"
+    ],
+    "scene_reset_requests": [
+      "看看你的样子", "展示一下", "让我看看你", "看看全身", "看看造型",
+      "展示一下整体", "露个面看看", "看看形象"
+    ],
+    "rules": {
+      "display_appearance_scene": "no_last_outfit_continuity",
+      "bashful_scene": "no_last_outfit_continuity",
+      "scene_reset_requested": "no_last_outfit_continuity",
+      "user_explicit_continuity": "use_last_outfit",
+      "no_runtime_state": "use_scene_inference",
+      "explicit_outfit_request": "no_last_outfit_continuity"
+    },
+    "storage": {
+      "key": "current_outfit",
+      "source": ".persona_visual/runtime_wardrobe_state.json"
+    }
+  }
+}

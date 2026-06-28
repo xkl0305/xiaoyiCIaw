@@ -1,0 +1,42 @@
+{
+  "timestamp": "2026-05-05T15:13:39.507895",
+  "version": "V111.9",
+  "total_files_fixed": 5,
+  "files": [
+    {
+      "path": "archive/runtime_backups/.backup_20260501_0102/orchestration/durable_task_graph_engine_v6.py",
+      "status": "replaced_with_historical_marker",
+      "HISTORY_BACKUP_BROKEN_SHIM": true,
+      "original_target": "agent_kernel.v56_to_v65_operating_agent",
+      "decision": "archive_only_not_runtime"
+    },
+    {
+      "path": "archive/runtime_backups/.backup_20260501_0102/orchestration/mission_portfolio_manager_v6.py",
+      "status": "replaced_with_historical_marker",
+      "HISTORY_BACKUP_BROKEN_SHIM": true,
+      "original_target": "agent_kernel.v56_to_v65_operating_agent",
+      "decision": "archive_only_not_runtime"
+    },
+    {
+      "path": "archive/runtime_backups/.backup_20260501_0102/infrastructure/capability_supply_chain_v6.py",
+      "status": "replaced_with_historical_marker",
+      "HISTORY_BACKUP_BROKEN_SHIM": true,
+      "original_target": "agent_kernel.v56_to_v65_operating_agent",
+      "decision": "archive_only_not_runtime"
+    },
+    {
+      "path": "archive/runtime_backups/.backup_20260501_0102/execution/device_reality_sync_v6.py",
+      "status": "replaced_with_historical_marker",
+      "HISTORY_BACKUP_BROKEN_SHIM": true,
+      "original_target": "agent_kernel.v56_to_v65_operating_agent",
+      "decision": "archive_only_not_runtime"
+    },
+    {
+      "path": "archive/runtime_backups/.backup_20260501_0102/core/mission/operating_mission_contract_v6.py",
+      "status": "replaced_with_historical_marker",
+      "HISTORY_BACKUP_BROKEN_SHIM": true,
+      "original_target": "agent_kernel.v56_to_v65_operating_agent",
+      "decision": "archive_only_not_runtime"
+    }
+  ]
+}

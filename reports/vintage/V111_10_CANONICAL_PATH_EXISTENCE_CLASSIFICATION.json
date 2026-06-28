@@ -1,0 +1,1093 @@
+{
+  "timestamp": "2026-05-05T15:44:54.835890",
+  "version": "V111.10",
+  "fusion_docs_processed": [
+    "doc_fusion_V104.json",
+    "doc_fusion_V105.1.json",
+    "doc_fusion_V105.2.json",
+    "doc_fusion_V105.3.json",
+    "doc_fusion_V105.4.json",
+    "doc_fusion_V105.json",
+    "doc_fusion_V106.1.json",
+    "doc_fusion_V106.json",
+    "doc_fusion_V107.json",
+    "doc_fusion_V108.1.json",
+    "doc_fusion_V108.2.json",
+    "doc_fusion_V108.json",
+    "doc_fusion_V109.json",
+    "doc_fusion_V11.2.0.json",
+    "doc_fusion_V110.1.json",
+    "doc_fusion_V110_to_V111.4.json",
+    "doc_fusion_V111.json",
+    "doc_fusion_V111_6_migration_closure.json",
+    "doc_fusion_agent_kernel_unification_v20260505.json",
+    "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+    "doc_fusion_capability_marketplace_registry_v20260505.json",
+    "doc_fusion_context_continuity_v20260505.json",
+    "doc_fusion_governance_evidence_gate_v20260505.json",
+    "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+    "doc_fusion_llm_gateway_model_router_v20260505.json",
+    "doc_fusion_performance_cache_token_lazy_v20260505.json",
+    "doc_fusion_persona_visual_identity_v20260505.json",
+    "doc_fusion_report_lifecycle_index_v20260505.json",
+    "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+    "doc_fusion_skill_registry_trigger_router_v20260505.json",
+    "doc_fusion_task_workflow_orchestration_v20260505.json"
+  ],
+  "total_entries": 209,
+  "classification": {
+    "exists_active": [
+      {
+        "path": "infrastructure/mainline_hook.py",
+        "doc": "doc_fusion_V106.1.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/proactive_skill_matcher.py",
+        "doc": "doc_fusion_V106.1.json",
+        "status": "active"
+      },
+      {
+        "path": "scripts/v106_1_context_lazy_skill_quality_gate.py",
+        "doc": "doc_fusion_V106.1.json",
+        "status": "active"
+      },
+      {
+        "path": "docs/V106_1_CONTEXT_LAZY_SKILL_QUALITY_FIX.md",
+        "doc": "doc_fusion_V106.1.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/unified_governance_gate.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_intelligence_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/proactive_skill_matcher.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/skill_profile_generator.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_priority_scorer.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_rule_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/skill_registration_pipeline.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_usage_feedback.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/unified_task_lifecycle_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/unified_system_bus.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/single_runtime_entrypoint.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/unified_continuity_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_observability_ledger.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_connector_gateway.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/context_loading_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/mainline_hook.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/unified_action_adapter_engine.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "scripts/v107_unified_subsystem_fusion_gate.py",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "docs/V107_UNIFIED_SUBSYSTEM_FUSION.md",
+        "doc": "doc_fusion_V107.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/__init__.py",
+        "doc": "doc_fusion_V108.1.json",
+        "status": "active"
+      },
+      {
+        "path": "scripts/v108_2_path_direct_guard_apply.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "scripts/v108_2_path_direct_guard_gate.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/common/__init__.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/common/path_utils.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/common/json_utils.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/offline_runtime_guard.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_model_gateway.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/__init__.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/unified_tool_execution_gateway.py",
+        "doc": "doc_fusion_V108.2.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_runtime_config.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_artifact_router.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_model_gateway.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_monitoring_health.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_release_packaging_manager.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/unified_authorization_privacy_gate.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/unified_tool_execution_gateway.py",
+        "doc": "doc_fusion_V108.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/unified_capability_gateway.py",
+        "doc": "doc_fusion_V109.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/current/",
+        "doc": "doc_fusion_V110.1.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/vintage/",
+        "doc": "doc_fusion_V110.1.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/unified_model_gateway.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/offline_runtime_guard.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "scripts/v108_2_path_direct_guard_gate.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_runtime_hook.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/mainline_hook.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": ".persona_visual/visual_config.json",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": ".persona_visual/visual_request_ledger.jsonl",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "assets/persona/seed_avatar.jpg",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_intent_predictor.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona/visual_mood_mappings.json",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/persona_visual_external_policy.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/persona_visual_budget_guard.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "openclaw.json",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/unified_tool_execution_gateway.py",
+        "doc": "doc_fusion_V110_to_V111.4.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/knowledge_graph/personal_knowledge_graph_v5.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/problem_solving/solution_search/solution_search_orchestrator.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/session_handoff.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/context_capsule.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/memory_recall_bootstrap.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/relationship_memory.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_consistency_checker.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_voice_stabilizer.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_state_machine.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/continuity_summary.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/self_reflection_log.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/emotion_tagged_memory.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_voice_renderer.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/compact_resume_policy.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/context_resume.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/cross_session_mission_continuity_v7.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/handoff_orchestrator.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/daemon_manager.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/connected_adapter_bootstrap.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/heartbeat_executor.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/runtime_probe.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/offline_mode.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/performance/lazy/unified_lazy_loader.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/performance/lazy/unified_lazy_loading_policy.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_prediction_hook.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_runtime_hook.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/visual_persona_renderer.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_intent_predictor.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution_engine.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_self_extension.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/capability_marketplace_v5.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/legacy/capability_marketplace.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/capability_registry.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/schemas/skill_profile_schema.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_policy_gate.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_rule_engine.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_priority_scorer.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_usage_feedback.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_intelligence_engine.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/proactive_skill_matcher.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/world_interface.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/persona_kernel.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/memory_kernel.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/task_graph.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/meta_governance.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/goal_compiler.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/autonomous_loop.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/unified_judge.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_extension.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_discovery.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_router.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/llm_gateway.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/provider_guard.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_registry.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/decision_matrix.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/knowledge",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/legacy_daily_memory",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/vector",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/vector_ops",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/coverage",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/multimodal",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/cross_lingual",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/evidence_gate/audit",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/evidence_gate/closed_loop_verifier",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/evidence_gate/approvals",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/router",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/workflow",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/workflows",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/task_state",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/autonomous_task_runtime",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/task_service",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/adapters/orchestration",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/autonomy",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/personal_agent",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_lifecycle",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_extension",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_acquisition",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/self_evolution_ops",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "active"
+      },
+      {
+        "path": "agent_kernel/__init__.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/world_interface.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/persona_kernel.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/memory_kernel.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/task_graph.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/meta_governance.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/goal_compiler.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/autonomous_loop.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/unified_judge.py",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/adapters/orchestration",
+        "doc": "doc_fusion_agent_kernel_unification_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution_engine.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_self_extension.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_extension.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/capability_marketplace_v5.py",
+        "doc": "doc_fusion_capability_marketplace_registry_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "skills/registry",
+        "doc": "doc_fusion_capability_marketplace_registry_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/schemas/skill_profile_schema.py",
+        "doc": "doc_fusion_capability_marketplace_registry_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/compact_resume_policy.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/context_resume.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/cross_session_mission_continuity_v7.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/handoff_orchestrator.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "governance/context/anti_context_amnesia_guard.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/memory_recall_bootstrap.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/session_handoff.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/continuity/context_capsule.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "governance",
+        "doc": "doc_fusion_governance_evidence_gate_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "approvals",
+        "doc": "doc_fusion_governance_evidence_gate_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/current",
+        "doc": "doc_fusion_governance_evidence_gate_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/vintage",
+        "doc": "doc_fusion_governance_evidence_gate_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory",
+        "doc": "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context",
+        "doc": "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "intelligence/knowledge_memory/knowledge",
+        "doc": "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/llm_gateway.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_router.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_discovery.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/provider_guard.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm_gateway/model_registry.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/llm/schemas.py",
+        "doc": "doc_fusion_llm_gateway_model_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/performance/lazy/unified_lazy_loader.py",
+        "doc": "doc_fusion_performance_cache_token_lazy_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "infrastructure/performance/lazy/unified_lazy_loading_policy.py",
+        "doc": "doc_fusion_performance_cache_token_lazy_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "cache",
+        "doc": "doc_fusion_performance_cache_token_lazy_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_prediction_hook.py",
+        "doc": "doc_fusion_persona_visual_identity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/visual_persona_renderer.py",
+        "doc": "doc_fusion_persona_visual_identity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "memory_context/persona_runtime/persona_visual_runtime_hook.py",
+        "doc": "doc_fusion_persona_visual_identity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/persona_kernel.py",
+        "doc": "doc_fusion_persona_visual_identity_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/REPORT_INDEX.json",
+        "doc": "doc_fusion_report_lifecycle_index_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/current",
+        "doc": "doc_fusion_report_lifecycle_index_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "reports/vintage",
+        "doc": "doc_fusion_report_lifecycle_index_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/daemon_manager.py",
+        "doc": "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/connected_adapter_bootstrap.py",
+        "doc": "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/heartbeat_executor.py",
+        "doc": "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/runtime_probe.py",
+        "doc": "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/runtime_supervisor/offline_mode.py",
+        "doc": "doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/skill_policy_gate.py",
+        "doc": "doc_fusion_skill_registry_trigger_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "platform_layer/capability_registry/schemas/skill_profile_schema.py",
+        "doc": "doc_fusion_skill_registry_trigger_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "orchestration/skill_runtime/router",
+        "doc": "doc_fusion_skill_registry_trigger_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "skills/registry",
+        "doc": "doc_fusion_skill_registry_trigger_router_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/task_service/__init__.py",
+        "doc": "doc_fusion_task_workflow_orchestration_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/workflow",
+        "doc": "doc_fusion_task_workflow_orchestration_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "execution/task_runtime/task_state",
+        "doc": "doc_fusion_task_workflow_orchestration_v20260505.json",
+        "status": "active"
+      },
+      {
+        "path": "core/agent_kernel/task_graph.py",
+        "doc": "doc_fusion_task_workflow_orchestration_v20260505.json",
+        "status": "active"
+      }
+    ],
+    "shim_compat": [],
+    "legacy_readonly": [
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_lifecycle/capability_marketplace.py",
+        "doc": "doc_fusion_capability_marketplace_registry_v20260505.json",
+        "status": "legacy_readonly"
+      }
+    ],
+    "external_or_not_in_small_package": [],
+    "missing_needs_review": [
+      {
+        "path": "reports/CURRENT_RELEASE_INDEX.json",
+        "doc": "doc_fusion_V110.1.json",
+        "status": "not_found"
+      },
+      {
+        "path": "infrastructure/performance/lazy/lazy_compat_bridge.py",
+        "doc": "doc_fusion_V111_6_migration_closure.json",
+        "status": "not_found"
+      },
+      {
+        "path": "infrastructure/self_evolution_ops/preference_evolution.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution/skill_acquisition.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "evolution_lab/capability_lifecycle/capability_evolution/skill_graduation.py",
+        "doc": "doc_fusion_capability_evolution_lifecycle_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "memory_context/context/interactive_context_evolution.py",
+        "doc": "doc_fusion_context_continuity_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "core/retrieval",
+        "doc": "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "core/vector",
+        "doc": "doc_fusion_knowledge_memory_retrieval_v20260505.json",
+        "status": "not_found"
+      },
+      {
+        "path": "core/performance",
+        "doc": "doc_fusion_performance_cache_token_lazy_v20260505.json",
+        "status": "not_found"
+      }
+    ]
+  }
+}

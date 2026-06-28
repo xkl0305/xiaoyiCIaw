@@ -1,0 +1,25 @@
+[profile]
+profile_name = "always_connected_enterprise"
+ONLINE_MODE = false
+CONNECTED_RUNTIME_ALWAYS_ON = true
+CONNECTED_RUNTIME_SCOPE = "local_private_only"
+OFFLINE_MODE = true
+NO_EXTERNAL_API = true
+ALLOW_NETWORK = false
+ALLOW_PRIVATE_NETWORK = true
+NO_REAL_PAYMENT = true
+NO_REAL_SEND = true
+ZERO_COST_MODE = true
+ZERO_EXTERNAL_MODE = true
+LOCAL_MODEL_ONLY = true
+LOCAL_VECTOR_ONLY = true
+REQUIRE_SIDE_EFFECT_PROOF = true
+PROOF_ONE_TIME_USE = true
+RUNTIME_SECRET_NOT_PACKAGED = true
+RUNTIME_SECRET_FAIL_CLOSED = true
+HIGH_RISK_REQUIRES_APPROVAL = true
+ACTION_GUARD_MANDATORY = true
+OBSERVABILITY_BACKEND = "sqlite_wal"
+PROVIDER_FALLBACK_DOMAIN = "local_only"
+
+CONNECTIVITY_MEANING = "local_private_runtime_always_connected_no_external_egress"

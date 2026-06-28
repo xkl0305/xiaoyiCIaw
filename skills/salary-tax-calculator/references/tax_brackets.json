@@ -1,0 +1,35 @@
+{
+  "description": "中国个人所得税综合所得适用税率表（年度/月度）",
+  "effective_date": "2019-01-01",
+  "source": "《中华人民共和国个人所得税法》",
+  "annual": {
+    "note": "年度综合所得（居民个人）",
+    "deduction_standard": 60000,
+    "brackets": [
+      {"level": 1, "taxable_max": 36000, "rate": 0.03, "quick_deduction": 0},
+      {"level": 2, "taxable_max": 144000, "rate": 0.10, "quick_deduction": 2520},
+      {"level": 3, "taxable_max": 300000, "rate": 0.20, "quick_deduction": 16920},
+      {"level": 4, "taxable_max": 420000, "rate": 0.25, "quick_deduction": 31920},
+      {"level": 5, "taxable_max": 660000, "rate": 0.30, "quick_deduction": 52920},
+      {"level": 6, "taxable_max": 960000, "rate": 0.35, "quick_deduction": 85920},
+      {"level": 7, "taxable_max": null, "rate": 0.45, "quick_deduction": 181920}
+    ]
+  },
+  "monthly": {
+    "note": "月度预扣预缴（非居民个人/单独计税场景）",
+    "deduction_standard": 5000,
+    "brackets": [
+      {"level": 1, "taxable_max": 3000, "rate": 0.03, "quick_deduction": 0},
+      {"level": 2, "taxable_max": 12000, "rate": 0.10, "quick_deduction": 210},
+      {"level": 3, "taxable_max": 25000, "rate": 0.20, "quick_deduction": 1410},
+      {"level": 4, "taxable_max": 35000, "rate": 0.25, "quick_deduction": 2660},
+      {"level": 5, "taxable_max": 55000, "rate": 0.30, "quick_deduction": 4410},
+      {"level": 6, "taxable_max": 80000, "rate": 0.35, "quick_deduction": 7160},
+      {"level": 7, "taxable_max": null, "rate": 0.45, "quick_deduction": 15160}
+    ]
+  },
+  "year_end_bonus": {
+    "note": "全年一次性奖金单独计税（2027年底前有效）",
+    "method": "bonus_amount / 12 → 按月税率表查找税率和速算扣除数 → bonus_amount × 税率 - 速算扣除数"
+  }
+}

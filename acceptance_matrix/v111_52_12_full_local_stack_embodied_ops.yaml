@@ -1,0 +1,3 @@
+version: V111.52.12_FULL_LOCAL_STACK_EMBODIED_OPS_FINAL
+scope: [local_model_stack_binding, local_provider_execution_adapters, embodied_screen_agent_core, observability_traces, retention_policy, rootless_runtime_templates]
+checks: [local_llm_command_adapter_success, local_embedding_command_adapter_success, local_reranker_adapter_present, local_ocr_command_adapter_success, non_local_endpoint_rejected, embodied_dry_run_blocks_without_screen_adapter, trace_span_events_written, retention_policy_redacts_secret, package_clean]

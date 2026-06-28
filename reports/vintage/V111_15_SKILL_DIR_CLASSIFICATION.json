@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-05-05T21:04:43.844116",
+  "version": "V111.15",
+  "skill_infrastructure": [
+    "skills/registry",
+    "skills/runtime",
+    "skills/policies",
+    "skills/lifecycle"
+  ],
+  "classified": {
+    "skills/habit-flow-skill": {
+      "status": "external",
+      "has_skil_md": false
+    },
+    "skills/scientific-slides": {
+      "status": "external",
+      "has_skil_md": false
+    },
+    "skills/dknowc-official-doc-writer": {
+      "status": "external",
+      "has_skil_md": false
+    },
+    "skills/video-generation-skill": {
+      "status": "external",
+      "has_skil_md": false
+    }
+  },
+  "notes": "Subdirs without SKILL.md marked as external/disabled_external. Infrastructure dirs (registry/runtime/policies/lifecycle) marked as skill_infrastructure."
+}

@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-05-05T21:04:43.844116",
+  "version": "V111.15",
+  "no_external_api_active": true,
+  "no_external_api_source": {
+    "env_NO_EXTERNAL_API": false,
+    "env_OFFLINE_MODE": false,
+    "cfg_NO_EXTERNAL_API": true,
+    "cfg_OFFLINE_MODE": true
+  },
+  "blocked_by_openclaw": true,
+  "generation_status": "prerequisites_not_met",
+  "confidence_sources": {
+    "scene_detection_confidence": 0.6,
+    "intent_prediction_confidence": 0,
+    "final_confidence": 0.6,
+    "confidence_threshold": 0.82,
+    "above_threshold": false
+  },
+  "openclaw_config_NO_EXTERNAL_API": true,
+  "openclaw_config_OFFLINE_MODE": true,
+  "notes": "When NO_EXTERNAL_API=true, bridge returns blocked_by_openclaw_no_external_api. Must explicitly narrow-exception to call seedream."
+}

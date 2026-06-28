@@ -1,0 +1,123 @@
+{
+  "status": "ok",
+  "bus_status": {
+    "status": "ok",
+    "enabled": true,
+    "hook_dir": "/home/sandbox/.openclaw/workspace/.openclaw/hooks",
+    "manifest_exists": true,
+    "pre_reply_exists": true,
+    "post_reply_exists": true,
+    "event_ledger": "/home/sandbox/.openclaw/workspace/.openclaw/hook_state/hook_events.jsonl",
+    "recent_event_count": 13
+  },
+  "pre": {
+    "status": "ok",
+    "event": "pre_reply",
+    "enabled": true,
+    "hook_file": ".openclaw/hooks/pre_reply.py",
+    "called": true,
+    "result": {
+      "visual_checked": true,
+      "phase": "pre_reply",
+      "auto_generation_candidate": true,
+      "auto_generation_executed": false,
+      "generation_status": "precheck_only",
+      "mood": "victorious",
+      "semantic_scene": "celebration_scene",
+      "confidence": 0.556,
+      "confidence_level": "mid_low",
+      "trigger_source": "assistant_message",
+      "selected_text": "搞定了 🎉",
+      "emotion_signature": [
+        "胜利感",
+        "高光时刻",
+        "昂扬"
+      ],
+      "expression_hints": [
+        "自然表达"
+      ]
+    }
+  },
+  "post1": {
+    "status": "ok",
+    "event": "post_reply",
+    "enabled": true,
+    "hook_file": ".openclaw/hooks/post_reply.py",
+    "called": true,
+    "result": {
+      "visual_checked": true,
+      "phase": "post_reply",
+      "auto_generation_candidate": true,
+      "auto_generation_executed": false,
+      "generation_status": "dry_run_ready",
+      "generated_image_path": null,
+      "fallback_image_path": null,
+      "mood": "victorious",
+      "semantic_scene": "celebration_scene",
+      "confidence": 0.556,
+      "confidence_level": "mid_low",
+      "trigger_source": "assistant_message",
+      "selected_text": "搞定了 🎉",
+      "emotion_signature": [
+        "胜利感",
+        "高光时刻",
+        "昂扬"
+      ],
+      "expression_hints": [
+        "自然表达"
+      ],
+      "generation": {
+        "status": "dry_run_ready",
+        "prompt": "Reference image is mandatory: use the supplied seed avatar as the ONLY character identity source. Preserve the same character identity, face, recognizable silhouette, signature traits, and outfit language from the seed avatar. This is persona-scene auto-generation only, not generic image generation. Do not invent a new character and do not override identity with text appearance prose. Mood: victorious. Semantic scene: celebration_scene. Pose: small victory pose, confident grin. Primary action: 小幅庆祝，像刚刚拿下一个难点. Expression: 自信带笑、轻微得意. Body state: 上半身更舒展、动作有扬起感. Activity/background: small victory pose with warm celebratory lighting. Background detail: warm celebratory light with tidy environment. Props/supporting elements: 点状彩带光粒、完成提示卡. Camera/framing: dynamic three-quarter view. Palette: gold, bright blue, white. Energy 70/100, confidence 70/100, balanced calm glow. Visual language: Clean premium anime/illustration style, vertical composition, expressive but safe, cinematic lighting, no readable text overlays, no watermark, no logo.. Keywords: won, solved, release. Scene evidence: 搞定了. No readable text overlays, no watermark, no logo. Outfit guidance: galaxy-themed flowing gown, starry fabric, identity unchanged. Emotion signature: 胜利感, 高光时刻, 昂扬. Expression hints: 自然表达. Preserve the exact same identity as the seed avatar. No readable text, no watermark.",
+        "negative_prompt": "different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror",
+        "reference_image": "/home/sandbox/.openclaw/workspace/assets/persona/outfits/20260507_230940_fr_galaxy_gown.jpg",
+        "outfit": {
+          "prompt_suffix": "galaxy-themed flowing gown, starry fabric, identity unchanged",
+          "auto_safe": true,
+          "outfit_id": "galaxy_gown",
+          "auto_mode": true,
+          "reference_image": "assets/persona/outfits/20260507_230940_fr_galaxy_gown.jpg",
+          "manual_only": false
+        },
+        "missing_seed_avatar": false,
+        "trigger_source": "assistant_message",
+        "real_generation_ready": false
+      }
+    }
+  },
+  "post2": {
+    "status": "ok",
+    "event": "post_reply",
+    "enabled": true,
+    "hook_file": ".openclaw/hooks/post_reply.py",
+    "called": true,
+    "result": {
+      "visual_checked": true,
+      "phase": "post_reply",
+      "auto_generation_candidate": true,
+      "auto_generation_executed": false,
+      "generation_status": "deduped_skip",
+      "generated_image_path": null,
+      "fallback_image_path": null,
+      "mood": "victorious",
+      "semantic_scene": "celebration_scene",
+      "confidence": 0.556,
+      "confidence_level": "mid_low",
+      "trigger_source": "assistant_message",
+      "selected_text": "搞定了 🎉",
+      "emotion_signature": [
+        "胜利感",
+        "高光时刻",
+        "昂扬"
+      ],
+      "expression_hints": [
+        "自然表达"
+      ],
+      "generation": {
+        "status": "deduped_skip",
+        "reason": "duplicate_within_window",
+        "dedupe_key": "c59cc850863e3bcc46423b67"
+      }
+    }
+  }
+}

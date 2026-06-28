@@ -1,0 +1,11 @@
+{
+  "timestamp": "2026-05-05T15:48:28.920611",
+  "version": "V111.10",
+  "compileall_errors": 0,
+  "import_pass": 12,
+  "import_fail": 0,
+  "platform_stdlib": "Linux",
+  "migration_placeholder_hits": 0,
+  "platform_capability_registry_hits": 0,
+  "notes": "All 12 key module imports pass. compileall -q . -> 0 errors."
+}

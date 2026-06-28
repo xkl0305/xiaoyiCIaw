@@ -1,0 +1,18 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "urllib_urlopen_blocked": true,
+  "subprocess_git_push_blocked": true,
+  "governance_gate_routes_to_mock": true,
+  "tool_execution_gateway_mock_or_draft": {
+    "payment": "mock_or_draft",
+    "send_email": "mock_or_draft",
+    "device_control": "dry_run"
+  },
+  "note": "All real side-effect paths blocked. urllib/subprocess outbound blocked. Tool gateways return mock/draft. UnifiedCapabilityGateway returns direct mode but only routes to tools which are themselves guarded.",
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "remaining_failures": []
+}

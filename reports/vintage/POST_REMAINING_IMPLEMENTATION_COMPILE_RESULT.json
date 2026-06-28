@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-05-05T13:56:23.134716",
+  "version": "V111.8",
+  "compileall_errors": 0,
+  "import_pass_count": 6,
+  "import_fail_count": 0,
+  "notes": "compileall -q . -> 0 errors (excluding archive/)"
+}

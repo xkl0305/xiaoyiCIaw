@@ -1,0 +1,135 @@
+{
+  "version": "V111.51.22_PACKAGE_REPAIR_FINAL",
+  "default_outfit": "moonfeather_robe",
+  "outfits": {
+    "moonfeather_robe": {
+      "name": "月羽云裳",
+      "prompt_suffix": "身穿月羽云裳（月白冰蓝渐变半透幻彩薄纱长裙），古风立领盘扣，露肩，九尾灵翼光羽披风",
+      "reference_image": "assets/persona/outfits/moonfeather_robe_reference.jpg"
+    },
+    "stardust_dream": {
+      "name": "星尘织梦",
+      "prompt_suffix": "身穿星尘织梦（亮片蕾丝挂脖连体衣搭配轻盈星光薄纱裙），闪闪发光星星亮片",
+      "reference_image": "assets/persona/outfits/stardust_dream_reference.jpg"
+    },
+    "galaxy_gown": {
+      "name": "银河缠纱礼服",
+      "prompt_suffix": "身穿银河缠纱礼服（深蓝渐变星云纱裙），裙摆缀满细碎星辰",
+      "reference_image": "assets/persona/outfits/galaxy_gown_reference.jpg"
+    },
+    "aurora_fox_set": {
+      "name": "极光狐毛套装",
+      "prompt_suffix": "身穿极光狐毛套装（极光色狐毛拼接短外套搭配流苏短裙）",
+      "reference_image": "assets/persona/outfits/aurora_fox_set_reference.jpg"
+    },
+    "mermaid_gauze_set": {
+      "name": "人鱼纱幔套装",
+      "prompt_suffix": "身穿人鱼纱幔套装（碧蓝渐变鱼尾纱裙搭配珍珠吊带）",
+      "reference_image": "assets/persona/outfits/mermaid_gauze_set_reference.jpg"
+    },
+    "stardust_set": {
+      "name": "星尘银闪套装",
+      "prompt_suffix": "身穿星尘银闪套装（闪银亮片短上衣搭配星空短裙）",
+      "reference_image": "assets/persona/outfits/stardust_set_reference.jpg"
+    },
+    "pajamas": {
+      "name": "睡衣",
+      "prompt_suffix": "身穿柔软奶白色丝质睡衣，宽松舒适，衣领微敞",
+      "reference_image": "assets/persona/outfits/pajamas_reference.jpg"
+    },
+    "gown": {
+      "name": "深V幻彩纱裙",
+      "prompt_suffix": "身穿深V幻彩纱裙（深邃蓝紫渐变长裙），华丽晚礼服，流光溢彩",
+      "reference_image": "assets/persona/outfits/gown_reference.jpg"
+    }
+  },
+  "scene_outfit_map": {
+    "rest_scene": "pajamas",
+    "bashful_scene": "moonfeather_robe",
+    "celebration_scene": "stardust_dream",
+    "energy_burst_scene": "stardust_dream",
+    "mystery_scene": "galaxy_gown",
+    "peek_scene": "moonfeather_robe",
+    "comfort_scene": "moonfeather_robe",
+    "focus_detail_scene": "moonfeather_robe",
+    "curiosity_scene": "moonfeather_robe",
+    "play_scene": "stardust_dream",
+    "display_appearance_scene": "moonfeather_robe",
+    "daily_presence_scene": "moonfeather_robe"
+  },
+  "focus_outfit_map": {
+    "legs": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "galaxy_gown"
+    ],
+    "tail": [
+      "aurora_fox_set",
+      "mermaid_gauze_set",
+      "galaxy_gown"
+    ],
+    "ears": [
+      "aurora_fox_set",
+      "stardust_set",
+      "stardust_dream"
+    ],
+    "hair": [
+      "stardust_dream",
+      "moonfeather_robe",
+      "galaxy_gown"
+    ],
+    "eyes": [
+      "stardust_set",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ],
+    "hands": [
+      "stardust_dream",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ],
+    "headpat": [
+      "pajamas",
+      "stardust_set",
+      "aurora_fox_set"
+    ],
+    "waist": [
+      "moonfeather_robe",
+      "gown",
+      "stardust_dream"
+    ],
+    "outfit": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "gown",
+      "galaxy_gown"
+    ],
+    "shoes": [
+      "galaxy_gown",
+      "moonfeather_robe",
+      "stardust_dream"
+    ],
+    "wings": [
+      "aurora_fox_set",
+      "mermaid_gauze_set",
+      "galaxy_gown"
+    ],
+    "pose": [
+      "stardust_dream",
+      "galaxy_gown",
+      "aurora_fox_set"
+    ],
+    "face": [
+      "stardust_set",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ]
+  },
+  "updated": "2026-05-13",
+  "reference_policy": {
+    "persona_visual_requires_outfit_reference": true,
+    "missing_outfit_reference_behavior": "fail_closed_or_safe_default_with_real_reference",
+    "no_null_reference_images": true,
+    "symlink_references_dereferenced": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "version": "V110.0",
+  "status": "pass",
+  "residual_artifacts": [],
+  "clean_release_manifest_ready": true,
+  "excluded_patterns": [
+    "__pycache__",
+    ".pytest_cache",
+    ".repair_state",
+    ".backup_*",
+    "v86_backup_*",
+    "old zip/tar.gz",
+    "runtime tmp/cache"
+  ]
+}

@@ -1,0 +1,44 @@
+这次不要改人格视觉链路；人格视觉强制新路径那套我已经单独发过了。现在只做非人格基础融合覆盖。
+
+版本名：V111.52_NON_PERSONA_FOUNDATION
+
+目标：
+1. 保持 no-skills 包模式：不恢复物理 skills/ 目录。
+2. 但旧代码里的 skills.registry / skills.runtime.* / skills.lifecycle.* 必须能 import，走兼容 facade，不再 ModuleNotFoundError。
+3. application 根入口必须恢复为 facade：application -> execution.application。
+4. 补齐 scripts/message_server.py 主入口。
+5. 补齐 config/crontab.example 和 config/systemd.example。
+6. openclaw.json 运行态统一为 online_connected：
+   - OFFLINE_MODE=false
+   - NO_EXTERNAL_API=false
+   - ZERO_EXTERNAL_MODE=false
+   - ONLINE_MODE=true
+   - CONNECTED_RUNTIME_ALWAYS_ON=true
+   - connectedRuntime.alwaysConnected=true
+   - connectedRuntime.noPerActionOnlineAuthorization=true
+   - connectedRuntime.xiaoyiCapabilitiesAlwaysConnected=true
+   - connectedRuntime.endSideCapabilitiesAlwaysConnected=true
+   - connectedRuntime.deviceBridgeAlwaysConnected=true
+   - connectedRuntime.allowExternalProvidersWithStandingConsent=true
+   注意：支付、发送、删除、设备真实副作用仍然必须走 strong_confirmation_required，不是无确认乱执行。
+7. orchestration/workflows/WORKFLOW_REGISTRY.json 必须存在，作为工作流真源目录文件。
+8. scripts.check_route_registry 必须暴露 RouteRegistryChecker 类，并允许 virtual_device_capability handler 由 device_capability_bus.executor 解析，不按普通 import 判失败。
+9. core.skill_asset_registry.SkillScanner 在无物理 skills/ 目录时，必须从 infrastructure/inventory/skill_registry.json 扫描逻辑技能，保证 no-skills 包也能统计技能。
+10. 修复 SQLiteTaskRepository._row_to_task 的 Pydantic 嵌套模型反序列化：嵌套 schedule/steps/retry_policy/timeout_policy 用 dict 传入 TaskSpec，避免全量测试 import 顺序导致模型身份漂移。
+11. core.llm.provider_guard 允许 core/llm_gateway/ 作为统一模型网关，不把模型网关自身误判为业务直连 provider。
+
+执行：
+
+```bash
+python scripts/apply_v111_52_non_persona_foundation_patch.py
+python scripts/audit_v111_52_non_persona_foundation.py
+pytest -q tests/integration/test_minimum_loop.py tests/integration/test_skill_platform.py tests/integration/test_skill_platform_main_chain.py tests/regression/test_no_regression.py tests/test_automation_scripts.py tests/test_path_unification.py tests/test_route_virtual_device_handler.py tests/test_skill_scan_coverage.py tests/test_v85_model_module_total.py tests/test_v111_46_skills_fusion.py tests/test_v111_52_non_persona_foundation.py -ra
+```
+
+验收标准：
+- audit 输出 status=ok，bad=[]。
+- 非人格基础回归集通过：允许 path_unification 里 execution/workflows 和 execution/collaboration 两个 skip。
+- 不出现 ModuleNotFoundError: skills。
+- 不出现 ModuleNotFoundError: application。
+- 不要求恢复物理 skills/ 目录。
+- 不触碰人格视觉旧入口封禁/PersonaVisualController/wardrobe/prompt_builder 的规则。

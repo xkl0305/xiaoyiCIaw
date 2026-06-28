@@ -1,0 +1,191 @@
+{
+  "timestamp": "2026-05-05T15:42:46.628732",
+  "version": "V111.10",
+  "total_moves": 26,
+  "pairs_processed": 6,
+  "archive_base": "legacy_readonly/V111_10_old_data_duplicates",
+  "moves": [
+    {
+      "old_path": "memory/2026-04-28.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-04-28.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-04-28.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/2026-04-30.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-04-30.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-04-30.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/2026-05-04.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-05-04.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-05-04.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/2026-05-01.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-05-01.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-05-01.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/2026-04-29.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-04-29.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-04-29.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/2026-05-02.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-05-02.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-05-02.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "memory/README_MIGRATED.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    },
+    {
+      "old_path": "memory/2026-05-03.md",
+      "canonical_path": "intelligence/knowledge_memory/legacy_daily_memory/2026-05-03.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/memory/2026-05-03.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/skill_intelligence_engine.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/skill_intelligence_engine.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/skill_intelligence_engine.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/solution_search_audit.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/solution_search_audit.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/solution_search_audit.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/runtime_commit_barrier_bridge.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/runtime_commit_barrier_bridge.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/runtime_commit_barrier_bridge.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/offline_audit.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/offline_audit.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/offline_audit.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/runtime_bus.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/runtime_bus.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/runtime_bus.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "governance/audit/README_MIGRATED.md",
+      "canonical_path": "governance/evidence_gate/audit/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    },
+    {
+      "old_path": "governance/audit/proactive_skill_matcher.jsonl",
+      "canonical_path": "governance/evidence_gate/audit/proactive_skill_matcher.jsonl",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/governance/audit/proactive_skill_matcher.jsonl",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "approvals/README_MIGRATED.md",
+      "canonical_path": "governance/evidence_gate/approvals/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/approvals/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    },
+    {
+      "old_path": "orchestration/router/SKILL_ROUTER.json",
+      "canonical_path": "orchestration/skill_runtime/router/SKILL_ROUTER.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/router/SKILL_ROUTER.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/router/SKILL_ROUTER_V2.json",
+      "canonical_path": "orchestration/skill_runtime/router/SKILL_ROUTER_V2.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/router/SKILL_ROUTER_V2.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/router/ECOMMERCE_ROUTER.json",
+      "canonical_path": "orchestration/skill_runtime/router/ECOMMERCE_ROUTER.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/router/ECOMMERCE_ROUTER.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/router/README_MIGRATED.md",
+      "canonical_path": "orchestration/skill_runtime/router/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/router/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    },
+    {
+      "old_path": "orchestration/workflow/PHASE3_GROUP2_SUMMARY.md",
+      "canonical_path": "execution/task_runtime/workflow/PHASE3_GROUP2_SUMMARY.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflow/PHASE3_GROUP2_SUMMARY.md",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/workflow/README_MIGRATED.md",
+      "canonical_path": "execution/task_runtime/workflow/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflow/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    },
+    {
+      "old_path": "orchestration/workflows/WORKFLOW_REGISTRY.json",
+      "canonical_path": "execution/task_runtime/workflows/WORKFLOW_REGISTRY.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflows/WORKFLOW_REGISTRY.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/workflows/INTEGRATION_REGISTRY.json",
+      "canonical_path": "execution/task_runtime/workflows/INTEGRATION_REGISTRY.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflows/INTEGRATION_REGISTRY.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/workflows/WORKFLOW_CONFIG.json",
+      "canonical_path": "execution/task_runtime/workflows/WORKFLOW_CONFIG.json",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflows/WORKFLOW_CONFIG.json",
+      "action": "archive_only",
+      "reason": "New dir already has identical file (same name)"
+    },
+    {
+      "old_path": "orchestration/workflows/README_MIGRATED.md",
+      "canonical_path": "execution/task_runtime/workflows/README_MIGRATED.md",
+      "archive_path": "legacy_readonly/V111_10_old_data_duplicates/orchestration/workflows/README_MIGRATED.md",
+      "action": "copy_then_archive",
+      "reason": "Copy to new dir first (new dir missing this file)"
+    }
+  ]
+}

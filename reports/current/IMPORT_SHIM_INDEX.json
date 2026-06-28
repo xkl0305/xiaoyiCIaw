@@ -1,0 +1,247 @@
+[
+  {
+    "shim_path": "memory/__init__.py",
+    "target_module": "intelligence.knowledge_memory.legacy_daily_memory",
+    "type": "file"
+  },
+  {
+    "shim_path": "governance/audit/feedback.py",
+    "target_module": "governance.evidence_gate.audit.feedback",
+    "type": "file"
+  },
+  {
+    "shim_path": "governance/audit/execution_audit_ledger.py",
+    "target_module": "governance.evidence_gate.audit.execution_audit_ledger",
+    "type": "file"
+  },
+  {
+    "shim_path": "governance/audit/summarizer.py",
+    "target_module": "governance.evidence_gate.audit.summarizer",
+    "type": "file"
+  },
+  {
+    "shim_path": "governance/audit/explainer.py",
+    "target_module": "governance.evidence_gate.audit.explainer",
+    "type": "file"
+  },
+  {
+    "shim_path": "governance/audit/__init__.py",
+    "target_module": "governance.evidence_gate.audit",
+    "type": "file"
+  },
+  {
+    "shim_path": "approvals/__init__.py",
+    "target_module": "governance.evidence_gate.approvals",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/skill_router.py",
+    "target_module": "orchestration.skill_runtime.router.skill_router",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/router.py",
+    "target_module": "orchestration.skill_runtime.router.router",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/weights.py",
+    "target_module": "orchestration.skill_runtime.router.weights",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/rrf.py",
+    "target_module": "orchestration.skill_runtime.router.rrf",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/__init__.py",
+    "target_module": "orchestration.skill_runtime.router",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/routing/golden_path_regression.py",
+    "target_module": "orchestration.skill_runtime.router.routing.golden_path_regression",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/routing/route_impact_analysis.py",
+    "target_module": "orchestration.skill_runtime.router.routing.route_impact_analysis",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/router/routing/__init__.py",
+    "target_module": "orchestration.skill_runtime.router.routing",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/parallel_policy.py",
+    "target_module": "execution.task_runtime.workflow.parallel_policy",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/parallel_executor.py",
+    "target_module": "execution.task_runtime.workflow.parallel_executor",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/workflow_event_projection.py",
+    "target_module": "execution.task_runtime.workflow.workflow_event_projection",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/workflow_registry.py",
+    "target_module": "execution.task_runtime.workflow.workflow_registry",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/dependency_resolver.py",
+    "target_module": "execution.task_runtime.workflow.dependency_resolver",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/workflow_replay.py",
+    "target_module": "execution.task_runtime.workflow.workflow_replay",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/INTEGRATION_TEST.py",
+    "target_module": "execution.task_runtime.workflow.INTEGRATION_TEST",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/workflow_template_loader.py",
+    "target_module": "execution.task_runtime.workflow.workflow_template_loader",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/workflow_engine.py",
+    "target_module": "execution.task_runtime.workflow.workflow_engine",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/dag_builder.py",
+    "target_module": "execution.task_runtime.workflow.dag_builder",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/__init__.py",
+    "target_module": "execution.task_runtime.workflow",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/state_machine.py",
+    "target_module": "execution.task_runtime.workflow.state_machine",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflow/VERIFICATION_EXAMPLES.py",
+    "target_module": "execution.task_runtime.workflow.VERIFICATION_EXAMPLES",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/branching.py",
+    "target_module": "execution.task_runtime.workflows.branching",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/code_audit.py",
+    "target_module": "execution.task_runtime.workflows.code_audit",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/factory_comparison.py",
+    "target_module": "execution.task_runtime.workflows.factory_comparison",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/partner_selection.py",
+    "target_module": "execution.task_runtime.workflows.partner_selection",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/resource_paths.py",
+    "target_module": "execution.task_runtime.workflows.resource_paths",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/influencer_cooperation.py",
+    "target_module": "execution.task_runtime.workflows.influencer_cooperation",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/file_organization.py",
+    "target_module": "execution.task_runtime.workflows.file_organization",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/commission_design.py",
+    "target_module": "execution.task_runtime.workflows.commission_design",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/leader_selection.py",
+    "target_module": "execution.task_runtime.workflows.leader_selection",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/cooperation_negotiation.py",
+    "target_module": "execution.task_runtime.workflows.cooperation_negotiation",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/workflow_base.py",
+    "target_module": "execution.task_runtime.workflows.workflow_base",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/preview.py",
+    "target_module": "execution.task_runtime.workflows.preview",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/ecommerce_product_analysis.py",
+    "target_module": "execution.task_runtime.workflows.ecommerce_product_analysis",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/compensation.py",
+    "target_module": "execution.task_runtime.workflows.compensation",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/store_launch.py",
+    "target_module": "execution.task_runtime.workflows.store_launch",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/parallel_steps.py",
+    "target_module": "execution.task_runtime.workflows.parallel_steps",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/__init__.py",
+    "target_module": "execution.task_runtime.workflows",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/human_confirm.py",
+    "target_module": "execution.task_runtime.workflows.human_confirm",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/live_stream_operation.py",
+    "target_module": "execution.task_runtime.workflows.live_stream_operation",
+    "type": "file"
+  },
+  {
+    "shim_path": "orchestration/workflows/ecommerce_operation.py",
+    "target_module": "execution.task_runtime.workflows.ecommerce_operation",
+    "type": "file"
+  },
+  {
+    "shim_path": "infrastructure/optimization/performance/performance_monitor.py",
+    "target_module": "infrastructure.monitoring.performance_monitor",
+    "type": "file"
+  }
+]

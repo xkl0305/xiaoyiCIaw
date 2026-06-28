@@ -1,0 +1,45 @@
+{
+  "version": "V111.22",
+  "status": "applied",
+  "applied_at": "2026-05-06T22:27:06",
+  "v11121_sanitize": {
+    "status": "ok",
+    "rc": 0
+  },
+  "duplicate_pair_checks": [
+    {
+      "pair": "core/agent_kernel/autonomy <= core/agent_kernel/autonomy/autonomy",
+      "equivalent": true
+    },
+    {
+      "pair": "core/agent_kernel/personal_agent <= core/agent_kernel/personal_agent/personal_agent",
+      "equivalent": true
+    }
+  ],
+  "archived_paths": [
+    "core/agent_kernel/autonomy/autonomy",
+    "core/agent_kernel/personal_agent/personal_agent",
+    "governance/evidence_gate/approvals/legacy_conflicts",
+    "governance/evidence_gate/audit/legacy_conflicts",
+    "orchestration/skill_runtime/router/legacy_conflicts",
+    "orchestration/skill_runtime/router/routing/legacy_conflicts"
+  ],
+  "persona_visual": {
+    "scene_trigger_mode": "semantic_scene",
+    "dailyAutoGenerateLimit": 100,
+    "cooldownTurns": 0,
+    "seedAvatarPath": "assets/persona/seed_avatar.jpg",
+    "identitySource": "seed_avatar_image_only"
+  },
+  "new_fusion_docs": [
+    "governance/fused_modules/doc_fusion_persona_visual_semantic_autotrigger_v20260506.json",
+    "governance/fused_modules/doc_fusion_agent_kernel_duplicate_package_cleanup_v20260506.json"
+  ],
+  "notes": [
+    "人格视觉自动触发主链保留为语义场景/心情触发，不依赖显式“出图”关键词。",
+    "头像 assets/persona/seed_avatar.jpg 仍是唯一人格视觉种子图。",
+    "nested duplicate packages 已归档，不直接删除。",
+    "unused legacy_conflicts 目录已归档，减少活动架构噪音。"
+  ],
+  "archive_root": "archive/v11122_total_overlay/V111_22_20260506_222706"
+}

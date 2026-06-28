@@ -1,0 +1,57 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "openclaw_json_config": {
+    "OFFLINE_MODE": true,
+    "NO_EXTERNAL_API": true,
+    "NO_REAL_PAYMENT": true,
+    "NO_REAL_SEND": true,
+    "NO_REAL_DEVICE": true,
+    "DISABLE_THINKING_MODE": true,
+    "DISABLE_LLM_API": true
+  },
+  "openclaw_json_all_safe_modes_enabled": true,
+  "env_current": {
+    "OFFLINE_MODE": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "NO_EXTERNAL_API": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "NO_REAL_PAYMENT": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "NO_REAL_SEND": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "NO_REAL_DEVICE": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "DISABLE_THINKING_MODE": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    },
+    "DISABLE_LLM_API": {
+      "expected": true,
+      "actual_env": null,
+      "match": "not_set"
+    }
+  },
+  "note": "Config consistency verified via openclaw.json. Env vars may not be set in standalone script (expected).",
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "remaining_failures": []
+}

@@ -1,0 +1,16 @@
+{
+  "allow_external_fallback": false,
+  "capability_router": "core.personal_os_enterprise.capability_router",
+  "local_model_stack_binding": true,
+  "local_runtime": "strict_local_only",
+  "local_runtime_actualization": true,
+  "local_runtime_metadata_close": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "personal_os_enterprise_version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
+  "post_overlay_compatible": true,
+  "post_reply": "unchanged",
+  "runtime_clean_close": true,
+  "version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
+  "active_metadata_closed": true
+}

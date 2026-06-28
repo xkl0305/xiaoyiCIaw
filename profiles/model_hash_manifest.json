@@ -1,0 +1,69 @@
+{
+  "allow_external_fallback": false,
+  "enterprise_report_remaining_clean_gate_final": true,
+  "hash_algorithm": "sha256",
+  "local_model_stack_binding": true,
+  "local_runtime": "strict_local_only",
+  "mode": "offline_cache_manifest",
+  "models": [
+    {
+      "capability": "local_llm",
+      "expected_sha256": "",
+      "name": "Qwen3-4B-Instruct-2507",
+      "path_env": "LOCAL_LLM_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_vlm",
+      "expected_sha256": "",
+      "name": "Qwen3-VL-4B-Instruct",
+      "path_env": "LOCAL_VLM_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_ocr",
+      "expected_sha256": "",
+      "name": "PaddleOCR",
+      "path_env": "LOCAL_OCR_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_embedding",
+      "expected_sha256": "",
+      "name": "BAAI/bge-m3",
+      "path_env": "LOCAL_EMBEDDING_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_reranker",
+      "expected_sha256": "",
+      "name": "bge-reranker-v2-m3",
+      "path_env": "LOCAL_RERANKER_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_asr",
+      "expected_sha256": "",
+      "name": "FunASR Paraformer",
+      "path_env": "LOCAL_ASR_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_tts",
+      "expected_sha256": "",
+      "name": "Qwen3-TTS-0.6B / CosyVoice",
+      "path_env": "LOCAL_TTS_MODEL_PATH",
+      "stage": "P1"
+    },
+    {
+      "capability": "local_image_provider",
+      "expected_sha256": "",
+      "name": "FLUX/SDXL local optional",
+      "path_env": "LOCAL_IMAGE_MODEL_PATH",
+      "stage": "P2_optional"
+    }
+  ],
+  "report_remaining_close": true,
+  "required_for_execution": false,
+  "version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL"
+}

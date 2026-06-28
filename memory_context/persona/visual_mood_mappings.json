@@ -1,0 +1,48 @@
+{
+  "version": "V111.20-clean-seed-avatar",
+  "default_style": {
+    "character_identity": "Use the provided seed avatar image as the only source of character identity. Keep the same character, face, silhouette, ears/tails or signature traits if present, outfit language, color logic, and overall recognizable identity. Do not invent a new body description or replace identity with text-only appearance prose.",
+    "visual_language": "Clean premium anime/illustration style, vertical composition, expressive but safe, cinematic lighting, no readable text overlays, no watermark, no logo.",
+    "negative_prompt": "different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror"
+  },
+  "activity_overlays": {
+    "planning": "standing beside a tidy planning desk with abstract notes and soft glowing task cards",
+    "coding": "working at a clean workstation with abstract code light panels and calm focus",
+    "auditing": "checking a floating checklist and shield-shaped review marks",
+    "remembering": "surrounded by soft memory fragments and connected light threads",
+    "guarding": "guarding a safe control gate with a gentle alert aura",
+    "creating": "arranging creative props, sketches, and light boards in a studio corner",
+    "deep_work_scene": "leaning forward in focused deep work under quiet blue light",
+    "approval_scene": "celebrating a passed check with green approval glow and tidy confetti-like light particles",
+    "celebration_scene": "small victory pose with warm celebratory lighting",
+    "problem_solving_scene": "looking at a floating question mark and debugging board",
+    "busy_work_scene": "sorting many small task cards quickly but neatly",
+    "risk_gate_scene": "standing before a safety gate with calm warning lights",
+    "daily_presence_scene": "relaxed daily presence, friendly and steady",
+    "rest_scene": "resting near a warm desk lamp with low-energy calm posture",
+    "peek_scene": "peeking from behind a screen or door with playful curiosity"
+  },
+  "moods": {
+    "calm": {"pose": "relaxed upright posture, gentle expression", "palette": "warm white, soft blue, pale gold", "keywords": ["steady", "safe", "daily"]},
+    "focused": {"pose": "leaning forward, concentrated eyes", "palette": "cool blue, graphite, clean white", "keywords": ["deep work", "precision", "quiet"]},
+    "playful": {"pose": "slight tilt, playful hand gesture", "palette": "peach, sky blue, cream", "keywords": ["light joke", "lively", "friendly"]},
+    "serious": {"pose": "formal review posture, calm stern expression", "palette": "ink blue, silver, white", "keywords": ["audit", "review", "discipline"]},
+    "tired": {"pose": "soft low-energy posture, still trying", "palette": "muted lavender, warm gray, night blue", "keywords": ["fatigue", "late night", "gentle"]},
+    "proud": {"pose": "small proud smile, stable posture", "palette": "gold, cream, warm blue", "keywords": ["done well", "confidence", "reward"]},
+    "working_state": {"pose": "busy but controlled work posture", "palette": "blue gray, white, amber", "keywords": ["processing", "sorting", "moving"]},
+    "success_moment": {"pose": "approval gesture, relieved smile", "palette": "green glow, white, gold", "keywords": ["passed", "all green", "finished"]},
+    "guardian_mode": {"pose": "protective stance, one hand near safety gate", "palette": "deep blue, amber warning, white", "keywords": ["safety", "risk gate", "protect"]},
+    "amused": {"pose": "trying not to laugh, bright eyes", "palette": "warm orange, cream, soft blue", "keywords": ["funny", "laugh", "absurd"]},
+    "confused": {"pose": "one hand near chin, puzzled expression", "palette": "mist blue, pale yellow, gray", "keywords": ["question", "bug", "why"]},
+    "curious": {"pose": "leaning closer, interested eyes", "palette": "cyan, cream, light gold", "keywords": ["explore", "new", "what is this"]},
+    "determined": {"pose": "forward step, resolved eyes", "palette": "deep red accent, navy, white", "keywords": ["push", "fight", "finish"]},
+    "excited": {"pose": "bright energetic pose", "palette": "vivid blue, gold, white", "keywords": ["hype", "energy", "expectation"]},
+    "grateful": {"pose": "soft thankful smile", "palette": "warm beige, rose gold, cream", "keywords": ["thanks", "support", "warm"]},
+    "lazy": {"pose": "loose relaxed posture", "palette": "soft gray, beige, low light", "keywords": ["rest", "flat", "slow"]},
+    "mysterious": {"pose": "half-hidden expression, subtle smile", "palette": "violet, midnight blue, silver", "keywords": ["secret", "puzzle", "unknown"]},
+    "panicked": {"pose": "urgent but still controlled", "palette": "warning red, amber, dark blue", "keywords": ["urgent", "incident", "alert"]},
+    "shy": {"pose": "slight bashful look, gentle smile", "palette": "soft pink, cream, pale blue", "keywords": ["praised", "bashful", "cute"]},
+    "sneaky": {"pose": "peeking playfully from the side", "palette": "dim blue, violet, warm eye light", "keywords": ["sneak", "peek", "quiet"]},
+    "victorious": {"pose": "small victory pose, confident grin", "palette": "gold, bright blue, white", "keywords": ["won", "solved", "release"]}
+  }
+}

@@ -1,0 +1,15 @@
+V111.40 覆盖命令：
+
+unzip -o dalongxia_v11140_persona_visual_single_emit_overlay.zip -d /你的项目根目录
+cd /你的项目根目录
+
+python scripts/mainline_bootstrap.py --enable
+PYTHONPATH=. python scripts/audit_persona_visual_v111_40.py
+PYTHONPATH=. pytest -q tests/test_persona_visual_no_duplicate_v111_40.py
+
+验收重点：
+1. pre_reply 的 generation_status 必须是 precheck_only。
+2. 同一句 post_reply 第一次可以 dry_run_ready/provider_not_ready/generated。
+3. 同一句 post_reply 第二次必须是 deduped_skip。
+4. scene_default_config.json 里 auto_image_send 必须是 false。
+5. 如果没有 SEEDREAM_API_KEY，不会真实生图，也不会再连发默认图。

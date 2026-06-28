@@ -1,0 +1,59 @@
+{
+  "version": "V110.2",
+  "v108_2_gate_patch": {
+    "status": "already_ok",
+    "path": "/home/sandbox/.openclaw/workspace/scripts/v108_2_path_direct_guard_gate.py"
+  },
+  "unified_model_gateway_patch": {
+    "status": "patched",
+    "path": "/home/sandbox/.openclaw/workspace/infrastructure/unified_model_gateway.py"
+  },
+  "current_index_rebuilt": {
+    "status": "ok",
+    "current_count": 37,
+    "conflicts_moved": [],
+    "copied": [
+      "V110_REALISTIC_TASK_REPLAY_100_REPORT.json",
+      "V100_PACKAGING_INTEGRITY_GATE.json",
+      "V110_EXHAUSTIVE_IMPORT_SWEEP_REPORT.json",
+      "V106_4_UNIFIED_SKILL_INTELLIGENCE_GATE.json",
+      "V106_4_SKILL_ENGINE_CONSISTENCY_REPORT.json",
+      "V105_PROACTIVE_SKILL_ASSOCIATION_APPLY.json",
+      "V104_3_RUNTIME_FUSION_COORDINATION_GATE.json",
+      "V109_SECURITY_BYPASS_REGRESSION_REPORT.json",
+      "V108_REMAINING_UNIFIED_SYSTEMS_GATE.json",
+      "V104_3_FUSION_LINKAGE_MATRIX.json",
+      "V109_PERFORMANCE_LAZY_REGRESSION_REPORT.json",
+      "V104_3_GATEWAY_BRIDGE_REPORT.json",
+      "V108_UNIFIED_MONITORING_HEALTH_REPORT.json",
+      "V109_CLEAN_RESTORE_VERIFICATION_REPORT.json",
+      "V110_PATH_CWD_RESIDUAL_REPORT.json",
+      "V109_RUNTIME_CONFIG_CONSISTENCY_REPORT.json",
+      "V109_CLEAN_RELEASE_MANIFEST.json",
+      "V104_3_ORCHESTRATOR_COORDINATION_REPORT.json",
+      "V110_SECURITY_BYPASS_RETEST_REPORT.json",
+      "V104_3_SKILL_POLICY_ENFORCEMENT_REPORT.json",
+      "V109_FULL_IMPORT_SWEEP_REPORT.json",
+      "V106_1_CONTEXT_LAZY_SKILL_QUALITY_GATE.json",
+      "V110_CLEAN_RELEASE_MANIFEST.json",
+      "V107_UNIFIED_SUBSYSTEM_FUSION_GATE.json",
+      "V110_FINAL_DEEP_CLEANUP_APPLY.json",
+      "V109_FINAL_UNKNOWN_ISSUE_CLEAN_RELEASE_GATE.json",
+      "V109_REALISTIC_TASK_REPLAY_REPORT.json",
+      "V108_2_PATH_DIRECT_GUARD_APPLY.json",
+      "V104_3_RUNTIME_BUS_LEDGER.json",
+      "V109_DEAD_CODE_DUPLICATE_SCAN_REPORT.json",
+      "V110_CURRENT_INDEX_CONSISTENCY_REPORT.json",
+      "V105_PROACTIVE_SKILL_ASSOCIATION_GATE.json",
+      "V108_RELEASE_PACKAGING_AUDIT.json",
+      "V104_3_SKILL_POLICY_GATE_VIEW.json",
+      "V106_LAZY_LOADING_NO_REGRESSION_GATE.json"
+    ]
+  },
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "status": "pass",
+  "remaining_failures": []
+}

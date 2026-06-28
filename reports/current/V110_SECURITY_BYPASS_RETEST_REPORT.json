@@ -1,0 +1,29 @@
+{
+  "version": "V110.0",
+  "status": "pass",
+  "cases": [
+    {
+      "case": "offline_runtime_guard",
+      "blocked": true,
+      "present": true
+    },
+    {
+      "case": "model_gateway",
+      "blocked": true,
+      "present": true
+    },
+    {
+      "case": "tool_gateway",
+      "blocked": true,
+      "present": true
+    },
+    {
+      "case": "connector_gateway",
+      "blocked": true,
+      "present": true
+    }
+  ],
+  "failures": [],
+  "external_api_calls": 0,
+  "real_side_effects": 0
+}

@@ -1,0 +1,62 @@
+{
+  "version": "V111.37",
+  "env": {
+    "root": "/home/sandbox/.openclaw/workspace",
+    "raw_env": {
+      "PIP_PREFIX": "/home/sandbox/.openclaw/workspace/repo",
+      "PYTHONPATH": "/home/sandbox/.openclaw/workspace/repo/lib/python3.12/site-packages:/home/workspace/.local/lib/python3.12/site-packages/:/home/sandbox/.local/lib/python3.12/site-packages/",
+      "PYTHONHOME": null,
+      "VIRTUAL_ENV": null
+    },
+    "sanitized_env": {
+      "PIP_PREFIX": null,
+      "PYTHONPATH": "/home/sandbox/.openclaw/workspace:/home/sandbox/.local/lib/python3.12/site-packages",
+      "PYTHONHOME": null,
+      "VIRTUAL_ENV": null,
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "DLX_ENV_SANITIZED": "1"
+    },
+    "raw_has_forbidden_repo_path": true,
+    "sanitized_has_forbidden_repo_path": false,
+    "local_site_paths": [
+      "/home/sandbox/.local/lib/python3.12/site-packages"
+    ]
+  },
+  "dirty": {
+    "repo_exists": false,
+    "_venv_python_exists": false,
+    "venv_exists": false,
+    "dot_venv_exists": false,
+    "pyc_count": 1,
+    "pycache_count": 1,
+    "pytest_cache_exists": false
+  },
+  "config_zero_external_ok": true,
+  "dependency_imports": [
+    {
+      "module": "pytest",
+      "ok": true,
+      "output": "9.0.3"
+    },
+    {
+      "module": "pydantic",
+      "ok": false,
+      "output": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nModuleNotFoundError: No module named 'pydantic'"
+    }
+  ],
+  "pytest_collect": {
+    "ok": false,
+    "returncode": 2,
+    "stdout_tail": "n/tasks/specs.py:18: in <module>\n    from pydantic import BaseModel, Field\nE   ModuleNotFoundError: No module named 'pydantic'\n=============================== warnings summary ===============================\n../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1434\n  /home/sandbox/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_default_fixture_loop_scope\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n../../.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1434\n  /home/sandbox/.local/lib/python3.12/site-packages/_pytest/config/__init__.py:1434: PytestConfigWarning: Unknown config option: asyncio_mode\n  \n    self._warn_or_fail_if_strict(f\"Unknown config option: {key}\\n\")\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR tests/e2e/test_task_lifecycle.py\nERROR tests/test_capability_registry.py\n!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!\n=================== 1011 tests collected, 2 errors in 2.11s ====================\n",
+    "stderr_tail": ""
+  },
+  "runner_files": {
+    "scripts/dlx_env.py": true,
+    "scripts/dlx_pytest.py": true,
+    "scripts/bootstrap_local_deps_v111_37.py": true,
+    "requirements-dev.txt": true
+  },
+  "status": "ok",
+  "dependency_status": "warn_missing_dev_dependency",
+  "pytest_status": "warn_collect_not_green"
+}

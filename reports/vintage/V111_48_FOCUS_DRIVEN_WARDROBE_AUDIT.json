@@ -1,0 +1,14 @@
+{
+  "status": "ok",
+  "version": "V111_48_FOCUS_DRIVEN_WARDROBE",
+  "focus_target": "legs",
+  "outfit_id": "moonfeather_robe",
+  "outfit_choice_source": "focus_recommend",
+  "reference_priority_source": "outfit_image",
+  "reference_image": "/home/sandbox/.openclaw/workspace/assets/persona/outfits/月羽云裳_reference.jpg",
+  "generated_image_target_count": 1,
+  "focus_generation_model": "seedream5.0_image_to_image",
+  "focus_prompt_enhanced": true,
+  "focus_prompt_style": "scene_enhanced",
+  "focus_generation_planned": true
+}

@@ -1,0 +1,92 @@
+{
+  "focus_outfit_map": {
+    "legs": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "galaxy_gown"
+    ],
+    "tail": [
+      "aurora_fox_set",
+      "mermaid_gauze_set",
+      "galaxy_gown"
+    ],
+    "ears": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "galaxy_gown"
+    ],
+    "hair": [
+      "stardust_dream",
+      "moonfeather_robe",
+      "galaxy_gown"
+    ],
+    "eyes": [
+      "stardust_set",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ],
+    "hands": [
+      "stardust_dream",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ],
+    "headpat": [
+      "pajamas",
+      "stardust_set",
+      "aurora_fox_set"
+    ],
+    "waist": [
+      "moonfeather_robe",
+      "gown",
+      "stardust_dream"
+    ],
+    "outfit": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "gown",
+      "galaxy_gown"
+    ],
+    "shoes": [
+      "galaxy_gown",
+      "moonfeather_robe",
+      "stardust_dream"
+    ],
+    "wings": [
+      "aurora_fox_set",
+      "mermaid_gauze_set",
+      "galaxy_gown"
+    ],
+    "pose": [
+      "stardust_dream",
+      "galaxy_gown",
+      "aurora_fox_set"
+    ],
+    "face": [
+      "stardust_set",
+      "moonfeather_robe",
+      "aurora_fox_set"
+    ],
+    "upper_body_outfit_detail": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "gown"
+    ],
+    "back_outfit_tail_detail": [
+      "aurora_fox_set",
+      "mermaid_gauze_set",
+      "galaxy_gown"
+    ],
+    "heel": [
+      "galaxy_gown",
+      "moonfeather_robe",
+      "stardust_dream"
+    ],
+    "safe_general_outfit_detail": [
+      "moonfeather_robe",
+      "stardust_dream",
+      "galaxy_gown"
+    ]
+  },
+  "version": "V111.51.14",
+  "updated": "2026-05-12"
+}

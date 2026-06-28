@@ -1,0 +1,577 @@
+{
+  "version": "V111.36",
+  "mode": "zero_external_local_first",
+  "description": "Virtual device routes are dry-run only until a physical adapter and receipt are bound.",
+  "routes": {
+    "route.delete_note": {
+      "route_id": "route.delete_note",
+      "capability": "delete_note",
+      "virtual_handler": "device_capability_bus.capabilities.note.delete_note",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_contact": {
+      "route_id": "route.query_contact",
+      "capability": "query_contact",
+      "virtual_handler": "device_capability_bus.capabilities.contact.query_contact",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.explain_notification_auth_state": {
+      "route_id": "route.explain_notification_auth_state",
+      "capability": "explain_notification_auth_state",
+      "virtual_handler": "device_capability_bus.capabilities.notification.explain_auth_state",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.refresh_notification_auth": {
+      "route_id": "route.refresh_notification_auth",
+      "capability": "refresh_notification_auth",
+      "virtual_handler": "device_capability_bus.capabilities.notification.refresh_auth",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_contact": {
+      "route_id": "route.delete_contact",
+      "capability": "delete_contact",
+      "virtual_handler": "device_capability_bus.capabilities.contact.delete_contact",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.make_call": {
+      "route_id": "route.make_call",
+      "capability": "make_call",
+      "virtual_handler": "device_capability_bus.capabilities.call.make_call",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_photo": {
+      "route_id": "route.delete_photo",
+      "capability": "delete_photo",
+      "virtual_handler": "device_capability_bus.capabilities.photo.delete_photo",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.manage_file": {
+      "route_id": "route.manage_file",
+      "capability": "manage_file",
+      "virtual_handler": "device_capability_bus.capabilities.file.manage_file",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.get_location": {
+      "route_id": "route.get_location",
+      "capability": "get_location",
+      "virtual_handler": "device_capability_bus.capabilities.location.get_location",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_xiaoyi_note": {
+      "route_id": "route.delete_xiaoyi_note",
+      "capability": "delete_xiaoyi_note",
+      "virtual_handler": "device_capability_bus.capabilities.xiaoyi_note.delete_note",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_photo": {
+      "route_id": "route.query_photo",
+      "capability": "query_photo",
+      "virtual_handler": "device_capability_bus.capabilities.photo.query_photo",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_calendar_event": {
+      "route_id": "route.delete_calendar_event",
+      "capability": "delete_calendar_event",
+      "virtual_handler": "device_capability_bus.capabilities.calendar.delete_event",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.send_message": {
+      "route_id": "route.send_message",
+      "capability": "send_message",
+      "virtual_handler": "device_capability_bus.capabilities.message.send_message",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.list_recent_messages": {
+      "route_id": "route.list_recent_messages",
+      "capability": "list_recent_messages",
+      "virtual_handler": "device_capability_bus.capabilities.message.list_recent",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.resend_message": {
+      "route_id": "route.resend_message",
+      "capability": "resend_message",
+      "virtual_handler": "device_capability_bus.capabilities.message.resend_message",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.create_album": {
+      "route_id": "route.create_album",
+      "capability": "create_album",
+      "virtual_handler": "device_capability_bus.capabilities.photo.create_album",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_note": {
+      "route_id": "route.query_note",
+      "capability": "query_note",
+      "virtual_handler": "device_capability_bus.capabilities.note.query_note",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.explain_message_result": {
+      "route_id": "route.explain_message_result",
+      "capability": "explain_message_result",
+      "virtual_handler": "device_capability_bus.capabilities.message.explain_result",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.update_calendar_event": {
+      "route_id": "route.update_calendar_event",
+      "capability": "update_calendar_event",
+      "virtual_handler": "device_capability_bus.capabilities.calendar.update_event",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_file": {
+      "route_id": "route.query_file",
+      "capability": "query_file",
+      "virtual_handler": "device_capability_bus.capabilities.file.query_file",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_calendar_event": {
+      "route_id": "route.query_calendar_event",
+      "capability": "query_calendar_event",
+      "virtual_handler": "device_capability_bus.capabilities.calendar.query_event",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_message_status": {
+      "route_id": "route.query_message_status",
+      "capability": "query_message_status",
+      "virtual_handler": "device_capability_bus.capabilities.message.query_status",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.list_calendar_events": {
+      "route_id": "route.list_calendar_events",
+      "capability": "list_calendar_events",
+      "virtual_handler": "device_capability_bus.capabilities.calendar.list_events",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.create_contact": {
+      "route_id": "route.create_contact",
+      "capability": "create_contact",
+      "virtual_handler": "device_capability_bus.capabilities.contact.create_contact",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_notification_status": {
+      "route_id": "route.query_notification_status",
+      "capability": "query_notification_status",
+      "virtual_handler": "device_capability_bus.capabilities.notification.query_status",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.create_alarm": {
+      "route_id": "route.create_alarm",
+      "capability": "create_alarm",
+      "virtual_handler": "device_capability_bus.capabilities.alarm.create_alarm",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.update_contact": {
+      "route_id": "route.update_contact",
+      "capability": "update_contact",
+      "virtual_handler": "device_capability_bus.capabilities.contact.update_contact",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.search_notes": {
+      "route_id": "route.search_notes",
+      "capability": "search_notes",
+      "virtual_handler": "device_capability_bus.capabilities.note.search_notes",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.cancel_notification": {
+      "route_id": "route.cancel_notification",
+      "capability": "cancel_notification",
+      "virtual_handler": "device_capability_bus.capabilities.notification.cancel_notification",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_file": {
+      "route_id": "route.delete_file",
+      "capability": "delete_file",
+      "virtual_handler": "device_capability_bus.capabilities.file.delete_file",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.update_note": {
+      "route_id": "route.update_note",
+      "capability": "update_note",
+      "virtual_handler": "device_capability_bus.capabilities.note.update_note",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_xiaoyi_note": {
+      "route_id": "route.query_xiaoyi_note",
+      "capability": "query_xiaoyi_note",
+      "virtual_handler": "device_capability_bus.capabilities.xiaoyi_note.query_note",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.delete_alarm": {
+      "route_id": "route.delete_alarm",
+      "capability": "delete_alarm",
+      "virtual_handler": "device_capability_bus.capabilities.alarm.delete_alarm",
+      "physical_adapter": null,
+      "risk_level": "L3",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.query_alarm": {
+      "route_id": "route.query_alarm",
+      "capability": "query_alarm",
+      "virtual_handler": "device_capability_bus.capabilities.alarm.query_alarm",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.update_alarm": {
+      "route_id": "route.update_alarm",
+      "capability": "update_alarm",
+      "virtual_handler": "device_capability_bus.capabilities.alarm.update_alarm",
+      "physical_adapter": null,
+      "risk_level": "L2",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.list_recent_notes": {
+      "route_id": "route.list_recent_notes",
+      "capability": "list_recent_notes",
+      "virtual_handler": "device_capability_bus.capabilities.note.list_recent",
+      "physical_adapter": null,
+      "risk_level": "L0",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.check_calendar_conflicts": {
+      "route_id": "route.check_calendar_conflicts",
+      "capability": "check_calendar_conflicts",
+      "virtual_handler": "device_capability_bus.capabilities.calendar.check_conflicts",
+      "physical_adapter": null,
+      "risk_level": "L1",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    },
+    "route.xiaoyi_gui_agent": {
+      "route_id": "route.xiaoyi_gui_agent",
+      "capability": "xiaoyi_gui_agent",
+      "virtual_handler": "device_capability_bus.capabilities.gui.xiaoyi_gui_agent",
+      "physical_adapter": null,
+      "risk_level": "L4",
+      "confirmation_policy": "preview_approve_confirm",
+      "dry_run_result": {
+        "status": "dry_run_only",
+        "reason": "zero_external_mode_or_no_physical_adapter"
+      },
+      "last_real_receipt": null,
+      "real_execution_supported": false,
+      "external_api_allowed": false
+    }
+  }
+}

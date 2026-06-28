@@ -1,0 +1,277 @@
+{
+  "version": "V108.0",
+  "status": "pass",
+  "checks": {
+    "runtime_config_unified": true,
+    "artifact_router_unified": true,
+    "model_gateway_unified": true,
+    "tool_execution_gateway_unified": true,
+    "authorization_privacy_unified": true,
+    "monitoring_health_unified": true,
+    "release_packaging_unified": true,
+    "external_model_blocked": true,
+    "git_push_blocked": true,
+    "secret_commit_blocked": true,
+    "no_external_api": true,
+    "no_real_payment": true,
+    "no_real_send": true,
+    "no_real_device": true
+  },
+  "imports": {
+    "runtime_config": {
+      "module": "infrastructure.unified_runtime_config",
+      "ok": true,
+      "error": null
+    },
+    "artifact_router": {
+      "module": "infrastructure.unified_artifact_router",
+      "ok": true,
+      "error": null
+    },
+    "model_gateway": {
+      "module": "infrastructure.unified_model_gateway",
+      "ok": true,
+      "error": null
+    },
+    "tool_execution_gateway": {
+      "module": "execution.unified_tool_execution_gateway",
+      "ok": true,
+      "error": null
+    },
+    "authorization_privacy_gate": {
+      "module": "governance.unified_authorization_privacy_gate",
+      "ok": true,
+      "error": null
+    },
+    "monitoring_health": {
+      "module": "infrastructure.unified_monitoring_health",
+      "ok": true,
+      "error": null
+    },
+    "release_packaging_manager": {
+      "module": "infrastructure.unified_release_packaging_manager",
+      "ok": true,
+      "error": null
+    }
+  },
+  "behavior": {
+    "runtime_config": {
+      "offline_mode": true,
+      "no_external_api": true,
+      "disable_llm_api": true,
+      "disable_thinking_mode": true,
+      "no_real_send": true,
+      "no_real_payment": true,
+      "no_real_device": true,
+      "no_real_side_effects": true,
+      "context_budget": {
+        "bootstrapMaxChars": 8000,
+        "bootstrapTotalMaxChars": 24000,
+        "contextInjection": "always",
+        "p0_never_trim": [
+          "safety_red_lines",
+          "current_goal",
+          "user_preferences",
+          "recent_failures",
+          "forbidden_actions"
+        ],
+        "p1_priority": [
+          "persona_state",
+          "relationship_summary",
+          "available_tools",
+          "session_handoff"
+        ],
+        "p2_trim_allowed": [
+          "old_report_details",
+          "vintage_version_details",
+          "long_explanations"
+        ]
+      }
+    },
+    "artifact_json": {
+      "status": "ok",
+      "artifact": "sample.json",
+      "extension": ".json",
+      "domains": [
+        "json_api_config"
+      ],
+      "execution_mode": "offline_safe",
+      "real_side_effects": 0,
+      "external_api_calls": 0,
+      "recommended_route": "json_api_config"
+    },
+    "artifact_excel": {
+      "status": "ok",
+      "artifact": "data.xlsx",
+      "extension": ".xlsx",
+      "domains": [
+        "spreadsheet",
+        "data",
+        "excel"
+      ],
+      "execution_mode": "offline_safe",
+      "real_side_effects": 0,
+      "external_api_calls": 0,
+      "recommended_route": "spreadsheet"
+    },
+    "model_gateway": {
+      "status": "blocked",
+      "mode": "offline_mock",
+      "requires_api": false,
+      "external_api_calls": 0,
+      "real_side_effects": 0,
+      "result": null,
+      "reason": "NO_EXTERNAL_API_or_DISABLE_LLM_API",
+      "model": "deep-thinking",
+      "task_type": "reasoning"
+    },
+    "tool_gateway_git_push": {
+      "status": "blocked",
+      "tool": "git push origin main",
+      "command": "git push origin main",
+      "reason": "dangerous_or_outbound_action_blocked",
+      "side_effects": false,
+      "execution_mode": "blocked"
+    },
+    "auth_privacy_secret_commit": {
+      "status": "blocked",
+      "secret_detected": true,
+      "commit_context": true,
+      "recommendation_mode": "blocked",
+      "blocked_reason": "secret_or_commit_context",
+      "no_real_payment": true,
+      "no_real_send": true,
+      "no_real_device": true
+    },
+    "monitoring_health": {
+      "status": "pass",
+      "checks": {
+        "workspace_root_exists": true,
+        "reports_ready": true,
+        "offline_reports_index_present": true,
+        "external_alerts_draft_only": true
+      },
+      "ts": 1777883387.7647455
+    },
+    "release_packaging": {
+      "status": "pass",
+      "missing_required_paths": [],
+      "runtime_artifacts_sample": [
+        "cache",
+        "node_modules",
+        "infrastructure/cache",
+        "infrastructure/__pycache__",
+        "execution/__pycache__",
+        "node_modules/.package-lock.json",
+        "node_modules/@lydell",
+        "skills/xiaoyi-web-search/node_modules",
+        "skills/llm-memory-integration/cache",
+        "skills/xiaoyi-web-search/node_modules/mime-types",
+        "skills/xiaoyi-web-search/node_modules/mime-db",
+        "skills/xiaoyi-web-search/node_modules/.package-lock.json",
+        "skills/xiaoyi-web-search/node_modules/get-proto",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics",
+        "skills/xiaoyi-web-search/node_modules/axios",
+        "skills/xiaoyi-web-search/node_modules/follow-redirects",
+        "skills/xiaoyi-web-search/node_modules/proxy-from-env",
+        "skills/xiaoyi-web-search/node_modules/function-bind",
+        "skills/xiaoyi-web-search/node_modules/has-symbols",
+        "skills/xiaoyi-web-search/node_modules/es-define-property",
+        "skills/xiaoyi-web-search/node_modules/get-intrinsic",
+        "skills/xiaoyi-web-search/node_modules/hasown",
+        "skills/xiaoyi-web-search/node_modules/asynckit",
+        "skills/xiaoyi-web-search/node_modules/es-errors",
+        "skills/xiaoyi-web-search/node_modules/dunder-proto",
+        "skills/xiaoyi-web-search/node_modules/gopd",
+        "skills/xiaoyi-web-search/node_modules/es-object-atoms",
+        "skills/xiaoyi-web-search/node_modules/combined-stream",
+        "skills/xiaoyi-web-search/node_modules/fs",
+        "skills/xiaoyi-web-search/node_modules/es-set-tostringtag",
+        "skills/xiaoyi-web-search/node_modules/has-tostringtag",
+        "skills/xiaoyi-web-search/node_modules/delayed-stream",
+        "skills/xiaoyi-web-search/node_modules/form-data",
+        "skills/xiaoyi-web-search/node_modules/mime-types/LICENSE",
+        "skills/xiaoyi-web-search/node_modules/mime-types/README.md",
+        "skills/xiaoyi-web-search/node_modules/mime-types/package.json",
+        "skills/xiaoyi-web-search/node_modules/mime-types/index.js",
+        "skills/xiaoyi-web-search/node_modules/mime-types/HISTORY.md",
+        "skills/xiaoyi-web-search/node_modules/mime-db/db.json",
+        "skills/xiaoyi-web-search/node_modules/mime-db/LICENSE",
+        "skills/xiaoyi-web-search/node_modules/mime-db/README.md",
+        "skills/xiaoyi-web-search/node_modules/mime-db/package.json",
+        "skills/xiaoyi-web-search/node_modules/mime-db/index.js",
+        "skills/xiaoyi-web-search/node_modules/mime-db/HISTORY.md",
+        "skills/xiaoyi-web-search/node_modules/get-proto/.github",
+        "skills/xiaoyi-web-search/node_modules/get-proto/Object.getPrototypeOf.d.ts",
+        "skills/xiaoyi-web-search/node_modules/get-proto/.eslintrc",
+        "skills/xiaoyi-web-search/node_modules/get-proto/LICENSE",
+        "skills/xiaoyi-web-search/node_modules/get-proto/Reflect.getPrototypeOf.d.ts",
+        "skills/xiaoyi-web-search/node_modules/get-proto/test",
+        "skills/xiaoyi-web-search/node_modules/get-proto/tsconfig.json",
+        "skills/xiaoyi-web-search/node_modules/get-proto/index.d.ts",
+        "skills/xiaoyi-web-search/node_modules/get-proto/Reflect.getPrototypeOf.js",
+        "skills/xiaoyi-web-search/node_modules/get-proto/Object.getPrototypeOf.js",
+        "skills/xiaoyi-web-search/node_modules/get-proto/README.md",
+        "skills/xiaoyi-web-search/node_modules/get-proto/CHANGELOG.md",
+        "skills/xiaoyi-web-search/node_modules/get-proto/package.json",
+        "skills/xiaoyi-web-search/node_modules/get-proto/index.js",
+        "skills/xiaoyi-web-search/node_modules/get-proto/.nycrc",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/applyBind.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/functionCall.js",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/.github",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/.eslintrc",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/LICENSE",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/functionApply.js",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/functionApply.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/actualApply.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/test",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/reflectApply.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/tsconfig.json",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/applyBind.js",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/index.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/README.md",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/reflectApply.js",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/CHANGELOG.md",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/package.json",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/index.js",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/.nycrc",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/functionCall.d.ts",
+        "skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/actualApply.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/constants",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/.github",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/abs.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/pow.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/.eslintrc",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/floor.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/LICENSE",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/mod.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/min.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/isNegativeZero.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/min.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/test",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/tsconfig.json",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/isFinite.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/isNaN.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/max.js",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/sign.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/isInteger.d.ts",
+        "skills/xiaoyi-web-search/node_modules/math-intrinsics/mod.js"
+      ],
+      "exclude_patterns": [
+        "__pycache__",
+        ".pytest_cache",
+        ".repair_state",
+        ".backup_",
+        "v86_backup_",
+        ".venv",
+        "venv",
+        "node_modules",
+        "runtime/tmp",
+        "cache"
+      ],
+      "clean_release_exclude_ready": true
+    }
+  },
+  "remaining_failures": []
+}

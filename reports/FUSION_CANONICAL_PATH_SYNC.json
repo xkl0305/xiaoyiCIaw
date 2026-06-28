@@ -1,0 +1,146 @@
+[
+  {
+    "file": "governance/fused_modules/doc_fusion_V105.2.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V107.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V11.2.0.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_knowledge_memory_retrieval_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_persona_visual_semantic_autotrigger_v20260506.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_persona_visual_identity_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V108.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_runtime_supervisor_bootstrap_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V105.4.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_persona_visual_scope_boundary_v20260507.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_capability_evolution_lifecycle_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_report_lifecycle_index_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V104.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_task_workflow_orchestration_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V111.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V110.1.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_llm_gateway_model_router_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V111_6_migration_closure.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_persona_visual_lobster_autotrigger_online_v20260506.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V110_to_V111.4.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V109.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V105.3.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V106.1.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_performance_cache_token_lazy_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V108.1.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V105.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_capability_marketplace_registry_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V105.1.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_context_continuity_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_agent_kernel_duplicate_package_cleanup_v20260506.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V108.2.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_skill_registry_trigger_router_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_V106.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_agent_kernel_unification_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_governance_evidence_gate_v20260505.json",
+    "entries": 1
+  },
+  {
+    "file": "governance/fused_modules/doc_fusion_supplement_v1115.json",
+    "entries": 13
+  }
+]

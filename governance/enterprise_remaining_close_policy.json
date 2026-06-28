@@ -1,0 +1,16 @@
+{
+  "version": "V111.52.13_ENTERPRISE_REPORT_REMAINING_CLOSE_FINAL",
+  "profile": "strict_local_enterprise",
+  "remaining_report_items_closed_by": [
+    "acceptance_regression_matrix_files",
+    "slo_metric_catalog_enforced",
+    "rootless_deploy_smoke",
+    "secret_workflow_guard",
+    "data_retention_manager",
+    "private_network_policy",
+    "local_persona_image_fail_closed_domain"
+  ],
+  "model_weights_included": false,
+  "external_provider_allowed": false,
+  "persona_image_local_provider_optional_p2": true
+}

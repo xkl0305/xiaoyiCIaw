@@ -1,0 +1,12 @@
+{
+  "version": "V111.21",
+  "status": "pass",
+  "passed": 20,
+  "failed": 0,
+  "failures": [],
+  "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+  "active_gate_names": [
+    "v111_20_persona_visual_cleanup_gate.py",
+    "v111_21_persona_visual_runtime_sanitize_gate.py"
+  ]
+}

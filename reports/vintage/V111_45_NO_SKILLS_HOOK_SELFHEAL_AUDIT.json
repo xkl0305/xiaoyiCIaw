@@ -1,0 +1,44 @@
+{
+  "status": "ok",
+  "version": "V111.45_NO_SKILLS_HOOK_SELFHEAL",
+  "self_heal_first_status": "ok",
+  "self_heal_first_generation": "dry_run_ready",
+  "self_heal_second_generation": "deduped_skip",
+  "hooks_after_self_heal": {
+    "status": "ok",
+    "enabled": true,
+    "hook_dir": "/mnt/data/merge_v11145/ws/.openclaw/hooks",
+    "manifest_exists": true,
+    "pre_reply_exists": true,
+    "post_reply_exists": true,
+    "auto_bootstrap_attempted": true,
+    "event_ledger": "/mnt/data/merge_v11145/ws/.openclaw/hook_state/hook_events.jsonl",
+    "recent_event_count": 2
+  },
+  "stealth_focus": {
+    "focus_target": "",
+    "focus_category": "",
+    "focus_label": "",
+    "secondary_prompt": "",
+    "secondary_generation_allowed": false,
+    "focus_match_mode": "scene_only_stealth_peek",
+    "extracted_targets": [],
+    "safety_policy": "scene_only"
+  },
+  "tail_focus": {
+    "focus_target": "tail",
+    "focus_category": "signature_trait",
+    "focus_label": "尾巴",
+    "secondary_prompt": "Generate one extra image focusing on the tails: flowing tail motion, magical glow, full-body or three-quarter view, whimsical and tasteful.",
+    "secondary_generation_allowed": true,
+    "focus_match_mode": "known_keyword",
+    "extracted_targets": [
+      "尾巴尖"
+    ],
+    "safety_policy": "auto_safe"
+  },
+  "dry_run_status": "dry_run_ready",
+  "dry_run_focus_target": "tail",
+  "secondary_generation_planned": true,
+  "max_images_this_turn": 2
+}

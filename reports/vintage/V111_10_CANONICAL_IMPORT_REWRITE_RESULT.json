@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-05-05T15:47:20.722356",
+  "version": "V111.10",
+  "scan_summary": {
+    "total_old_imports_found": 57,
+    "intentional_compat_import_shims": 50,
+    "canonical_imports_can_be_updated": 0,
+    "kept_as_is": 7
+  },
+  "note": "50/57 detected old imports are from old-path shim files (~/memory_context/persona/*, ~/memory_context/context/*, ~/agent_kernel/*, ~/infrastructure/*) which intentionally forward imports to new canonical paths. 7 core/llm/* entries are old shims that are intentionally kept to avoid runtime risk. No forced rewrites performed.",
+  "intentional_compat_import_examples": [
+    "memory_context/persona/relationship_memory.py -> memory_context.persona_runtime (shim)",
+    "agent_kernel/world_interface.py -> core (shim)",
+    "infrastructure/daemon_manager.py -> execution.runtime_supervisor (shim)",
+    "core/llm/model_registry.py -> core.llm_gateway (intentionally kept as compat)"
+  ]
+}

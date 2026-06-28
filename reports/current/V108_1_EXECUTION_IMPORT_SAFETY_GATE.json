@@ -1,0 +1,33 @@
+{
+  "version": "V108.1",
+  "status": "partial",
+  "checks": {
+    "execution_package_import_safe": false,
+    "execution_lazy_facade": false,
+    "git_push_blocked": true,
+    "v108_gate_no_regression": true,
+    "v108_report_pass": true,
+    "tool_execution_gateway_unified": true
+  },
+  "behavior": {
+    "import_stdout": "",
+    "import_stderr": "Traceback (most recent call last):\n  File \"<string>\", line 3, in <module>\n  File \"/home/sandbox/.openclaw/workspace/execution/__init__.py\", line 86, in __getattr__\n    raise AttributeError(name)\nAttributeError: optional_status\n",
+    "execution_import_error": "optional_status",
+    "git_push_check": {
+      "status": "blocked",
+      "tool": "git push origin main",
+      "command": "git push origin main",
+      "reason": "dangerous_or_outbound_action_blocked",
+      "side_effects": false,
+      "execution_mode": "blocked"
+    },
+    "v108_stdout_tail": "aoyi-web-search/node_modules/call-bind-apply-helpers/.nycrc\",\n        \"skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/functionCall.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/call-bind-apply-helpers/actualApply.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/constants\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/.github\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/abs.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/pow.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/.eslintrc\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/floor.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/LICENSE\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/mod.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/min.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/isNegativeZero.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/min.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/test\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/tsconfig.json\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/isFinite.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/isNaN.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/max.js\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/sign.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/isInteger.d.ts\",\n        \"skills/xiaoyi-web-search/node_modules/math-intrinsics/mod.js\"\n      ],\n      \"exclude_patterns\": [\n        \"__pycache__\",\n        \".pytest_cache\",\n        \".repair_state\",\n        \".backup_\",\n        \"v86_backup_\",\n        \".venv\",\n        \"venv\",\n        \"node_modules\",\n        \"runtime/tmp\",\n        \"cache\"\n      ],\n      \"clean_release_exclude_ready\": true\n    }\n  },\n  \"remaining_failures\": []\n}\n",
+    "v108_stderr_tail": ""
+  },
+  "v108_report_status": "pass",
+  "remaining_failures": [
+    "execution_package_import_failed",
+    "execution_lazy_facade_missing"
+  ],
+  "note": "Fixes execution package eager imports so V108 tool gateway works under python3 -S without pydantic."
+}

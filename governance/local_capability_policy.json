@@ -1,0 +1,66 @@
+{
+  "allow_external_fallback": false,
+  "allow_paid_provider": false,
+  "capabilities": {
+    "local_asr": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "speech_to_text"
+      ]
+    },
+    "local_embedding": {
+      "fallback": "keyword_search_only_or_unavailable",
+      "required_for": [
+        "semantic_retrieval",
+        "memory_search"
+      ]
+    },
+    "local_image_provider": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "local_image_generation"
+      ]
+    },
+    "local_llm": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "text_reasoning",
+        "planner"
+      ]
+    },
+    "local_ocr": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "ocr",
+        "document_text_extraction"
+      ]
+    },
+    "local_reranker": {
+      "fallback": "no_rerank",
+      "required_for": [
+        "rerank"
+      ]
+    },
+    "local_tts": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "text_to_speech"
+      ]
+    },
+    "local_vlm": {
+      "fallback": "capability_not_available",
+      "required_for": [
+        "screenshot_understanding",
+        "gui_semantics"
+      ]
+    }
+  },
+  "fail_closed_when_missing": true,
+  "mode": "strict_local_only",
+  "side_effects_still_require": [
+    "side_effect_proof",
+    "action_guard",
+    "send_guard"
+  ],
+  "version": "V111.52.8_LOCAL_CAPABILITY_RUNTIME_FUSION"
+}

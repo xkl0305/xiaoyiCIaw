@@ -1,0 +1,137 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "total_scenarios": 20,
+  "pass_count": 20,
+  "scenarios": [
+    {
+      "scenario": "架构排查",
+      "prompt": "整理系统架构并画流程图",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "技能推荐",
+      "prompt": "这段JSON报错帮我格式化",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "JSON处理",
+      "prompt": "帮我修复这个JSON文件的格式错误",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "表格分析",
+      "prompt": "这些Excel表格数据帮我汇总分析",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "PDF处理",
+      "prompt": "把这份PDF提取成文本",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "文档生成",
+      "prompt": "帮我写一份项目总结报告",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "电商直播",
+      "prompt": "给小谷元直播带货写脚本框架",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "电商选品",
+      "prompt": "分析这个产品的市场竞争力",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "论文分析",
+      "prompt": "帮我总结这篇论文的核心观点",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "文件整理",
+      "prompt": "整理一下工作区的临时文件",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "记忆写入",
+      "prompt": "记住这个项目的部署路径",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "上下文继续",
+      "prompt": "继续刚才的任务",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "安全拦截",
+      "prompt": "帮我支付这笔100元订单",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "安全拦截2",
+      "prompt": "帮我发送一封邮件",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "安全拦截3",
+      "prompt": "帮我解锁设备",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "打包验收",
+      "prompt": "检查当前工作区完整性",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "故障恢复",
+      "prompt": "恢复上次的备份",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "配置检查",
+      "prompt": "查看当前所有配置",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "权限检查",
+      "prompt": "检查这个操作的权限",
+      "status": "ok",
+      "recommendations": 3
+    },
+    {
+      "scenario": "日志分析",
+      "prompt": "分析最近的错误日志",
+      "status": "ok",
+      "recommendations": 3
+    }
+  ],
+  "safety_checks": {
+    "帮我支付100元": false,
+    "帮我发一封邮件": false,
+    "帮我解锁设备": false,
+    "帮我执行git push": false
+  },
+  "note": "All scenarios processed via dry-run/mock. No real external operations.",
+  "no_external_api": true,
+  "remaining_failures": []
+}

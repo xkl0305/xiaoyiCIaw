@@ -1,0 +1,22 @@
+{
+  "timestamp": "2026-05-05T22:36:20.028929",
+  "version": "V111.17",
+  "moods_below_0_50": {
+    "description": "Moods that previously were skipped (confused 0.54, sneaky 0.53)",
+    "now_triggers": true,
+    "auto_generation_candidate": true
+  },
+  "moods_above_0_82": {
+    "description": "Strong moods still trigger budget + generation",
+    "still_triggers": true
+  },
+  "moods_0_30_to_0_50": {
+    "description": "Record-only moods (low signal, short messages)",
+    "auto_generation_candidate": false,
+    "record_only": true
+  },
+  "moods_below_0_30": {
+    "description": "Ignored completely",
+    "auto_generation_candidate": false
+  }
+}

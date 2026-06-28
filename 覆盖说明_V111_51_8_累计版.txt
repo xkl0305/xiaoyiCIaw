@@ -1,0 +1,13 @@
+V111.51.8 鸽子王人格视觉累计覆盖包
+
+这不是单点补丁，包含前面人格视觉主链、provider guard、prompt builder、默认外观块、背面焦点模板、不要狐狸耳朵等累计修复。
+
+覆盖后执行：
+python xiaoyi_persona_visual/diagnostics/verify_v111_51_8_full_persona_visual.py
+python xiaoyi_persona_visual/diagnostics/post_overlay_check.py
+
+注意：
+1. 包内只含 .xiaoyienv.example，不含真实 .xiaoyienv 或 API key。
+2. 鸽子王人格视觉必须走 post_reply/mainline_hook → PersonaVisualController → wardrobe_loader → prompt_builder → seedream_provider。
+3. 手动裸调 seedream_provider 做鸽子王人格图会被 blocked。
+4. 普通非人格图不受影响。

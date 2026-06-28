@@ -1,0 +1,192 @@
+[
+  {
+    "new_path": "intelligence/knowledge_memory/knowledge_graph/personal_knowledge_graph_v5.py",
+    "old_path": "memory_context/personal_knowledge_graph_v5.py",
+    "type": "copied"
+  },
+  {
+    "new_path": "intelligence/problem_solving/solution_search/solution_search_orchestrator.py",
+    "old_path": "infrastructure/solution_search_orchestrator.py",
+    "type": "copied"
+  },
+  {
+    "new_path": "memory_context/continuity/session_handoff.py",
+    "old_path": "memory_context/context/session_handoff.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/continuity/context_capsule.py",
+    "old_path": "memory_context/context/context_capsule.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/continuity/memory_recall_bootstrap.py",
+    "old_path": "memory_context/context/memory_recall_bootstrap.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/relationship_memory.py",
+    "old_path": "memory_context/persona/relationship_memory.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/persona_consistency_checker.py",
+    "old_path": "memory_context/persona/persona_consistency_checker.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/persona_voice_stabilizer.py",
+    "old_path": "memory_context/persona/persona_voice_stabilizer.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/persona_state_machine.py",
+    "old_path": "memory_context/persona/persona_state_machine.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/continuity_summary.py",
+    "old_path": "memory_context/persona/continuity_summary.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/self_reflection_log.py",
+    "old_path": "memory_context/persona/self_reflection_log.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/emotion_tagged_memory.py",
+    "old_path": "memory_context/persona/emotion_tagged_memory.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "memory_context/persona_runtime/persona_voice_renderer.py",
+    "old_path": "memory_context/persona/persona_voice_renderer.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "evolution_lab/capability_lifecycle/preference_evolution/preference_evolution_model_v7.py",
+    "old_path": "memory_context/preference_evolution_model_v7.py",
+    "type": "placeholder"
+  },
+  {
+    "new_path": "evolution_lab/capability_lifecycle/capability_extension.py",
+    "old_path": "agent_kernel/capability_extension.py",
+    "type": "copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/world_interface.py",
+    "old_path": "core/autonomy/world_interface.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/trace_audit.py",
+    "old_path": "core/autonomy/trace_audit.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/autonomy_orchestrator.py",
+    "old_path": "core/autonomy/autonomy_orchestrator.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/approval_interrupt.py",
+    "old_path": "core/autonomy/approval_interrupt.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/storage.py",
+    "old_path": "core/autonomy/storage.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/strategy_evolver.py",
+    "old_path": "core/autonomy/strategy_evolver.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/quality_evaluator.py",
+    "old_path": "core/autonomy/quality_evaluator.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/task_graph_compiler.py",
+    "old_path": "core/autonomy/task_graph_compiler.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/memory_kernel.py",
+    "old_path": "core/autonomy/memory_kernel.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/capability_gap.py",
+    "old_path": "core/autonomy/capability_gap.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/schemas.py",
+    "old_path": "core/autonomy/schemas.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/extension_sandbox.py",
+    "old_path": "core/autonomy/extension_sandbox.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/continuous_task_runner.py",
+    "old_path": "core/autonomy/continuous_task_runner.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/autonomy/goal_strategy_kernel.py",
+    "old_path": "core/autonomy/goal_strategy_kernel.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/result_verifier.py",
+    "old_path": "core/personal_agent/result_verifier.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/policy_judge.py",
+    "old_path": "core/personal_agent/policy_judge.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/personal_execution_agent.py",
+    "old_path": "core/personal_agent/personal_execution_agent.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/experience_writer.py",
+    "old_path": "core/personal_agent/experience_writer.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/task_graph.py",
+    "old_path": "core/personal_agent/task_graph.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/schemas.py",
+    "old_path": "core/personal_agent/schemas.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/execution_planner.py",
+    "old_path": "core/personal_agent/execution_planner.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/durable_task_state.py",
+    "old_path": "core/personal_agent/durable_task_state.py",
+    "type": "dir_copied"
+  },
+  {
+    "new_path": "core/agent_kernel/personal_agent/goal_compiler.py",
+    "old_path": "core/personal_agent/goal_compiler.py",
+    "type": "dir_copied"
+  }
+]

@@ -1,0 +1,53 @@
+{
+  "description": "各地人社局、税务局、公积金管理中心官网及政策查询入口",
+  "national": {
+    "state_taxation_administration": {
+      "name": "国家税务总局",
+      "url": "https://www.chinatax.gov.cn",
+      "note": "个税政策、专项附加扣除填报入口"
+    },
+    "mohrss": {
+      "name": "人力资源和社会保障部",
+      "url": "https://www.mohrss.gov.cn",
+      "note": "社保政策法规、最低工资标准"
+    }
+  },
+  "cities": {
+    "北京": {
+      "social_insurance": {"name": "北京市人力资源和社会保障局", "url": "https://rsj.beijing.gov.cn"},
+      "housing_fund": {"name": "北京住房公积金管理中心", "url": "http://gjj.beijing.gov.cn"},
+      "tax": {"name": "国家税务总局北京市税务局", "url": "https://beijing.chinatax.gov.cn"}
+    },
+    "上海": {
+      "social_insurance": {"name": "上海市人力资源和社会保障局", "url": "https://rsj.sh.gov.cn"},
+      "housing_fund": {"name": "上海住房公积金网", "url": "https://www.shgjj.com"},
+      "tax": {"name": "国家税务总局上海市税务局", "url": "https://shanghai.chinatax.gov.cn"}
+    },
+    "广州": {
+      "social_insurance": {"name": "广州市人力资源和社会保障局", "url": "https://rsj.gz.gov.cn"},
+      "housing_fund": {"name": "广州住房公积金管理中心", "url": "https://gjj.gz.gov.cn"},
+      "tax": {"name": "国家税务总局广州市税务局", "url": "https://guangdong.chinatax.gov.cn/gz"}
+    },
+    "深圳": {
+      "social_insurance": {"name": "深圳市人力资源和社会保障局", "url": "https://hrss.sz.gov.cn"},
+      "housing_fund": {"name": "深圳市住房公积金管理中心", "url": "https://gjj.sz.gov.cn"},
+      "tax": {"name": "国家税务总局深圳市税务局", "url": "https://shenzhen.chinatax.gov.cn"}
+    },
+    "杭州": {
+      "social_insurance": {"name": "杭州市人力资源和社会保障局", "url": "https://hrss.hangzhou.gov.cn"},
+      "housing_fund": {"name": "杭州住房公积金管理中心", "url": "https://gjj.hangzhou.gov.cn"},
+      "tax": {"name": "国家税务总局杭州市税务局", "url": "https://zhejiang.chinatax.gov.cn/hz"}
+    },
+    "成都": {
+      "social_insurance": {"name": "成都市人力资源和社会保障局", "url": "https://cdhrss.chengdu.gov.cn"},
+      "housing_fund": {"name": "成都住房公积金管理中心", "url": "https://cdzfgjj.chengdu.gov.cn"},
+      "tax": {"name": "国家税务总局成都市税务局", "url": "https://sichuan.chinatax.gov.cn/cd"}
+    }
+  },
+  "search_suggestions": {
+    "base_update": "搜索关键词：<城市> <年份> 社保缴费基数上下限 最新",
+    "rate_update": "搜索关键词：<城市> <年份> 五险一金缴费比例 最新",
+    "tax_policy": "搜索关键词：个人所得税 最新政策 <年份>",
+    "deduction_update": "搜索关键词：个税专项附加扣除标准 最新"
+  }
+}

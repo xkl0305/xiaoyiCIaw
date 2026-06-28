@@ -1,0 +1,7 @@
+# V111.44 覆盖与验收命令
+unzip -o dalongxia_v11144_persona_visual_fusion_clean_overlay.zip -d /你的项目根目录
+cd /你的项目根目录
+PYTHONPATH=. python scripts/apply_v111_44_persona_visual_fusion_patch.py
+PYTHONPATH=. python scripts/audit_persona_visual_v111_44.py
+PYTHONPATH=. pytest -q tests/test_persona_visual_v111_44.py tests/test_persona_visual_v111_43.py tests/test_persona_visual_v111_42.py tests/test_persona_visual_cross_outlet_dedupe_v111_41.py tests/test_persona_visual_no_duplicate_v111_40.py
+PYTHONPATH=. python scripts/mainline_bootstrap.py --probe

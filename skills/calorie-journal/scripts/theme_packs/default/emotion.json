@@ -1,0 +1,37 @@
+{
+  "emotion_system_id": "food_mood",
+  "system_name": "食物情绪",
+  
+  "categories": {
+    "happy_food": {
+      "name": "快乐食物",
+      "icon": "🌟",
+      "description": "吃了会开心的食物",
+      "keywords": ["巧克力", "蛋糕", "冰淇淋", "糖果", "甜点"]
+    },
+    "comfort_food": {
+      "name": "安慰食物",
+      "icon": "🤗",
+      "description": "温暖心灵的食物",
+      "keywords": ["火锅", "面条", "汤", "粥", "炖菜"]
+    },
+    "energy_food": {
+      "name": "能量食物",
+      "icon": "⚡",
+      "description": "给你力量的食物",
+      "keywords": ["牛肉", "鸡肉", "鸡蛋", "燕麦", "坚果"]
+    },
+    "light_food": {
+      "name": "轻盈食物",
+      "icon": "🍃",
+      "description": "清爽无负担的食物",
+      "keywords": ["沙拉", "蔬菜", "水果", "酸奶", "鱼"]
+    }
+  },
+  
+  "default_category": {
+    "name": "日常食物",
+    "icon": "🍽️",
+    "description": "平凡但美好的一餐"
+  }
+}

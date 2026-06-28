@@ -1,0 +1,26 @@
+{
+  "timestamp": "2026-05-05T13:56:23.134716",
+  "total_placeholder_files": 3,
+  "resolved": 3,
+  "unresolved": 0,
+  "files": {
+    "memory_context/continuity/memory_recall_bootstrap.py": {
+      "old_status": "MIGRATION_PLACEHOLDER",
+      "new_status": "minimal_compatible_real_implementation",
+      "decision": "minimal_compatible_real_implementation",
+      "source_check": "no_existing_impl_found"
+    },
+    "memory_context/continuity/session_handoff.py": {
+      "old_status": "MIGRATION_PLACEHOLDER",
+      "new_status": "minimal_compatible_real_implementation",
+      "decision": "minimal_compatible_real_implementation",
+      "source_check": "no_existing_impl_found"
+    },
+    "memory_context/continuity/context_capsule.py": {
+      "old_status": "MIGRATION_PLACEHOLDER",
+      "new_status": "minimal_compatible_real_implementation",
+      "decision": "minimal_compatible_real_implementation",
+      "source_check": "no_existing_impl_found"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "ONLINE_MODE": true,
+  "OFFLINE_MODE": false,
+  "NO_EXTERNAL_API": false,
+  "CONNECTED_RUNTIME_ALWAYS_ON": true,
+  "personaVisual": {
+    "enabled": true,
+    "autoGenerate": true,
+    "generationConsentMode": "auto_with_budget",
+    "triggerSourcePolicy": "assistant_lobster_output_first",
+    "sceneTriggerMode": "semantic_scene_fuzzy_turn_observer",
+    "fuzzyMatchingEnabled": true,
+    "nearSynonymMatchingEnabled": true,
+    "fuzzySimilarityThreshold": 0.78,
+    "moodTriggerEnabled": true,
+    "wardrobeSwitchEnabled": true,
+    "strongThreshold": 0.82,
+    "midHighThreshold": 0.65,
+    "midLowThreshold": 0.5,
+    "recordOnlyThreshold": 0.3,
+    "recordOnlyDoesNotGenerate": true,
+    "autoGenerateMinimumLevel": "mid_low",
+    "seedAvatarPath": "assets/persona/seed_avatar.jpg",
+    "canonicalSeedPath": "assets/persona/seed_avatar.jpg",
+    "identitySource": "seed_avatar_image_only",
+    "visualScope": "persona_scene_auto_only",
+    "autoTriggerScope": "persona_scene_auto_only",
+    "genericImageGenerationUsesAvatarSeed": false,
+    "avatarSeedNeverUsedForGenericImage": true,
+    "wardrobeConfigPath": "assets/persona/outfits/outfit_config.json",
+    "wardrobeProfilesPath": "memory_context/persona_runtime/visual_wardrobe_profiles.json"
+  }
+}

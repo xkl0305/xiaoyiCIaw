@@ -1,0 +1,213 @@
+{
+  "version": "V111.20",
+  "status": "pass",
+  "failures": [],
+  "seed": {
+    "ok": true,
+    "status": "avatar_bound_as_persona_visual_seed",
+    "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+    "seed_avatar_abs_path": "/home/sandbox/.openclaw/workspace/assets/persona/seed_avatar.jpg",
+    "sha256": "498cee7c4efe9facda6852afb7597b0aa40986afd3ecaaa03acc7fa900181c50",
+    "size_bytes": 965360,
+    "manifest": {
+      "version": "V111.20",
+      "status": "bound",
+      "seed_role": "persona_visual_seed_image",
+      "avatar_binding": "direct_avatar_equals_seed",
+      "canonical_seed_avatar_path": "assets/persona/seed_avatar.jpg",
+      "resolved_seed_avatar_path": "assets/persona/seed_avatar.jpg",
+      "sha256": "498cee7c4efe9facda6852afb7597b0aa40986afd3ecaaa03acc7fa900181c50",
+      "size_bytes": 965360,
+      "updated_at": "2026-05-06 10:48:11",
+      "source": "canonical_existing",
+      "identity_rules": [
+        "Use this avatar image as the only character identity source.",
+        "Text prompts may only control mood, pose, lighting, props, and scene.",
+        "Never replace identity with long body/appearance prose.",
+        "Every generated persona visual must include this seed/reference image."
+      ]
+    },
+    "configs": {
+      "openclaw_personaVisual": {
+        "enabled": true,
+        "predictiveSuggestion": true,
+        "generationConsentMode": "auto_with_budget",
+        "autoGenerate": true,
+        "autoGenerateRequiresBudget": true,
+        "confidenceThreshold": 0.82,
+        "cooldownTurns": 0,
+        "dailyAutoGenerateLimit": 100,
+        "externalProvider": "seedream",
+        "seedAvatarPath": "assets/persona/seed_avatar.jpg",
+        "defaultMode": "auto_with_budget",
+        "userStandingConsent": true,
+        "strongThreshold": 0.82,
+        "midHighThreshold": 0.65,
+        "midLowThreshold": 0.5,
+        "recordOnlyThreshold": 0.3,
+        "sceneTriggerMode": "semantic_scene",
+        "seedIdentityConsistency": "strict",
+        "seedReferenceRequired": true,
+        "seedReferenceWeight": 100,
+        "canonicalSeedPath": "assets/persona/seed_avatar.jpg",
+        "avatarSeedBinding": "direct_avatar_equals_seed",
+        "identitySource": "seed_avatar_image_only",
+        "identityTextPromptMode": "seed_lock_only",
+        "activeRuntime": "memory_context.persona_runtime",
+        "legacyRuntimePolicy": "shim_only"
+      },
+      "visual_config": {
+        "version": "V111.20",
+        "enabled": true,
+        "default_trigger_mode": "auto",
+        "scene_trigger_mode": "semantic_scene",
+        "auto_image_requires_explicit_user_request": false,
+        "allow_external_image_api": true,
+        "image_skill_id": "seedream-image-gen",
+        "prompt_skill_id": "claw-art",
+        "seed_avatar_required": true,
+        "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+        "seed_image_path": "assets/persona/seed_avatar.jpg",
+        "canonical_seed_path": "assets/persona/seed_avatar.jpg",
+        "avatar_seed_binding": "direct_avatar_equals_seed",
+        "identity_source": "seed_avatar_image_only",
+        "identity_text_prompt_mode": "seed_lock_only",
+        "reference_strategy": "always_use_avatar_seed_image",
+        "image_model_version": "seedream5",
+        "image_action_name": "seedreamBatch5",
+        "reference_weight": 100,
+        "seed_image_search_paths": [
+          "assets/persona/seed_avatar.jpg",
+          "assets/persona/seed_avatar.png",
+          "assets/persona/seed_avatar.webp",
+          "assets/persona/avatar.jpg",
+          "assets/persona/avatar.png",
+          ".persona_visual/seed_avatar.jpg",
+          ".persona_visual/avatar_seed.jpg"
+        ],
+        "cache_enabled": true,
+        "cache_ttl_days": 30,
+        "max_prompt_chars": 1200,
+        "return_mode": "render_plan",
+        "never_generate_without_user_trigger": false,
+        "safety": {
+          "no_real_payment": true,
+          "no_real_send": true,
+          "no_real_device": true,
+          "no_external_api_global_unlock": true
+        }
+      }
+    }
+  },
+  "config_seed": "assets/persona/seed_avatar.jpg",
+  "predictions": {
+    "success": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "confidence": 0.95,
+      "predicted_visual_type": "success_moment",
+      "mood": "success_moment",
+      "reason": "semantic_scene:approval_scene",
+      "trigger_signals": [
+        "搞定了",
+        "大功告成",
+        "通过验收",
+        "全部通过"
+      ],
+      "matched_scene_groups": [
+        "success_pass"
+      ],
+      "semantic_scene": "approval_scene",
+      "confidence_level": "high",
+      "secondary_moods": [
+        {
+          "mood": "victorious",
+          "confidence": 0.89
+        }
+      ]
+    },
+    "confused": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "confidence": 0.7,
+      "predicted_visual_type": "confused",
+      "mood": "confused",
+      "reason": "semantic_scene:problem_solving_scene",
+      "trigger_signals": [
+        "为什么",
+        "报错",
+        "什么玩意儿"
+      ],
+      "matched_scene_groups": [
+        "confused_debug"
+      ],
+      "semantic_scene": "problem_solving_scene",
+      "confidence_level": "mid_high",
+      "secondary_moods": []
+    },
+    "sneaky": {
+      "should_suggest_visual": true,
+      "should_auto_generate": true,
+      "auto_generation_candidate": true,
+      "confidence": 0.71,
+      "predicted_visual_type": "sneaky",
+      "mood": "sneaky",
+      "reason": "semantic_scene:peek_scene",
+      "trigger_signals": [
+        "偷偷",
+        "偷偷看看"
+      ],
+      "matched_scene_groups": [
+        "sneaky_watch"
+      ],
+      "semantic_scene": "peek_scene",
+      "confidence_level": "mid_high",
+      "secondary_moods": []
+    }
+  },
+  "render_plan": {
+    "status": "ready_for_seed_reference_generation",
+    "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+    "identity_lock_mode": "strict_avatar_seed",
+    "seed_reference_weight": 100,
+    "prompt_len": 1153,
+    "negative_prompt": "different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror"
+  },
+  "budget": {
+    "ok": true,
+    "reasons": [],
+    "auto_generate_enabled": true,
+    "confidence": 0.95,
+    "confidence_threshold": 0.82,
+    "auto_generate_threshold": 0.5,
+    "daily": {
+      "ok": true,
+      "today_count": 0,
+      "daily_limit": 100
+    },
+    "cooldown": {
+      "ok": true,
+      "cooldown_turns": 0,
+      "basis": "cooldown_zero_or_no_turn_ledger"
+    },
+    "seed_avatar_available": true,
+    "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+    "estimated_cost_unknown": true
+  },
+  "dry_run": {
+    "cmd": [
+      "/usr/local/bin/python",
+      "scripts/xiaoyi_visual_entry.py",
+      "test-generate",
+      "偷偷看看你在干嘛",
+      "--dry-run"
+    ],
+    "returncode": 0,
+    "generation_status": "dry_run_ready",
+    "parsed_ok": true,
+    "stdout_tail": "tyle, vertical composition, expressive but safe, cinematic lighting, no readable text overlays, no watermark, no logo.. Keywords: sneak, peek, quiet. Scene evidence: 偷偷, 偷偷看看. No readable text overlays, no watermark, no logo. Strict seed lock: use the seed avatar/reference image as the direct persona visual seed. Reference image required. Same identity every time. Only vary expression, pose, lighting, props, and scene. Matched semantic signals: 偷偷, 偷偷看看.\",\n        \"negative_prompt\": \"different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror\",\n        \"seed_avatar_path\": \"assets/persona/seed_avatar.jpg\",\n        \"seed_avatar_abs_path\": \"/home/sandbox/.openclaw/workspace/assets/persona/seed_avatar.jpg\",\n        \"scene_image_path\": null,\n        \"skill_task_draft\": {\n          \"skill_id\": \"seedream-image-gen\",\n          \"prompt_skill_id\": \"claw-art\",\n          \"mode\": \"image_to_image\",\n          \"reference_image\": \"/home/sandbox/.openclaw/workspace/assets/persona/seed_avatar.jpg\",\n          \"reference_image_rel\": \"assets/persona/seed_avatar.jpg\",\n          \"reference_image_required\": true,\n          \"identity_consistency_required\": true,\n          \"seed_reference_weight\": 100,\n          \"prompt\": \"Reference image is mandatory: use the supplied seed avatar as the ONLY character identity source. Preserve the same character identity, face, recognizable silhouette, signature traits, and outfit language from the seed avatar. Do not invent a new character and do not override identity with text appearance prose. Mood: sneaky. Semantic scene: peek_scene. Pose: peeking playfully from the side. Activity/background: peeking from behind a screen or door with playful curiosity. Palette: dim blue, violet, warm eye light. Energy 70/100, confidence 70/100, balanced calm glow. Visual language: Clean premium anime/illustration style, vertical composition, expressive but safe, cinematic lighting, no readable text overlays, no watermark, no logo.. Keywords: sneak, peek, quiet. Scene evidence: 偷偷, 偷偷看看. No readable text overlays, no watermark, no logo.\",\n          \"negative_prompt\": \"different character, identity drift, inconsistent face, changed hairstyle, wrong species, wrong outfit core silhouette, low quality, distorted hands, extra limbs, watermark, logo, readable text, NSFW, sexualized, revealing outfit, exaggerated body, explicit body focus, horror\",\n          \"output_policy\": \"use avatar seed as reference; do not generate if seed avatar is missing\",\n          \"requires_user_confirmation\": false,\n          \"real_side_effects\": false,\n          \"semantic_scene\": \"peek_scene\",\n          \"avatar_seed_binding\": \"direct_avatar_equals_seed\"\n        },\n        \"mood\": \"sneaky\",\n        \"semantic_scene\": \"peek_scene\",\n        \"activity\": \"planning\",\n        \"confidence\": 70,\n        \"cache_key\": \"7e8e779ab2ca1f066eec4256\",\n        \"reference_image_required\": true,\n        \"identity_consistency_required\": true,\n        \"seed_reference_weight\": 100,\n        \"identity_lock_mode\": \"strict_avatar_seed\",\n        \"avatar_seed_binding\": \"direct_avatar_equals_seed\"\n      }\n    },\n    \"standing_consent\": {\n      \"standing_consent\": true,\n      \"consent_mode\": \"auto_with_budget\",\n      \"auto_with_budget_active\": true,\n      \"no_per_image_confirmation_required\": true,\n      \"external_api_global_unlock\": false\n    },\n    \"token_status\": {\n      \"issued\": true,\n      \"token_id\": \"6bdd88b3-427f-465c-8c96-e0292791f838\"\n    },\n    \"seedream_skill\": {\n      \"available\": true,\n      \"hyphen_path\": \"/home/sandbox/.openclaw/workspace/skills/seedream-image-gen/scripts/generate_seedream.py\",\n      \"compat_path\": \"/home/sandbox/.openclaw/workspace/skills/seedream_image_gen/scripts/generate_seedream.py\"\n    }\n  },\n  \"memory\": {\n    \"ledger_written\": true\n  }\n}\n",
+    "stderr": ""
+  }
+}

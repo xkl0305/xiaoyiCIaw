@@ -1,0 +1,17 @@
+{
+  "version": "V111.52.1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD",
+  "hooks": [
+    {
+      "name": "personal_os_enterprise_action_guard",
+      "layer": "L5_risk_and_policy",
+      "module": "core.personal_os_enterprise.action_guard",
+      "entry": "guard_action"
+    },
+    {
+      "name": "personal_os_enterprise_acceptance_matrix",
+      "layer": "L6_recovery_and_validation",
+      "module": "core.personal_os_enterprise.acceptance_matrix_runner",
+      "entry": "run_acceptance_matrix"
+    }
+  ]
+}

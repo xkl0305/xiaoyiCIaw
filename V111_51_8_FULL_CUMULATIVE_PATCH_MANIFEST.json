@@ -1,0 +1,30 @@
+{
+  "version": "V111.51.8",
+  "name": "full_persona_visual_cumulative_overlay",
+  "persona_subject": "鸽子王",
+  "package_mode": "no_skills_direct_provider",
+  "includes": [
+    "V111.51.4 prompt autowrite enhanced",
+    "V111.51.5 manual provider and legacy bypass guard",
+    "V111.51.6 pigeonking fixed identity block and default appearance split",
+    "V111.51.7 back_outfit_tail_detail prompt conflict fix and no fox ears",
+    "V111.51.8 full cumulative overlay"
+  ],
+  "rules": {
+    "persona_visual_requires_main_pipeline": true,
+    "manual_provider_persona_visual_blocked": true,
+    "legacy_persona_visual_entry_blocked": true,
+    "requires_avatar_reference": true,
+    "requires_outfit_reference": true,
+    "min_reference_images": 2,
+    "prompt_builder": "persona_image_prompt_builder",
+    "fixed_identity_block_has_no_fox_ears": true,
+    "default_appearance_bikini_only_when_no_dynamic_outfit": true,
+    "back_focus_uses_back_view_template": true,
+    "negative_prompt_no_bikini_conflict": true
+  },
+  "verify": [
+    "python xiaoyi_persona_visual/diagnostics/verify_v111_51_8_full_persona_visual.py",
+    "python xiaoyi_persona_visual/diagnostics/post_overlay_check.py"
+  ]
+}

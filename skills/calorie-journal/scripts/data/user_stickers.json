@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-05-30T16:42:53.750502",
+  "stickers": [
+    {
+      "id": "user_001",
+      "name": "红色苹果",
+      "type": "hand_drawn",
+      "description": "一个红色的圆形，加一片绿色的叶子",
+      "draw_params": {
+        "shape": "circle",
+        "primary_color": "#FF6B6B",
+        "secondary_color": "#81C784",
+        "decorations": [
+          "leaf"
+        ],
+        "name": "红色圆形加绿色叶子贴纸"
+      },
+      "created_at": "2026-05-30T12:19:40.120058",
+      "usage_count": 0
+    },
+    {
+      "id": "user_002",
+      "name": "红色苹果",
+      "type": "hand_drawn",
+      "description": "一个红色的圆形，加一片绿色的叶子",
+      "draw_params": {
+        "shape": "circle",
+        "primary_color": "#FF6B6B",
+        "secondary_color": "#81C784",
+        "decorations": [
+          "leaf"
+        ],
+        "name": "红色圆形加绿色叶子贴纸"
+      },
+      "created_at": "2026-05-30T12:19:47.073343",
+      "usage_count": 0
+    },
+    {
+      "id": "user_003",
+      "name": "红色苹果",
+      "type": "hand_drawn",
+      "description": "一个红色的圆形，加一片绿色的叶子",
+      "draw_params": {
+        "shape": "circle",
+        "primary_color": "#FF6B6B",
+        "secondary_color": "#81C784",
+        "decorations": [
+          "leaf"
+        ],
+        "name": "红色圆形加绿色叶子贴纸"
+      },
+      "created_at": "2026-05-30T16:42:53.750490",
+      "usage_count": 0
+    }
+  ]
+}

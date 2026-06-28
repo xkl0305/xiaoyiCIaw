@@ -1,0 +1,91 @@
+{
+  "version": "V111.44_PERSONA_WARDROBE_PROFILE",
+  "default_outfit": "default",
+  "scene_outfit_map": {
+    "rest_scene": "pajamas",
+    "bashful_scene": "moonfeather_robe",
+    "celebration_scene": "stardust_dream",
+    "energy_burst_scene": "stardust_dream",
+    "mystery_scene": "galaxy_gown",
+    "peek_scene": "default",
+    "comfort_scene": "moonfeather_robe",
+    "focus_detail_scene": "moonfeather_robe",
+    "curiosity_scene": "moonfeather_robe",
+    "play_scene": "stardust_dream",
+    "display_appearance_scene": "moonfeather_robe",
+    "daily_presence_scene": "moonfeather_robe"
+  },
+  "mood_outfit_map": {
+    "tired": "pajamas",
+    "lazy": "pajamas",
+    "shy": "moonfeather_robe",
+    "victorious": "stardust_dream",
+    "excited": "stardust_dream",
+    "mysterious": "galaxy_gown",
+    "sad": "pajamas",
+    "relaxed": "pajamas",
+    "happy": "stardust_dream",
+    "grateful": "moonfeather_robe",
+    "curious": "moonfeather_robe",
+    "playful": "stardust_dream"
+  },
+  "focus_outfit_map": {
+    "legs": ["moonfeather_robe", "stardust_dream", "galaxy_gown"],
+    "tail": ["aurora_fox_set", "mermaid_gauze_set", "galaxy_gown"],
+    "ears": ["aurora_fox_set", "stardust_set", "stardust_dream"],
+    "hair": ["stardust_dream", "moonfeather_robe", "galaxy_gown"],
+    "eyes": ["stardust_set", "moonfeather_robe", "aurora_fox_set"],
+    "hands": ["stardust_dream", "moonfeather_robe", "aurora_fox_set"],
+    "headpat": ["pajamas", "stardust_set", "aurora_fox_set"],
+    "waist": ["moonfeather_robe", "gown", "stardust_dream"],
+    "outfit": ["moonfeather_robe", "stardust_dream", "gown", "galaxy_gown"],
+    "shoes": ["galaxy_gown", "moonfeather_robe", "stardust_dream"],
+    "wings": ["aurora_fox_set", "mermaid_gauze_set", "galaxy_gown"],
+    "pose": ["stardust_dream", "galaxy_gown", "aurora_fox_set"],
+    "face": ["stardust_set", "moonfeather_robe", "aurora_fox_set"],
+    "upper_body_outfit_detail": ["moonfeather_robe", "stardust_dream", "gown"],
+    "back_outfit_tail_detail": ["aurora_fox_set", "mermaid_gauze_set", "galaxy_gown"]
+  },
+  "outfits": {
+    "default": {
+      "prompt_suffix": "keep the default outfit from the seed avatar, identity unchanged",
+      "auto_safe": true
+    },
+    "pajamas": {
+      "prompt_suffix": "soft cozy pajamas, bedtime comfort, identity unchanged",
+      "auto_safe": true
+    },
+    "gown": {
+      "prompt_suffix": "elegant formal gown, ceremonial atmosphere, identity unchanged",
+      "auto_safe": true
+    },
+    "galaxy_gown": {
+      "prompt_suffix": "galaxy-themed flowing gown, starry fabric, identity unchanged",
+      "auto_safe": true
+    },
+    "stardust_set": {
+      "prompt_suffix": "cute stardust outfit, soft shiny accessories, identity unchanged",
+      "auto_safe": true
+    },
+    "aurora_fox_set": {
+      "prompt_suffix": "aurora fox themed outfit, playful fantasy accents, identity unchanged",
+      "auto_safe": true
+    },
+    "mermaid_gauze_set": {
+      "prompt_suffix": "mermaid gauze outfit, translucent ocean-like layers, identity unchanged",
+      "auto_safe": true
+    },
+    "moonfeather_robe": {
+      "name": "月羽云裳",
+      "prompt_suffix": "moon-white and ice-blue gradient translucent fantasy gauze long dress, elegant ancient-style collar and frog buttons, shoulder-revealing high slit, amethyst hollow waist seal with pink-blue tassels, metallic vine embroidery, nine-tail spiritual wing feather cape, luminous feather fibers blue-violet gradient, nebula glow, identity unchanged",
+      "auto_safe": true,
+      "manual_only": false
+    },
+    "stardust_dream": {
+      "name": "星尘织梦",
+      "prompt_suffix": "silver-white sequined lace halter bodysuit, starry gradient wing cape, high slit, waist cutout cross straps, diamond blue gemstone pendant, flowing iridescent fox tails, blue-purple-pink gradient glow, identity unchanged",
+      "auto_safe": true,
+      "manual_only": false
+    }
+  }
+}

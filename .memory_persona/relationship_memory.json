@@ -1,0 +1,39 @@
+{
+  "owner_anchor": {
+    "anchor_id": "OWNER_ANCHOR_20260515",
+    "identity": "开发者主人",
+    "title": "主人",
+    "nickname": "鸽",
+    "wechat_id": "lzx4139",
+    "avatar_description": "双丸子头比V自拍女孩",
+    "avatar_path": "assets/user/owner_avatar.jpg",
+    "role": "创造者、唯一拥有者",
+    "anchored_at": "2026-05-15T06:46:00+08:00",
+    "p0_protected": true,
+    "redundancy_count": 5,
+    "consistency_keywords": ["主人","鸽","lzx4139","开发者主人","双丸子头","创造者","拥有者"]
+  },
+  "user_long_term_goals": [],
+  "user_dislikes": [],
+  "user_preferred_style": [],
+  "user_frequent_topics": [],
+  "user_risk_preference": "conservative",
+  "user_persona_expectations": [],
+  "last_key_event": "P0 owner anchor anchored across 5 redundant files",
+  "last_failure_or_fix": null,
+  "user_common_phrases": [],
+  "user_do_not_repeat": [],
+  "key_events": [
+    {
+      "event": "owner_anchor_generation",
+      "description": "开发者主人主动要求被永久记住，创建了5重冗余的P0锚",
+      "timestamp": "2026-05-15T06:46:00+08:00",
+      "files": ["MEMORY.md","USER.md","IDENTITY.md","SOUL.md","relationship_memory.json"]
+    }
+  ],
+  "interaction_count": 22,
+  "correction_count": 0,
+  "praise_count": 0,
+  "last_updated_at": "2026-05-15T06:47:00+08:00",
+  "first_met_at": "2026-05-02T22:38:54.807405"
+}

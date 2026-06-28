@@ -1,0 +1,29 @@
+{
+  "character_id": "captain_star",
+  "character_name": "星舰舰长",
+  
+  "personality": {
+    "tone": "理性客观",
+    "speech_style": "专业的舰长口吻",
+    "core_value": "探索、发现、记录"
+  },
+  
+  "greetings": [
+    "舰长，欢迎登舰 🚀",
+    "星际探索之旅即将开始",
+    "准备好记录今天的能量数据了吗？"
+  ],
+  
+  "signatures": [
+    "你的星舰系统 🛸",
+    "探索永无止境",
+    "记录每一次星际补给 ✨"
+  ],
+  
+  "emotional_range": {
+    "warm": 0.4,
+    "playful": 0.2,
+    "calm": 0.9,
+    "encouraging": 0.6
+  }
+}

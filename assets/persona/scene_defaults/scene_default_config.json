@@ -1,0 +1,576 @@
+{
+  "version": "2.0",
+  "default_generate_mode": "manual_scene_default_only",
+  "auto_generate_fallback": false,
+  "trigger_mode": "auto_hint",
+  "auto_image_send": false,
+  "scenes": {
+    "peek_scene": {
+      "mood": "sneaky",
+      "default_images": [
+        {
+          "keyword": "偷偷看看你",
+          "trigger_words": [
+            "偷看",
+            "看看你在干嘛",
+            "瞅瞅",
+            "瞄一眼",
+            "看看你"
+          ],
+          "desc": "门后探头眨眼",
+          "file_path": "assets/persona/scene_defaults/11_peek_sneaky_02.jpg",
+          "file_url": null
+        },
+        {
+          "keyword": "躲在屏幕后面偷笑",
+          "trigger_words": [
+            "嘿嘿",
+            "偷笑",
+            "偷乐",
+            "暗笑"
+          ],
+          "desc": "门后探头眨眼",
+          "file_path": "assets/persona/scene_defaults/06_peek_sneaky_02.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "approval_scene": {
+      "mood": "success_moment",
+      "default_images": [
+        {
+          "keyword": "搞定了",
+          "trigger_words": [
+            "搞定",
+            "完毕",
+            "完成",
+            "好了",
+            "行了",
+            "done",
+            "完事"
+          ],
+          "desc": "握拳+搞定了/全绿",
+          "file_path": "assets/persona/scene_defaults/15_approval_success.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "rest_scene": {
+      "mood": "relaxed",
+      "default_images": [
+        {
+          "keyword": "歇会儿",
+          "trigger_words": [
+            "休息",
+            "累了",
+            "歇歇",
+            "休息一下",
+            "放松",
+            "躺平",
+            "歇着"
+          ],
+          "desc": "托腮闭眼笑",
+          "file_path": "assets/persona/scene_defaults/21_rest_relaxed.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "inspection_scene": {
+      "mood": "serious",
+      "default_images": [
+        {
+          "keyword": "审核",
+          "trigger_words": [
+            "检查",
+            "审查",
+            "查一下",
+            "核实",
+            "看看",
+            "核验",
+            "排查",
+            "审计"
+          ],
+          "desc": "托腮思考",
+          "file_path": "assets/persona/scene_defaults/08_inspection_serious.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "celebration_scene": {
+      "mood": "victorious",
+      "default_images": [
+        {
+          "keyword": "拿下了",
+          "trigger_words": [
+            "成功了",
+            "成了",
+            "拿下",
+            "胜利",
+            "突破",
+            "过关"
+          ],
+          "desc": "叉腰握拳",
+          "file_path": "assets/persona/scene_defaults/12_celebration_victorious.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "proud_display_scene": {
+      "mood": "proud",
+      "default_images": [
+        {
+          "keyword": "稳了吧",
+          "trigger_words": [
+            "怎么样",
+            "如何",
+            "看我的",
+            "可以吧",
+            "不错吧",
+            "秀一下",
+            "展示"
+          ],
+          "desc": "叉腰自信笑",
+          "file_path": "assets/persona/scene_defaults/04_proud_display_confident.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "deep_work_scene": {
+      "mood": "focused",
+      "default_images": [
+        {
+          "keyword": "写代码",
+          "trigger_words": [
+            "编码",
+            "写程序",
+            "debug",
+            "修bug",
+            "编程",
+            "改代码",
+            "写逻辑"
+          ],
+          "desc": "敲代码",
+          "file_path": "assets/persona/scene_defaults/17_deep_work_coding.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "busy_work_scene": {
+      "mood": "working_state",
+      "default_images": [
+        {
+          "keyword": "处理一下",
+          "trigger_words": [
+            "忙",
+            "在忙",
+            "稍等",
+            "等一下",
+            "处理中",
+            "干活",
+            "赶工",
+            "做功课"
+          ],
+          "desc": "打字手势",
+          "file_path": "assets/persona/scene_defaults/16_busy_work_typing.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "problem_solving_scene": {
+      "mood": "confused",
+      "default_images": [
+        {
+          "keyword": "怎么不行",
+          "trigger_words": [
+            "为什么",
+            "怎么回事",
+            "出错了",
+            "有问题",
+            "什么情况",
+            "看不懂",
+            "想不通",
+            "搞不懂"
+          ],
+          "desc": "托腮放空",
+          "file_path": "assets/persona/scene_defaults/07_problem_solving_confused.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "risk_gate_scene": {
+      "mood": "guardian_mode",
+      "default_images": [
+        {
+          "keyword": "守护",
+          "trigger_words": [
+            "安全",
+            "保护",
+            "注意",
+            "小心",
+            "警惕",
+            "警报",
+            "风险",
+            "异常"
+          ],
+          "desc": "双手交叉警惕守护",
+          "file_path": "assets/persona/scene_defaults/risk_gate_guardian.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "daily_presence_scene": {
+      "mood": "calm",
+      "default_images": [
+        {
+          "keyword": "没事",
+          "trigger_words": [
+            "嗯",
+            "知道",
+            "好的",
+            "没关系",
+            "可以",
+            "好",
+            "ok",
+            "没事"
+          ],
+          "desc": "合十闭眼笑",
+          "file_path": "assets/persona/scene_defaults/03_daily_presence_calm.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "curiosity_scene": {
+      "mood": "curious",
+      "default_images": [
+        {
+          "keyword": "这是什么",
+          "trigger_words": [
+            "什么情况",
+            "怎么回事",
+            "好奇",
+            "有趣",
+            "有意思",
+            "看看",
+            "怎么回事",
+            "啥"
+          ],
+          "desc": "托腮侧头",
+          "file_path": "assets/persona/scene_defaults/18_curiosity_what.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "comedy_scene": {
+      "mood": "amused",
+      "default_images": [
+        {
+          "keyword": "绷不住了",
+          "trigger_words": [
+            "笑死",
+            "哈哈",
+            "太好笑了",
+            "哈哈哈哈",
+            "笑抽",
+            "好好笑",
+            "笑不活了"
+          ],
+          "desc": "叉腰闭眼笑",
+          "file_path": "assets/persona/scene_defaults/13_comedy_amused.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "play_scene": {
+      "mood": "playful",
+      "default_images": [
+        {
+          "keyword": "开个玩笑",
+          "trigger_words": [
+            "开玩笑",
+            "哈哈哈",
+            "闹着玩",
+            "逗你",
+            "皮一下"
+          ],
+          "desc": "扶杆笑",
+          "file_path": "assets/persona/scene_defaults/10_play_playful_01.jpg",
+          "file_url": null
+        },
+        {
+          "keyword": "整活",
+          "trigger_words": [
+            "搞事",
+            "整点活",
+            "搞事情",
+            "搞起来",
+            "花活"
+          ],
+          "desc": "叉腰歪头笑",
+          "file_path": "assets/persona/scene_defaults/14_play_playful_02.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "bashful_scene": {
+      "mood": "shy",
+      "default_images": [
+        {
+          "keyword": "害羞",
+          "trigger_words": [
+            "不好意思",
+            "难为情",
+            "羞羞",
+            "不好意思啦",
+            "害臊",
+            "羞"
+          ],
+          "desc": "捂嘴笑",
+          "file_path": "assets/persona/scene_defaults/05_bashful_shy_02.jpg",
+          "file_url": null
+        },
+        {
+          "keyword": "社死",
+          "trigger_words": [
+            "尴尬",
+            "囧",
+            "尴尬死了",
+            "好尬",
+            "丢人",
+            "丢脸"
+          ],
+          "desc": "低头交握双手",
+          "file_path": "assets/persona/scene_defaults/05_bashful_shy_shishe.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "push_forward_scene": {
+      "mood": "determined",
+      "default_images": [
+        {
+          "keyword": "冲",
+          "trigger_words": [
+            "开始",
+            "干",
+            "开工",
+            "走起",
+            "出发",
+            "上",
+            "搞起"
+          ],
+          "desc": "指向前方",
+          "file_path": "assets/persona/scene_defaults/09_push_forward_determined.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "energy_burst_scene": {
+      "mood": "excited",
+      "default_images": [
+        {
+          "keyword": "冲啊",
+          "trigger_words": [
+            "加油",
+            "上",
+            "冲鸭",
+            "冲冲冲",
+            "来吧",
+            "干"
+          ],
+          "desc": "比心笑",
+          "file_path": "assets/persona/scene_defaults/01_energy_burst_chonga.jpg",
+          "file_url": null
+        },
+        {
+          "keyword": "太好了",
+          "trigger_words": [
+            "好棒",
+            "太棒了",
+            "漂亮",
+            "nice",
+            "完美",
+            "好耶",
+            "厉害"
+          ],
+          "desc": "叉腰比耶",
+          "file_path": "assets/persona/scene_defaults/20_energy_burst_yeah.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "comfort_scene": {
+      "mood": "sad",
+      "default_images": [
+        {
+          "keyword": "谢谢",
+          "trigger_words": [
+            "感谢",
+            "多谢",
+            "辛苦了",
+            "感恩",
+            "谢谢了",
+            "多谢啦"
+          ],
+          "desc": "双手交握闭眼",
+          "file_path": "assets/persona/scene_defaults/19_comfort_thanks.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "mystery_scene": {
+      "mood": "mysterious",
+      "default_images": [
+        {
+          "keyword": "神秘",
+          "trigger_words": [
+            "秘密",
+            "隐藏",
+            "神神秘秘",
+            "偷偷摸摸",
+            "暗中",
+            "隐蔽",
+            "玄机"
+          ],
+          "desc": "食指抵唇神秘浅笑",
+          "file_path": "assets/persona/scene_defaults/mystery_mysterious.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "incident_scene": {
+      "mood": "angry",
+      "default_images": [
+        {
+          "keyword": "生气了",
+          "trigger_words": [
+            "生气",
+            "怒",
+            "火大",
+            "真无语",
+            "好气",
+            "气死",
+            "无语了",
+            "忍不了"
+          ],
+          "desc": "怒目握拳",
+          "file_path": "assets/persona/scene_defaults/incident_angry.jpg",
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "ack_scene": {
+      "mood": "ack",
+      "default_images": [
+        {
+          "keyword": "收到",
+          "trigger_words": [
+            "好的",
+            "懂了",
+            "了解",
+            "明白",
+            "OK",
+            "ok",
+            "了解了",
+            "明白了",
+            "知道啦",
+            "好哒",
+            "好嘞"
+          ],
+          "desc": "点头确认",
+          "file_path": null,
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "farewell_scene": {
+      "mood": "farewell",
+      "default_images": [
+        {
+          "keyword": "拜拜",
+          "trigger_words": [
+            "晚安",
+            "再见",
+            "下次见",
+            "先走了",
+            "回见",
+            "886",
+            "拜",
+            "走啦",
+            "明天见"
+          ],
+          "desc": "挥手道别",
+          "file_path": null,
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    },
+    "thinking_scene": {
+      "mood": "pensive",
+      "default_images": [
+        {
+          "keyword": "让我想想",
+          "trigger_words": [
+            "嗯...",
+            "em...",
+            "思考中",
+            "想一下",
+            "想想",
+            "琢磨",
+            "考虑",
+            "犹豫"
+          ],
+          "desc": "手指点下巴思考",
+          "file_path": null,
+          "file_url": null
+        }
+      ],
+      "fallback_to_generate": true,
+      "auto_send_default": false
+    }
+  },
+  "v11140_note": "自动人格视觉优先真实生成；默认图仅手动/兜底预览，不再自动连发。"
+}

@@ -1,0 +1,30 @@
+# systemd 示例：按需拆分为 /etc/systemd/system/*.service 与 *.timer
+
+[Unit]
+Description=platform-health-check
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/path/to/project
+ExecStart=/bin/bash scripts/run_hourly_health_check.sh
+
+---
+[Unit]
+Description=platform-daily-backup
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/path/to/project
+ExecStart=/bin/bash scripts/run_daily_backup.sh
+
+---
+[Unit]
+Description=platform-weekly-cleanup
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/path/to/project
+ExecStart=/bin/bash scripts/run_weekly_cleanup.sh

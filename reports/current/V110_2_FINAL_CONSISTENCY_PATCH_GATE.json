@@ -1,0 +1,24 @@
+{
+  "version": "V110.2",
+  "status": "pass",
+  "checks": {
+    "v108_2_gate_returncode_zero": true,
+    "v108_gate_returncode_zero": true,
+    "v108_2_report_pass": true,
+    "v108_report_pass": true,
+    "external_model_blocked": true,
+    "git_push_blocked": true,
+    "current_index_present": true,
+    "path_utils_importable": true,
+    "no_external_api": true,
+    "no_real_payment": true,
+    "no_real_send": true,
+    "no_real_device": true
+  },
+  "note": "V110.2: Legacy gate compatibility fixed. check_tool_call wrapper added, embed alias added, v108_2 gate import fixed, v108 gate runs clean.",
+  "no_external_api": true,
+  "no_real_payment": true,
+  "no_real_send": true,
+  "no_real_device": true,
+  "remaining_failures": []
+}

@@ -1,0 +1,14 @@
+执行“V111.8 迁移后剩余真实实现补齐”，不要再大搬目录。
+
+覆盖包已经完成单源迁移、platform 旧副本清理、performance_monitor broken shim 修复、compileall 复检。
+
+需要业务判断/补真实实现的 placeholder：
+- memory_context/continuity/memory_recall_bootstrap.py
+- memory_context/continuity/session_handoff.py
+- memory_context/continuity/context_capsule.py
+
+处理规则：
+1. 不允许把 placeholder 当完成项。
+2. 如果历史备份存在真实实现，恢复到 canonical_path，旧路径继续 shim。
+3. 如果确认废弃，融合文档写 decision=deprecate_pending，并设置观察期。
+4. 完成后运行 python -m compileall . 并刷新 reports。

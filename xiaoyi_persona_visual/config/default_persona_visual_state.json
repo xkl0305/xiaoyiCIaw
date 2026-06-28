@@ -1,0 +1,14 @@
+{
+  "persona_visual_enabled": true,
+  "max_images_per_turn": 2,
+  "seed_reference_weight": 100,
+  "online_provider_allowed": true,
+  "external_provider_allowed": true,
+  "default_model": "seedream5.0",
+  "default_model_version": "5.0",
+  "generation_mode": "image_to_image",
+  "require_reference_image": true,
+  "auto_generation_phase": "post_reply",
+  "pre_reply_mode": "detect_only",
+  "generate_only_on_phase": "post_reply"
+}

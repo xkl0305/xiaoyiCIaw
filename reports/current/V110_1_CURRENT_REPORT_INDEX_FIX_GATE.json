@@ -1,0 +1,62 @@
+{
+  "version": "V110.1",
+  "status": "partial",
+  "current_release_index_strict": true,
+  "stale_partial_reports_removed_from_current": true,
+  "required_current_reports_present_or_reported": true,
+  "v108_reports_refreshed": [
+    {
+      "script": "v108_1_execution_import_safety_gate.py",
+      "returncode": 1,
+      "stdout_tail": "e SystemExit(main())\\n                     ^^^^^^\\n  File \\\"/home/sandbox/.openclaw/workspace/scripts/v108_remaining_unified_systems_gate.py\\\", line 50, in main\\n    r=loaded['model_gateway'].call_model('test','deep-thinking','reasoning')\\n      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\nTypeError: call_model() takes from 0 to 2 positional arguments but 3 were given\\n\"\n  },\n  \"v108_report_status\": null,\n  \"remaining_failures\": [\n    \"execution_package_import_failed\",\n    \"execution_lazy_facade_missing\",\n    \"tool_gateway_import_or_behavior_failed\",\n    \"v108_gate_regression\",\n    \"v108_report_not_pass\",\n    \"tool_execution_gateway_not_unified\"\n  ],\n  \"note\": \"Fixes execution package eager imports so V108 tool gateway works under python3 -S without pydantic.\"\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "script": "v108_2_path_direct_guard_gate.py",
+      "returncode": 1,
+      "stdout_tail": "",
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/home/sandbox/.openclaw/workspace/scripts/v108_2_path_direct_guard_gate.py\", line 12, in <module>\n    ROOT = get_workspace_root(__file__)\n           ^^^^^^^^^^^^^^^^^^\nNameError: name 'get_workspace_root' is not defined\n"
+    },
+    {
+      "script": "v110_final_deep_cleanup_gate.py",
+      "returncode": 0,
+      "stdout_tail": "{\n  \"version\": \"V110.0\",\n  \"status\": \"partial\",\n  \"full_import_sweep_pass\": true,\n  \"path_cwd_cleanup_pass\": true,\n  \"security_bypass_retest_pass\": true,\n  \"realistic_task_replay_pass\": true,\n  \"current_release_index_consistent\": true,\n  \"registry_of_registries_ready\": false,\n  \"clean_release_manifest_ready\": true,\n  \"no_external_api\": true,\n  \"no_real_payment\": true,\n  \"no_real_send\": true,\n  \"no_real_device\": true,\n  \"external_api_calls\": 0,\n  \"real_side_effects\": 0,\n  \"remaining_failures\": [\n    \"registry_not_pass\"\n  ]\n}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "current_non_pass_reports": [],
+  "missing_required_current": [
+    "V100_FINAL_PENDING_ACCESS_RELEASE_GATE.json",
+    "V104_3_RUNTIME_FUSION_COORDINATION_GATE.json",
+    "V105_PROACTIVE_SKILL_ASSOCIATION_GATE.json",
+    "V106_LAZY_LOADING_NO_REGRESSION_GATE.json",
+    "V107_UNIFIED_SUBSYSTEM_FUSION_GATE.json",
+    "V108_REMAINING_UNIFIED_SYSTEMS_GATE.json",
+    "V108_2_PATH_DIRECT_GUARD_GATE.json",
+    "V109_FINAL_UNKNOWN_ISSUE_CLEAN_RELEASE_GATE.json"
+  ],
+  "not_pass_required_current": [
+    {
+      "file": "V108_1_EXECUTION_IMPORT_SAFETY_GATE.json",
+      "status": "partial",
+      "remaining_failures": [
+        "execution_package_import_failed",
+        "execution_lazy_facade_missing",
+        "tool_gateway_import_or_behavior_failed",
+        "v108_gate_regression",
+        "v108_report_not_pass",
+        "tool_execution_gateway_not_unified"
+      ]
+    },
+    {
+      "file": "V110_FINAL_DEEP_CLEANUP_GATE.json",
+      "status": "partial",
+      "remaining_failures": [
+        "registry_not_pass"
+      ]
+    }
+  ],
+  "remaining_failures": [
+    "current_release_index_not_strict"
+  ]
+}

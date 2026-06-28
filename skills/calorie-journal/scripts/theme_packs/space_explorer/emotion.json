@@ -1,0 +1,37 @@
+{
+  "emotion_system_id": "cosmic_energy",
+  "system_name": "宇宙能量分类",
+  
+  "categories": {
+    "supernova": {
+      "name": "超新星能量",
+      "icon": "💥",
+      "description": "爆发性高能量食物",
+      "keywords": ["巧克力", "蛋糕", "冰淇淋", "糖果", "甜点"]
+    },
+    "blackhole": {
+      "name": "黑洞引力",
+      "icon": "🕳️",
+      "description": "温暖而有吸引力的食物",
+      "keywords": ["火锅", "面条", "汤", "粥", "炖菜"]
+    },
+    "quasar": {
+      "name": "类星体力量",
+      "icon": "⚡",
+      "description": "给你动力的食物",
+      "keywords": ["牛肉", "鸡肉", "鸡蛋", "燕麦", "坚果"]
+    },
+    "nebula": {
+      "name": "星云轻盈",
+      "icon": "🌌",
+      "description": "清爽无负担的食物",
+      "keywords": ["沙拉", "蔬菜", "水果", "酸奶", "鱼"]
+    }
+  },
+  
+  "default_category": {
+    "name": "星际物质",
+    "icon": "✨",
+    "description": "宇宙中的普通能量"
+  }
+}

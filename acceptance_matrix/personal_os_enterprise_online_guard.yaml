@@ -1,0 +1,15 @@
+version: V111.52.1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD
+checks:
+  - read_only_allowed
+  - side_effect_without_proof_blocked
+  - side_effect_with_proof_allowed
+  - proof_replay_blocked
+  - network_default_online_not_offline_blocked
+  - network_explicit_offline_blocked
+  - high_risk_requires_approval
+  - high_risk_with_approval_allowed
+  - observability_jsonl_written
+  - runtime_boundary_detects_state
+  - package_clean_excludes_runtime_state
+  - default_profile_online
+  - capabilities_declared

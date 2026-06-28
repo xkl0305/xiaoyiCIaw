@@ -1,0 +1,64 @@
+{
+  "version": "V111.52.3_SIDE_EFFECT_PROOF_FULL_FUSION",
+  "mode": "full_fusion",
+  "default_profile": "always_connected_enterprise",
+  "default_rule": "deny_real_side_effect_without_registered_one_time_proof",
+  "proof": {
+    "required": true,
+    "one_time_use": true,
+    "registry_backed": true,
+    "runtime_secret_packaged": false
+  },
+  "actions": {
+    "read_only": [
+      "read_file",
+      "search",
+      "inspect",
+      "summarize",
+      "classify",
+      "dry_run",
+      "list_state",
+      "calendar_search",
+      "contacts_search",
+      "memory_read",
+      "capability_list"
+    ],
+    "medium_risk_requires_proof": [
+      "file_write",
+      "memory_write",
+      "memo_append",
+      "calendar_create",
+      "alarm_create",
+      "reminder_create",
+      "hiboard_push",
+      "chat_cron",
+      "provider_call",
+      "image_generation",
+      "seedream_generation",
+      "send_image",
+      "ledger_append",
+      "device_action"
+    ],
+    "high_risk_requires_proof_and_approval": [
+      "file_delete",
+      "payment",
+      "config_change",
+      "shell_exec",
+      "device_control",
+      "send_message",
+      "calendar_delete",
+      "credential_write"
+    ]
+  },
+  "observability": {
+    "emit_on_issue": true,
+    "emit_on_allow": true,
+    "emit_on_block": true,
+    "emit_on_execute": true
+  },
+  "package_rules": {
+    "exclude_runtime_state": true,
+    "exclude_secrets": true,
+    "exclude_pycache": true
+  }
+}

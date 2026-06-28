@@ -1,0 +1,7 @@
+{
+  "timestamp": "2026-05-05T15:13:39.507895",
+  "version": "V111.9",
+  "compileall_errors": 0,
+  "platform_stdlib": true,
+  "notes": "compileall -q . -> 0 errors. platform.system() -> Linux OK."
+}

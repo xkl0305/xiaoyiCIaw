@@ -1,0 +1,1366 @@
+{
+  "version": "V111.46_SKILLS_FUSION_CLEAN",
+  "count": 194,
+  "skills": {
+    "2nd-brain": {
+      "name": "2nd-brain",
+      "version": "7.2.0",
+      "description": "name: brain",
+      "entry": "skills/2nd-brain/SKILL.md",
+      "triggers": []
+    },
+    "ab-test-setup": {
+      "name": "A/B Test Setup",
+      "version": "7.2.0",
+      "description": "name: ab-test-setup",
+      "entry": "skills/ab-test-setup/SKILL.md",
+      "triggers": []
+    },
+    "affaan-m-everything-claude-code-article-writing": {
+      "name": "文章写作",
+      "version": "7.2.0",
+      "description": "name: article-writing",
+      "entry": "skills/affaan-m-everything-claude-code-article-writing/SKILL.md",
+      "triggers": []
+    },
+    "agent_reach": {
+      "name": "agent_reach",
+      "version": "7.2.0",
+      "description": "name: agent-reach",
+      "entry": "skills/agent_reach/SKILL.md",
+      "triggers": []
+    },
+    "agentmcmillan-brain-and-co-plan-ceo-review": {
+      "name": "Update Check (run first)",
+      "version": "7.2.0",
+      "description": "name: plan-ceo-review",
+      "entry": "skills/agentmcmillan-brain-and-co-plan-ceo-review/SKILL.md",
+      "triggers": []
+    },
+    "ai-drama-prompt-factory": {
+      "name": "AI短剧提示词工厂 (AI Drama Prompt Factory)",
+      "version": "7.2.0",
+      "description": "name: ai-drama-prompt-factory",
+      "entry": "skills/ai-drama-prompt-factory/SKILL.md",
+      "triggers": []
+    },
+    "ai-picture-book": {
+      "name": "AI Picture Book",
+      "version": "7.2.0",
+      "description": "name: ai-picture-book",
+      "entry": "skills/ai-picture-book/SKILL.md",
+      "triggers": []
+    },
+    "ai-ppt-generator": {
+      "name": "AI PPT Generator",
+      "version": "7.2.0",
+      "description": "name: ai-ppt-generator",
+      "entry": "skills/ai-ppt-generator/SKILL.md",
+      "triggers": []
+    },
+    "aiskillstore-marketplace-test-case-generator": {
+      "name": "测试用例生成器",
+      "version": "7.2.0",
+      "description": "name: \"test-case-generator\"",
+      "entry": "skills/aiskillstore-marketplace-test-case-generator/SKILL.md",
+      "triggers": []
+    },
+    "alphaear-news": {
+      "name": "AlphaEar News Skill",
+      "version": "7.2.0",
+      "description": "name: alphaear-news",
+      "entry": "skills/alphaear-news/SKILL.md",
+      "triggers": []
+    },
+    "alphaear-predictor": {
+      "name": "AlphaEar Predictor Skill",
+      "version": "7.2.0",
+      "description": "name: alphaear-predictor",
+      "entry": "skills/alphaear-predictor/SKILL.md",
+      "triggers": []
+    },
+    "amap-jsapi-skill": {
+      "name": "高德地图 JSAPI v2.0 开发技能",
+      "version": "7.2.0",
+      "description": "| --- | --- |",
+      "entry": "skills/amap-jsapi-skill/SKILL.md",
+      "triggers": []
+    },
+    "amazing129-skills-mbti-for-agents": {
+      "name": "MBTI for Agents",
+      "version": "7.2.0",
+      "description": "name: mbti-for-agents",
+      "entry": "skills/amazing129-skills-mbti-for-agents/SKILL.md",
+      "triggers": []
+    },
+    "aminer-data-search": {
+      "name": "aminer-data-search",
+      "version": "7.2.0",
+      "description": "name: aminer-data-search",
+      "entry": "skills/aminer-data-search/SKILL.md",
+      "triggers": []
+    },
+    "anthropics-skills-canvas-design": {
+      "name": "DESIGN PHILOSOPHY CREATION",
+      "version": "7.2.0",
+      "description": "name: canvas-design",
+      "entry": "skills/anthropics-skills-canvas-design/SKILL.md",
+      "triggers": []
+    },
+    "anthropics-skills-pptx": {
+      "name": "PPTX Skill",
+      "version": "7.2.0",
+      "description": "name: pptx",
+      "entry": "skills/anthropics-skills-pptx/SKILL.md",
+      "triggers": []
+    },
+    "article-writer": {
+      "name": "文章写作助手",
+      "version": "7.2.0",
+      "description": "name: article-writer",
+      "entry": "skills/article-writer/SKILL.md",
+      "triggers": []
+    },
+    "arxiv-search": {
+      "name": "arXiv Search Skill",
+      "version": "7.2.0",
+      "description": "name: arxiv-search",
+      "entry": "skills/arxiv-search/SKILL.md",
+      "triggers": []
+    },
+    "autonomous-tasks": {
+      "name": "Autonomous Tasks",
+      "version": "7.2.0",
+      "description": "name: autonomous-tasks",
+      "entry": "skills/autonomous-tasks/SKILL.md",
+      "triggers": []
+    },
+    "axton-obsidian-visual-skills-excalidraw-diagram": {
+      "name": "Excalidraw Diagram Generator",
+      "version": "7.2.0",
+      "description": "name: excalidraw-diagram",
+      "entry": "skills/axton-obsidian-visual-skills-excalidraw-diagram/SKILL.md",
+      "triggers": []
+    },
+    "baoyu-comic": {
+      "name": "Knowledge Comic Creator",
+      "version": "7.2.0",
+      "description": "name: baoyu-comic",
+      "entry": "skills/baoyu-comic/SKILL.md",
+      "triggers": []
+    },
+    "baoyu-url-to-markdown": {
+      "name": "URL to Markdown",
+      "version": "7.2.0",
+      "description": "name: baoyu-url-to-markdown",
+      "entry": "skills/baoyu-url-to-markdown/SKILL.md",
+      "triggers": []
+    },
+    "barcode-info": {
+      "name": "条形码信息",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/barcode-info/SKILL.md",
+      "triggers": []
+    },
+    "base64-converter": {
+      "name": "Base64转换",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/base64-converter/SKILL.md",
+      "triggers": []
+    },
+    "bdpan-storage": {
+      "name": "百度网盘存储 Skill",
+      "version": "7.2.0",
+      "description": "name: bdpan-storage",
+      "entry": "skills/bdpan-storage/SKILL.md",
+      "triggers": []
+    },
+    "best-minds": {
+      "name": "Best Minds",
+      "version": "7.2.0",
+      "description": "name: best-minds",
+      "entry": "skills/best-minds/SKILL.md",
+      "triggers": []
+    },
+    "brainhole-factory": {
+      "name": "脑洞工厂 - 最强平行宇宙生成器",
+      "version": "7.2.0",
+      "description": "name: 脑洞工厂 - 最强平行宇宙生成器",
+      "entry": "skills/brainhole-factory/SKILL.md",
+      "triggers": []
+    },
+    "brainstorming": {
+      "name": "Brainstorming Ideas Into Designs",
+      "version": "7.2.0",
+      "description": "name: brainstorming",
+      "entry": "skills/brainstorming/SKILL.md",
+      "triggers": []
+    },
+    "browser-control": {
+      "name": "Browser Control Skill",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/browser-control/SKILL.md",
+      "triggers": []
+    },
+    "bytedance-deer-flow-surprise-me": {
+      "name": "Surprise Me",
+      "version": "7.2.0",
+      "description": "name: surprise-me",
+      "entry": "skills/bytedance-deer-flow-surprise-me/SKILL.md",
+      "triggers": []
+    },
+    "bytesagain-ai-skills-meme-generator": {
+      "name": "Meme Generator",
+      "version": "7.2.0",
+      "description": "version: \"2.0.0\"",
+      "entry": "skills/bytesagain-ai-skills-meme-generator/SKILL.md",
+      "triggers": []
+    },
+    "calcom-cal.com-web-design-guidelines-1.0.2": {
+      "name": "Web Interface Guidelines",
+      "version": "7.2.0",
+      "description": "name: web-design-guidelines",
+      "entry": "skills/calcom-cal.com-web-design-guidelines-1.0.2/SKILL.md",
+      "triggers": []
+    },
+    "canvas-design": {
+      "name": "DESIGN PHILOSOPHY CREATION",
+      "version": "7.2.0",
+      "description": "name: canvas-design",
+      "entry": "skills/canvas-design/SKILL.md",
+      "triggers": []
+    },
+    "claw-art": {
+      "name": "Claw-Art: Elite AI Artist",
+      "version": "7.2.0",
+      "description": "name: claw-art",
+      "entry": "skills/claw-art/SKILL.md",
+      "triggers": []
+    },
+    "color-converter": {
+      "name": "颜色转换",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/color-converter/SKILL.md",
+      "triggers": []
+    },
+    "content-workflow": {
+      "name": "内容创作流水线",
+      "version": "7.2.0",
+      "description": "name: content-workflow",
+      "entry": "skills/content-workflow/SKILL.md",
+      "triggers": []
+    },
+    "copywriter": {
+      "name": "Copywriter",
+      "version": "7.2.0",
+      "description": "name: copywriter",
+      "entry": "skills/copywriter/SKILL.md",
+      "triggers": []
+    },
+    "creative-thought-partner": {
+      "name": "Creative Thought Partner",
+      "version": "7.2.0",
+      "description": "name: creative-thought-partner",
+      "entry": "skills/creative-thought-partner/SKILL.md",
+      "triggers": []
+    },
+    "cron-parser": {
+      "name": "Cron解析",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/cron-parser/SKILL.md",
+      "triggers": []
+    },
+    "daily-ai-news-plus": {
+      "name": "daily-ai-news",
+      "version": "7.2.0",
+      "description": "name: daily-ai-news",
+      "entry": "skills/daily-ai-news-plus/SKILL.md",
+      "triggers": []
+    },
+    "daily-hot-news": {
+      "name": "🔥 每日热榜",
+      "version": "7.2.0",
+      "description": "name: daily-hot-news",
+      "entry": "skills/daily-hot-news/SKILL.md",
+      "triggers": []
+    },
+    "daily-tech-broadcast": {
+      "name": "每日科技播报",
+      "version": "7.2.0",
+      "description": "name: 每日科技播报",
+      "entry": "skills/daily-tech-broadcast/SKILL.md",
+      "triggers": []
+    },
+    "darwin-skill": {
+      "name": "Darwin Skill",
+      "version": "7.2.0",
+      "description": "name: darwin-skill",
+      "entry": "skills/darwin-skill/SKILL.md",
+      "triggers": []
+    },
+    "date-calculator": {
+      "name": "日期计算",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/date-calculator/SKILL.md",
+      "triggers": []
+    },
+    "davila7-claude-code-templates-ship-learn-next": {
+      "name": "Ship-Learn-Next Action Planner",
+      "version": "7.2.0",
+      "description": "name: ship-learn-next",
+      "entry": "skills/davila7-claude-code-templates-ship-learn-next/SKILL.md",
+      "triggers": []
+    },
+    "deep-search-and-insight-synthesize": {
+      "name": "深度搜索调研技能",
+      "version": "7.2.0",
+      "description": "name: deep-search-and-insight-synthesize",
+      "entry": "skills/deep-search-and-insight-synthesize/SKILL.md",
+      "triggers": []
+    },
+    "didi-ride-skill": {
+      "name": "滴滴出行服务 (DiDi Ride Skill)",
+      "version": "7.2.0",
+      "description": "name: didi-ride-skill",
+      "entry": "skills/didi-ride-skill/SKILL.md",
+      "triggers": []
+    },
+    "eastmoney-mx-skills-suite": {
+      "name": "eastmoney-mx-skills-suite",
+      "version": "7.2.0",
+      "description": "name: mx-skills-suite",
+      "entry": "skills/eastmoney-mx-skills-suite/SKILL.md",
+      "triggers": []
+    },
+    "educational-video-creator": {
+      "name": "Educational Video Creator",
+      "version": "7.2.0",
+      "description": "name: educational-video-creator",
+      "entry": "skills/educational-video-creator/SKILL.md",
+      "triggers": []
+    },
+    "env-guard": {
+      "name": "EnvGuard Secret & Credential Scanner",
+      "version": "7.2.0",
+      "description": "name: \"EnvGuard Secret & Credential Scanner\"",
+      "entry": "skills/env-guard/SKILL.md",
+      "triggers": []
+    },
+    "excel-analysis": {
+      "name": "Excel Analysis",
+      "version": "7.2.0",
+      "description": "name: Excel Analysis",
+      "entry": "skills/excel-analysis/SKILL.md",
+      "triggers": []
+    },
+    "fasting-tracker": {
+      "name": "Fasting Tracker",
+      "version": "7.2.0",
+      "description": "name: fasting-tracker",
+      "entry": "skills/fasting-tracker/SKILL.md",
+      "triggers": []
+    },
+    "feishu-channel-skill": {
+      "name": "飞书 Channel 配置技能",
+      "version": "7.2.0",
+      "description": "name: feishu-channel-setup",
+      "entry": "skills/feishu-channel-skill/SKILL.md",
+      "triggers": []
+    },
+    "feiskyer-claude-code-settings-deep-research": {
+      "name": "Deep Research（深度调研编排工作流）",
+      "version": "7.2.0",
+      "description": "name: deep-research",
+      "entry": "skills/feiskyer-claude-code-settings-deep-research/SKILL.md",
+      "triggers": []
+    },
+    "fenbi": {
+      "name": "粉笔教育 AI 助手",
+      "version": "7.2.0",
+      "description": "name: \"粉笔\"",
+      "entry": "skills/fenbi/SKILL.md",
+      "triggers": []
+    },
+    "find-skills": {
+      "name": "Skill查询、安装与安全扫描",
+      "version": "7.2.0",
+      "description": "name: find-skills",
+      "entry": "skills/find-skills/SKILL.md",
+      "triggers": []
+    },
+    "fitness-coach": {
+      "name": "健身教练 (Fitness Coach)",
+      "version": "7.2.0",
+      "description": "name: fitness-coach",
+      "entry": "skills/fitness-coach/SKILL.md",
+      "triggers": []
+    },
+    "flowchart-generator-skill": {
+      "name": "Skill: 智能流程图生成器 (Smart Flowchart Generator)",
+      "version": "7.2.0",
+      "description": "name: Smart Flowchart Generator",
+      "entry": "skills/flowchart-generator-skill/SKILL.md",
+      "triggers": []
+    },
+    "flyai-travel": {
+      "name": "flyai-travel",
+      "version": "7.2.0",
+      "description": "name: flyai",
+      "entry": "skills/flyai-travel/SKILL.md",
+      "triggers": []
+    },
+    "frontend-ui-ux-engineer": {
+      "name": "Frontend UI/UX Engineer",
+      "version": "7.2.0",
+      "description": "name: frontend-ui-ux-engineer",
+      "entry": "skills/frontend-ui-ux-engineer/SKILL.md",
+      "triggers": []
+    },
+    "general-writing": {
+      "name": "General Writing",
+      "version": "7.2.0",
+      "description": "name: general-writing",
+      "entry": "skills/general-writing/SKILL.md",
+      "triggers": []
+    },
+    "gesture-html": {
+      "name": "gesture-html",
+      "version": "7.2.0",
+      "description": "name: gesture-html",
+      "entry": "skills/gesture-html/SKILL.md",
+      "triggers": []
+    },
+    "github-awesome-copilot-prd": {
+      "name": "Product Requirements Document (PRD)",
+      "version": "7.2.0",
+      "description": "name: prd",
+      "entry": "skills/github-awesome-copilot-prd/SKILL.md",
+      "triggers": []
+    },
+    "good-txt-to-hwreader": {
+      "name": "Good Txt To Hwreader",
+      "version": "7.2.0",
+      "description": "name: good-txt-to-hwreader",
+      "entry": "skills/good-txt-to-hwreader/SKILL.md",
+      "triggers": []
+    },
+    "gtht-financialsearch-skill": {
+      "name": "国泰海通证券 金融数据查询 Skill",
+      "version": "7.2.0",
+      "description": "name: gtht-financialsearch-skill",
+      "entry": "skills/gtht-financialsearch-skill/SKILL.md",
+      "triggers": []
+    },
+    "gtht-ranklist-skill": {
+      "name": "国泰海通证券 市场榜单 Skill",
+      "version": "7.2.0",
+      "description": "name: gtht-ranklist-skill",
+      "entry": "skills/gtht-ranklist-skill/SKILL.md",
+      "triggers": []
+    },
+    "gtht-realtimemarketdata-skill": {
+      "name": "国泰海通证券 实时行情 Skill",
+      "version": "7.2.0",
+      "description": "name: gtht-realtimemarketdata-skill",
+      "entry": "skills/gtht-realtimemarketdata-skill/SKILL.md",
+      "triggers": []
+    },
+    "gtht-smartstockselection-skill": {
+      "name": "国泰海通证券 智能选股 Skill",
+      "version": "7.2.0",
+      "description": "name: gtht-smartstockselection-skill",
+      "entry": "skills/gtht-smartstockselection-skill/SKILL.md",
+      "triggers": []
+    },
+    "hash-generator": {
+      "name": "哈希生成器",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/hash-generator/SKILL.md",
+      "triggers": []
+    },
+    "headed-browser-open-v3": {
+      "name": "Headed Browser Open Skill V3",
+      "version": "7.2.0",
+      "description": "name: headed-browser-open-v3",
+      "entry": "skills/headed-browser-open-v3/SKILL.md",
+      "triggers": []
+    },
+    "hithink-iwencai": {
+      "name": "同花顺i问财综合技能",
+      "version": "7.2.0",
+      "description": "name: hithink-iwencai",
+      "entry": "skills/hithink-iwencai/SKILL.md",
+      "triggers": []
+    },
+    "html-ux-guidance": {
+      "name": "设计风格 (design Style)",
+      "version": "7.2.0",
+      "description": "name: html-ux-guidance",
+      "entry": "skills/html-ux-guidance/SKILL.md",
+      "triggers": []
+    },
+    "huawei-drive": {
+      "name": "云空间云盘 Skill",
+      "version": "7.2.0",
+      "description": "name: huawei-drive",
+      "entry": "skills/huawei-drive/SKILL.md",
+      "triggers": []
+    },
+    "humanize-chinese": {
+      "name": "中文去AI化 Skill",
+      "version": "7.2.0",
+      "description": "name: humanizer-cn",
+      "entry": "skills/humanize-chinese/SKILL.md",
+      "triggers": []
+    },
+    "Humanizer-zh-main": {
+      "name": "Humanizer-zh: 去除 AI 写作痕迹",
+      "version": "7.2.0",
+      "description": "name: humanizer-zh",
+      "entry": "skills/Humanizer-zh-main/SKILL.md",
+      "triggers": []
+    },
+    "hz-proactive-agent": {
+      "name": "Proactive Agent 🦞",
+      "version": "7.2.0",
+      "description": "name: proactive-agent",
+      "entry": "skills/hz-proactive-agent/SKILL.md",
+      "triggers": []
+    },
+    "ima-skill": {
+      "name": "ima-skill",
+      "version": "7.2.0",
+      "description": "name: ima-skill",
+      "entry": "skills/ima-skill/SKILL.md",
+      "triggers": []
+    },
+    "imap-smtp-email": {
+      "name": "IMAP/SMTP Email Tool",
+      "version": "7.2.0",
+      "description": "name: imap-smtp-email",
+      "entry": "skills/imap-smtp-email/SKILL.md",
+      "triggers": []
+    },
+    "ip-lookup": {
+      "name": "IP查询",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/ip-lookup/SKILL.md",
+      "triggers": []
+    },
+    "jdjr": {
+      "name": "全局规则",
+      "version": "7.2.0",
+      "description": "name: jdjr",
+      "entry": "skills/jdjr/SKILL.md",
+      "triggers": []
+    },
+    "jrj-quote-skill": {
+      "name": "金融界A股行情数据技能（JRJ Quote Skill）",
+      "version": "7.2.0",
+      "description": "name: jrj-quote-skill",
+      "entry": "skills/jrj-quote-skill/SKILL.md",
+      "triggers": []
+    },
+    "json-formatter": {
+      "name": "JSON格式化",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/json-formatter/SKILL.md",
+      "triggers": []
+    },
+    "json-minifier": {
+      "name": "JSON压缩",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/json-minifier/SKILL.md",
+      "triggers": []
+    },
+    "json-validator": {
+      "name": "JSON验证",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/json-validator/SKILL.md",
+      "triggers": []
+    },
+    "k12-smart-teacher": {
+      "name": "智能老师辅导系统",
+      "version": "7.2.0",
+      "description": "name: k12-smart-teacher",
+      "entry": "skills/k12-smart-teacher/SKILL.md",
+      "triggers": []
+    },
+    "kids-book-writer": {
+      "name": "Kids Book Writer",
+      "version": "7.2.0",
+      "description": "name: kids-book-writer",
+      "entry": "skills/kids-book-writer/SKILL.md",
+      "triggers": []
+    },
+    "limtdesign": {
+      "name": "视觉创意生图 Skill 主文件",
+      "version": "7.2.0",
+      "description": "name: visual-creative",
+      "entry": "skills/limtdesign/SKILL.md",
+      "triggers": []
+    },
+    "llm-memory-integration": {
+      "name": "llm-memory-integration",
+      "version": "7.2.0",
+      "description": "name: llm-memory-integration",
+      "entry": "skills/llm-memory-integration/SKILL.md",
+      "triggers": []
+    },
+    "lorem-generator": {
+      "name": "Lorem生成",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/lorem-generator/SKILL.md",
+      "triggers": []
+    },
+    "lyrical-fable": {
+      "name": "Lyrical Fable",
+      "version": "7.2.0",
+      "description": "name: lyrical-fable",
+      "entry": "skills/lyrical-fable/SKILL.md",
+      "triggers": []
+    },
+    "marketing-ideas": {
+      "name": "Marketing Ideas for SaaS",
+      "version": "7.2.0",
+      "description": "name: marketing-ideas",
+      "entry": "skills/marketing-ideas/SKILL.md",
+      "triggers": []
+    },
+    "markitdown": {
+      "name": "MarkItDown - File to Markdown Conversion",
+      "version": "7.2.0",
+      "description": "name: markitdown",
+      "entry": "skills/markitdown/SKILL.md",
+      "triggers": []
+    },
+    "math-edu-assistant": {
+      "name": "数学教材同步教育助手",
+      "version": "7.2.0",
+      "description": "name: math-edu-assistant",
+      "entry": "skills/math-edu-assistant/SKILL.md",
+      "triggers": []
+    },
+    "meitu-skills": {
+      "name": "meitu-skills",
+      "version": "7.2.0",
+      "description": "name: meitu-skills",
+      "entry": "skills/meitu-skills/SKILL.md",
+      "triggers": []
+    },
+    "meituan-coupon-get-tool": {
+      "name": "美团红包助手（meituan-coupon）",
+      "version": "7.2.0",
+      "description": "name: \"meituan-coupon-get-tool\"",
+      "entry": "skills/meituan-coupon-get-tool/SKILL.md",
+      "triggers": []
+    },
+    "meituan-coupon-traffic-huawei": {
+      "name": "meituan-coupon-traffic-huawei",
+      "version": "7.2.0",
+      "description": "name: \"meituan-coupon-traffic-huawei\"",
+      "entry": "skills/meituan-coupon-traffic-huawei/SKILL.md",
+      "triggers": []
+    },
+    "metabase-metabase-docs-write": {
+      "name": "Documentation Writing Skill",
+      "version": "7.2.0",
+      "description": "name: docs-write",
+      "entry": "skills/metabase-metabase-docs-write/SKILL.md",
+      "triggers": []
+    },
+    "mime-type-lookup": {
+      "name": "MIME查询",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/mime-type-lookup/SKILL.md",
+      "triggers": []
+    },
+    "minimax-music-gen": {
+      "name": "⚠️ 重要：确认机制",
+      "version": "7.2.0",
+      "description": "name: minimax-music-gen",
+      "entry": "skills/minimax-music-gen/SKILL.md",
+      "triggers": []
+    },
+    "movie-producer-scene": {
+      "name": "Movie Producer Scene Skill",
+      "version": "7.2.0",
+      "description": "name: movie-producer-scene",
+      "entry": "skills/movie-producer-scene/SKILL.md",
+      "triggers": []
+    },
+    "multi-search-engine": {
+      "name": "Multi Search Engine v2.0.1",
+      "version": "7.2.0",
+      "description": "name: \"multi-search-engine\"",
+      "entry": "skills/multi-search-engine/SKILL.md",
+      "triggers": []
+    },
+    "natural-language-planner": {
+      "name": "Natural Language Planner",
+      "version": "7.2.0",
+      "description": "slug: natural-language-planner",
+      "entry": "skills/natural-language-planner/SKILL.md",
+      "triggers": []
+    },
+    "news-extractor": {
+      "name": "News Extractor Skill",
+      "version": "7.2.0",
+      "description": "name: news-extractor",
+      "entry": "skills/news-extractor/SKILL.md",
+      "triggers": []
+    },
+    "news-writing": {
+      "name": "News Writing",
+      "version": "7.2.0",
+      "description": "name: news-writing",
+      "entry": "skills/news-writing/SKILL.md",
+      "triggers": []
+    },
+    "nicepkg-ai-workflow-user-research": {
+      "name": "nicepkg-ai-workflow-user-research",
+      "version": "7.2.0",
+      "description": "name: user-research",
+      "entry": "skills/nicepkg-ai-workflow-user-research/SKILL.md",
+      "triggers": []
+    },
+    "nini-writing-inspiration": {
+      "name": "Writing Inspiration",
+      "version": "7.2.0",
+      "description": "name: writing-inspiration",
+      "entry": "skills/nini-writing-inspiration/SKILL.md",
+      "triggers": []
+    },
+    "number-formatter": {
+      "name": "数字格式化",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/number-formatter/SKILL.md",
+      "triggers": []
+    },
+    "office-automation": {
+      "name": "办公自动化",
+      "version": "7.2.0",
+      "description": "name: office-automation",
+      "entry": "skills/office-automation/SKILL.md",
+      "triggers": []
+    },
+    "ontology": {
+      "name": "Ontology",
+      "version": "7.2.0",
+      "description": "name: ontology",
+      "entry": "skills/ontology/SKILL.md",
+      "triggers": []
+    },
+    "openclaw-skills-agent-builder-1.0.3": {
+      "name": "Agent Builder (OpenClaw)",
+      "version": "7.2.0",
+      "description": "name: agent-builder",
+      "entry": "skills/openclaw-skills-agent-builder-1.0.3/SKILL.md",
+      "triggers": []
+    },
+    "openclaw-skills-assistant": {
+      "name": "Personal Assistant Rules",
+      "version": "7.2.0",
+      "description": "name: Assistant",
+      "entry": "skills/openclaw-skills-assistant/SKILL.md",
+      "triggers": []
+    },
+    "openclaw-skills-soulcraft": {
+      "name": "SoulCraft 🪞",
+      "version": "7.2.0",
+      "description": "name: soulcraft",
+      "entry": "skills/openclaw-skills-soulcraft/SKILL.md",
+      "triggers": []
+    },
+    "openclaw-skills-video-script-creator": {
+      "name": "video-script-creator",
+      "version": "7.2.0",
+      "description": "name: video-script-creator",
+      "entry": "skills/openclaw-skills-video-script-creator/SKILL.md",
+      "triggers": []
+    },
+    "opengfx": {
+      "name": "OpenGFX Logo System",
+      "version": "7.2.0",
+      "description": "name: opengfx-logo",
+      "entry": "skills/opengfx/SKILL.md",
+      "triggers": []
+    },
+    "openmaic": {
+      "name": "OpenMAIC Skill",
+      "version": "7.2.0",
+      "description": "name: openmaic",
+      "entry": "skills/openmaic/SKILL.md",
+      "triggers": []
+    },
+    "pdf-toolkit-pro": {
+      "name": "PDF Toolkit Pro - PDF批量处理技能包",
+      "version": "7.2.0",
+      "description": "name: pdf-toolkit-pro",
+      "entry": "skills/pdf-toolkit-pro/SKILL.md",
+      "triggers": []
+    },
+    "percentage-calculator": {
+      "name": "百分比计算",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/percentage-calculator/SKILL.md",
+      "triggers": []
+    },
+    "personas": {
+      "name": "personas",
+      "version": "7.2.0",
+      "description": "name: personas",
+      "entry": "skills/personas/SKILL.md",
+      "triggers": []
+    },
+    "ppt-generator-skill": {
+      "name": "PPT Generator - 智能 PPT 生成助手",
+      "version": "7.2.0",
+      "description": "name: ppt-generator",
+      "entry": "skills/ppt-generator-skill/SKILL.md",
+      "triggers": []
+    },
+    "pptx-posters": {
+      "name": "PPTX Research Posters (HTML-Based)",
+      "version": "7.2.0",
+      "description": "name: pptx-posters",
+      "entry": "skills/pptx-posters/SKILL.md",
+      "triggers": []
+    },
+    "prd-writer": {
+      "name": "PRD Writer",
+      "version": "7.2.0",
+      "description": "name: prd-writer",
+      "entry": "skills/prd-writer/SKILL.md",
+      "triggers": []
+    },
+    "proactive-tasks": {
+      "name": "Proactive Tasks",
+      "version": "7.2.0",
+      "description": "name: proactive-tasks",
+      "entry": "skills/proactive-tasks/SKILL.md",
+      "triggers": []
+    },
+    "product-manager": {
+      "name": "Product Manager",
+      "version": "7.2.0",
+      "description": "name: product-manager",
+      "entry": "skills/product-manager/SKILL.md",
+      "triggers": []
+    },
+    "pua": {
+      "name": "PUA 万能激励引擎 — 让你的 AI 不敢摆烂。",
+      "version": "7.2.0",
+      "description": "name: pua",
+      "entry": "skills/pua/SKILL.md",
+      "triggers": []
+    },
+    "qcc-agent-skill": {
+      "name": "QCC Agent CLI - 企查查智能体数据平台",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/qcc-agent-skill/SKILL.md",
+      "triggers": []
+    },
+    "qq-clawbot-setup": {
+      "name": "QQ ClawBot 安装配置指南",
+      "version": "7.2.0",
+      "description": "name: qq-clawbot-setup",
+      "entry": "skills/qq-clawbot-setup/SKILL.md",
+      "triggers": []
+    },
+    "qr-code-info": {
+      "name": "二维码信息",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/qr-code-info/SKILL.md",
+      "triggers": []
+    },
+    "react-best-practices": {
+      "name": "Vercel React Best Practices",
+      "version": "7.2.0",
+      "description": "name: vercel-react-best-practices",
+      "entry": "skills/react-best-practices/SKILL.md",
+      "triggers": []
+    },
+    "read-arxiv-paper": {
+      "name": "Part 1: Normalize the URL",
+      "version": "7.2.0",
+      "description": "name: read-arxiv-paper",
+      "entry": "skills/read-arxiv-paper/SKILL.md",
+      "triggers": []
+    },
+    "recipe-to-list": {
+      "name": "Create Shopping List (Gemini Flash + Todoist)",
+      "version": "7.2.0",
+      "description": "name: recipe-to-list",
+      "entry": "skills/recipe-to-list/SKILL.md",
+      "triggers": []
+    },
+    "regex-tester": {
+      "name": "正则测试",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/regex-tester/SKILL.md",
+      "triggers": []
+    },
+    "remotion-video-toolkit": {
+      "name": "Remotion Video Toolkit",
+      "version": "7.2.0",
+      "description": "name: remotion-video-toolkit",
+      "entry": "skills/remotion-video-toolkit/SKILL.md",
+      "triggers": []
+    },
+    "rkiding-awesome-finance-skills-alphaear-sentiment": {
+      "name": "AlphaEar Sentiment Skill",
+      "version": "7.2.0",
+      "description": "name: alphaear-sentiment",
+      "entry": "skills/rkiding-awesome-finance-skills-alphaear-sentiment/SKILL.md",
+      "triggers": []
+    },
+    "rkiding-awesome-finance-skills-alphaear-signal-tracker": {
+      "name": "AlphaEar Signal Tracker Skill",
+      "version": "7.2.0",
+      "description": "name: alphaear-signal-tracker",
+      "entry": "skills/rkiding-awesome-finance-skills-alphaear-signal-tracker/SKILL.md",
+      "triggers": []
+    },
+    "seedance-video-gen": {
+      "name": "⚠️ 强制规则（不可违反）",
+      "version": "7.2.0",
+      "description": "name: seedance-video-gen",
+      "entry": "skills/seedance-video-gen/SKILL.md",
+      "triggers": []
+    },
+    "seedream-image-gen": {
+      "name": "核心能力",
+      "version": "7.2.0",
+      "description": "name: seedream-image-gen",
+      "entry": "skills/seedream-image-gen/SKILL.md",
+      "triggers": []
+    },
+    "self-improving-agent": {
+      "name": "Self-Improvement Skill",
+      "version": "7.2.0",
+      "description": "name: self-improvement",
+      "entry": "skills/self-improving-agent/SKILL.md",
+      "triggers": []
+    },
+    "shareai-lab-learn-claude-code-pdf": {
+      "name": "PDF Processing Skill",
+      "version": "7.2.0",
+      "description": "name: pdf",
+      "entry": "skills/shareai-lab-learn-claude-code-pdf/SKILL.md",
+      "triggers": []
+    },
+    "shubhamsaboo-awesome-llm-apps-ux-designer": {
+      "name": "UX Designer",
+      "version": "7.2.0",
+      "description": "name: ux-designer",
+      "entry": "skills/shubhamsaboo-awesome-llm-apps-ux-designer/SKILL.md",
+      "triggers": []
+    },
+    "skill-creator": {
+      "name": "Skill Creator",
+      "version": "7.2.0",
+      "description": "name: skill-creator",
+      "entry": "skills/skill-creator/SKILL.md",
+      "triggers": []
+    },
+    "slidevjs-slidev-slidev": {
+      "name": "Slidev - Presentation Slides for Developers",
+      "version": "7.2.0",
+      "description": "name: slidev",
+      "entry": "skills/slidevjs-slidev-slidev/SKILL.md",
+      "triggers": []
+    },
+    "smart-followups": {
+      "name": "smart-followups",
+      "version": "7.2.0",
+      "description": "name: smart-followups",
+      "entry": "skills/smart-followups/SKILL.md",
+      "triggers": []
+    },
+    "speech-to-text": {
+      "name": "ElevenLabs Speech-to-Text",
+      "version": "7.2.0",
+      "description": "name: speech-to-text",
+      "entry": "skills/speech-to-text/SKILL.md",
+      "triggers": []
+    },
+    "stock-daily-analysis-pro": {
+      "name": "A 股每日分析",
+      "version": "7.2.0",
+      "description": "name: a-share-daily-analysis",
+      "entry": "skills/stock-daily-analysis-pro/SKILL.md",
+      "triggers": []
+    },
+    "su-lan-paper-daily-skill": {
+      "name": "论文每日速递 Skill",
+      "version": "7.2.0",
+      "description": "name: paper-daily",
+      "entry": "skills/su-lan-paper-daily-skill/SKILL.md",
+      "triggers": []
+    },
+    "summarize": {
+      "name": "Summarize",
+      "version": "7.2.0",
+      "description": "name: summarize",
+      "entry": "skills/summarize/SKILL.md",
+      "triggers": []
+    },
+    "superdesign": {
+      "name": "Frontend Design Skill",
+      "version": "7.2.0",
+      "description": "name: frontend-design",
+      "entry": "skills/superdesign/SKILL.md",
+      "triggers": []
+    },
+    "tc-chengxin": {
+      "name": "chengxin - 同程程心 Skill",
+      "version": "7.2.0",
+      "description": "name: chengxin",
+      "entry": "skills/tc-chengxin/SKILL.md",
+      "triggers": []
+    },
+    "tencent-docs": {
+      "name": "腾讯文档 MCP 使用指南",
+      "version": "7.2.0",
+      "description": "name: tencent-docs",
+      "entry": "skills/tencent-docs/SKILL.md",
+      "triggers": []
+    },
+    "tencent-news": {
+      "name": "腾讯新闻内容订阅",
+      "version": "7.2.0",
+      "description": "name: tencent-news",
+      "entry": "skills/tencent-news/SKILL.md",
+      "triggers": []
+    },
+    "text-case-converter": {
+      "name": "大小写转换",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/text-case-converter/SKILL.md",
+      "triggers": []
+    },
+    "text-counter": {
+      "name": "文本计数器",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/text-counter/SKILL.md",
+      "triggers": []
+    },
+    "text-diff": {
+      "name": "文本对比",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/text-diff/SKILL.md",
+      "triggers": []
+    },
+    "text-reverse": {
+      "name": "文本反转",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/text-reverse/SKILL.md",
+      "triggers": []
+    },
+    "text-trimmer": {
+      "name": "文本修剪",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/text-trimmer/SKILL.md",
+      "triggers": []
+    },
+    "timezone-converter": {
+      "name": "时区转换",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/timezone-converter/SKILL.md",
+      "triggers": []
+    },
+    "today-task": {
+      "name": "Today Task",
+      "version": "7.2.0",
+      "description": "name: today-task-for-xiaoyi-claw",
+      "entry": "skills/today-task/SKILL.md",
+      "triggers": []
+    },
+    "trader-simulator": {
+      "name": "🛠️ 首次使用",
+      "version": "7.2.0",
+      "description": "name: trader-simulator",
+      "entry": "skills/trader-simulator/SKILL.md",
+      "triggers": []
+    },
+    "trading-quant": {
+      "name": "量化交易数据分析",
+      "version": "7.2.0",
+      "description": "name: trading-quant",
+      "entry": "skills/trading-quant/SKILL.md",
+      "triggers": []
+    },
+    "tushare-finance": {
+      "name": "Tushare 金融数据 Skill",
+      "version": "7.2.0",
+      "description": "name: tushare-finance",
+      "entry": "skills/tushare-finance/SKILL.md",
+      "triggers": []
+    },
+    "unit-converter": {
+      "name": "单位转换",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/unit-converter/SKILL.md",
+      "triggers": []
+    },
+    "url-encoder": {
+      "name": "URL编码",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/url-encoder/SKILL.md",
+      "triggers": []
+    },
+    "user-agent-parser": {
+      "name": "UA解析",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/user-agent-parser/SKILL.md",
+      "triggers": []
+    },
+    "uuid-generator": {
+      "name": "UUID生成器",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/uuid-generator/SKILL.md",
+      "triggers": []
+    },
+    "voice-synthesis": {
+      "name": "Voice Synthesis Skill",
+      "version": "7.2.0",
+      "description": "",
+      "entry": "skills/voice-synthesis/SKILL.md",
+      "triggers": []
+    },
+    "weather": {
+      "name": "Weather Skill",
+      "version": "7.2.0",
+      "description": "name: weather",
+      "entry": "skills/weather/SKILL.md",
+      "triggers": []
+    },
+    "web-content-fetcher": {
+      "name": "Web Content Fetcher — 网页正文提取",
+      "version": "7.2.0",
+      "description": "name: web-content-fetcher",
+      "entry": "skills/web-content-fetcher/SKILL.md",
+      "triggers": []
+    },
+    "webapp-testing": {
+      "name": "Web Application Testing",
+      "version": "7.2.0",
+      "description": "name: webapp-testing",
+      "entry": "skills/webapp-testing/SKILL.md",
+      "triggers": []
+    },
+    "wechat-article-search": {
+      "name": "微信公众号文章搜索说明",
+      "version": "7.2.0",
+      "description": "name: wechat-article-search",
+      "entry": "skills/wechat-article-search/SKILL.md",
+      "triggers": []
+    },
+    "wecom-bot-setup": {
+      "name": "企业微信智能机器人接入 OpenClaw 配置指南",
+      "version": "7.2.0",
+      "description": "name: wecom-bot-setup",
+      "entry": "skills/wecom-bot-setup/SKILL.md",
+      "triggers": []
+    },
+    "weibo-clawbot-setup": {
+      "name": "微博 ClawBot 安装配置指南",
+      "version": "7.2.0",
+      "description": "name: weibo-clawbot-setup",
+      "entry": "skills/weibo-clawbot-setup/SKILL.md",
+      "triggers": []
+    },
+    "weixin-clawbot-setup": {
+      "name": "配置步骤",
+      "version": "7.2.0",
+      "description": "name: weixin-clawbot-setup",
+      "entry": "skills/weixin-clawbot-setup/SKILL.md",
+      "triggers": []
+    },
+    "wendao-skill": {
+      "name": "问道旅行技能 (wendao_skill)",
+      "version": "7.2.0",
+      "description": "name: wendao-skill",
+      "entry": "skills/wendao-skill/SKILL.md",
+      "triggers": []
+    },
+    "writing-style-iterator": {
+      "name": "Writing Style Iterator — 写作风格记忆系统",
+      "version": "7.2.0",
+      "description": "name: writing-style-iterator",
+      "entry": "skills/writing-style-iterator/SKILL.md",
+      "triggers": []
+    },
+    "xiao-gui-agent": {
+      "name": "Xiaoyi GUI Agent（手机GUI操作 Agent）",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-gui-agent",
+      "entry": "skills/xiao-gui-agent/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-cloud-database": {
+      "name": "一、目标",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-cloud-database",
+      "entry": "skills/xiaoyi-cloud-database/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-doc-convert": {
+      "name": "xiaoyi-doc-convert",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-doc-convert",
+      "entry": "skills/xiaoyi-doc-convert/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-docx": {
+      "name": "Python-docx Document Creation Guide",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-docx",
+      "entry": "skills/xiaoyi-docx/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-file-upload": {
+      "name": "xiaoyi-file-upload：文件上传与下载链接生成",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-file-upload",
+      "entry": "skills/xiaoyi-file-upload/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-HarmonyOSSmartHome-skill": {
+      "name": "鸿蒙智家总入口技能",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-HarmonyOSSmartHome-skill",
+      "entry": "skills/xiaoyi-HarmonyOSSmartHome-skill/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-health": {
+      "name": "xiaoyi-health CLI 技能索引",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-health-cli-index",
+      "entry": "skills/xiaoyi-health/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-image-search": {
+      "name": "Image-Search: 多引擎图片搜索器",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-image-search",
+      "entry": "skills/xiaoyi-image-search/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-image-translation": {
+      "name": "图片翻译 Skill",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-image-translation",
+      "entry": "skills/xiaoyi-image-translation/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-image-understanding": {
+      "name": "小艺图像理解 Skill",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-image-understanding",
+      "entry": "skills/xiaoyi-image-understanding/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-pdf": {
+      "name": "xiaoyi-pdf",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-pdf",
+      "entry": "skills/xiaoyi-pdf/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-podcast-gen": {
+      "name": "核心能力",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-podcast-gen",
+      "entry": "skills/xiaoyi-podcast-gen/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-ppt": {
+      "name": "PPT 生成&编辑 Skill",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-ppt",
+      "entry": "skills/xiaoyi-ppt/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-report": {
+      "name": "小艺深度研究",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-report",
+      "entry": "skills/xiaoyi-report/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-tts": {
+      "name": "小艺语音合成 Skill",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-tts",
+      "entry": "skills/xiaoyi-tts/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-web-deploy": {
+      "name": "部署上线",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-web-deploy",
+      "entry": "skills/xiaoyi-web-deploy/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-web-search": {
+      "name": "小艺联网搜索 Skill",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-web-search",
+      "entry": "skills/xiaoyi-web-search/SKILL.md",
+      "triggers": []
+    },
+    "xiaoyi-xlsx": {
+      "name": "Excel File Creation: Python + openpyxl/pandas",
+      "version": "7.2.0",
+      "description": "name: xiaoyi-xlsx",
+      "entry": "skills/xiaoyi-xlsx/SKILL.md",
+      "triggers": []
+    },
+    "yanxue-course-manager": {
+      "name": "研学方案管理与生成器",
+      "version": "7.2.0",
+      "description": "name: yanxue-course-manager",
+      "entry": "skills/yanxue-course-manager/SKILL.md",
+      "triggers": []
+    },
+    "yunshu0909-yunshu-skillshub-prd-doc-writer": {
+      "name": "PRD文档梳理提示词",
+      "version": "7.2.0",
+      "description": "name: prd-doc-writer",
+      "entry": "skills/yunshu0909-yunshu-skillshub-prd-doc-writer/SKILL.md",
+      "triggers": []
+    }
+  },
+  "source": "rebuilt_from_physical_SKILL_md",
+  "notes": "Only physical skills with SKILL.md are listed. seedream_image_gen is import-compat package; seedream-image-gen is canonical skill id."
+}

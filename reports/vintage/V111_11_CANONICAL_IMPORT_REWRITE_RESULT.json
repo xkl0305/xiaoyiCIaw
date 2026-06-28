@@ -1,0 +1,20 @@
+{
+  "timestamp": "2026-05-05T19:43:37.474357",
+  "version": "V111.11",
+  "scan_result": {
+    "files_scanned": [],
+    "files_with_old_imports": 0,
+    "rewrites_performed": 0,
+    "shim_files_skipped": [
+      "__init__.py"
+    ]
+  },
+  "details": [],
+  "canonical_paths_cleaned": [
+    "execution/task_runtime/workflow",
+    "execution/task_runtime/workflows",
+    "orchestration/skill_runtime/router",
+    "intelligence/knowledge_memory",
+    "governance/evidence_gate"
+  ]
+}

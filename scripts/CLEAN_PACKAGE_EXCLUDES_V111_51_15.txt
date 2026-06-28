@@ -1,0 +1,24 @@
+# Exclude these when building clean source packages
+__pycache__/
+*.pyc
+.pytest_cache/
+cache/
+logs/
+*.jsonl
+.persona_visual/generated/
+.persona_visual/*.jsonl
+.persona_visual/runtime_wardrobe_state.json
+.openclaw/hook_state/
+.v98_state/
+.v107_state/
+.lazy_state/
+.context_state/
+V*_overlay/
+V*_overlay.zip
+V*_overlay.tar.gz
+*_overlay/
+*_overlay.zip
+*_overlay.tar.gz
+.openclaw/.xiaoyienv
+# V111.51.15 additional notes:
+# legacy guard patch is source code only; do not package generated outputs or runtime state.

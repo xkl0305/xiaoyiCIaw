@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工资异常检测报告</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    background: #0d1117;
+    color: #c9d1d9;
+    line-height: 1.6;
+}
+.container { max-width: 960px; margin: 0 auto; padding: 20px; }
+.header {
+    text-align: center; padding: 40px 20px;
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border: 1px solid #30363d; border-radius: 12px; margin-bottom: 24px;
+}
+.header h1 { font-size: 28px; color: #f0f6fc; margin-bottom: 8px; }
+.subtitle { color: #8b949e; font-size: 13px; }
+.section {
+    background: #161b22; border: 1px solid #30363d; border-radius: 12px;
+    padding: 24px; margin-bottom: 20px;
+}
+.section h2 { font-size: 18px; color: #f0f6fc; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #21262d; }
+
+/* 工资流转 */
+.salary-flow { display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.flow-item { text-align: center; padding: 16px 24px; border-radius: 10px; min-width: 140px; }
+.flow-item.gross { background: #1a2332; border: 1px solid #58a6ff; }
+.flow-item.net { background: #1a2e1a; border: 1px solid #3fb950; }
+.flow-amount { font-size: 24px; font-weight: bold; color: #f0f6fc; }
+.flow-label { font-size: 12px; color: #8b949e; margin-top: 4px; }
+.flow-arrow { font-size: 24px; color: #484f58; }
+.flow-deductions { text-align: left; padding: 12px 16px; background: #1a161b; border: 1px solid #30363d; border-radius: 8px; min-width: 180px; }
+.flow-detail { display: flex; justify-content: space-between; padding: 3px 0; font-size: 13px; }
+.deduct { color: #ff7b72; }
+.flow-total-deduct { border-top: 1px solid #21262d; margin-top: 8px; padding-top: 6px; font-weight: bold; font-size: 13px; color: #ff7b72; }
+
+/* 明细网格 */
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
+.detail-item { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 14px; display: flex; justify-content: space-between; align-items: center; }
+.detail-label { color: #8b949e; font-size: 13px; }
+.detail-value { color: #f0f6fc; font-weight: bold; font-size: 16px; }
+.detail-value.highlight { color: #d2a8ff; }
+
+/* 图表 */
+.chart-container { text-align: center; padding: 10px; }
+.chart-container svg { max-width: 100%; }
+
+/* 个税公式 */
+.tax-formula { background: #0d1117; border: 1px solid #21262d; border-radius: 8px; padding: 16px; }
+.formula-line { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; }
+.formula-line.result { border-top: 1px solid #30363d; margin-top: 8px; padding-top: 10px; font-weight: bold; }
+.formula-label { color: #8b949e; }
+.formula-value { color: #c9d1d9; }
+.formula-value.highlight { color: #3fb950; font-size: 18px; }
+
+/* 汇总卡片 */
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.summary-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px; text-align: center; }
+.summary-card.critical { border-color: #da3633; background: #1a0f0f; }
+.summary-card.warning { border-color: #d2991d; background: #1a160f; }
+.summary-card.info { border-color: #58a6ff; }
+.card-number { font-size: 36px; font-weight: bold; color: #f0f6fc; }
+.summary-card.critical .card-number { color: #ff7b72; }
+.summary-card.warning .card-number { color: #d2991d; }
+.card-label { font-size: 13px; color: #8b949e; margin-top: 6px; }
+
+/* 异常卡片 */
+.anomaly-card { border-radius: 10px; padding: 16px; margin-bottom: 12px; border: 1px solid #30363d; }
+.anomaly-critical { border-color: #da3633; background: #1a0f0f; }
+.anomaly-warning { border-color: #d2991d; background: #1a160f; }
+.anomaly-info { border-color: #58a6ff; }
+.anomaly-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
+.anomaly-name { font-weight: bold; font-size: 16px; color: #f0f6fc; }
+.anomaly-type { font-size: 12px; color: #8b949e; padding: 2px 8px; background: #21262d; border-radius: 4px; }
+.anomaly-detail { font-size: 14px; color: #c9d1d9; margin-bottom: 10px; }
+.anomaly-fields { display: flex; flex-direction: column; gap: 6px; }
+.anomaly-field { display: flex; justify-content: space-between; align-items: center; font-size: 13px; padding: 6px 0; border-bottom: 1px solid #21262d; }
+.field-label { color: #8b949e; min-width: 80px; }
+.field-values { color: #c9d1d9; }
+.field-change { font-weight: bold; }
+.field-change.critical { color: #ff7b72; }
+.field-change.warning { color: #d2991d; }
+
+/* 表格 */
+.table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { background: #0d1117; color: #8b949e; font-weight: 600; padding: 12px 14px; text-align: left; border-bottom: 2px solid #30363d; }
+td { padding: 10px 14px; border-bottom: 1px solid #21262d; }
+tr:hover td { background: #1c2128; }
+.positive { color: #3fb950; }
+.negative { color: #ff7b72; }
+.net-highlight { color: #3fb950; font-weight: bold; }
+
+/* 页脚 */
+.footer { text-align: center; padding: 20px; color: #484f58; font-size: 12px; border-top: 1px solid #21262d; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🔍 工资异常检测报告</h1>
+        <div class="subtitle">生成时间：2026-05-22 13:42:50</div>
+    </div>
+    
+    <div class="summary-row">
+        <div class="summary-card">
+            <div class="card-number">6</div>
+            <div class="card-label">总人数</div>
+        </div>
+        <div class="summary-card critical">
+            <div class="card-number">2</div>
+            <div class="card-label">🔴 严重异常</div>
+        </div>
+        <div class="summary-card warning">
+            <div class="card-number">1</div>
+            <div class="card-label">🟡 需注意</div>
+        </div>
+        <div class="summary-card info">
+            <div class="card-number">3</div>
+            <div class="card-label">🟢 人员变动</div>
+        </div>
+    </div><div class="section"><h2>⚠️ 异常详情</h2>
+            <div class="anomaly-card anomaly-info">
+                <div class="anomaly-header">
+                    <span class="anomaly-name">🟢 周八</span>
+                    <span class="anomaly-type">人员变动</span>
+                </div>
+                <div class="anomaly-detail">🆕 周八 为本月新增员工</div></div>
+            <div class="anomaly-card anomaly-warning">
+                <div class="anomaly-header">
+                    <span class="anomaly-name">🟡 孙七</span>
+                    <span class="anomaly-type">人员变动</span>
+                </div>
+                <div class="anomaly-detail">⚠️ 孙七 本月不在工资表中（可能离职）</div></div>
+            <div class="anomaly-card anomaly-critical">
+                <div class="anomaly-header">
+                    <span class="anomaly-name">🔴 李四</span>
+                    <span class="anomaly-type">工资异常</span>
+                </div>
+                <div class="anomaly-detail">李四: 税前工资 ↑¥+7,000.00; 个税 ↑¥+1,491.00; 公司总成本 ↑¥+7,100.00</div><div class="anomaly-fields">
+                    <div class="anomaly-field">
+                        <span class="field-label">税前工资</span>
+                        <span class="field-values">¥18,000.00 → ¥25,000.00</span>
+                        <span class="field-change warning">↑ ¥7,000.00 (38.9%)</span>
+                    </div>
+                    <div class="anomaly-field">
+                        <span class="field-label">个税</span>
+                        <span class="field-values">¥689.00 → ¥2,180.00</span>
+                        <span class="field-change critical">↑ ¥1,491.00 (216.4%)</span>
+                    </div>
+                    <div class="anomaly-field">
+                        <span class="field-label">公司总成本</span>
+                        <span class="field-values">¥23,630.00 → ¥30,730.00</span>
+                        <span class="field-change warning">↑ ¥7,100.00 (30.0%)</span>
+                    </div></div></div>
+            <div class="anomaly-card anomaly-critical">
+                <div class="anomaly-header">
+                    <span class="anomaly-name">🔴 赵六</span>
+                    <span class="anomaly-type">工资异常</span>
+                </div>
+                <div class="anomaly-detail">赵六: 个税 ↓¥-158.00</div><div class="anomaly-fields">
+                    <div class="anomaly-field">
+                        <span class="field-label">个税</span>
+                        <span class="field-values">¥158.00 → ¥0.00</span>
+                        <span class="field-change critical">↓ ¥158.00 (100.0%)</span>
+                    </div></div></div></div><div class="section"><h2>📊 全员对比数据</h2><div class="table-wrapper"><table><thead><tr><th>姓名</th><th>状态</th><th>上月税前</th><th>本月税前</th><th>差异</th><th>上月实发</th><th>本月实发</th><th>差异</th></tr></thead><tbody>
+                <tr>
+                    <td>周八</td>
+                    <td>🆕 新增</td>
+                    <td colspan="6">本月新增</td>
+                </tr>
+                <tr>
+                    <td>孙七</td>
+                    <td>⚠️ 离职</td>
+                    <td colspan="6">上月离职</td>
+                </tr>
+                <tr>
+                    <td>张三</td>
+                    <td>✅ 在职</td>
+                    <td>¥25,000.00</td>
+                    <td>¥25,500.00</td>
+                    <td class="positive">+500.00</td>
+                    <td>¥19,910.00</td>
+                    <td>¥20,275.00</td>
+                    <td class="positive">+365.00</td>
+                </tr>
+                <tr>
+                    <td>李四</td>
+                    <td>✅ 在职</td>
+                    <td>¥18,000.00</td>
+                    <td>¥25,000.00</td>
+                    <td class="positive">+7,000.00</td>
+                    <td>¥14,963.00</td>
+                    <td>¥17,670.00</td>
+                    <td class="positive">+2,707.00</td>
+                </tr>
+                <tr>
+                    <td>王五</td>
+                    <td>✅ 在职</td>
+                    <td>¥35,000.00</td>
+                    <td>¥35,000.00</td>
+                    <td class="">+0.00</td>
+                    <td>¥26,184.00</td>
+                    <td>¥26,184.00</td>
+                    <td class="">+0.00</td>
+                </tr>
+                <tr>
+                    <td>赵六</td>
+                    <td>✅ 在职</td>
+                    <td>¥12,000.00</td>
+                    <td>¥12,000.00</td>
+                    <td class="">+0.00</td>
+                    <td>¥9,992.00</td>
+                    <td>¥7,492.00</td>
+                    <td class="negative">-2,500.00</td>
+                </tr></tbody></table></div></div>
+    <div class="footer">
+        <p>薪酬个税计算器 · 异常检测引擎 · 生成于 2026-05-22</p>
+    </div>
+</div>
+</body>
+</html>

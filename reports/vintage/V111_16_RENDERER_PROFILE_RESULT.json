@@ -1,0 +1,33 @@
+{
+  "timestamp": "2026-05-05T21:47:38.232215",
+  "version": "V111.16",
+  "renderer_available_functions": [
+    "plan_persona_visual",
+    "visual_summary_for_hook",
+    "render_plan"
+  ],
+  "mood_mappings": "synced to memory_context/persona_runtime/visual_mood_mappings.json",
+  "prompt_style_by_mood": {
+    "victorious": "victory joy, golden highlights, light celebratory pose",
+    "tired": "fatigue, deep night, slightly weary look",
+    "serious": "review, audit, calm analysis",
+    "guardian_mode": "caution, protective feel, security",
+    "calm": "relaxed, everyday, low stimulation",
+    "curious": "inquisitive tilt, bright eyes, leaning in",
+    "confused": "furrowed brow, head tilt, puzzled expression",
+    "amused": "slight smile, playful glint, relaxed posture",
+    "panicked": "wide eyes, alert posture, tension",
+    "shy": "look away slightly, subtle blush, soft expression",
+    "excited": "bright eyes, eager posture, high energy",
+    "determined": "focused gaze, firm set, resolved expression",
+    "playful": "mischievous grin, playful pose, winking",
+    "sneaky": "sideways glance, stealthy posture, smirk",
+    "mysterious": "enigmatic smile, shadowed eyes, intrigue",
+    "focused": "concentrated look, steady gaze, calm intensity",
+    "working_state": "busy but relaxed, productive vibe",
+    "grateful": "warm smile, soft eyes, appreciative posture",
+    "lazy": "half-lidded eyes, lounging pose, relaxed stretch",
+    "success_moment": "triumphant pose, bright glow, celebration",
+    "proud": "confident smile, head held high, satisfied look"
+  }
+}

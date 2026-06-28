@@ -1,0 +1,83 @@
+{
+  "version": "V111.44_STATIC_WARDROBE",
+  "seed_avatar": "assets/persona/seed_avatar.jpg",
+  "outfits": {
+    "default": {
+      "name": "默认头像",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/seed_avatar.jpg",
+      "generated_image_url": "seed_avatar",
+      "manual_only": false
+    },
+    "pajamas": {
+      "name": "睡衣",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_225200_rf_e_pajamas_rf.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "gown": {
+      "name": "深V幻彩纱裙",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_225300_rf_fr_gown_rf.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "bikini": {
+      "name": "幻彩荷叶边比基尼",
+      "prompt_suffix": "iridescent rainbow ruffled bikini, ruffle trim, ruffled hem, layered ruffles, not swimsuit, strapless",
+      "generated_image_path": "assets/persona/outfits/20260507_225000_rf_fr_bikini_rf.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": true
+    },
+    "silver_bikini": {
+      "name": "冷银月光比基尼",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_230900_fr_silver_bikini.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": true
+    },
+    "stardust_set": {
+      "name": "星尘银闪套装",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_230910_fr_stardust_set.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "aurora_fox_set": {
+      "name": "极光狐毛套装",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_230920_fr_aurora_fox_set.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "mermaid_gauze_set": {
+      "name": "人鱼纱幔套装",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_230930_fr_mermaid_gauze_set.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "galaxy_gown": {
+      "name": "银河缠纱礼服",
+      "prompt_suffix": "",
+      "generated_image_path": "assets/persona/outfits/20260507_230940_fr_galaxy_gown.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "moonfeather_robe": {
+      "name": "月羽云裳",
+      "prompt_suffix": "月白冰蓝渐变半透幻彩薄纱长裙，古风立领盘扣，露肩高开衩，紫晶镂空腰封垂挂粉蓝流苏，金属藤蔓刺绣花卉，九尾灵翼光羽披风，发光羽绒纤维渐变荧光蓝紫，星云辉光",
+      "generated_image_path": "assets/persona/outfits/月羽云裳_reference.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    },
+    "stardust_dream": {
+      "name": "星尘织梦",
+      "prompt_suffix": "银白亮片蕾丝镂空挂脖连体衣，星空渐变羽翼披风，高开衩，露腰交叉绑带，胸前菱形蓝宝石吊坠，流光幻彩狐尾，蓝紫粉渐变光效",
+      "generated_image_path": "assets/persona/outfits/星尘织梦_reference.jpg",
+      "generated_image_url": "user_provided_image",
+      "manual_only": false
+    }
+  }
+}

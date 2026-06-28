@@ -1,0 +1,23 @@
+{
+  "version": "V111.23",
+  "status": "pass",
+  "passed": 19,
+  "failed": 0,
+  "failures": [],
+  "online_runtime": {
+    "online_mode": true,
+    "offline_mode": false,
+    "no_external_api": false,
+    "connected_runtime_always_on": true,
+    "xiaoyi_capabilities_always_connected": true,
+    "end_side_capabilities_always_connected": true,
+    "device_bridge_always_connected": true,
+    "no_per_action_online_authorization": true,
+    "allow_external_providers_with_standing_consent": true,
+    "online_runtime_enabled": true,
+    "env_NO_EXTERNAL_API": null,
+    "env_OFFLINE_MODE": null,
+    "policy": "always_online_connected_runtime"
+  },
+  "seed_avatar_path": "assets/persona/seed_avatar.jpg"
+}

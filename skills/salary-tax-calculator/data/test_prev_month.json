@@ -1,0 +1,10 @@
+{
+  "metadata": {"month": "2026-03"},
+  "employees": [
+    {"name": "张三", "gross": 25000, "net_pay": 19910, "tax_amount": 1215, "si_personal": 2625, "fund_personal": 1250, "si_company": 6875, "fund_company": 1250, "company_cost": 33125},
+    {"name": "李四", "gross": 18000, "net_pay": 14963, "tax_amount": 689, "si_personal": 1700, "fund_personal": 1050, "si_company": 4580, "fund_company": 1050, "company_cost": 23630},
+    {"name": "王五", "gross": 35000, "net_pay": 26184, "tax_amount": 3156, "si_personal": 3612, "fund_personal": 1750, "si_company": 9375, "fund_company": 1750, "company_cost": 45475},
+    {"name": "赵六", "gross": 12000, "net_pay": 9992, "tax_amount": 158, "si_personal": 1250, "fund_personal": 600, "si_company": 3380, "fund_company": 600, "company_cost": 15980},
+    {"name": "孙七", "gross": 50000, "net_pay": 34530, "tax_amount": 7280, "si_personal": 3780, "fund_personal": 4234, "si_company": 10079, "fund_company": 4234, "company_cost": 64313}
+  ]
+}

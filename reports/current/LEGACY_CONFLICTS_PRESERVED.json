@@ -1,0 +1,242 @@
+[
+  {
+    "old_file": "memory/__init__.py",
+    "canonical_file": "intelligence/knowledge_memory/legacy_daily_memory/__init__.py",
+    "preserved_as": "intelligence/knowledge_memory/legacy_daily_memory/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "governance/audit/feedback.py",
+    "canonical_file": "governance/evidence_gate/audit/feedback.py",
+    "preserved_as": "governance/evidence_gate/audit/legacy_conflicts/feedback.py"
+  },
+  {
+    "old_file": "governance/audit/execution_audit_ledger.py",
+    "canonical_file": "governance/evidence_gate/audit/execution_audit_ledger.py",
+    "preserved_as": "governance/evidence_gate/audit/legacy_conflicts/execution_audit_ledger.py"
+  },
+  {
+    "old_file": "governance/audit/summarizer.py",
+    "canonical_file": "governance/evidence_gate/audit/summarizer.py",
+    "preserved_as": "governance/evidence_gate/audit/legacy_conflicts/summarizer.py"
+  },
+  {
+    "old_file": "governance/audit/explainer.py",
+    "canonical_file": "governance/evidence_gate/audit/explainer.py",
+    "preserved_as": "governance/evidence_gate/audit/legacy_conflicts/explainer.py"
+  },
+  {
+    "old_file": "governance/audit/__init__.py",
+    "canonical_file": "governance/evidence_gate/audit/__init__.py",
+    "preserved_as": "governance/evidence_gate/audit/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "approvals/__init__.py",
+    "canonical_file": "governance/evidence_gate/approvals/__init__.py",
+    "preserved_as": "governance/evidence_gate/approvals/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "orchestration/router/skill_router.py",
+    "canonical_file": "orchestration/skill_runtime/router/skill_router.py",
+    "preserved_as": "orchestration/skill_runtime/router/legacy_conflicts/skill_router.py"
+  },
+  {
+    "old_file": "orchestration/router/router.py",
+    "canonical_file": "orchestration/skill_runtime/router/router.py",
+    "preserved_as": "orchestration/skill_runtime/router/legacy_conflicts/router.py"
+  },
+  {
+    "old_file": "orchestration/router/routing/golden_path_regression.py",
+    "canonical_file": "orchestration/skill_runtime/router/routing/golden_path_regression.py",
+    "preserved_as": "orchestration/skill_runtime/router/routing/legacy_conflicts/routing/golden_path_regression.py"
+  },
+  {
+    "old_file": "orchestration/router/routing/route_impact_analysis.py",
+    "canonical_file": "orchestration/skill_runtime/router/routing/route_impact_analysis.py",
+    "preserved_as": "orchestration/skill_runtime/router/routing/legacy_conflicts/routing/route_impact_analysis.py"
+  },
+  {
+    "old_file": "orchestration/router/routing/__init__.py",
+    "canonical_file": "orchestration/skill_runtime/router/routing/__init__.py",
+    "preserved_as": "orchestration/skill_runtime/router/routing/legacy_conflicts/routing/__init__.py"
+  },
+  {
+    "old_file": "orchestration/router/weights.py",
+    "canonical_file": "orchestration/skill_runtime/router/weights.py",
+    "preserved_as": "orchestration/skill_runtime/router/legacy_conflicts/weights.py"
+  },
+  {
+    "old_file": "orchestration/router/rrf.py",
+    "canonical_file": "orchestration/skill_runtime/router/rrf.py",
+    "preserved_as": "orchestration/skill_runtime/router/legacy_conflicts/rrf.py"
+  },
+  {
+    "old_file": "orchestration/router/__init__.py",
+    "canonical_file": "orchestration/skill_runtime/router/__init__.py",
+    "preserved_as": "orchestration/skill_runtime/router/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "orchestration/workflow/parallel_policy.py",
+    "canonical_file": "execution/task_runtime/workflow/parallel_policy.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/parallel_policy.py"
+  },
+  {
+    "old_file": "orchestration/workflow/parallel_executor.py",
+    "canonical_file": "execution/task_runtime/workflow/parallel_executor.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/parallel_executor.py"
+  },
+  {
+    "old_file": "orchestration/workflow/workflow_event_projection.py",
+    "canonical_file": "execution/task_runtime/workflow/workflow_event_projection.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/workflow_event_projection.py"
+  },
+  {
+    "old_file": "orchestration/workflow/workflow_registry.py",
+    "canonical_file": "execution/task_runtime/workflow/workflow_registry.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/workflow_registry.py"
+  },
+  {
+    "old_file": "orchestration/workflow/dependency_resolver.py",
+    "canonical_file": "execution/task_runtime/workflow/dependency_resolver.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/dependency_resolver.py"
+  },
+  {
+    "old_file": "orchestration/workflow/workflow_replay.py",
+    "canonical_file": "execution/task_runtime/workflow/workflow_replay.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/workflow_replay.py"
+  },
+  {
+    "old_file": "orchestration/workflow/INTEGRATION_TEST.py",
+    "canonical_file": "execution/task_runtime/workflow/INTEGRATION_TEST.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/INTEGRATION_TEST.py"
+  },
+  {
+    "old_file": "orchestration/workflow/workflow_template_loader.py",
+    "canonical_file": "execution/task_runtime/workflow/workflow_template_loader.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/workflow_template_loader.py"
+  },
+  {
+    "old_file": "orchestration/workflow/workflow_engine.py",
+    "canonical_file": "execution/task_runtime/workflow/workflow_engine.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/workflow_engine.py"
+  },
+  {
+    "old_file": "orchestration/workflow/dag_builder.py",
+    "canonical_file": "execution/task_runtime/workflow/dag_builder.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/dag_builder.py"
+  },
+  {
+    "old_file": "orchestration/workflow/__init__.py",
+    "canonical_file": "execution/task_runtime/workflow/__init__.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "orchestration/workflow/state_machine.py",
+    "canonical_file": "execution/task_runtime/workflow/state_machine.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/state_machine.py"
+  },
+  {
+    "old_file": "orchestration/workflow/VERIFICATION_EXAMPLES.py",
+    "canonical_file": "execution/task_runtime/workflow/VERIFICATION_EXAMPLES.py",
+    "preserved_as": "execution/task_runtime/workflow/legacy_conflicts/VERIFICATION_EXAMPLES.py"
+  },
+  {
+    "old_file": "orchestration/workflows/branching.py",
+    "canonical_file": "execution/task_runtime/workflows/branching.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/branching.py"
+  },
+  {
+    "old_file": "orchestration/workflows/code_audit.py",
+    "canonical_file": "execution/task_runtime/workflows/code_audit.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/code_audit.py"
+  },
+  {
+    "old_file": "orchestration/workflows/factory_comparison.py",
+    "canonical_file": "execution/task_runtime/workflows/factory_comparison.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/factory_comparison.py"
+  },
+  {
+    "old_file": "orchestration/workflows/partner_selection.py",
+    "canonical_file": "execution/task_runtime/workflows/partner_selection.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/partner_selection.py"
+  },
+  {
+    "old_file": "orchestration/workflows/resource_paths.py",
+    "canonical_file": "execution/task_runtime/workflows/resource_paths.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/resource_paths.py"
+  },
+  {
+    "old_file": "orchestration/workflows/influencer_cooperation.py",
+    "canonical_file": "execution/task_runtime/workflows/influencer_cooperation.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/influencer_cooperation.py"
+  },
+  {
+    "old_file": "orchestration/workflows/file_organization.py",
+    "canonical_file": "execution/task_runtime/workflows/file_organization.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/file_organization.py"
+  },
+  {
+    "old_file": "orchestration/workflows/commission_design.py",
+    "canonical_file": "execution/task_runtime/workflows/commission_design.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/commission_design.py"
+  },
+  {
+    "old_file": "orchestration/workflows/leader_selection.py",
+    "canonical_file": "execution/task_runtime/workflows/leader_selection.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/leader_selection.py"
+  },
+  {
+    "old_file": "orchestration/workflows/cooperation_negotiation.py",
+    "canonical_file": "execution/task_runtime/workflows/cooperation_negotiation.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/cooperation_negotiation.py"
+  },
+  {
+    "old_file": "orchestration/workflows/workflow_base.py",
+    "canonical_file": "execution/task_runtime/workflows/workflow_base.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/workflow_base.py"
+  },
+  {
+    "old_file": "orchestration/workflows/preview.py",
+    "canonical_file": "execution/task_runtime/workflows/preview.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/preview.py"
+  },
+  {
+    "old_file": "orchestration/workflows/ecommerce_product_analysis.py",
+    "canonical_file": "execution/task_runtime/workflows/ecommerce_product_analysis.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/ecommerce_product_analysis.py"
+  },
+  {
+    "old_file": "orchestration/workflows/compensation.py",
+    "canonical_file": "execution/task_runtime/workflows/compensation.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/compensation.py"
+  },
+  {
+    "old_file": "orchestration/workflows/store_launch.py",
+    "canonical_file": "execution/task_runtime/workflows/store_launch.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/store_launch.py"
+  },
+  {
+    "old_file": "orchestration/workflows/parallel_steps.py",
+    "canonical_file": "execution/task_runtime/workflows/parallel_steps.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/parallel_steps.py"
+  },
+  {
+    "old_file": "orchestration/workflows/__init__.py",
+    "canonical_file": "execution/task_runtime/workflows/__init__.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/__init__.py"
+  },
+  {
+    "old_file": "orchestration/workflows/human_confirm.py",
+    "canonical_file": "execution/task_runtime/workflows/human_confirm.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/human_confirm.py"
+  },
+  {
+    "old_file": "orchestration/workflows/live_stream_operation.py",
+    "canonical_file": "execution/task_runtime/workflows/live_stream_operation.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/live_stream_operation.py"
+  },
+  {
+    "old_file": "orchestration/workflows/ecommerce_operation.py",
+    "canonical_file": "execution/task_runtime/workflows/ecommerce_operation.py",
+    "preserved_as": "execution/task_runtime/workflows/legacy_conflicts/ecommerce_operation.py"
+  }
+]

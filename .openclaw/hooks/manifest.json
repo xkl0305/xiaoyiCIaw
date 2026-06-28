@@ -1,0 +1,8 @@
+{
+  "enabled": true,
+  "version": "V111.44_PERSONA_VISUAL_FUSION_CLEAN",
+  "hooks": {
+    "pre_reply": ".openclaw/hooks/pre_reply.py",
+    "post_reply": ".openclaw/hooks/post_reply.py"
+  }
+}

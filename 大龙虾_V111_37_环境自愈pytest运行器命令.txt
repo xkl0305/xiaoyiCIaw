@@ -1,0 +1,22 @@
+# 1. 覆盖
+unzip -o dalongxia_v111_37_env_self_heal_overlay.zip -d /你的项目根目录
+cd /你的项目根目录
+python3 scripts/apply_v111_37_env_self_heal.py --yes
+
+# 2. 看环境自愈状态
+python3 scripts/dlx_env.py --show
+python3 scripts/audit_v111_37_env_self_heal.py
+cat reports/V111_37_ENV_SELF_HEAL_AUDIT.txt
+
+# 3. 用自愈运行器跑 pytest，不再直接 python3 -m pytest
+python3 scripts/dlx_pytest.py --collect-only -q -p no:cacheprovider
+
+# 4. 如缺 pydantic/pytest，默认不联网；用本地 wheelhouse 离线安装
+# 把离线 whl 文件放到 vendor/wheels/ 后执行：
+python3 scripts/bootstrap_local_deps_v111_37.py --wheelhouse vendor/wheels
+
+# 5. 只有你明确允许联网时才执行这一条；默认不要执行
+python3 scripts/bootstrap_local_deps_v111_37.py --allow-network
+
+# 6. 打干净源码包
+bash scripts/package_clean_source_v111_37.sh workspace_clean_source_v111_37.tar.gz

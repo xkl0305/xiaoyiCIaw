@@ -1,0 +1,20 @@
+{
+  "ok": false,
+  "reasons": [
+    "auto_generate_disabled"
+  ],
+  "auto_generate_enabled": false,
+  "confidence": 0.95,
+  "confidence_threshold": 0.82,
+  "daily": {
+    "ok": true,
+    "today_count": 0,
+    "daily_limit": 3
+  },
+  "cooldown": {
+    "ok": true,
+    "cooldown_turns": 8,
+    "basis": "no_turn_ledger_available"
+  },
+  "estimated_cost_unknown": true
+}

@@ -1,0 +1,30 @@
+# compat-version.toml — declares which GaussPD_Memory release tarballs this
+# skill bundle understands.
+#
+# The orchestrator gates installs on a single piece of metadata:
+# `contract_version` from the tarball's `scripts/contract.toml`. If that
+# value is in `supported_contract_versions`, the install proceeds; otherwise
+# the skill bundle needs a `git pull`. Pre-contract artifacts (no
+# `scripts/contract.toml`) are no longer supported — the legacy fallback
+# path that routed them through `celiaclaw/sandbox/install.sh` has been
+# retired along with `min_artifact_version` / `fallback_artifact_versions`.
+
+schema_version = 2
+
+# Tarball-side `contract_version` values this skill bundle knows how to
+# drive. Append to this list when GaussPD_Memory ships a new contract.
+# v2 introduced by the layout migration (gspd_memory subtree, install/current
+# symlink, gspd_memory/ DB subdir, workspace/skills/experimental-memory-* deployment).
+# v1 kept for compat with pre-relayout tarballs that this skill bundle used to
+# install (legacy /home/sandbox/plugins/ + ~/.gspd/ layout). The orchestrator's
+# code paths for v1 fall back where applicable.
+supported_contract_versions = [1, 2]
+
+[remote]
+# GaussPD_Artifacts public mirror for fetching latest-*.txt + manifests.
+# The orchestrator clones this repo (shallow, no blobs) under
+# `~/.openclaw/extensions/gspd_memory/_artifacts-mirror/` and reads pointer/manifest files from the
+# working tree — `raw/main/...` URLs are intercepted by the GitCode SPA
+# shell page and unusable for direct fetch.
+artifacts_repo_raw = "https://gitcode.com/CayleyVanguard/GaussPD_Artifacts/raw/main"
+artifacts_releases = "https://gitcode.com/CayleyVanguard/GaussPD_Artifacts/releases/download"

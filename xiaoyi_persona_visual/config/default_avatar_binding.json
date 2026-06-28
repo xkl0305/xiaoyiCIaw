@@ -1,0 +1,9 @@
+{
+  "default_avatar": "assets/persona/seed_avatar.jpg",
+  "avatar_binding": true,
+  "reference_weight": 100,
+  "reference_policy": "priority_context_reference",
+  "reference_priority": ["outfit_image", "scene_default_image", "seed_avatar"],
+  "bind_after_first_generation": true,
+  "avatar_locked": true
+}

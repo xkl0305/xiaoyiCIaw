@@ -1,0 +1,51 @@
+{
+  "version": "V111.21",
+  "status": "applied",
+  "purpose": "sanitize_persona_visual_runtime_state_after_V111_20",
+  "archived": [
+    ".visual_persona_state",
+    ".persona_visual",
+    "generated-images"
+  ],
+  "deleted_cache_count": 487,
+  "reset_active_dirs": [
+    ".visual_persona_state",
+    ".persona_visual",
+    "generated-images/persona_visual"
+  ],
+  "moved_superseded_reports": [
+    "reports/V111_15_PERSONA_VISUAL_REAL_CLOSURE_RESULT.md",
+    "reports/V111_19_PERSONA_VISUAL_SCENE_SEED_CONSISTENCY_RESULT.md",
+    "reports/V111_13_PERSONA_VISUAL_GATE_RESULT.json",
+    "reports/V111_18_PERSONA_VISUAL_BORROWED_CLOSED_LOOP_RESULT.md",
+    "reports/V111_13_PERSONA_VISUAL_AUTO_GENERATION_RESULT.md",
+    "reports/V111_13_SCENE_IMAGE_DETECTOR_RESULT.json",
+    "reports/V111_15_SCENE_IMAGE_UNDERSTANDING_RESULT.json",
+    "reports/V111_13_SEEDREAM_EXECUTION_BRIDGE_RESULT.json",
+    "reports/V111_15_SEEDREAM_IMPORT_ADAPTER_RESULT.md",
+    "reports/V111_17_SEEDREAM_SAFE_FAILURE_RESULT.json",
+    "reports/V111_16_SEEDREAM_NARROW_TOKEN_RESULT.json",
+    "reports/V111_16_MOOD_SIGNAL_MATRIX.json",
+    "reports/current/V111_2_3_PERSONA_VISUAL_APPROVAL_PREDICTION_BUNDLE_GATE.json",
+    "reports/current/V111_PERSONA_VISUALIZATION_APPLY.json",
+    "reports/current/V111_1_PERSONA_VISUAL_SEED_AVATAR_FIX_GATE.json",
+    "reports/current/V111_PERSONA_VISUALIZATION_GATE.json",
+    "reports/current/V111_2_PERSONA_VISUAL_EXTERNAL_POLICY_REPORT.json",
+    "reports/current/V111_2_3_PERSONA_VISUAL_APPROVAL_PREDICTION_BUNDLE_APPLY.json",
+    "reports/current/V111_3_PERSONA_VISUAL_PREDICTION_GATE.json",
+    "reports/current/V111_4_PERSONA_VISUAL_AUTO_POLICY_REPORT.json",
+    "reports/current/V111_2_PERSONA_VISUAL_EXTERNAL_APPROVAL_GATE.json",
+    "reports/current/V111_1_PERSONA_VISUAL_SEED_AVATAR_FIX_APPLY.json",
+    "reports/current/V111_4_PERSONA_VISUAL_AUTO_CONSENT_GATE.json",
+    "reports/current/V111_3_PERSONA_VISUAL_PREDICTION_POLICY_REPORT.json"
+  ],
+  "archive_root": "archive/persona_visual_runtime_state_sanitized/V111_21_20260506_222706",
+  "seed_avatar_path": "assets/persona/seed_avatar.jpg",
+  "active_runtime": "memory_context.persona_runtime",
+  "notes": [
+    "Runtime token files are not shipped in active state.",
+    "Old generated images are not left in active generated-images.",
+    "Old persona visual reports are not left as active reports.",
+    "Seed avatar remains the only identity source."
+  ]
+}

@@ -1,0 +1,20 @@
+[Unit]
+Description=Xiaoyi Personal OS Local Runtime (rootless, strict local)
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/xiaoyi/workspace
+Environment=OFFLINE_MODE=true
+Environment=NO_EXTERNAL_API=true
+Environment=ALLOW_NETWORK=false
+Environment=NO_REAL_PAYMENT=true
+Environment=NO_REAL_SEND=true
+Environment=HF_HUB_OFFLINE=1
+Environment=TRANSFORMERS_OFFLINE=1
+ExecStart=/usr/bin/env bash deployment/rootless/healthcheck.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

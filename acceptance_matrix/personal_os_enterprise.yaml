@@ -1,0 +1,20 @@
+version: V111.52.6_ENTERPRISE_HARDENING_FULL_CLOSE_FINAL
+checks:
+  - id: offline_cold_boot
+    expected: ALLOW_NETWORK=false and NO_EXTERNAL_API=true
+  - id: side_effect_proof_issue
+    expected: proof registry status issued
+  - id: proof_replay_block
+    expected: second consumption blocked
+  - id: stale_file_send_block
+    expected: blocked_send=true
+  - id: provider_domain_fallback
+    expected: local providers only, otherwise fail_closed
+  - id: transport_fallback
+    expected: requests to urllib within same provider domain only
+  - id: secret_packaging_scan
+    expected: no secret/key/token literals and no runtime secret files
+  - id: persona_visual_anatomy
+    expected: tail rooted at tailbone/sacrum and never floating in background
+  - id: observability_complete
+    expected: proof/action/provider events written to sqlite_wal event ledger

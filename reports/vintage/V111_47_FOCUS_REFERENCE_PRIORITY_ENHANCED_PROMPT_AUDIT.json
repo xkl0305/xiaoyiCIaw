@@ -1,0 +1,21 @@
+{
+  "status": "ok",
+  "version": "V111_47_FOCUS_REFERENCE_PRIORITY_ENHANCED_PROMPT",
+  "focus_target": "legs",
+  "reference_priority_source": "outfit_image",
+  "scene_direct_send_planned": true,
+  "focus_generation_model": "seedream5.0_image_to_image",
+  "generated_image_target_count": 1,
+  "max_images_this_turn": 2,
+  "focus_prompt_enhanced": true,
+  "focus_prompt_style": "scene_enhanced",
+  "focus_prompt_preview": "，微微抬腿，裙摆轻轻掀起一点，身体微微侧转，双腿交错站姿，手扶裙摆边缘，害羞配合，微微脸红，轻咬下唇，害羞，配合，脸红，偏头，三分之二身镜头，从大腿到小腿的美观取景，腿部线条自然展示，温柔展示、精致优雅、配合呈现，月白冰蓝渐变半透幻彩薄纱长裙，古风立领盘扣，露肩高开衩，紫晶镂空腰封垂挂粉蓝流苏，金属藤蔓刺绣花卉，九尾灵翼光羽披风，发光羽绒纤维渐变荧光蓝紫，星云辉光，月羽云裳的薄纱裙摆随风飘了一下",
+  "scene_default_status": "default_scene_available_manual_only",
+  "scene_default_file": "assets/persona/scene_defaults/05_bashful_shy_02.jpg",
+  "reference_policy": "priority_context_reference",
+  "reference_priority": [
+    "outfit_image",
+    "scene_default_image",
+    "seed_avatar"
+  ]
+}

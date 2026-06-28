@@ -1,0 +1,7 @@
+{
+  "version": "V110_final",
+  "timestamp": "20260504_155133",
+  "included": 4852,
+  "excluded": 390,
+  "commit": "ac26264 V108.2: 路径直接守卫 + 执行层导入兼容 + 报告索引修复"
+}

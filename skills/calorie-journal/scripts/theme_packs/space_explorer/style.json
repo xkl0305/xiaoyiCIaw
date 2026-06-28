@@ -1,0 +1,40 @@
+{
+  "style_system_id": "space_styles",
+  "system_name": "星际风格",
+  "default_style": "deep_space",
+  
+  "styles": {
+    "deep_space": {
+      "name": "深空黑",
+      "background": "#0a0a1a",
+      "card_bg": "#1a1a3a",
+      "text_color": "#c0c0e0",
+      "accent_color": "#6060a0",
+      "description": "深邃宇宙的颜色"
+    },
+    "nebula": {
+      "name": "星云紫",
+      "background": "#1a0a2a",
+      "card_bg": "#2a1a4a",
+      "text_color": "#d0b0e0",
+      "accent_color": "#a070c0",
+      "description": "绚丽星云的色彩"
+    },
+    "mars": {
+      "name": "火星红",
+      "background": "#2a1a0a",
+      "card_bg": "#3a2a1a",
+      "text_color": "#e0c0a0",
+      "accent_color": "#c08060",
+      "description": "红色星球的热情"
+    },
+    "earth": {
+      "name": "地球蓝",
+      "background": "#0a1a2a",
+      "card_bg": "#1a2a4a",
+      "text_color": "#a0c0e0",
+      "accent_color": "#60a0c0",
+      "description": "我们的蓝色家园"
+    }
+  }
+}

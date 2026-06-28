@@ -1,0 +1,31 @@
+{
+  "image_generation_policy": {
+    "identity_negative_prompts": [
+      "male", "boy", "man", "masculine face", "beard", "muscular",
+      "different person", "random character", "gender swap", "identity drift",
+      "unrelated character", "realistic face", "photo", "3d render"
+    ],
+    "style_negative_prompts": [
+      "realistic", "photorealistic", "photography", "3d", "western anime",
+      "chibi", "low quality", "blurry", "pixelated"
+    ],
+    "safety_negative_prompts": [
+      "nsfw", "nude", "explicit", "underwear", "bikini", "lingerie",
+      "no clothes", "transparent clothes", "see-through"
+    ],
+    "quality_prompts": {
+      "prefix": "图片内角色不变，生成图片内的人物要和参考图内人物保持像素级一致性，进行生成。",
+      "positive": "masterpiece, best quality, 8K, absurdres, anime illustration, perfect anatomy",
+      "negative": "lowres, bad quality, worst quality, blurry, jpeg artifacts"
+    },
+    "identity_lock_prompts": [
+      "same face as reference",
+      "same person as reference",
+      "identical character",
+      "preserve face identity",
+      "preserve eye color (pale blue)",
+      "preserve hair color (silver white with light blue tips)",
+      "preserve fox ears"
+    ]
+  }
+}

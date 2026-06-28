@@ -1,0 +1,77 @@
+# V111.52.8 local capability runtime example.
+# Copy to profiles/local_capabilities.toml and edit local paths only.
+# Never put cloud keys or paid/external provider endpoints here.
+
+[local_llm]
+capability = "local_llm"
+enabled = false
+provider = "llama.cpp_or_vllm_local"
+model_path = ""
+endpoint = "http://127.0.0.1:8002"
+allow_external_fallback = false
+# endpoint must be loopback only, e.g. llama.cpp/vLLM OpenAI-compatible server.
+# command = "python3 scripts/local_adapters/llm_cli.py"
+
+[local_vlm]
+capability = "local_vlm"
+enabled = false
+provider = "qwen_vl_local"
+model_path = ""
+endpoint = "http://127.0.0.1:8003"
+allow_external_fallback = false
+# command = "python3 scripts/local_adapters/vlm_cli.py --image {image_path}"
+
+[local_ocr]
+capability = "local_ocr"
+enabled = false
+provider = "paddleocr_local"
+model_path = ""
+command = ""
+# command supports {image_path}; stdout should be recognized text.
+allow_external_fallback = false
+
+[local_asr]
+capability = "local_asr"
+enabled = false
+provider = "funasr_or_whisper_local"
+model_path = ""
+command = ""
+# command supports {audio_path}; stdout should be transcript text.
+allow_external_fallback = false
+
+[local_tts]
+capability = "local_tts"
+enabled = false
+provider = "qwen3_tts_or_cosyvoice_local"
+model_path = ""
+command = ""
+# command supports {text} and optional {output_path}.
+allow_external_fallback = false
+
+[local_embedding]
+capability = "local_embedding"
+enabled = false
+provider = "bge_m3_local"
+model_path = ""
+endpoint = "http://127.0.0.1:8004"
+command = ""
+# command can read stdin and output JSON embedding list.
+allow_external_fallback = false
+
+[local_reranker]
+capability = "local_reranker"
+enabled = false
+provider = "bge_reranker_local"
+model_path = ""
+endpoint = "http://127.0.0.1:8005"
+command = ""
+allow_external_fallback = false
+
+[local_image_provider]
+capability = "local_image_provider"
+enabled = false
+provider = "diffusers_or_comfyui_local"
+model_path = ""
+endpoint = "http://127.0.0.1:8006"
+command = ""
+allow_external_fallback = false

@@ -1,0 +1,14 @@
+{
+  "changed": [
+    "archive/scripts/wrappers/v75_6_plugin_reality_gate.py",
+    "archive/scripts/wrappers/v75_6_plugin_install_check.py",
+    "archive/scripts/wrappers/v95_2_all_chain_coverage_gate.py",
+    "archive/scripts/wrappers/v98_1_mainline_hook_runtime_gate.py",
+    "archive/scripts/wrappers/v92_3_self_improvement_signature_cleanup_apply.py",
+    "archive/scripts/wrappers/v92_2_self_improvement_goal_hotfix_apply.py",
+    "archive/scripts/wrappers/v92_4_final_import_and_subprocess_fix_gate.py",
+    "archive/scripts/wrappers/v99_1_ops_dashboard_generator.py"
+  ],
+  "compile_errors_after": [],
+  "compile_error_count": 0
+}

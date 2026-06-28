@@ -1,0 +1,55 @@
+
+# 大文件和缓存
+*.pyc
+__pycache__/
+*.egg-info/
+.eggs/
+dist/
+build/
+*.tar.gz
+*.zip
+node_modules/
+.venv/
+venv/
+# 大型资源文件
+skills/darwin-skill/assets/hero.gif
+skills/gtht-realtimemarketdata-skill/skill-entry.js
+skills/gtht-ranklist-skill/skill-entry.js
+skills/alphaear-predictor/scripts/predictor/exports/models/*.pt
+# 保留 releases 目录
+!releases/
+!releases/*.tar.gz
+repo/
+_venv_python/
+.dlx_runtime/
+.pytest_cache/
+*.jsonl
+.openclaw/hook_state/
+generated-images/
+*.pyo
+.v111_*_backup_*
+reports/V111_35*
+reports/V111_36*
+README_V111_35.txt
+README_V111_36.txt
+*V111_35*
+*V111_36*
+*v111_35*
+*v111_36*
+# V111.51.14 persona visual clean package excludes
+V*_overlay/
+V*_overlay.zip
+V*_overlay.tar.gz
+*_overlay/
+*_overlay.zip
+*_overlay.tar.gz
+.persona_visual/generated/
+.persona_visual/*.jsonl
+.persona_visual/runtime_wardrobe_state.json
+.v98_state/
+.v107_state/
+.lazy_state/
+.context_state/
+cache/
+logs/
+# V111.51.19 clean package final excludes

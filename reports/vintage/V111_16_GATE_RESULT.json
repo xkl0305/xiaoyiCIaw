@@ -1,0 +1,52 @@
+{
+  "timestamp": "2026-05-05T21:47:38.232215",
+  "version": "V111.16",
+  "gate_script": "scripts/v111_16_persona_visual_mood_trigger_gate.py",
+  "tests": [
+    {
+      "test": "Strong emotional text \u2192 auto_generation_candidate",
+      "passed": true
+    },
+    {
+      "test": "Mild confusion \u2192 below threshold",
+      "passed": true
+    },
+    {
+      "test": "Sneaky text \u2192 below threshold",
+      "passed": true
+    },
+    {
+      "test": "Budget guard rejects when exceeded",
+      "passed": true
+    },
+    {
+      "test": "Narrow token validation",
+      "passed": true
+    },
+    {
+      "test": "All 21 moods defined",
+      "passed": true
+    },
+    {
+      "test": "mainline_hook no longer requires scene_path",
+      "passed": true
+    },
+    {
+      "test": "Bridge works without scene_image_path",
+      "passed": true
+    },
+    {
+      "test": "scene_image_path in hook removed",
+      "passed": true
+    },
+    {
+      "test": "visual_mood_mappings synced",
+      "passed": true
+    },
+    {
+      "test": "Compile 0 errors",
+      "passed": true
+    }
+  ],
+  "summary": "11/11 tests passed"
+}

@@ -1,0 +1,62 @@
+{
+  "applied_at": "2026-05-14T07:56:17.452690+00:00",
+  "copied_count": 22,
+  "copied_files": [
+    "release_manifest.json",
+    "README_V111_52_1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD.md",
+    "governance/failure_pattern_registry.json",
+    "governance/side_effect_policy.json",
+    "xiaoyi_persona_visual/version.json",
+    "acceptance_matrix/personal_os_enterprise_online_guard.yaml",
+    "config/personal_os_enterprise_core.json",
+    "profiles/always_connected_enterprise.toml",
+    "infrastructure/packaging/source_runtime_boundary.py",
+    "infrastructure/observability/metrics_catalog.json",
+    ".openclaw/hooks/manifest.personal_os_enterprise_v111_52_1.json",
+    "xiaoyi_persona_visual/diagnostics/verify_v111_52_1_personal_os_enterprise_online_guard.py",
+    "core/personal_os_enterprise/acceptance_matrix_runner.py",
+    "core/personal_os_enterprise/offline_profile.py",
+    "core/personal_os_enterprise/action_guard.py",
+    "core/personal_os_enterprise/runtime_profile.py",
+    "core/personal_os_enterprise/local_capability_registry.py",
+    "core/personal_os_enterprise/side_effect_registry.py",
+    "core/personal_os_enterprise/runtime_secret_provider.py",
+    "core/personal_os_enterprise/observability_event_bus.py",
+    "core/personal_os_enterprise/__init__.py",
+    "core/personal_os_enterprise/side_effect_proof.py"
+  ],
+  "notes": [
+    "default enterprise profile is always_connected_enterprise",
+    "runtime secrets are not packaged and will be created under .openclaw/state only when needed",
+    "V111.52.0 observability_event_bus SyntaxError is overwritten by fixed file"
+  ],
+  "openclaw_merge": {
+    "path": "openclaw.json",
+    "personalOSEnterprise": {
+      "connectorAuthPromptPolicy": "once_per_connector_or_config_change",
+      "defaultProfile": "always_connected_enterprise",
+      "enabled": true,
+      "proofOneTimeUse": true,
+      "requireSideEffectProof": true,
+      "runtimeSecretPackaged": false,
+      "runtimeSecretPath": ".openclaw/state/personal_os_enterprise/secrets",
+      "sourceRuntimeSeparation": true,
+      "standingConnectionMode": "always_connected",
+      "version": "V111.52.1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD"
+    },
+    "runtime": {
+      "ALLOW_NETWORK": true,
+      "CONNECTED_RUNTIME_ALWAYS_ON": true,
+      "DISABLE_LLM_API": false,
+      "DISABLE_THINKING_MODE": false,
+      "NO_EXTERNAL_API": false,
+      "NO_REAL_DEVICE": false,
+      "NO_REAL_PAYMENT": false,
+      "NO_REAL_SEND": false,
+      "OFFLINE_MODE": false,
+      "ONLINE_MODE": true
+    }
+  },
+  "project_root": "/home/sandbox/.openclaw/workspace",
+  "version": "V111.52.1_PERSONAL_OS_ENTERPRISE_ONLINE_GUARD"
+}

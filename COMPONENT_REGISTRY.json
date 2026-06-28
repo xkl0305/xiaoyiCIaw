@@ -1,0 +1,1339 @@
+{
+  "registry_version": "1.0",
+  "generated_at": "2026-05-15T14:15:00Z",
+  "total_components": 222,
+  "components": [
+    {
+      "name": "PlatformAdapter",
+      "description": "Platform-specific adapters (Xiaoyi adapter, device tool adapter, alarm tool policy, capability registry, invocation ledger, guard, recovery, replay, runtime probe, self-healing, etc.)",
+      "layer": "L6",
+      "source": "infrastructure/platform_adapter/"
+    },
+    {
+      "name": "ConnectorFactory",
+      "description": "Connector blueprint factory for API, database, device, MCP integrations.",
+      "layer": "L6",
+      "source": "infrastructure/connector_factory/"
+    },
+    {
+      "name": "ExternalAccessGuard",
+      "description": "Global offline/online guard for external API and network access. The core gate for all outbound connections.",
+      "layer": "L6",
+      "source": "infrastructure/external_access_guard.py"
+    },
+    {
+      "name": "OfflineMode",
+      "description": "Global offline runtime policy and guard. Blocks external API, webhook, PostgreSQL, Redis, Celery, GPU, MCP connections when offline.",
+      "layer": "L6",
+      "source": "infrastructure/offline_mode.py, infrastructure/offline_runtime_guard.py, infrastructure/offline_adapters.py"
+    },
+    {
+      "name": "OnlineRuntimePolicy",
+      "description": "Online runtime policy definition.",
+      "layer": "L6",
+      "source": "infrastructure/online_runtime_policy.py"
+    },
+    {
+      "name": "MainlineHook",
+      "description": "Mainline hook runtime — pre-reply / post-reply life cycle hooks for persona, governance, and infrastructure.",
+      "layer": "L6",
+      "source": "infrastructure/mainline_hook.py, infrastructure/message_hook_bootstrap.py, infrastructure/persona_visual_hook_bus.py"
+    },
+    {
+      "name": "UnifiedModelGateway",
+      "description": "Unified LLM model gateway — routes requests across providers with offline guard.",
+      "layer": "L6",
+      "source": "infrastructure/unified_model_gateway.py"
+    },
+    {
+      "name": "ObservabilityAndLogging",
+      "description": "Observability infrastructure: health monitor, logger, metrics, timeline, runtime alerts, unified ledger.",
+      "layer": "L6",
+      "source": "infrastructure/observability/, infrastructure/monitoring/, infrastructure/unified_observability_ledger.py, infrastructure/unified_logger.py, infrastructure/unified_monitoring_health.py"
+    },
+    {
+      "name": "Storage",
+      "description": "Data storage layer: SQLite, PostgreSQL, Redis repository implementations, SQLite utilities.",
+      "layer": "L6",
+      "source": "infrastructure/storage/"
+    },
+    {
+      "name": "Cache",
+      "description": "Caching infrastructure: cache manager, query cache, RAG cache, cache optimizer.",
+      "layer": "L6",
+      "source": "infrastructure/cache/"
+    },
+    {
+      "name": "ConnectorsAndWorldInterface",
+      "description": "External connector registry, health monitor, permission scope, world interface resolver, adapter contract gate.",
+      "layer": "L6",
+      "source": "infrastructure/connectors/, infrastructure/world_interface/"
+    },
+    {
+      "name": "ExecutionRuntime",
+      "description": "Execution runtime services: dry-run mirror, real execution broker, trace recorder, replay engine, shadow replay validator.",
+      "layer": "L6",
+      "source": "infrastructure/execution_runtime/"
+    },
+    {
+      "name": "AutomationAndScheduler",
+      "description": "Task automation, smart scheduler, event trigger, pipeline executor, scheduler service.",
+      "layer": "L6",
+      "source": "infrastructure/automation/, infrastructure/scheduler/"
+    },
+    {
+      "name": "HardwareOptimization",
+      "description": "Hardware-level optimization: CPU optimizer, GPU ops, NUMA optimizer.",
+      "layer": "L6",
+      "source": "infrastructure/hardware/"
+    },
+    {
+      "name": "PerformanceOptimization",
+      "description": "Performance optimization: unified optimizer, smart router, token budget, priority queue, parallel processor, lazy loading.",
+      "layer": "L6",
+      "source": "infrastructure/optimization/, infrastructure/performance/"
+    },
+    {
+      "name": "LazyLoading",
+      "description": "Lazy loading infrastructure: lazy loader, unified lazy loading policy, compatibility bridge.",
+      "layer": "L6",
+      "source": "infrastructure/lazy/, infrastructure/loader/"
+    },
+    {
+      "name": "ToolNegotiation",
+      "description": "Tool capability negotiation, contract registry, fallback matrix.",
+      "layer": "L6",
+      "source": "infrastructure/tool_negotiation/"
+    },
+    {
+      "name": "ToolAdapters",
+      "description": "Specialized tool adapters: flaky tool, message adapter.",
+      "layer": "L6",
+      "source": "infrastructure/tool_adapters/"
+    },
+    {
+      "name": "DeviceCapabilityBus",
+      "description": "Device capability bus: executor, registry, schemas.",
+      "layer": "L6",
+      "source": "infrastructure/device_capability_bus/"
+    },
+    {
+      "name": "RollbackAndUpgradeGovernance",
+      "description": "Rollback/upgrade governance: rollback plan, snapshot policy, self-upgrade governor, diff risk analyzer, version lineage tracker.",
+      "layer": "L6",
+      "source": "infrastructure/rollback_governance/, infrastructure/upgrade_governance/"
+    },
+    {
+      "name": "ReleaseAndPackaging",
+      "description": "Release management, packaging, manifesto builder.",
+      "layer": "L6",
+      "source": "infrastructure/release/, infrastructure/manifest/, infrastructure/packaging/"
+    },
+    {
+      "name": "Alerting",
+      "description": "Alerting infrastructure: alert manager, notification manager, real-time alert, channels (Feishu webhook, GitHub summary, webhook).",
+      "layer": "L6",
+      "source": "infrastructure/alerting/"
+    },
+    {
+      "name": "OpsAndHealth",
+      "description": "Operations tooling: dashboard, incident manager, drift detector, deletion review, freeze window enforcer, connector uptime monitor, ops health supervisor.",
+      "layer": "L6",
+      "source": "infrastructure/ops/"
+    },
+    {
+      "name": "InventoryAndArchitectureDisplay",
+      "description": "Inventory snapshots, diff, module/skill catalog export, dependency graph export, architecture display generators.",
+      "layer": "L6",
+      "source": "infrastructure/inventory/"
+    },
+    {
+      "name": "AsyncSupport",
+      "description": "Async support utilities: batch operations, async helpers.",
+      "layer": "L6",
+      "source": "infrastructure/async_support/"
+    },
+    {
+      "name": "SharedUtils",
+      "description": "Shared infrastructure utilities: config, cache, dedup, prompt builder, router, smart router, weights.",
+      "layer": "L6",
+      "source": "infrastructure/shared/"
+    },
+    {
+      "name": "RuntimeFabric",
+      "description": "Runtime fabric: orchestrator, service mesh adapter, state sync engine.",
+      "layer": "L6",
+      "source": "infrastructure/runtime_fabric/"
+    },
+    {
+      "name": "GuiAgent",
+      "description": "GUI agent infrastructure: fast, smart, learner, optimizer variants.",
+      "layer": "L6",
+      "source": "infrastructure/gui_agent_fast.py, infrastructure/gui_agent_smart.py, etc."
+    },
+    {
+      "name": "VectorEngines",
+      "description": "Vector engine manager (three engines).",
+      "layer": "L6",
+      "source": "infrastructure/vector_engines/"
+    },
+    {
+      "name": "SkillSupplyChain",
+      "description": "Skill supply chain attestation, policy gate, build sandbox.",
+      "layer": "L6",
+      "source": "infrastructure/skill_build_sandbox_v5.py, infrastructure/skill_policy_gate.py, infrastructure/skill_supply_chain_attestation_v7.py"
+    },
+    {
+      "name": "FusionEngine",
+      "description": "Module/skill fusion engine, fusion engine v2.",
+      "layer": "L6",
+      "source": "infrastructure/fusion/, infrastructure/fusion_engine.py, infrastructure/fusion_engine_v2/"
+    },
+    {
+      "name": "Guards",
+      "description": "Infrastructure guards: package cleanliness guard, registry consistency guard.",
+      "layer": "L6",
+      "source": "infrastructure/guards/"
+    },
+    {
+      "name": "ImageGenerationScopeGuard",
+      "description": "Scope guard for image generation (persona visual budget/policy).",
+      "layer": "L6",
+      "source": "infrastructure/image_generation_scope_guard.py, infrastructure/persona_visual_*.py"
+    },
+    {
+      "name": "RunLedger",
+      "description": "Run ledger and route audit/state tracking.",
+      "layer": "L6",
+      "source": "infrastructure/run_ledger_v5.py, infrastructure/route_audit.py, infrastructure/route_state.py"
+    },
+    {
+      "name": "CompactResume",
+      "description": "Compact/resume policy for agent context management.",
+      "layer": "L6",
+      "source": "infrastructure/compact_resume_policy.py, infrastructure/context_resume.py"
+    },
+    {
+      "name": "TenantWorkspace",
+      "description": "Workspace tenant manager.",
+      "layer": "L6",
+      "source": "infrastructure/tenant/"
+    },
+    {
+      "name": "EcosystemPartner",
+      "description": "Partner/ecosystem manager.",
+      "layer": "L6",
+      "source": "infrastructure/ecosystem/"
+    },
+    {
+      "name": "ExtensionAndTemplates",
+      "description": "Extension contract manager, template replication engine.",
+      "layer": "L6",
+      "source": "infrastructure/extension/, infrastructure/templates/"
+    },
+    {
+      "name": "FaultInjection",
+      "description": "Fault injection testing infrastructure.",
+      "layer": "L6",
+      "source": "infrastructure/fault_injection/"
+    },
+    {
+      "name": "PersonaPromptRegistry",
+      "description": "Persona prompt registry.",
+      "layer": "L6",
+      "source": "infrastructure/persona_prompt_registry.py"
+    },
+    {
+      "name": "Config",
+      "description": "System configuration: feature flags, resource paths, runtime modes, safety controls, settings, default skill config.",
+      "layer": "L6",
+      "source": "config/"
+    },
+    {
+      "name": "Docs",
+      "description": "Architecture documentation, API references, change logs, version migration docs.",
+      "layer": "L6",
+      "source": "docs/"
+    },
+    {
+      "name": "FusedModules",
+      "description": "Legacy fused/one-shot run modules for deployment, audit, repair, and health checks. Carried over from V98-V111 release cycles.",
+      "layer": "L6",
+      "source": "infrastructure/fused_modules/"
+    },
+    {
+      "name": "ConstitutionalJudge",
+      "description": "V30 Constitutional Judge — core policy judgment engine for rule evaluation.",
+      "layer": "L5",
+      "source": "governance/constitutional_judge_v4.py"
+    },
+    {
+      "name": "ConstitutionalRuntime",
+      "description": "Operating constitution, preflight gate, risk proof.",
+      "layer": "L5",
+      "source": "governance/constitutional_runtime/"
+    },
+    {
+      "name": "V90FinalAccessGateway",
+      "description": "V90 FinalAccessGateway — 统一能力访问网关, the terminal commit barrier for all external actions.",
+      "layer": "L5",
+      "source": "governance/v90_final_access_gateway.py"
+    },
+    {
+      "name": "UnifiedGovernanceGate",
+      "description": "Unified governance gate — integrates authorization, privacy, and policy into one decision point.",
+      "layer": "L5",
+      "source": "governance/unified_governance_gate.py"
+    },
+    {
+      "name": "UnifiedAuthorizationPrivacyGate",
+      "description": "Unified authorization and privacy gate.",
+      "layer": "L5",
+      "source": "governance/unified_authorization_privacy_gate.py"
+    },
+    {
+      "name": "OnlineRiskConfirmationGate",
+      "description": "Online risk confirmation gate — user-facing risk confirmation before external actions.",
+      "layer": "L5",
+      "source": "governance/online_risk_confirmation_gate.py"
+    },
+    {
+      "name": "RuntimeCommitBarrierBridge",
+      "description": "Bridge between runtime and commit barrier infrastructure.",
+      "layer": "L5",
+      "source": "governance/runtime_commit_barrier_bridge.py"
+    },
+    {
+      "name": "AccessControl",
+      "description": "Access control with permission lease management.",
+      "layer": "L5",
+      "source": "governance/access_control/"
+    },
+    {
+      "name": "Audit",
+      "description": "Execution audit ledger, explainer, feedback, summarizer.",
+      "layer": "L5",
+      "source": "governance/audit/"
+    },
+    {
+      "name": "EvidenceGate",
+      "description": "Evidence-based approval gate: human approval interrupt, risk levels, closed-loop verifier, audit writer, recovery manager, result checker.",
+      "layer": "L5",
+      "source": "governance/evidence_gate/"
+    },
+    {
+      "name": "ClosedLoopVerifier",
+      "description": "Closed-loop verification: audit writer, final summarizer, recovery manager, result checker.",
+      "layer": "L5",
+      "source": "governance/closed_loop_verifier/"
+    },
+    {
+      "name": "Codex",
+      "description": "Personal codex and judgement engine for rule-based decision support.",
+      "layer": "L5",
+      "source": "governance/codex/"
+    },
+    {
+      "name": "HumanApprovalInterrupt",
+      "description": "Human approval interrupt V5 — blocks execution until manual approval received.",
+      "layer": "L5",
+      "source": "governance/human_approval_interrupt_v5.py"
+    },
+    {
+      "name": "PolicyEngine",
+      "description": "Policy engine: adaptive execution policy, autonomy level policy, autonomy safety case V6, connector governance broker V7, device action contract, risk tier matrix, failure taxonomy, execution autopilot, runtime policy enforcer, organ conflict policy, end-side global serial policy.",
+      "layer": "L5",
+      "source": "governance/policy/"
+    },
+    {
+      "name": "SafetyGovernor",
+      "description": "Safety governor: approval gate, game policy, policy engine, risk levels, runtime gate.",
+      "layer": "L5",
+      "source": "governance/safety_governor/"
+    },
+    {
+      "name": "EmbodiedPendingState",
+      "description": "Embodied pending state governance: action semantics, commit barrier, freeze switch, maturity scorecard, readiness gate.",
+      "layer": "L5",
+      "source": "governance/embodied_pending_state/"
+    },
+    {
+      "name": "EvolutionSafety",
+      "description": "Evolution safety: autonomy policy, memory governance, persona memory audit.",
+      "layer": "L5",
+      "source": "governance/evolution_safety/"
+    },
+    {
+      "name": "RedTeamSafety",
+      "description": "Red team safety: circuit breakers, red team suite, release assurance.",
+      "layer": "L5",
+      "source": "governance/red_team_safety/"
+    },
+    {
+      "name": "Evaluation",
+      "description": "Evaluation: autonomy regression matrix V4, continuous learning evaluator V5.",
+      "layer": "L5",
+      "source": "governance/evaluation/"
+    },
+    {
+      "name": "PersonaGovernance",
+      "description": "Persona governance: humanlike behavior policy, persona visual budget guard, persona visual external policy.",
+      "layer": "L5",
+      "source": "governance/persona/"
+    },
+    {
+      "name": "Security",
+      "description": "Security confirmation gates (security_confirmation, strong_confirmation).",
+      "layer": "L5",
+      "source": "governance/security/"
+    },
+    {
+      "name": "SelfAudit",
+      "description": "Self-audit: audit verifier.",
+      "layer": "L5",
+      "source": "governance/self_audit/"
+    },
+    {
+      "name": "Review",
+      "description": "Change review gate.",
+      "layer": "L5",
+      "source": "governance/review/"
+    },
+    {
+      "name": "ContextGuard",
+      "description": "Anti-context amnesia guard — prevents context loss during session transitions.",
+      "layer": "L5",
+      "source": "governance/context/"
+    },
+    {
+      "name": "Scheduler",
+      "description": "Realtime scheduler for governance tasks.",
+      "layer": "L5",
+      "source": "governance/scheduler/"
+    },
+    {
+      "name": "GateKernel",
+      "description": "Gate kernel (init placeholder).",
+      "layer": "L5",
+      "source": "governance/gate_kernel/"
+    },
+    {
+      "name": "OpsMissionControl",
+      "description": "Autonomous OS mission control V4, mission control dashboard V5.",
+      "layer": "L5",
+      "source": "governance/ops/"
+    },
+    {
+      "name": "SkillGovernance",
+      "description": "Skill governance: skill intelligence engine, priority scorer, profile generator, profile schema, registration pipeline, rule engine, usage feedback, proactive matcher.",
+      "layer": "L5",
+      "source": "governance/skill_intelligence_engine.py, governance/skill_priority_scorer.py, etc."
+    },
+    {
+      "name": "GovernanceFusedModules",
+      "description": "Legacy fused/one-shot run scripts for governance-level deployment, fusion, and cleanup.",
+      "layer": "L5",
+      "source": "governance/fused_modules/"
+    },
+    {
+      "name": "UnifiedToolExecutionGateway",
+      "description": "V108.1/V108.2 unified tool execution gateway with offline guard activation.",
+      "layer": "L4",
+      "source": "execution/unified_tool_execution_gateway.py"
+    },
+    {
+      "name": "UnifiedCapabilityGateway",
+      "description": "V109 unified capability gateway — unified capability registration and execution.",
+      "layer": "L4",
+      "source": "execution/unified_capability_gateway.py"
+    },
+    {
+      "name": "UnifiedActionAdapterEngine",
+      "description": "Unified action adapter engine for device action adaptation.",
+      "layer": "L4",
+      "source": "execution/unified_action_adapter_engine.py"
+    },
+    {
+      "name": "CapabilityRegistry",
+      "description": "Capability registry — unified management of registration, discovery, and execution of all capabilities.",
+      "layer": "L4",
+      "source": "execution/capabilities/registry.py"
+    },
+    {
+      "name": "DeviceActionCapabilities",
+      "description": "Device-action capabilities: approve, cancel_task, create_alarm, create_contact, delete_alarm, delete_note, get_location, list_notes, make_call, manage_file, query_contact, send_message, etc.",
+      "layer": "L4",
+      "source": "execution/capabilities/"
+    },
+    {
+      "name": "TaskRuntime",
+      "description": "Task runtime: autonomous task runtime (approval packet, failure recovery, runtime scorecard, task graph), task service (scheduler, service), task state.",
+      "layer": "L4",
+      "source": "execution/task_runtime/"
+    },
+    {
+      "name": "WorkflowEngine",
+      "description": "Workflow engine: DAG builder, dependency resolver, parallel executor, state machine, workflow engine, event projection, registry, replay, template loader.",
+      "layer": "L4",
+      "source": "execution/task_runtime/workflow/"
+    },
+    {
+      "name": "DomainWorkflows",
+      "description": "Domain-specific workflows: branching, code_audit, commission_design, compensation, cooperation_negotiation, ecommerce_operation, ecommerce_product_analysis, factory_comparison, file_organization, human_confirm, influencer_cooperation, leader_selection, live_stream_operation, parallel_steps, partner_selection, preview, store_launch, workflow_base, resource_paths.",
+      "layer": "L4",
+      "source": "execution/task_runtime/workflows/"
+    },
+    {
+      "name": "RuntimeSupervisor",
+      "description": "Runtime supervisor: connected adapter bootstrap, connection state, daemon manager, heartbeat executor, offline mode, runtime probe.",
+      "layer": "L4",
+      "source": "execution/runtime_supervisor/"
+    },
+    {
+      "name": "DeviceRealitySync",
+      "description": "Device reality synchronization: conflict resolver, dependency barrier, serial lane, timeout verifier, receipt reconciler.",
+      "layer": "L4",
+      "source": "execution/"
+    },
+    {
+      "name": "SearchAndRAG",
+      "description": "Search and RAG: distributed search, parallel search, hybrid memory search, ultimate search, dedup, search_enhanced, RAG optimizer, query rewriter.",
+      "layer": "L4",
+      "source": "execution/search/, execution/rag/, execution/distributed_search.py, etc."
+    },
+    {
+      "name": "VectorOps",
+      "description": "Vector operations: ANN, vector ops utilities.",
+      "layer": "L4",
+      "source": "execution/vector_ops/"
+    },
+    {
+      "name": "VisualOperationAgent",
+      "description": "Visual operation agent: screen observer, action executor, UI grounding, visual planner.",
+      "layer": "L4",
+      "source": "execution/visual_operation_agent/"
+    },
+    {
+      "name": "VisualTaskExecutor",
+      "description": "Visual task executor.",
+      "layer": "L4",
+      "source": "execution/visual_task_executor.py"
+    },
+    {
+      "name": "SpeculativeDecoding",
+      "description": "Speculative decoding for accelerated inference (v1 with NVIDIA adapter).",
+      "layer": "L4",
+      "source": "execution/speculative_decoding_v1/"
+    },
+    {
+      "name": "Quantization",
+      "description": "Quantization: OPQ quantization, quantization utilities.",
+      "layer": "L4",
+      "source": "execution/quantization/"
+    },
+    {
+      "name": "Failover",
+      "description": "Failover execution support.",
+      "layer": "L4",
+      "source": "execution/failover/"
+    },
+    {
+      "name": "Optimizer",
+      "description": "Auto tuner for execution optimization.",
+      "layer": "L4",
+      "source": "execution/optimizer/"
+    },
+    {
+      "name": "ActionIdempotencyGuard",
+      "description": "Action idempotency guard — prevents duplicate execution of the same action.",
+      "layer": "L4",
+      "source": "execution/action_idempotency_guard.py"
+    },
+    {
+      "name": "Skills",
+      "description": "208 skill packages installed in the skills/ directory. Managed by skill governance layer and skill registry.",
+      "layer": "L4",
+      "source": "skills/"
+    },
+    {
+      "name": "Platform",
+      "description": "Platform layer (currently empty, only README).",
+      "layer": "L4",
+      "source": "platform/"
+    },
+    {
+      "name": "ExecutionFusedModules",
+      "description": "Execution fused modules: heartbeat executor.",
+      "layer": "L4",
+      "source": "execution/fused_modules/"
+    },
+    {
+      "name": "TaskOrchestrator",
+      "description": "Task orchestrator — creates, schedules, and manages task lifecycle.",
+      "layer": "L3",
+      "source": "orchestration/task_orchestrator.py"
+    },
+    {
+      "name": "SingleRuntimeEntrypoint",
+      "description": "Single runtime entrypoint — entry point for incoming messages, delegates to UnifiedSystemBus.",
+      "layer": "L3",
+      "source": "orchestration/single_runtime_entrypoint.py"
+    },
+    {
+      "name": "UnifiedSystemBus",
+      "description": "Unified system bus — coordinates skill intelligence engine, runtime bus, and message routing.",
+      "layer": "L3",
+      "source": "orchestration/unified_system_bus.py"
+    },
+    {
+      "name": "RuntimeBus",
+      "description": "V104.3 Runtime Bus — coordinates mainline_hook, single_runtime_entrypoint, skill policy, runtime guard, and commit barrier.",
+      "layer": "L3",
+      "source": "orchestration/runtime_bus.py"
+    },
+    {
+      "name": "AgentKernelFacade",
+      "description": "Agent kernel facade — unified entry point exposing agent_kernel core modules.",
+      "layer": "L3",
+      "source": "orchestration/agent_kernel_facade.py"
+    },
+    {
+      "name": "AgentKernelAdapters",
+      "description": "Agent kernel adapters (shim layer) — redirects orchestration calls to core.agent_kernel.adapters. Contains adapters for: operating_spine, operating_agent, personalization, runtime_activation, release_hardening, real_connector_execution, real_tool_binding, real_work_entry, skill_evolution_ops, top_ai_operator, world_interface, unified_judge, and more.",
+      "layer": "L3",
+      "source": "orchestration/agent_kernel/"
+    },
+    {
+      "name": "TaskEngine",
+      "description": "Task engine — core task execution and lifecycle.",
+      "layer": "L3",
+      "source": "orchestration/task_engine.py"
+    },
+    {
+      "name": "WorkflowOrchestrator",
+      "description": "Workflow orchestrator — workflow-level coordination.",
+      "layer": "L3",
+      "source": "orchestration/workflow_orchestrator.py"
+    },
+    {
+      "name": "WorkflowEngineV2",
+      "description": "Standalone workflow engine (distinct from execution/task_runtime/workflow).",
+      "layer": "L3",
+      "source": "orchestration/workflow_engine.py"
+    },
+    {
+      "name": "WorkflowCore",
+      "description": "Workflow core: DAG builder, dependency resolver, parallel executor, state machine, workflow engine, event projection, registry, replay, template loader.",
+      "layer": "L3",
+      "source": "orchestration/workflow/"
+    },
+    {
+      "name": "DomainWorkflowsV2",
+      "description": "Domain workflows: branching, code_audit, commission_design, compensation, cooperation_negotiation, ecommerce_operation, ecommerce_product_analysis, factory_comparison, file_organization, human_confirm, influencer_cooperation, leader_selection, live_stream_operation, parallel_steps, partner_selection, preview, store_launch, workflow_base, resource_paths (second copy in orchestration/workflows/).",
+      "layer": "L3",
+      "source": "orchestration/workflows/"
+    },
+    {
+      "name": "Planner",
+      "description": "Planning subsystem: goal parser, task planner, plan schema, route selector, skill selector, task decomposer.",
+      "layer": "L3",
+      "source": "orchestration/planner/"
+    },
+    {
+      "name": "Router",
+      "description": "Router subsystem: router, skill router, RRF, weights, golden path regression, route impact analysis.",
+      "layer": "L3",
+      "source": "orchestration/router/"
+    },
+    {
+      "name": "SkillRuntime",
+      "description": "Skill runtime: proactive skill matcher, skill intelligence engine, policy gate, priority scorer, rule engine, usage feedback, router.",
+      "layer": "L3",
+      "source": "orchestration/skill_runtime/"
+    },
+    {
+      "name": "StateManagement",
+      "description": "State management: checkpoint store, recovery store, workflow event store, workflow instance store.",
+      "layer": "L3",
+      "source": "orchestration/state/"
+    },
+    {
+      "name": "ExecutionControl",
+      "description": "Execution control: fallback policy, retry policy, rollback manager.",
+      "layer": "L3",
+      "source": "orchestration/execution_control/"
+    },
+    {
+      "name": "Collaboration",
+      "description": "Collaboration: org orchestrator, resource paths.",
+      "layer": "L3",
+      "source": "orchestration/collaboration/"
+    },
+    {
+      "name": "Contracts",
+      "description": "Contracts namespace.",
+      "layer": "L3",
+      "source": "orchestration/contracts/"
+    },
+    {
+      "name": "MissionControl",
+      "description": "Mission control kernel.",
+      "layer": "L3",
+      "source": "orchestration/mission_control/"
+    },
+    {
+      "name": "ProductSurface",
+      "description": "Product surface manager.",
+      "layer": "L3",
+      "source": "orchestration/product/"
+    },
+    {
+      "name": "ReleaseAssurance",
+      "description": "Release assurance kernel (V80).",
+      "layer": "L3",
+      "source": "orchestration/release_assurance/"
+    },
+    {
+      "name": "FinalPendingRelease",
+      "description": "Final pending release: freeze manifest, shadow acceptance, V85 final kernel.",
+      "layer": "L3",
+      "source": "orchestration/final_pending_release/"
+    },
+    {
+      "name": "EmbodiedPendingOS",
+      "description": "Embodied pending OS: goal compiler, pending access orchestrator.",
+      "layer": "L3",
+      "source": "orchestration/embodied_pending_os/"
+    },
+    {
+      "name": "SelfEvolvingPendingOS",
+      "description": "Self-evolving pending OS kernel.",
+      "layer": "L3",
+      "source": "orchestration/self_evolving_pending_os/"
+    },
+    {
+      "name": "Strategy",
+      "description": "Strategy subsystem: goal engine.",
+      "layer": "L3",
+      "source": "orchestration/strategy/"
+    },
+    {
+      "name": "Validators",
+      "description": "Workflow contract validators.",
+      "layer": "L3",
+      "source": "orchestration/validators/"
+    },
+    {
+      "name": "LegacyOrchestrators",
+      "description": "Legacy personal OS orchestrators (V10 era, now delegate to core). Includes: personal_autonomous_os_agent, executive_personal_os_orchestrator, continuous_personal_os_orchestrator, proactive_personal_os_orchestrator, reality_connected_personal_os_orchestrator, strategic_personal_os_orchestrator, autonomous_runtime_orchestrator, batch_orchestrator.",
+      "layer": "L3",
+      "source": "orchestration/"
+    },
+    {
+      "name": "AutonomousTaskRuntime",
+      "description": "Autonomous task runtime (orchestration copy): approval packet, autonomous runtime kernel, failure recovery, runtime scorecard, task graph.",
+      "layer": "L3",
+      "source": "orchestration/autonomous_task_runtime/"
+    },
+    {
+      "name": "EndSideSerialLanes",
+      "description": "End-side serial execution policies: end-side global serial executor, hard serial gate, serial lanes V3, workflow contract, device serial call, device workflow serial policy.",
+      "layer": "L3",
+      "source": "orchestration/"
+    },
+    {
+      "name": "SideEffectTransaction",
+      "description": "Side-effect transaction management.",
+      "layer": "L3",
+      "source": "orchestration/side_effect_transaction.py"
+    },
+    {
+      "name": "RouteFallback",
+      "description": "Route fallback engine.",
+      "layer": "L3",
+      "source": "orchestration/route_fallback.py"
+    },
+    {
+      "name": "PriorityQueue",
+      "description": "Priority queue for orchestration tasks.",
+      "layer": "L3",
+      "source": "orchestration/priority_queue.py"
+    },
+    {
+      "name": "ResultGuard",
+      "description": "Result guard for orchestration output validation.",
+      "layer": "L3",
+      "source": "orchestration/result_guard.py"
+    },
+    {
+      "name": "LLMStreaming",
+      "description": "LLM streaming support.",
+      "layer": "L3",
+      "source": "orchestration/streaming/"
+    },
+    {
+      "name": "Conversation",
+      "description": "Conversation management.",
+      "layer": "L3",
+      "source": "orchestration/conversation/"
+    },
+    {
+      "name": "SkillUpgrade",
+      "description": "Skill upgrade scheduler and workflow.",
+      "layer": "L3",
+      "source": "orchestration/skill_upgrade/"
+    },
+    {
+      "name": "DurableTaskGraph",
+      "description": "Durable task graph V2.",
+      "layer": "L3",
+      "source": "orchestration/durable_task_graph_v2.py"
+    },
+    {
+      "name": "DurableWorkflowEngine",
+      "description": "Durable workflow engine V3.",
+      "layer": "L3",
+      "source": "orchestration/durable_workflow_engine_v3.py"
+    },
+    {
+      "name": "ProactiveOpportunityDetector",
+      "description": "V7 proactive opportunity detector.",
+      "layer": "L3",
+      "source": "orchestration/proactive_opportunity_detector_v7.py"
+    },
+    {
+      "name": "GoalTracker",
+      "description": "Goal tracking subsystem.",
+      "layer": "L3",
+      "source": "orchestration/goal_tracker.py"
+    },
+    {
+      "name": "RemediationPlanner",
+      "description": "Remediation planner.",
+      "layer": "L3",
+      "source": "orchestration/remediation_planner.py"
+    },
+    {
+      "name": "SummarizeExecutor",
+      "description": "Summarize executor.",
+      "layer": "L3",
+      "source": "orchestration/summarize_executor.py"
+    },
+    {
+      "name": "VerifyExecutor",
+      "description": "Verify executor.",
+      "layer": "L3",
+      "source": "orchestration/verify_executor.py"
+    },
+    {
+      "name": "TemplateRegistry",
+      "description": "Template registry and template bundles (batch_notify, daily_report, failure_compensation, manual_confirmation, reminder).",
+      "layer": "L3",
+      "source": "orchestration/template_registry.py, orchestration/templates/"
+    },
+    {
+      "name": "UnifiedTaskLifecycleEngine",
+      "description": "Unified task lifecycle engine.",
+      "layer": "L3",
+      "source": "orchestration/unified_task_lifecycle_engine.py"
+    },
+    {
+      "name": "V92IntegrationHub",
+      "description": "V92 integration hub.",
+      "layer": "L3",
+      "source": "orchestration/v92_integration_hub.py"
+    },
+    {
+      "name": "PerformanceIntegration",
+      "description": "Performance integration (backward compat).",
+      "layer": "L3",
+      "source": "orchestration/performance_integration.py"
+    },
+    {
+      "name": "AutonomousTaskRuntimeV2",
+      "description": "Autonomous task runtime (duplicate from orchestration/autonomous_task_runtime).",
+      "layer": "L3",
+      "source": "orchestration/autonomous_task_runtime/"
+    },
+    {
+      "name": "AutonomousPlanner",
+      "description": "Autonomous planner: task decomposer, planning namespace.",
+      "layer": "L3",
+      "source": "autonomous_planner/"
+    },
+    {
+      "name": "OrchestrationFusedModules",
+      "description": "Legacy fused/one-shot orchestration validation scripts.",
+      "layer": "L3",
+      "source": "orchestration/fused_modules/"
+    },
+    {
+      "name": "PersonaStateMachine",
+      "description": "V102 persona state machine — manages mood, energy, mode, trust, closeness, and confidence states.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/persona_state_machine.py"
+    },
+    {
+      "name": "RelationshipMemory",
+      "description": "Relationship memory — tracks user-agent relationship context, interaction history, trust evolution.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/relationship_memory.py"
+    },
+    {
+      "name": "EmotionTaggedMemory",
+      "description": "Emotion-tagged memory — stores memory entries with emotion tags for context-aware recall.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/emotion_tagged_memory.py"
+    },
+    {
+      "name": "SelfReflectionLog",
+      "description": "Self-reflection log — logs agent self-reviews, corrections, and lessons learned.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/self_reflection_log.py"
+    },
+    {
+      "name": "ContinuitySummary",
+      "description": "Continuity summary — generates session-level summaries for cross-session continuity.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/continuity_summary.py"
+    },
+    {
+      "name": "PersonaConsistencyChecker",
+      "description": "Persona consistency checker — validates identity, tone, and behavioral consistency across sessions.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/persona_consistency_checker.py"
+    },
+    {
+      "name": "PersonaVoiceRenderer",
+      "description": "Persona voice renderer — applies persona tone/style to text output.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/persona_voice_renderer.py"
+    },
+    {
+      "name": "PersonaVoiceStabilizer",
+      "description": "Persona voice stabilizer — prevents tone drift across sessions by validating against 4 prohibited tone types.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/persona_voice_stabilizer.py"
+    },
+    {
+      "name": "VisualPersonaRenderer",
+      "description": "Visual persona renderer — maps persona state to visual avatar representation.",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/visual_persona_renderer.py"
+    },
+    {
+      "name": "PersonaVisualRuntime",
+      "description": "Persona visual runtime subsystem: auto-generation bridge, dedupe gate, feedback, focus intent, intent predictor, prediction hook, scene defaults, turn observer, wardrobe, visual identity seed, RCCAM loop, runtime hook, scene image detector, providers (seedream).",
+      "layer": "L2",
+      "source": "memory_context/persona_runtime/"
+    },
+    {
+      "name": "ContextCapsule",
+      "description": "V103 context capsule — 17-field capsule for session context restoration.",
+      "layer": "L2",
+      "source": "memory_context/continuity/context_capsule.py"
+    },
+    {
+      "name": "SessionHandoff",
+      "description": "V103 session handoff — structured handoff packet between sessions.",
+      "layer": "L2",
+      "source": "memory_context/continuity/session_handoff.py"
+    },
+    {
+      "name": "MemoryRecallBootstrap",
+      "description": "Memory recall bootstrap — recalls memory from 6 sources during session startup.",
+      "layer": "L2",
+      "source": "memory_context/continuity/memory_recall_bootstrap.py"
+    },
+    {
+      "name": "HandoffOrchestrator",
+      "description": "Handoff orchestrator — coordinates full handoff lifecycle.",
+      "layer": "L2",
+      "source": "memory_context/continuity/handoff_orchestrator.py"
+    },
+    {
+      "name": "CompactResumePolicy",
+      "description": "Compact/resume policy for memory context management.",
+      "layer": "L2",
+      "source": "memory_context/continuity/compact_resume_policy.py"
+    },
+    {
+      "name": "ContextResume",
+      "description": "Context resume engine.",
+      "layer": "L2",
+      "source": "memory_context/continuity/context_resume.py"
+    },
+    {
+      "name": "CrossSessionMissionContinuity",
+      "description": "Cross-session mission continuity V7.",
+      "layer": "L2",
+      "source": "memory_context/continuity/cross_session_mission_continuity_v7.py"
+    },
+    {
+      "name": "UnifiedContinuityEngine",
+      "description": "Unified continuity engine — coordinates all continuity subsystems.",
+      "layer": "L2",
+      "source": "memory_context/unified_continuity_engine.py"
+    },
+    {
+      "name": "PersonalMemoryKernel",
+      "description": "V29.2 Personal Memory Kernel V4 — core memory management for personal context.",
+      "layer": "L2",
+      "source": "memory_context/personal_memory_kernel_v4.py"
+    },
+    {
+      "name": "PersonalMemoryLifecycle",
+      "description": "Personal memory lifecycle V6.",
+      "layer": "L2",
+      "source": "memory_context/personal_memory_lifecycle_v6.py"
+    },
+    {
+      "name": "PersonalKnowledgeGraph",
+      "description": "V91 Personal Knowledge Graph V5 — offline-enhanced knowledge graph for personal entity/relationship tracking.",
+      "layer": "L2",
+      "source": "memory_context/personal_knowledge_graph_v5.py"
+    },
+    {
+      "name": "KnowledgeGraphBridge",
+      "description": "Bridge between knowledge graph and other memory subsystems.",
+      "layer": "L2",
+      "source": "memory_context/knowledge_graph_bridge.py"
+    },
+    {
+      "name": "PreferenceEvolutionBridge",
+      "description": "Preference evolution bridge.",
+      "layer": "L2",
+      "source": "memory_context/preference_evolution_bridge.py"
+    },
+    {
+      "name": "PreferenceEvolutionModel",
+      "description": "V7 Preference evolution model.",
+      "layer": "L2",
+      "source": "memory_context/preference_evolution_model_v7.py"
+    },
+    {
+      "name": "VectorStore",
+      "description": "Vector store infrastructure: embedding, Qdrant store, cache, history.",
+      "layer": "L2",
+      "source": "memory_context/vector/"
+    },
+    {
+      "name": "VectorOps",
+      "description": "Vector operations: smart memory upgrade.",
+      "layer": "L2",
+      "source": "memory_context/vector_ops/"
+    },
+    {
+      "name": "CoverageMonitor",
+      "description": "Vector coverage monitor — tracks coverage gaps in vector index.",
+      "layer": "L2",
+      "source": "memory_context/coverage/"
+    },
+    {
+      "name": "CrossLingual",
+      "description": "Cross-lingual memory support.",
+      "layer": "L2",
+      "source": "memory_context/cross_lingual/"
+    },
+    {
+      "name": "MultimodalSearch",
+      "description": "Multimodal search across memory stores.",
+      "layer": "L2",
+      "source": "memory_context/multimodal/"
+    },
+    {
+      "name": "MemoryWritebackGuard",
+      "description": "Memory writeback guard V2 — ensures memory persistence safety.",
+      "layer": "L2",
+      "source": "memory_context/memory_writeback_guard_v2.py"
+    },
+    {
+      "name": "Maintenance",
+      "description": "Memory maintenance: check coverage, rebuild FTS, run maintenance, vector system optimizer.",
+      "layer": "L2",
+      "source": "memory_context/maintenance/"
+    },
+    {
+      "name": "LearningLoop",
+      "description": "Learning loop: execution memory, pattern extractor, preference profile, plan optimizer, success path store, personal evolution, reflection, meta-learning, identity evolution, personal model, audit replay.",
+      "layer": "L2",
+      "source": "memory_context/learning_loop/"
+    },
+    {
+      "name": "PersonalizationEngine",
+      "description": "Personalization engine for memory context.",
+      "layer": "L2",
+      "source": "memory_context/personalization/"
+    },
+    {
+      "name": "MemoryFusedModules",
+      "description": "Legacy fused modules for memory context: failure recovery, metrics, mainline trigger, task chain closure.",
+      "layer": "L2",
+      "source": "memory_context/fused_modules/"
+    },
+    {
+      "name": "DailyMemoryLegacy",
+      "description": "Legacy daily memory (shim to intelligence.knowledge_memory).",
+      "layer": "L2",
+      "source": "memory/__init__.py"
+    },
+    {
+      "name": "IntelligenceKnowledgeMemory",
+      "description": "Intelligence & knowledge memory subsystem: knowledge refinery, knowledge decay, solution memory index, source quality evaluator, personal knowledge graph V5, cross-lingual, multimodal search, vector operations with embedding/Qdrant.",
+      "layer": "L2",
+      "source": "intelligence/"
+    },
+    {
+      "name": "IdentityDocuments",
+      "description": "Core identity files defining agent persona, soul, user anchor, and agent rules.",
+      "layer": "L1",
+      "source": "IDENTITY.md, SOUL.md, USER.md, AGENTS.md"
+    },
+    {
+      "name": "PersonaDocuments",
+      "description": "Persona visual config, wardrobe, runtime state, seed avatar.",
+      "layer": "L1",
+      "source": "xiaoyi_persona_visual/"
+    },
+    {
+      "name": "OperatingSpine",
+      "description": "Operating spine — the central kernel connecting event bus, skill lifecycle, state migration, capability contracts, approval recovery, connector health, memory consolidation, task runtime adapter, schemas, storage.",
+      "layer": "L1",
+      "source": "core/operating_spine/"
+    },
+    {
+      "name": "OperatingAgent",
+      "description": "Operating agent — orchestrator, constitution kernel, MCP manager, multi-agent coordinator, permission vault, plugin sandbox, recovery ledger, release governor, specialist handoff, connector catalog, evaluation benchmark, schemas, storage.",
+      "layer": "L1",
+      "source": "core/operating_agent/"
+    },
+    {
+      "name": "LLMGateway",
+      "description": "LLM gateway: decision matrix, model discovery, model registry, model router, provider guard.",
+      "layer": "L1",
+      "source": "core/llm_gateway/"
+    },
+    {
+      "name": "Persona",
+      "description": "Persona management: auto_update_persona, update_l3_profile, update_persona.",
+      "layer": "L1",
+      "source": "core/persona/"
+    },
+    {
+      "name": "Personality",
+      "description": "Personality drift guard V4.",
+      "layer": "L1",
+      "source": "core/personality/"
+    },
+    {
+      "name": "Personalization",
+      "description": "Personalization kernel: decision pattern learner, feedback trainer, personalization drift guard, scorecard, preference rules, procedure library, project memory, relationship context, user profile, schemas, storage.",
+      "layer": "L1",
+      "source": "core/personalization/"
+    },
+    {
+      "name": "SelfGovernance",
+      "description": "Self-governance: constitutional policy core, autonomy boundary manager, value alignment checker.",
+      "layer": "L1",
+      "source": "core/self_governance/"
+    },
+    {
+      "name": "OperatingContract",
+      "description": "Operating contract V3 — master contract for agent operations.",
+      "layer": "L1",
+      "source": "core/operating_contract_v3.py"
+    },
+    {
+      "name": "Runtime",
+      "description": "Core runtime: autonomous runtime kernel, decision cycle, goal memory, priority scheduler, runtime state machine.",
+      "layer": "L1",
+      "source": "core/runtime/"
+    },
+    {
+      "name": "RuntimeActivation",
+      "description": "Runtime activation: activation kernel, API facade, command bus, compatibility shim, diagnostic engine, job queue, policy simulator, scheduler bridge, state inspector, artifact packager, schemas, storage.",
+      "layer": "L1",
+      "source": "core/runtime_activation/"
+    },
+    {
+      "name": "PersonalAgent",
+      "description": "Personal execution agent: execution planner, goal compiler, policy judge, result verifier, task graph, durable task state, experience writer, schemas.",
+      "layer": "L1",
+      "source": "core/personal_agent/"
+    },
+    {
+      "name": "ReleaseHardening",
+      "description": "Release hardening: config contract, dependency guard, deployment profile, environment doctor, regression matrix, release manifest, rollback manager, runtime report, snapshot manager, schemas, storage.",
+      "layer": "L1",
+      "source": "core/release_hardening/"
+    },
+    {
+      "name": "RealConnectorExecution",
+      "description": "Real connector execution: connector executor, kernel, registry, connectors, schemas, storage.",
+      "layer": "L1",
+      "source": "core/real_connector_execution/"
+    },
+    {
+      "name": "RealToolBinding",
+      "description": "Real tool binding: tool binder, executor, registry, execution policy, kernel, schemas, storage.",
+      "layer": "L1",
+      "source": "core/real_tool_binding/"
+    },
+    {
+      "name": "RealWorkEntry",
+      "description": "Real work entry: action log, message entry, real work entry, schemas, storage.",
+      "layer": "L1",
+      "source": "core/real_work_entry/"
+    },
+    {
+      "name": "SkillEntry",
+      "description": "Skill entry: input router, validators, response formatter, error codes.",
+      "layer": "L1",
+      "source": "core/skill_entry/"
+    },
+    {
+      "name": "SkillAssetRegistry",
+      "description": "Skill asset registry: registry, scanner, schemas.",
+      "layer": "L1",
+      "source": "core/skill_asset_registry/"
+    },
+    {
+      "name": "SkillRules",
+      "description": "Skill rules engine and trigger registry.",
+      "layer": "L1",
+      "source": "core/skill_rules_engine.py, core/skill_trigger_registry.py"
+    },
+    {
+      "name": "Mission",
+      "description": "Mission control: autonomy horizon planner V7, mission control center, mission graph, mission priority engine, proactive observer.",
+      "layer": "L1",
+      "source": "core/mission/"
+    },
+    {
+      "name": "MultiAgent",
+      "description": "Multi-agent subsystem: critic agent, executor agent, verifier agent, role team.",
+      "layer": "L1",
+      "source": "core/multi_agent/"
+    },
+    {
+      "name": "Strategy",
+      "description": "Core strategy: strategic autonomy cortex, strategy memory, policy simulator, risk/reward evaluator.",
+      "layer": "L1",
+      "source": "core/strategy/"
+    },
+    {
+      "name": "Reality",
+      "description": "Reality grounding: environment capability probe, fact state resolver, reality grounding kernel, uncertainty manager.",
+      "layer": "L1",
+      "source": "core/reality/"
+    },
+    {
+      "name": "WorldModel",
+      "description": "World model: environment state, intent state, user context graph.",
+      "layer": "L1",
+      "source": "core/world_model/"
+    },
+    {
+      "name": "OperationsIntelligence",
+      "description": "Operations intelligence (v167-v196): roadmap planner, portfolio manager, experiment designer, metrics/KPI engine, data ingestion hub, quality gate, report generator, decision memo builder, risk register, incident manager, SLO manager, cost analyzer, performance profiler, token optimizer, prompt policy compiler, eval dataset, AB test runner, learning queue, knowledge freshness, compliance checklist, data retention, secret rotation, connector permission review, multichannel output router, stakeholder briefing, release notes, audit exporter, health dashboard, executive summary packager, kernel, schemas, storage.",
+      "layer": "L1",
+      "source": "core/operations_intelligence/"
+    },
+    {
+      "name": "ProductionControlPlane",
+      "description": "Production control plane (v197-v226): system registry, workspace tenant manager, role access matrix, policy pack manager, event sourcing ledger, data lineage tracker, backup/restore verifier, disaster recovery planner, canary deployment, feature flag manager, model canary evaluator, provider failover, connector quota, SLA escalation, anomaly detector, capacity planner, dependency graph, change impact analyzer, contract test runner, golden path validator, user acceptance gate, playbook library, runbook executor, training data curator, review workflow, postmortem generator, governance board, objective alignment, ROI analyzer, kernel, schemas, storage.",
+      "layer": "L1",
+      "source": "core/production_control_plane/"
+    },
+    {
+      "name": "MetaAutonomyPlatform",
+      "description": "Meta autonomy platform (v257-v316): capability marketplace, skill composer, workflow compiler, decision graph optimizer, intent cache, semantic router, task batcher, priority queue planner, parallel plan simulator, state consistency checker, isolation boundary checker, policy diff engine, approval SLA planner, credential hygiene scanner, prompt firewall, tool allowlist compiler, data minimization engine, context deduplicator, memory conflict resolver, knowledge graph index, ontology mapper, retrieval strategy tuner, source credibility scorer, evidence linker, artifact dependency packager, patch conflict resolver, schema evolution planner, migration dry-run engine, compatibility matrix builder, device capability matcher, local/remote executor planner, sandbox fleet manager, runtime contract broker, operation idempotency guard, side-effect reconciliation, human checkpoint orchestrator, audit trail compressor, observability correlation engine, token budget allocator, cost center allocator, latency budget planner, throughput controller, concurrency governor, adaptive rate limiter, load shedding controller, regression risk predictor, quality drift detector, agent maturity assessor, roadmap reprioritizer, technical debt register, deprecation manager, user journey tracer, stakeholder alignment matrix, operator training packager, runbook quality scorer, model quality arbiter, vendor governance registry, platform certification board, meta autonomy platform kernel, schemas, storage.",
+      "layer": "L1",
+      "source": "core/meta_autonomy_platform/"
+    },
+    {
+      "name": "ProjectAutonomy",
+      "description": "Project autonomy: autonomous project review, milestone planner, project brain, project memory graph.",
+      "layer": "L1",
+      "source": "core/project_autonomy/"
+    },
+    {
+      "name": "Portfolio",
+      "description": "Portfolio/goal management: goal portfolio manager, progress evaluator, task backlog.",
+      "layer": "L1",
+      "source": "core/portfolio/"
+    },
+    {
+      "name": "SelfEvolutionOps",
+      "description": "Self-evolution operations: budget governor, context fusion, intent contract, local fallback, observability report, preference drift, privacy redactor, self-improvement loop, simulation lab, tool reliability, schemas, storage.",
+      "layer": "L1",
+      "source": "core/self_evolution_ops/"
+    },
+    {
+      "name": "SelfTest",
+      "description": "Self-test subsystem: perfection gate, self-diagnostics, self-healing policy, system self-test agent, test plan generator.",
+      "layer": "L1",
+      "source": "core/self_test/"
+    },
+    {
+      "name": "Simulation",
+      "description": "Simulation subsystem: counterfactual reviewer, outcome predictor, scenario simulator, what-if engine.",
+      "layer": "L1",
+      "source": "core/simulation/"
+    },
+    {
+      "name": "Verification",
+      "description": "Verification subsystem: audit trail, result verifier, rollback manager.",
+      "layer": "L1",
+      "source": "core/verification/"
+    },
+    {
+      "name": "Privacy",
+      "description": "Privacy subsystem: data minimization filter, privacy boundary engine, scope redaction policy.",
+      "layer": "L1",
+      "source": "core/privacy/"
+    },
+    {
+      "name": "Query",
+      "description": "Query subsystem: language detection, rewriter, understanding.",
+      "layer": "L1",
+      "source": "core/query/"
+    },
+    {
+      "name": "TopAIOperator",
+      "description": "Top AI operator and V25 variant.",
+      "layer": "L1",
+      "source": "core/top_ai_operator/"
+    },
+    {
+      "name": "UniversalTaskContract",
+      "description": "Universal task contract: contract builder, report generator, schemas.",
+      "layer": "L1",
+      "source": "core/universal_task_contract/"
+    },
+    {
+      "name": "Monitoring",
+      "description": "Core monitoring: CLI tool, health monitor, performance monitor.",
+      "layer": "L1",
+      "source": "core/monitoring/"
+    },
+    {
+      "name": "Registry",
+      "description": "Core registry and recovery.",
+      "layer": "L1",
+      "source": "core/registry.py, core/recovery.py, core/replay.py"
+    },
+    {
+      "name": "LegacyOperatingOS",
+      "description": "Legacy personal OS V36-V45: operating organs.",
+      "layer": "L1",
+      "source": "core/personal_os_v36_v45/"
+    },
+    {
+      "name": "TTSCore",
+      "description": "TTS core (telemetry).",
+      "layer": "L1",
+      "source": "core/llm/"
+    }
+  ]
+}

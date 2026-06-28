@@ -1,0 +1,19 @@
+services:
+  xiaoyi-local:
+    image: localhost/xiaoyi-local:latest
+    network_mode: "none"
+    user: "1000:1000"
+    read_only: true
+    environment:
+      OFFLINE_MODE: "true"
+      NO_EXTERNAL_API: "true"
+      ALLOW_NETWORK: "false"
+      NO_REAL_PAYMENT: "true"
+      NO_REAL_SEND: "true"
+      HF_HUB_OFFLINE: "1"
+      TRANSFORMERS_OFFLINE: "1"
+    volumes:
+      - /srv/models:/srv/models:ro
+      - /srv/data:/srv/data:rw
+      - /run/secrets:/run/secrets:ro
+    command: ["bash", "deployment/rootless/healthcheck.sh"]

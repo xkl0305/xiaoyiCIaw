@@ -1,0 +1,11 @@
+# 大龙虾平台自动化任务示例
+# 按需复制到 crontab；路径请替换为实际 PROJECT_ROOT。
+
+# 每小时健康巡检
+0 * * * * cd /path/to/project && bash scripts/run_hourly_health_check.sh >> logs/hourly_health_check.log 2>&1
+
+# 每日备份
+30 2 * * * cd /path/to/project && bash scripts/run_daily_backup.sh >> logs/daily_backup.log 2>&1
+
+# 每周清理
+0 3 * * 0 cd /path/to/project && bash scripts/run_weekly_cleanup.sh >> logs/weekly_cleanup.log 2>&1

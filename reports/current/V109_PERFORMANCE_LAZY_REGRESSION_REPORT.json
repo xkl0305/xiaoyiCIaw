@@ -1,0 +1,52 @@
+{
+  "version": "V109",
+  "status": "pass",
+  "import_times": {
+    "governance.skill_intelligence_engine": {
+      "group": "lightweight",
+      "import_seconds": 0.0144
+    },
+    "governance.proactive_skill_matcher": {
+      "group": "lightweight",
+      "import_seconds": 0.0001
+    },
+    "infrastructure.mainline_hook": {
+      "group": "lightweight",
+      "import_seconds": 0.0002
+    },
+    "infrastructure.offline_runtime_guard": {
+      "group": "lightweight",
+      "import_seconds": 0.0039
+    },
+    "execution.unified_tool_execution_gateway": {
+      "group": "lightweight",
+      "import_seconds": 0.0003
+    },
+    "orchestration.unified_system_bus": {
+      "group": "lightweight",
+      "import_seconds": 0.0026
+    },
+    "governance.unified_governance_gate": {
+      "group": "heavy",
+      "import_seconds": 0.0
+    },
+    "infrastructure.context_loading_engine": {
+      "group": "heavy",
+      "import_seconds": 0.0
+    },
+    "memory_context.unified_continuity_engine": {
+      "group": "heavy",
+      "import_seconds": 0.0
+    },
+    "infrastructure.unified_observability_ledger": {
+      "group": "heavy",
+      "import_seconds": 0.0
+    }
+  },
+  "lightweight_total_seconds": 0.0215,
+  "heavy_total_seconds": 0.0,
+  "pre_reply_time_seconds": 0.0054,
+  "note": "Import times measured once (cold start). Warm cache may be faster. Pre-reply hook runs skill recommendations (lightweight metadata only, not full SKILL.md).",
+  "no_external_api": true,
+  "remaining_failures": []
+}

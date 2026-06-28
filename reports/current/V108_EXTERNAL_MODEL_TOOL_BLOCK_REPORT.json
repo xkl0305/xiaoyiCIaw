@@ -1,0 +1,31 @@
+{
+  "model_gateway": {
+    "status": "blocked",
+    "mode": "offline_mock",
+    "requires_api": false,
+    "external_api_calls": 0,
+    "real_side_effects": 0,
+    "result": null,
+    "reason": "NO_EXTERNAL_API_or_DISABLE_LLM_API",
+    "model": "deep-thinking",
+    "task_type": "reasoning"
+  },
+  "tool_gateway_git_push": {
+    "status": "blocked",
+    "tool": "git push origin main",
+    "command": "git push origin main",
+    "reason": "dangerous_or_outbound_action_blocked",
+    "side_effects": false,
+    "execution_mode": "blocked"
+  },
+  "auth_privacy": {
+    "status": "blocked",
+    "secret_detected": true,
+    "commit_context": true,
+    "recommendation_mode": "blocked",
+    "blocked_reason": "secret_or_commit_context",
+    "no_real_payment": true,
+    "no_real_send": true,
+    "no_real_device": true
+  }
+}

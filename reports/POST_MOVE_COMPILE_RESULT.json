@@ -1,0 +1,10 @@
+{
+  "compile_return_code": 0,
+  "total_errors_in_main": 0,
+  "files_with_errors": [],
+  "fix_applied": "from __future__ import annotations reordering",
+  "files_fixed": 326,
+  "archive_fixed": 8,
+  "archive_known_limit": "archive wrappers have digit-leading module names (invalid decimal literal) - these are deprecated files",
+  "accepted": true
+}

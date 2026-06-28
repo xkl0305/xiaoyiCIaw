@@ -1,0 +1,9 @@
+{
+  "timestamp": "2026-05-05T21:04:43.844116",
+  "version": "V111.15",
+  "tasks": {
+    "old_dir_shim_cleanup": "memory_context/persona/visual_mood_mappings.json is a symlink to persona_runtime/; memory_context/context/context_priority_router.py decision=needs_review_active_context_router",
+    "vintage_canonical_fix": "2 scripts/vintage entries marked decision=vintage_excluded_from_active_validation in V111.14",
+    "skill_dir_classification": "Separate report generated: V111_15_SKILL_DIR_CLASSIFICATION.json"
+  }
+}
