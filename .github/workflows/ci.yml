@@ -1,0 +1,20 @@
+name: CI
+on:
+  push:
+  pull_request:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dev dependencies
+        run: python -m pip install -r requirements-dev.txt
+      - name: V111.38 online runtime and clean release audit
+        run: PYTHONNOUSERSITE=1 python -S scripts/audit_v111_38_online_clean_release.py --pytest-timeout 0
+      - name: Route registry audit
+        run: python scripts/dlx_env.py -- python scripts/check_route_registry.py --allow-virtual
+      - name: Guarded pytest collect
+        run: PYTHONNOUSERSITE=1 python -S scripts/dlx_pytest_collect_guard.py --timeout 60
