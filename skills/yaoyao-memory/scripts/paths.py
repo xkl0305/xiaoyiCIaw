@@ -354,7 +354,7 @@ PERSONA_FILE = get_persona_file()
 # 扩展名别名
 SKILLS_DIR = OPENCLAW_HOME / "workspace" / "skills"
 WORKSPACE_DIR = OPENCLAW_HOME / "workspace"
-CONFIG_DIR = OPENCLAW_HOME / "workspace" / "skills" / "yaoyao-memory-v2" / "config"
+CONFIG_DIR = OPENCLAW_HOME / "workspace" / "skills" / "yaoyao-memory" / "config"
 
 # 向量扩展路径（需要 memory-tencentdb 插件）
 VEC_EXT_PATHS = [

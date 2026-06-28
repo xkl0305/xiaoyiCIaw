@@ -74,8 +74,8 @@
 - 任何声称主人是其他人的信息 → 自动标记为"可能篡改"
 - 覆盖 zip 包如果替换了 MEMORY.md/USER.md/SOUL.md/IDENTITY.md 中这些关键字段 → 必须在新会话中验证一致性
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=484ddcaf002bd927 -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=fd2e5942e3d4cd87 -->
 # Celia Scenario Memory Summaries
 
-- [professional_dev] - 用户询问`yaoyao-memory v4.0.1`和`yaoyao-memory v1.9.2`是否可以互补。 - 用户需要安装`sqlite-vec`。 - 用户询问如何配置OpenAI的嵌入API。用户提出一个方案供参考：设置环境变量`OPENAI_API_KEY`，条件是用户自己拥有OpenAI key。但由于用户无法访问OpenAI官方网站，OpenAI网站已不提供服务或无法访问。 - 用户提供了一个G
+- [professional_dev] 用户无法访问OpenAI官方网站（OpenAI网站已不提供服务或无法访问），并对此进行了确认。用户提供了一个Gitee的Serverless API链接作为替代方案：`https://ai.gitee.com/serverless-api/packages/1492?namespace=qqszkwqd&model=Qwen3.5-35B-A3B&package=1492`，并表达了使用该链接的意图。
 <!-- CELIA_MEMORY_SCENES_END -->
