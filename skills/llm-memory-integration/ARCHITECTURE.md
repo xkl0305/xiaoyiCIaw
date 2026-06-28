@@ -1,0 +1,1 @@
+/home/sandbox/private-config/ARCHITECTURE.md

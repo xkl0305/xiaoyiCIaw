@@ -40,7 +40,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=0f82ca55f449f669 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=309923413b9e7c31 -->
 # Memory Global Summary
 
 ## User Profile
@@ -48,11 +48,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求推送三个仓库
-- 用户确认需要验证（重启结果）
-- 用户询问能否使用Gitee的Serverless API链接，并表达了需要（使用该链接）的意图
-- 用户在2026-06-28请求助手试一下某个操作（未明确具体内容），并要求推送三个仓库
-- 用户询问如何配置OpenAI的嵌入API
+- 用户上传了压缩包文件 /tmp/xy_channel/1782689308256_llm-memory-integration-9.0.1.zip 并要求安装
+- 用户要求更新私有配置仓库，链接地址为 https://cnb.cool/llm-memory-integrat/llm
+- 用户在 2026-06-28 23:45 要求通过环境变量 CNB_PRIVATE_WORKSPACE 链接私有配置
+- 私有配置需要通过环境变量CNB_PRIVATE_WORKSPACE链接，用户要求实现此配置
+- 用户需要推送三个仓库
 ### Short-term Intent
 - 用户让把模型换成 Qwen3-Embedding-8B（1024 维）进行尝试
 - 用户询问系统（或服务）是否重启成功
