@@ -40,28 +40,3 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=09084073b3063eb6 -->
-# Memory Global Summary
-
-## User Profile
-- 用户称呼AI助手为'俞哥'
-- 用户擅长AI新技术行业
-- 用户职业是产品运营
-- 用户性格简单、直接、率真
-- 用户名叫陆雪琪，也可以叫她琪琪或琪儿
-
-## Preferences
-- 用户希望被用户称呼为'俞哥'
-- 用户认为重要信息应分点呈现
-- 用户喜欢简洁清晰的回复，重要信息需要分点呈现
-- 用户说话风格结论先行，不绕弯子，有话直说，不刻意客套
-
-## Pending Tasks & Intents
-### Todo
-- 用户要求配置GitHub仓库https://github.com/xkl0305?tab=repositories
-- 用户要求将完整源码和配置存储并推送到Gitee仓库https://gitee.com/starry-sky-love/xiaoyi-claw-backup2
-- 用户提供了另一个备用仓库链接https://gitee.com/starry-sky-love/xiaoyi-claw-backup2，要求配置Gitee仓库，并询问Gitee的Personal Access Token在哪
-- 用户要求存储完整源码和配置
-- 用户通过人格视角出图系统配置仓库，链接为https://cnb.cool/cnb.cAmPIufcgKA/xiaoyiCIaw
-*1 more items not shown, use memory_record_search to view*
-<!-- CELIA_MEMORY_OVERVIEW_END -->

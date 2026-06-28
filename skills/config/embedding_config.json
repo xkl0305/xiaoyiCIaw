@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "provider": "celia",
+  "base_url": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/rest-api",
+  "api_key": "apikey",
+  "model": "text-embedding-v1.0",
+  "auth_type": "custom",
+  "custom_headers": {
+    "x-request-from": "openclaw",
+    "x-hag-trace-id": "openclaw-embedding-trace-id",
+    "x-uid": "30086000570700284",
+    "x-api-key": "SK-038D3FE80908BCA11CDCFCD6EB2B2E8E"
+  }
+}

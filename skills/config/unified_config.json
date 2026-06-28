@@ -1,0 +1,19 @@
+{
+  "version": "3.9.5",
+  "features": {
+    "vector_search": true,
+    "fts_search": true,
+    "auto_backup": false,
+    "ima_sync": false,
+    "meo_push": true
+  },
+  "paths": {
+    "memory_dir": "/home/sandbox/.openclaw/workspace/memory",
+    "memory_db": "/home/sandbox/.openclaw/memory-tdai"
+  },
+  "limits": {
+    "max_memory_items": 200,
+    "max_precomputed": 50,
+    "cache_ttl_hours": 24
+  }
+}
