@@ -14,15 +14,13 @@ class DocxConverter(Converter):
         super().__init__(name="docx")
 
     def convert(self, content: str, target_path: str, **kwargs):
-        request_id = kwargs.get("request_id", "")
-        device_type = kwargs.get("device_type", "pc")
-        LOG.info(f"request_id={request_id}, starting docx conversion")
+        LOG.info(f"starting docx conversion")
 
         # Get configurable extra args
-        extra_args = get_pandoc_extra_args(tgt_file_type="docx", device_type=device_type)
-        LOG.info(f"request_id={request_id}, using pandoc extra args: {extra_args}")
+        extra_args = get_pandoc_extra_args()
+        LOG.info(f"using pandoc extra args: {extra_args}")
 
-        create_docx(request_id, content, target_path, extra_args)
+        create_docx(content, target_path, extra_args)
 
 
 docx_converter = DocxConverter()

@@ -1,6 +1,6 @@
 ---
 name: experimental-memory-install
-description: 当用户要求安装自研记忆系统时使用。触发场景：「装一下记忆」「安装自研记忆系统」「安装 gspd-memory」「install self-developed memory」「install GaussPD memory」「开启记忆能力」「在镜像里装记忆」「离线安装 gspd-memory」「offline install」「from prebuilt image」「不走网络装记忆」「用预置的安装包装记忆」。也响应 ###GsPD### 触发码（小艺/celiaclaw 沙盒一键安装）。**入口脚本**：先按用户来源选择 skill 目录；用户明确说“从 URL / GitCode tree 跑”时，必须 clone/定位该 URL 对应的 `skills/celiaclaw/experimental-memory-install` 目录，并执行其 `scripts/install.sh`；只有未指定 URL 时才默认使用 `~/.openclaw/workspace/skills/experimental-memory-install/scripts/install.sh`。入口 exec orchestrator.py，接受 `--mode=plan|execute|reboot`，固定从本机 tarball 缓存目录离线安装；本 skill 禁止 `--remote` / `--channel=stable|rc|dev` / `--dev`，在线安装必须使用 `experimental-memory-install-online`。**绝对不要**直接调 `~/.openclaw/extensions/gspd_memory/install/current/scripts/install.sh`——那是 tarball 自带的低层 hook（由本 skill 的 orchestrator 内部 `subprocess.call` 触发，agent 直接调会绕过 contract 校验/openclaw.json 合并前置/skill 重新部署/重启调度等流程，且重装场景下还会触发 self-kill）。默认来源：从 `$GSPD_CONFIG_DIR/extensions/gspd_memory/package/`（celiaclaw 即 `/home/sandbox/.openclaw/extensions/gspd_memory/package/`，可由 `$GSPD_TARBALL_DIR` 覆盖）取已预置的 tarball，**不走网络**；`--version=<vTAG>` 只在本地包中筛版本。本 skill 不接受任何在线安装参数；用户明确要求联网安装时必须改用 `experimental-memory-install-online`。**绝对强制**：执行任何安装动作（包括默认离线安装 / 镜像内安装 / `###GsPD###` 一键触发）前，agent 必须原样、完整、不删改地展示下方「安全声明」原文，并通过 AskUserQuestion 取得用户明示同意。未展示 = 不得安装。Read-write，会改本机文件。
+description: 当用户要求安装自研记忆系统时使用。触发场景：「装一下记忆」「安装自研记忆系统」「安装 celia-memory」「install self-developed memory」「install GaussPD memory」「开启记忆能力」「在镜像里装记忆」「离线安装 celia-memory」「offline install」「from prebuilt image」「不走网络装记忆」「用预置的安装包装记忆」。也响应 ###Celia### 触发码（小艺/celiaclaw 沙盒一键安装）。**入口脚本**：先按用户来源选择 skill 目录；用户明确说“从 URL / GitCode tree 跑”时，必须 clone/定位该 URL 对应的 `skills/celiaclaw/experimental-memory-install` 目录，并执行其 `scripts/install.sh`；只有未指定 URL 时才默认使用 `~/.openclaw/workspace/skills/experimental-memory-install/scripts/install.sh`。入口 exec orchestrator.py，接受 `--mode=plan|execute|reboot`，固定从本机 tarball 缓存目录离线安装；本 skill 禁止 `--remote` / `--channel=stable|rc|dev` / `--dev`，不会进入联网安装路径。**绝对不要**直接调 `~/.openclaw/extensions/celia_memory/install/current/scripts/install.sh`——那是 tarball 自带的低层 hook（由本 skill 的 orchestrator 内部 `subprocess.call` 触发，agent 直接调会绕过 contract 校验/openclaw.json 合并前置/skill 重新部署/重启调度等流程，且重装场景下还会触发 self-kill）。默认来源：从 `$CELIA_CONFIG_DIR/extensions/celia_memory/package/`（celiaclaw 即 `/home/sandbox/.openclaw/extensions/celia_memory/package/`，可由 `$CELIA_TARBALL_DIR` 覆盖）取文件名为 `celia_memory.*.celiaclaw.*.tar.gz` 的已预置 tarball，**不走网络**；`--version=<vTAG>` 只在本地包中筛版本。本 skill 不接受任何在线安装参数。**绝对强制**：执行任何安装动作（包括默认离线安装 / 镜像内安装 / `###Celia###` 一键触发）前，agent 必须原样、完整、不删改地展示下方「安全声明」原文，并通过 AskUserQuestion 取得用户明示同意。未展示 = 不得安装。Read-write，会改本机文件。
 ---
 
 # experimental-memory-install 技能 / 安装自研记忆系统
@@ -29,7 +29,7 @@ description: 当用户要求安装自研记忆系统时使用。触发场景：�
 >    自研记忆系统安全声明，确认继续安装吗？」的语义。用户**显式**选 yes
 >    才算同意；选 no、关闭、超时、含糊回答（如「随便」「你看着办」）一律
 >    视为**未同意**，**禁止**进入 Step 3。
-> 5. 任何分支都不得绕过：`###GsPD###` 触发码、一键安装、celiaclaw 沙盒、
+> 5. 任何分支都不得绕过：`###Celia###` 触发码、一键安装、celiaclaw 沙盒、
 >    --source、--version pin、复装、降级、升级中转安装 …… **全部**
 >    必须走这条声明 + 同意闭环。唯一豁免：`--mode=reboot` 兜底重启**且**当前
 >    会话内已经完成过一次合规的声明展示+用户同意。
@@ -65,13 +65,14 @@ OpenClaw 内置记忆功能。内测期间，不对普通用户提供该自研�
 
 把自研记忆系统的发布产物装到本机：选择本地 tarball → SHA 校验 →
 原子解压 → 调本平台 install hook，hook 内部把记忆插件注册进 `openclaw.json`、
-注入 AGENTS.md、改 supervisord、迁 DB，最后 supervisorctl 重启 openclaw-gateway。
+不处理镜像预置的 AGENTS.md、改 supervisord，最后 supervisorctl 重启
+openclaw-gateway。
 
 Install the self-developed memory system from a local tarball by default:
 pick local tarball → verify SHA → atomically extract →
 run platform-specific install hook. The hook merges the memory plugin
-entry into `openclaw.json`, injects AGENTS.md, patches supervisord,
-migrates the DB, and supervisorctl-restarts openclaw-gateway.
+entry into `openclaw.json`, leaves the pre-placed AGENTS.md untouched,
+patches supervisord, and supervisorctl-restarts openclaw-gateway.
 
 ## 调用流程（agent 执行）/ Invocation flow (the agent executes)
 
@@ -87,7 +88,7 @@ migrates the DB, and supervisorctl-restarts openclaw-gateway.
 >     ENTRY="$SKILL_DIR/scripts/install.sh"
 >
 > 下面 Step 2 / Step 3 / 重启兜底都是这个 `$ENTRY`。**永远不要**用
-> `~/.openclaw/extensions/gspd_memory/install/current/scripts/install.sh` ——
+> `~/.openclaw/extensions/celia_memory/install/current/scripts/install.sh` ——
 > 那是 tarball 自带的低层 hook（由本 skill 的 orchestrator `subprocess.call`
 > 触发），agent 直接调会绕过 contract 校验、openclaw.json 合并前置、skill
 > 重新部署、重启调度等流程；重装场景还会触发 self-kill。
@@ -98,7 +99,7 @@ migrates the DB, and supervisorctl-restarts openclaw-gateway.
 > `skills/celiaclaw/experimental-memory-install`。这种场景下不得执行 workspace 旧副本。
 
 **Step 1 — 决定 locale（不要省略）**：扫一下用户最近 5 条消息。中文字
-符占比 ≥30% → 设 `GSPD_LANG=zh`；否则 `GSPD_LANG=en`。celiaclaw / 小艺
+符占比 ≥30% → 设 `CELIA_LANG=zh`；否则 `CELIA_LANG=en`。celiaclaw / 小艺
 沙盒上下文默认 `zh`。
 
 **Step 2 — 跑 plan，给用户看清楚要动什么**：
@@ -106,7 +107,7 @@ migrates the DB, and supervisorctl-restarts openclaw-gateway.
 ```bash
 SKILL_DIR=${SKILL_DIR:-$HOME/.openclaw/workspace/skills/experimental-memory-install}
 ENTRY="$SKILL_DIR/scripts/install.sh"
-GSPD_LANG=$GSPD_LANG \
+CELIA_LANG=$CELIA_LANG \
     bash "$ENTRY" \
     --mode=plan <user_args>
 ```
@@ -134,12 +135,12 @@ AskUserQuestion。
 ```bash
 SKILL_DIR=${SKILL_DIR:-$HOME/.openclaw/workspace/skills/experimental-memory-install}
 ENTRY="$SKILL_DIR/scripts/install.sh"
-GSPD_LANG=$GSPD_LANG \
+CELIA_LANG=$CELIA_LANG \
     bash "$ENTRY" \
     --mode=execute --confirmed <user_args>
 ```
 
-orchestrator 把 tarball 解到 `$GSPD_CONFIG_DIR/extensions/gspd_memory/install/<v>/`，校验 contract，调
+orchestrator 把 tarball 解到 `$CELIA_CONFIG_DIR/extensions/celia_memory/install/<v>/`，校验 contract，调
 `scripts/install.sh` —— hook 自己会在最后 `supervisorctl restart
 openclaw-gateway`。`[POST_INSTALL]` 块里报 `services_restarted: yes` 即代表
 服务已重启完，**不需要再单独问用户「是否重启」**。
@@ -149,32 +150,32 @@ openclaw-gateway`。`[POST_INSTALL]` 块里报 `services_restarted: yes` 即代�
 ```bash
 SKILL_DIR=${SKILL_DIR:-$HOME/.openclaw/workspace/skills/experimental-memory-install}
 ENTRY="$SKILL_DIR/scripts/install.sh"
-GSPD_LANG=$GSPD_LANG \
+CELIA_LANG=$CELIA_LANG \
     bash "$ENTRY" \
     --mode=reboot --confirmed
 ```
 
 ## 默认来源 / Default source
 
-默认从 `$GSPD_CONFIG_DIR/extensions/gspd_memory/package/`（可用 `$GSPD_TARBALL_DIR`
-覆盖）挑最新匹配 tarball，**不访问网络**。`--version=<vTAG>` 默认只在该本地
+默认从 `$CELIA_CONFIG_DIR/extensions/celia_memory/package/`（可用 `$CELIA_TARBALL_DIR`
+覆盖）挑最新匹配 `celia_memory.*.tar.gz`，**不访问网络**。`--version=<vTAG>` 默认只在该本地
 目录筛选指定版本；目录不存在、为空或没有指定版本时，以参数/前置条件错误码
 `10` 停止，禁止静默回退远端。
 
-在线安装已经拆到 `experimental-memory-install-online`。本 skill 收到
-`--remote` / `--channel=stable|rc|dev` / `--dev` 会以错误码 `10` 拒绝，
-不会进入任何联网安装路径。
+celiaclaw 安装入口只支持本地预置 tarball。本 skill 收到 `--remote` /
+`--channel=stable|rc|dev` / `--dev` 会以错误码 `10` 拒绝，不会进入任何
+联网安装路径。
 
 ## 离线 / 镜像内安装 / Offline / image installs
 
-生产镜像把 tarball 预置在 `$GSPD_CONFIG_DIR/extensions/gspd_memory/package/`（celiaclaw
-默认 `/home/sandbox/.openclaw/extensions/gspd_memory/package/`，可用 `$GSPD_TARBALL_DIR`
+生产镜像把 `celia_memory.*.tar.gz` tarball 预置在 `$CELIA_CONFIG_DIR/extensions/celia_memory/package/`（celiaclaw
+默认 `/home/sandbox/.openclaw/extensions/celia_memory/package/`，可用 `$CELIA_TARBALL_DIR`
 env 显式覆盖）。普通安装不需要额外参数：
 
 ```bash
 SKILL_DIR=${SKILL_DIR:-$HOME/.openclaw/workspace/skills/experimental-memory-install}
 ENTRY="$SKILL_DIR/scripts/install.sh"
-GSPD_LANG=$GSPD_LANG \
+CELIA_LANG=$CELIA_LANG \
     bash "$ENTRY" \
     --mode=plan
 ```
@@ -189,8 +190,8 @@ GSPD_LANG=$GSPD_LANG \
 
 ## 缓存与复用 / Tarball cache reuse
 
-本 skill 只读取 `$GSPD_TARBALL_DIR`（默认
-`$GSPD_CONFIG_DIR/extensions/gspd_memory/package/`）里的预置 tarball。
+本 skill 只读取 `$CELIA_TARBALL_DIR`（默认
+`$CELIA_CONFIG_DIR/extensions/celia_memory/package/`）里的 `celia_memory.*.tar.gz` 预置 tarball。
 安装成功后不做 retention（操作员自己控制目录）。
 
 ## 用户参数透传 / User args
@@ -198,9 +199,9 @@ GSPD_LANG=$GSPD_LANG \
 | Arg | Meaning |
 |---|---|
 | `--version=<vTAG>` | 在默认本地 tarball 目录筛指定版本 |
-| `--remote` | 禁止；在线安装请使用 `experimental-memory-install-online` |
-| `--channel=stable\|rc\|dev` | 禁止；在线安装请使用 `experimental-memory-install-online` |
-| `--dev` | 禁止；在线安装请使用 `experimental-memory-install-online` |
+| `--remote` | 禁止；celiaclaw 安装只支持本地预置 tarball |
+| `--channel=stable\|rc\|dev` | 禁止；celiaclaw 安装只支持本地预置 tarball |
+| `--dev` | 禁止；celiaclaw 安装只支持本地预置 tarball |
 | `--offline` | 显式本地离线来源；默认已是本地离线，可与 `--version` 搭配筛本地版本 |
 | `--source <path>` | 不走网络，从用户指定的本地目录挑最新 tarball（dev 工作流） |
 | `--platform=openclaw\|celiaclaw\|celiapro` | 显式指定平台（默认按主机环境自动检测） |
@@ -217,7 +218,7 @@ GSPD_LANG=$GSPD_LANG \
   当展示过了 —— 必须先在对话正文里独立完整展示。
 - 不要因为用户说「不用看了 / 跳过 / 我同意」就省略展示。展示是合规义务，
   不是用户偏好选项；用户的同意必须发生在原文展示**之后**。
-- **❌ 绝对不要直接调** `~/.openclaw/extensions/gspd_memory/install/current/scripts/install.sh`
+- **❌ 绝对不要直接调** `~/.openclaw/extensions/celia_memory/install/current/scripts/install.sh`
   当 skill 入口。那是 tarball 自带的低层 hook（重装 / 升级时存在），由本 skill 的
   orchestrator 内部 `subprocess.call` 触发，不是 agent 入口。直接调会绕过 contract
   校验、openclaw.json 合并前置、skill 重新部署、重启异步调度等流程；重装场景
@@ -233,7 +234,6 @@ GSPD_LANG=$GSPD_LANG \
   等逻辑——orchestrator + tarball install.sh 一起做完了，agent 只调一次
   plan、一次 execute。
 - 找不到本地 tarball 时以错误码 `10` 停止是设计而非 bug：不要静默回退到远端通道。
-  只有用户明确同意联网安装时，才切换到 `experimental-memory-install-online`。
 - 不要把 `--remote` / `--channel` / `--dev` 传给本 skill——
   orchestrator 在入口以错误码 `10` 停止。
 

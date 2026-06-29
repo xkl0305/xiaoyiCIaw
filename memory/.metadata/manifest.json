@@ -1,0 +1,8 @@
+{
+  "pluginVersion": "1.9.2",
+  "firstInitAt": "2026-06-29T13:40:19.078Z",
+  "lastOperationAt": "2026-06-29T14:58:18.769Z",
+  "lastOperationType": "startup",
+  "storeBackend": "sqlite",
+  "seedRunCount": 0
+}

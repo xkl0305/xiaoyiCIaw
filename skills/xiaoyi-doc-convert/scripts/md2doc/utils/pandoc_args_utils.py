@@ -11,12 +11,8 @@ config = CONFIG.md2doc_config
 LOG = get_logger("PandocArgsUtils")
 
 
-def get_pandoc_extra_args(tgt_file_type: str = "docx", device_type: str = "pc") -> list:
+def get_pandoc_extra_args() -> list:
     """Get pandoc extra args based on configuration.
-
-    Args:
-        tgt_file_type: Target file type (docx, pdf, etc.)
-        device_type: Device type (pc, phone, etc.)
 
     Returns:
         List of extra arguments for pandoc
@@ -36,12 +32,7 @@ def get_pandoc_extra_args(tgt_file_type: str = "docx", device_type: str = "pc") 
     # Add user-configured extra args with absolute paths
     user_extra_args = config.get('md2doc_pandoc_extra_args', [])
     if user_extra_args:
-        for arg in user_extra_args:
-            if arg.startswith("--lua-filter="):
-                filter_name = arg.split("=")[-1]
-                extra_args.append(f"--lua-filter={CONFIG_PATH}/{filter_name}")
-            else:
-                extra_args.append(arg)
+        extra_args.extend(user_extra_args)
 
     return extra_args
 

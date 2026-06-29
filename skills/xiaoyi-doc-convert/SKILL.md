@@ -1,26 +1,10 @@
 ---
 name: xiaoyi-doc-convert
-description: |
-  统一的文档格式转换工具。
-  支持 Word (DOCX/DOC)、PowerPoint (PPTX/PPT)、Excel (XLSX/XLS)、PDF、Markdown (MD)、HTML 等多种格式互转。
-
-  适用场景：
-  - 在多种格式间转换文档（HTML↔PDF、Word↔PDF、Markdown→Word 等）
-  - 批量或单文件转换
-  - 支持多种格式描述方式，如 excel/xls/xlsx、doc/docx/word、md/markdown
-
-  触发方式：
-  - 用户说 "转换文档格式"、"docx转pdf"、"html转ppt"、"excel转pdf"、"md转word"
-  - 使用 "/xiaoyi-doc-convert <文件> <目标格式>" 格式
-
-  关键触发词：
-  - 通用：文档转换、格式转换、doc convert、file convert
-  - PDF：转pdf、转PDF、export to pdf、保存为pdf
-  - Word：转word、转doc、转docx、word转换、doc转pdf、docx转pdf
-  - Excel：转excel、转xls、转xlsx、xls转pdf、xlsx转pdf、excel转pdf、表格转pdf
-  - PPT：转ppt、转pptx、转powerpoint、ppt转pdf、pptx转pdf、幻灯片转pdf
-  - Markdown：md转word、md转pdf、markdown转word、markdown转pdf、md转docx、markdown转excel
-  - HTML：html转pdf、网页转pdf、html转word、html转ppt
+description: >
+  文档格式综合转换技能。
+  适用情形：处理 Word(doc/docx)、PowerPoint(ppt/pptx)、Excel(xls/xlsx)、PDF、Markdown(md) 及 HTML 之间的相互转换。
+  当用户意图涉及“格式转换”或明确的转换指令（如“docx转pdf”、“md转word”、“网页转ppt”、“excel转pdf”等）时必须触发。支持单文件与批量处理，系统会自动识别各类格式的中英文及扩展名别名。
+  不适用情形：不支持将 PDF 转换为 Word (doc/docx) 格式。
 version: 1.1.0  
 allowed-tools: Read, Bash, Write
 ---

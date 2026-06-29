@@ -2,28 +2,14 @@
 name: xiaoyi-pdf
 post_process: aigc_marker
 description: >
-  Use this skill for any PDF task — generation, design, form-filling, watermarking,
-  merging, splitting, encrypting, or extracting content. Always prefer this skill
-  whenever the user mentions PDF in any way, even if they don't ask for "design".
-  CREATE (generate from scratch): "make a PDF", "generate a report", "write a proposal",
-  "create a resume", "beautiful PDF", "professional document", "cover page",
-  "polished PDF", "client-ready document".
-  FILL (complete form fields): "fill in the form", "fill out this PDF",
-  "complete the form fields", "write values into PDF", "what fields does this PDF have".
-  REFORMAT (apply design to an existing doc): "reformat this document", "apply our style",
-  "convert this Markdown/text to PDF", "make this doc look good", "re-style this PDF".
-  WATERMARK (add watermark to existing PDF): "add watermark", "add a watermark to this PDF",
-  "watermark this PDF", "stamp confidential", "add text watermark", "add image watermark",
-  "mark as confidential", "添加水印", "加水印", "PDF 水印", "盖个水印", "打水印".
-  MERGE (combine PDFs): "merge PDFs", "combine these PDFs", "join PDF files", "合并 PDF".
-  SPLIT (separate pages): "split this PDF", "extract pages", "break PDF into pages",
-  "拆分 PDF", "PDF 分页".
-  ENCRYPT / DECRYPT (password protect): "encrypt this PDF", "add password to PDF",
-  "decrypt PDF", "remove PDF password", "PDF 加密", "PDF 解密".
-  EXTRACT (text/tables): "extract text from PDF", "extract tables from PDF",
-  "PDF 文字提取", "PDF 表格提取".
-  This skill uses a token-based design system: color, typography, and spacing are derived
-  from the document type and flow through every page. The output is print-ready.
+  PDF 综合处理技能，处理文档生成、编辑、安全与解析。
+  适用情形：
+  1. 创建与排版：从零生成报告、提案、简历等 PDF，或对现有文档重新排版美化；
+  2. 表单与水印：自动填写 PDF 表单字段，或添加文字/图片水印（如打水印、标机密）；
+  3. 页面管理：合并多个 PDF，或拆分、提取指定页码；
+  4. 安全控制：为 PDF 添加密码（加密）或移除密码（解密）；
+  5. 内容提取：从 PDF 中提取纯文本或导出表格数据。
+  只要用户诉求涉及生成、排版、美化、转换、拼接、拆分 PDF，或处理水印、表单、密码，必须触发本技能。
 metadata:
   version: "1.1"
   category: document-generation

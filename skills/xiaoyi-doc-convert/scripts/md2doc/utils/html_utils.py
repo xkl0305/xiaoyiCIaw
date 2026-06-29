@@ -10,7 +10,7 @@ from logger import get_logger
 LOG = get_logger("HtmlUtils")
 
 
-def md2html(markdown_text: str, request_id: str = "", extras: list = None, safe_mode: bool = True) -> str:
+def md2html(markdown_text: str, extras: list = None, safe_mode: bool = True) -> str:
     """Convert markdown to HTML.
 
     Args:
@@ -23,7 +23,7 @@ def md2html(markdown_text: str, request_id: str = "", extras: list = None, safe_
         HTML string
     """
     if not MARKDOWN2_AVAILABLE:
-        LOG.warning(f"{request_id}, markdown2 not available, returning original content")
+        LOG.warning(f"markdown2 not available, returning original content")
         return markdown_text
 
     if extras is None:
@@ -32,6 +32,6 @@ def md2html(markdown_text: str, request_id: str = "", extras: list = None, safe_
     try:
         return markdown2.markdown(markdown_text, extras=extras, safe_mode=safe_mode)
     except Exception as e:
-        LOG.error(f"{request_id}, md2html failed: {str(e)}")
+        LOG.error(f"md2html failed: {str(e)}")
         return markdown_text
 

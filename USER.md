@@ -40,19 +40,20 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=534f934dfb7e9159 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=64b8b3eb0477d242 -->
 # Memory Global Summary
 
 ## User Profile
+- 用户确认GitHub仓库 https://github.com/xkl0305/xiaoyiCIaw 是用户自己的仓库
 - 用户确认无法访问OpenAI网站（OpenAI网站已不提供服务或无法访问）
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求安装仓库 https://cnb.cool/Crusheart_Studio/Crusheart-AutoBrain-Turbo
-- 用户上传了压缩包文件 /tmp/xy_channel/1782689308256_llm-memory-integration-9.0.1.zip 并要求安装
-- 用户要求更新私有配置仓库，链接地址为 https://cnb.cool/llm-memory-integrat/llm
-- 用户在 2026-06-28 23:45 要求通过环境变量 CNB_PRIVATE_WORKSPACE 链接私有配置
-- 私有配置需要通过环境变量CNB_PRIVATE_WORKSPACE链接，用户要求实现此配置
+- 用户正在尝试将yaoyao-memory v4.0.1和v1.9.2进行互补，采用方案二——由celia主导、yaoyao补充，并需要开启celiaBridge
+- 用户指定Gitee为同步目标
+- 用户确认仓库 https://gitee.com/starry-sky-love/xiaoyi-claw-backup2 需要修改，并指定Gitee为同步目标
+- 用户在系统配置中需要使用（或询问）常见场景的配置方法
+- 用户询问 https://github.com/xkl0305/xiaoyiCIaw/actions/runs/28340893569 的内容，并要求查看和修复（可能忽略某个问题）
 ### Short-term Intent
 - 用户让把模型换成 Qwen3-Embedding-8B（1024 维）进行尝试
 - 用户询问系统（或服务）是否重启成功

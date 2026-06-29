@@ -3,7 +3,7 @@
 #
 # 实际逻辑全部在 orchestrator.py。本文件只做：
 #   1. 找到 python3
-#   2. 透传 $GSPD_LANG 环境变量与所有参数到 orchestrator
+#   2. 透传 $CELIA_LANG 环境变量与所有参数到 orchestrator
 #
 # 这种"单一 Bash 入口 + 厚 Python 实现"是有意为之：agent 端只需要做一次
 # Bash 工具调用，不再为每个 lib 函数单独 shell 出去；脚本侧也避免在

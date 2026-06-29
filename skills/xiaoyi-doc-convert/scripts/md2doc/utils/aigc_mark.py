@@ -13,7 +13,7 @@ def generate_sha256(text: str) -> str:
     return sha256_hash.hexdigest()
 
 
-def get_aigc_signature(content: str, request_id: str = "") -> str:
+def get_aigc_signature(content: str) -> str:
     """
     生成AIGC隐式标识
 

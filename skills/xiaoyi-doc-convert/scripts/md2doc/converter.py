@@ -1,7 +1,6 @@
 import os
 import sys
 import uuid
-from pathlib import Path
 
 # Add current directory to path for imports (md2doc uses top-level absolute imports)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -87,8 +86,6 @@ def _convert_content(content: str, target_format: str, output_path: str, request
     if target_format == 'docx':
         docx_converter.convert(content, output_path, request_id=request_id, device_type=device_type)
     elif target_format == 'pdf':
-        if pdf_converter is None:
-            raise ValueError("PDF converter is not available. Please install weasyprint with system dependencies.")
         pdf_converter.convert(content, output_path, request_id=request_id)
     elif target_format == 'xlsx':
         excel_converter.convert(content, output_path, request_id=request_id)

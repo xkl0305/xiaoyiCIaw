@@ -1,5 +1,7 @@
 """Text and formula filters for md2doc skill."""
+import ipaddress
 import re
+from urllib.parse import urlparse
 
 try:
     from bs4 import BeautifulSoup
@@ -68,7 +70,7 @@ class Md2HtmlFilter(Filter):
 
     def apply(self, content: str, request_id: str = "") -> str:
         LOG.debug(f"{request_id}, apply content filter: {self.description}")
-        return md2html(content, request_id, ['tables'], safe_mode=True)
+        return md2html(content, ['tables'], safe_mode=True)
 
 
 class HtmlTableFilter(Filter):
@@ -155,14 +157,7 @@ class LocalPathFilter(Filter):
     HTML_LINK_PATTERN = r'<(?:source|a|img|link)[^>]*?(?:src|href)=\\?(["\']([^"\'>\s]+)["\']|([^"\'>\s]+))[^>]*>'
     MARKDOWN_LINK_PATTERN = r'\[[^\]]*\]\(([^)]*)\)'
 
-    # File extensions that indicate local files
-    FILE_EXTENSIONS = [
-        "certs", ".py", ".cpp", ".java", ".c", ".js", ".html", ".pdf",
-        ".docx", ".xlsx", ".json", ".xml", ".yaml", ".yml",
-        ".log", ".lua", ".css", ".ini"
-    ]
-
-    ALLOWED_PROTOCOLS = ['https', 'superlink']
+    ALLOWED_PROTOCOLS = ['https', 'http', 'data', 'superlink']
 
     def __init__(self):
         super().__init__(name="local_path_filter", description="检查是否引用本地文件")
@@ -177,49 +172,35 @@ class LocalPathFilter(Filter):
         path = path.strip(' "\'')
         return path.rstrip('/\\')
 
+    def _is_safe_protocol(self, scheme: str) -> bool:
+        if scheme == '':
+            return False
+        if scheme in self.ALLOWED_PROTOCOLS:
+            return True
+        return False
+
     def _is_local_reference(self, path: str) -> bool:
         """Check if path is a local file reference."""
         if not path:
             return False
+        parsed = urlparse(path)
 
-        # Check for file:// protocol
-        if path.startswith('file://'):
+        if parsed.scheme == 'data':
+            return False
+
+        if not self._is_safe_protocol(parsed.scheme):
             return True
 
-        # Check for allowed web protocols
-        for protocol in self.ALLOWED_PROTOCOLS:
-            if path.startswith(f'{protocol}://'):
-                return False
+        hostname = parsed.hostname
+        if not hostname:
+            return True
 
-        # Check for data URI
-        if path.startswith('data:'):
-            return False
-
-        # Check for anchor links
-        if path.startswith('#'):
-            return False
-
-        # Check for file extensions
-        lower_path = path.lower()
-        for ext in self.FILE_EXTENSIONS:
-            if lower_path.endswith(ext):
+        try:
+            ip = ipaddress.ip_address(hostname)
+            if ip.is_private or ip.is_loopback or ip.is_link_local:
                 return True
-
-        # Check for path separators
-        if '/' in path or '\\' in path:
-            return True
-
-        # Check for relative paths
-        if path.startswith('./') or path.startswith('../'):
-            return True
-
-        # Check for Windows absolute paths
-        if re.match(r'^[a-zA-Z]:\\', path) or re.match(r'^\\\\', path):
-            return True
-
-        # Check for Unix absolute paths
-        if path.startswith('/'):
-            return True
+        except ValueError:
+            pass
 
         return False
 

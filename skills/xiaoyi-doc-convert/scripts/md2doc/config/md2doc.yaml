@@ -23,7 +23,6 @@ md2doc_content_filters_common:
   - "formula_protect_filter"
   - "video_codes_filter"
   - "image_code_filter"
-  - "rsup_filter"
 
 md2doc_content_filters_word: []
 
@@ -56,46 +55,13 @@ md2doc_formula_pattern: '(\\$[^\\$]{1,200}\\$)'
 md2doc_content_filters_formula: []
 md2doc_content_filters_pdf_formula: []
 
-# Path filtering settings
-md2doc_reference_link_pattern: '^\[[^\]]+\]:\s*(.*?)\s*$'
-md2doc_html_link_pattern: '<(?:source|a|img|link)[^>]*?(?:src|href)=\\?(["'']([^"''>\s]+)["'']|([^"''>\s]+))[^>]*>'
-md2doc_markdown_link_pattern: '\[[^\]]*\]\(([^)]*)\)'
-md2doc_allowed_web_protocols:
-  - "https"
-  - "superlink"
-md2doc_file_extensions:
-  - "certs"
-  - ".py"
-  - ".cpp"
-  - ".java"
-  - ".c"
-  - ".js"
-  - ".html"
-  - ".pdf"
-  - ".docx"
-  - ".xlsx"
-  - ".json"
-  - ".xml"
-  - ".yaml"
-  - ".yml"
-  - ".log"
-  - ".lua"
-  - ".css"
-  - ".ini"
-
-# Pandoc settings
-md2doc_enable_pandoc_sandbox: false
-md2doc_markdown_format: "markdown"
-
-# HTML Table filter pattern
-md2doc_html_table_pattern: '<table[^>]*>.*?</table>'
-
 # Pandoc templates configuration
 md2doc_templates:
   default: "custom-template.docx"
 
 # Pandoc extra args (customizable)
-md2doc_pandoc_extra_args: ["--lua-filter=br-filter.lua", "--lua-filter=table-filter.lua", "--lua-filter=list-filter.lua", "--lua-filter=image-filter.lua", "--lua-filter=page-break-filter.lua"]
+md2doc_pandoc_extra_args: []
+md2doc_pandoc_filters: ["br-filter.lua", "table-filter.lua", "list-filter.lua", "image-filter.lua", "page-break-filter.lua"]
 
 md2doc_content_filters:
   - pattern: "\u200B"
@@ -142,22 +108,6 @@ md2doc_content_filters:
     target: "\\1`\\2`"
     name: "underline_filter"
     description: "添加反引号保护下划线，如试卷的填空题中的下划线"
-  - pattern: "<rsup[^<]+</r(?:su|us)p>"
-    target: ""
-    name: "rsup_filter"
-    description: "删除<rsup>引用标记, 兼容拼写标记</rusp>"
-  - pattern: "<rsup[^>]*>(\\d+)[^<]+</r(?:su|us)p>"
-    target: "[\\1]"
-    name: "rsup_dr_filter"
-    description: "<rsup>引用标记替换成[x]"
-  - pattern: "(\\n\\n)(## )"
-    target: "\\1\\\\newpage\\n\\n\\2"
-    name: "chapter_title_new_page_filter"
-    description: "章节标题插入新页站位符"
-  - pattern: "[!\\[\\]<>\\\\/]"
-    target: ""
-    name: "references_filter"
-    description: "参考来源的标题及站点名中删除感叹号、中括号、尖括号,路径分隔符"
   - pattern: "\\$(\\$) *(\\n?[^\\$\\n=]{1,20}?\\n?) *(\\$)\\$"
     target: "\\1\\2\\3"
     name: "short_formula_filter"

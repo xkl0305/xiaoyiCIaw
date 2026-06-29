@@ -96,7 +96,7 @@ def set_excel_properties(target_path: str, content: str, request_id: str = ""):
         wb = load_workbook(target_path)
         custom_props = wb.custom_doc_props
         if custom_props is not None:
-            aigc_signature = get_aigc_signature(content, request_id)
+            aigc_signature = get_aigc_signature(content)
             custom_props.append(StringProperty(name='AIGC', value=aigc_signature))
         wb.save(target_path)
     except Exception as e:

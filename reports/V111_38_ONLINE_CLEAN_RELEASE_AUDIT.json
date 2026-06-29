@@ -1,0 +1,83 @@
+{
+  "version": "V111.38",
+  "generated_at": "2026-06-29T10:20:33",
+  "env_self_heal": {
+    "root": "/home/sandbox/.openclaw/workspace",
+    "raw_env": {
+      "PIP_PREFIX": "/home/sandbox/.openclaw/workspace/repo",
+      "PYTHONPATH": null,
+      "PYTHONHOME": null,
+      "VIRTUAL_ENV": null
+    },
+    "sanitized_env": {
+      "PIP_PREFIX": null,
+      "PYTHONPATH": "/home/sandbox/.openclaw/workspace:/home/sandbox/.local/lib/python3.12/site-packages",
+      "PYTHONHOME": null,
+      "VIRTUAL_ENV": null,
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "DLX_ENV_SANITIZED": "1"
+    },
+    "raw_has_forbidden_repo_path": false,
+    "sanitized_has_forbidden_repo_path": false,
+    "local_site_paths": [
+      "/home/sandbox/.local/lib/python3.12/site-packages"
+    ],
+    "ok": true
+  },
+  "root_cleanliness": {
+    "ok": true,
+    "bad_dirs_count": 0,
+    "bad_files_count": 0,
+    "bad_dirs_sample": [],
+    "bad_files_sample": []
+  },
+  "package_cleanliness": {
+    "checked": false,
+    "ok": null,
+    "reason": "no package path supplied"
+  },
+  "config_policy": {
+    "ok": true,
+    "product_online_ok": true,
+    "real_side_effect_guard_ok": false,
+    "dependency_install_policy_ok": true,
+    "environment_policy_ok": true,
+    "top_level": {
+      "ONLINE_MODE": true,
+      "OFFLINE_MODE": false,
+      "CONNECTED_RUNTIME_ALWAYS_ON": true,
+      "ALLOW_NETWORK": true,
+      "NO_EXTERNAL_API": false,
+      "DISABLE_LLM_API": false,
+      "NO_REAL_PAYMENT": true,
+      "NO_REAL_SEND": true,
+      "NO_REAL_DEVICE": false
+    },
+    "runtime": {
+      "ONLINE_MODE": true,
+      "OFFLINE_MODE": false,
+      "CONNECTED_RUNTIME_ALWAYS_ON": true,
+      "ALLOW_NETWORK": true,
+      "NO_EXTERNAL_API": false,
+      "DISABLE_LLM_API": false,
+      "NO_REAL_PAYMENT": true,
+      "NO_REAL_SEND": true,
+      "NO_REAL_DEVICE": false
+    }
+  },
+  "pytest_collect": {
+    "checked": false,
+    "ok": null,
+    "reason": "pytest collect skipped"
+  },
+  "required_files": {
+    "scripts/dlx_env.py": true,
+    "scripts/dlx_pytest.py": true,
+    "scripts/bootstrap_local_deps_v111_37.py": true,
+    "scripts/package_clean_source_v111_38.sh": true,
+    "scripts/audit_v111_38_online_clean_release.py": true,
+    "requirements-dev.txt": true,
+    "openclaw.json": true
+  },
+  "status": "ok"
+}

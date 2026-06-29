@@ -4,18 +4,15 @@ orchestrator.py — experimental-memory-install skill orchestrator.
 
 Modes:
   --mode=plan      Print bilingual `[PLAN]` summary; exit 0. Read-only.
-  --mode=execute   Real install. Source policy is controlled by skill name:
-                   offline skill reads local tarball; online skill fetches
-                   remote → verify → extract → platform install hook.
-                   Requires --confirmed.
+  --mode=execute   Real install. Reads a local pre-staged tarball and then
+                   runs the platform install hook. Requires --confirmed.
   --mode=reboot    Restart services / reload runtime. Requires --confirmed.
 
 Common args:
-  --version=v2026-04-30           pin version (offline skill: local cache;
-                                  online skill: remote version)
-  --remote                        online skill only: install from GaussPD_Artifacts
-  --channel=stable|rc|dev         online skill only: remote channel
-  --dev                           online skill only: latest-dev alias
+  --version=v2026-04-30           pin version from the local cache
+  --remote                        rejected for celiaclaw offline install
+  --channel=stable|rc|dev         rejected for celiaclaw offline install
+  --dev                           rejected for celiaclaw offline install
   --offline                       local tarball cache (default)
   --source=local-dir <path>       local dev dir, pick newest matching tarball
   --platform=openclaw|celiaclaw|celiapro
@@ -39,6 +36,7 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
+import copy
 import fcntl
 import hashlib
 import json
@@ -52,6 +50,7 @@ import sys
 import tarfile
 import tempfile
 import time
+import urllib.parse
 import urllib.request
 import urllib.error
 from datetime import datetime
@@ -116,11 +115,13 @@ MSG = {
     },
     "plan_hook_actions": {
         "zh": ("    hook 内部依次:复制插件 → npm install → 合并 openclaw.json"
-               "(注册记忆插件) → 注入 AGENTS.md → 改 supervisord.conf → "
-               "迁 DB → supervisorctl 重启 openclaw-gateway"),
+               "(注册记忆插件) → 保持预置 AGENTS.md 不变 → "
+               "改 supervisord.conf → 同步 chat 凭据 → "
+               "按配置重启 openclaw-gateway"),
         "en": ("    hook will: copy plugin → npm install → merge openclaw.json "
-               "(register memory plugin) → inject AGENTS.md → patch supervisord.conf"
-               " → migrate DB → supervisorctl restart openclaw-gateway"),
+               "(register memory plugin) → leave pre-placed AGENTS.md untouched"
+               " → patch supervisord.conf → sync chat creds → "
+               "restart openclaw-gateway if configured"),
     },
     "plan_disk_required": {
         "zh": "  需要磁盘: 至少 {kb} KiB（约 3× tarball 大小）",
@@ -262,16 +263,19 @@ REPO_ROOT = (
 )   # …/GaussPD_Skills/ when running from a full checkout.
 # Module-level paths default to celiaclaw layout. The orchestrator routes
 # per-platform later in build_plan / _execute_locked; for celiaclaw and
-# openclaw the only difference is the leading $GSPD_CONFIG_DIR.
-def _module_default_config_dir() -> Path:
-    return Path(os.environ.get("GSPD_CONFIG_DIR", "/home/sandbox/.openclaw")).expanduser()
+# openclaw the only difference is the leading $CELIA_CONFIG_DIR.
+MEMORY_PLUGIN_ID = "memory-celia"
 
-DEFAULT_INSTALL_ROOT = Path(os.environ.get("GSPD_INSTALL_ROOT", "")).expanduser() \
-    if os.environ.get("GSPD_INSTALL_ROOT") \
-    else (_module_default_config_dir() / "extensions" / "gspd_memory")
-LOG_DIR = Path(os.environ.get("GSPD_LOG_DIR", "")).expanduser() \
-    if os.environ.get("GSPD_LOG_DIR") \
-    else (_module_default_config_dir() / "logs" / "gspd_memory")
+
+def _module_default_config_dir() -> Path:
+    return Path(os.environ.get("CELIA_CONFIG_DIR", "/home/sandbox/.openclaw")).expanduser()
+
+DEFAULT_INSTALL_ROOT = Path(os.environ.get("CELIA_INSTALL_ROOT", "")).expanduser() \
+    if os.environ.get("CELIA_INSTALL_ROOT") \
+    else (_module_default_config_dir() / "extensions" / "celia_memory")
+LOG_DIR = Path(os.environ.get("CELIA_LOG_DIR", "")).expanduser() \
+    if os.environ.get("CELIA_LOG_DIR") \
+    else (_module_default_config_dir() / "logs" / "celia_memory")
 LOCK_FILE = DEFAULT_INSTALL_ROOT / ".lock"
 INSTALL_DIRS_PARENT = DEFAULT_INSTALL_ROOT / "install"  # install/<version>/, install/current, install/previous
 BACKUP_DIR = DEFAULT_INSTALL_ROOT / "backups"
@@ -279,8 +283,8 @@ BACKUP_DIR = DEFAULT_INSTALL_ROOT / "backups"
 
 def load_compat() -> dict:
     candidates: list[Path] = []
-    if os.environ.get("GSPD_COMPAT_VERSION_PATH"):
-        candidates.append(Path(os.environ["GSPD_COMPAT_VERSION_PATH"]))
+    if os.environ.get("CELIA_COMPAT_VERSION_PATH"):
+        candidates.append(Path(os.environ["CELIA_COMPAT_VERSION_PATH"]))
     candidates.extend([
         SCRIPT_DIR / "compat-version.toml",
         SKILL_ROOT / "compat-version.toml",
@@ -490,7 +494,7 @@ _ARTIFACTS_PLAN_SPARSE_PATHS = [
 def _ensure_artifacts_mirror() -> Path:
     """Shallow + sparse clone (or refresh) GaussPD_Artifacts; return its worktree.
 
-    Repo URL overridable via env GSPD_ARTIFACTS_REPO_URL — useful for forks
+    Repo URL overridable via env CELIA_ARTIFACTS_REPO_URL — useful for forks
     that publish releases to a different mirror (e.g. when a contributor
     uses `integration/celiaclaw/local_package.sh --direct-push` to commit
     a tarball into their own GaussPD_Artifacts fork). Default points at
@@ -504,7 +508,7 @@ def _ensure_artifacts_mirror() -> Path:
     expands sparse-checkout to add the requested release dir on demand.
     """
     repo_url = os.environ.get(
-        "GSPD_ARTIFACTS_REPO_URL",
+        "CELIA_ARTIFACTS_REPO_URL",
         "https://gitcode.com/CayleyVanguard/GaussPD_Artifacts.git",
     )
     if ARTIFACTS_CACHE.exists():
@@ -618,15 +622,21 @@ def sha256_file(path: Path) -> str:
 # Local-source mode
 # ============================================================================
 
-def find_local_tarball(local_dir: Path, plat: str, arch: str,
-                       version: str | None = None) -> Path:
-    """Pick the newest matching local tarball under local_dir."""
+def _local_tarball_candidates(local_dir: Path, plat: str, arch: str,
+                              version: str | None = None) -> list[Path]:
+    """Return newest matching local tarballs under local_dir."""
     version_glob = version if version else "*"
-    candidates = sorted(
-        local_dir.glob(f"gspd_memory.{version_glob}.{plat}.{arch}.*.tar.gz"),
+    return sorted(
+        local_dir.glob(f"celia_memory.{version_glob}.{plat}.{arch}.*.tar.gz"),
         key=lambda p: p.stat().st_mtime,
         reverse=True,
     )
+
+
+def find_local_tarball(local_dir: Path, plat: str, arch: str,
+                       version: str | None = None) -> Path:
+    """Pick the newest matching local tarball under local_dir."""
+    candidates = _local_tarball_candidates(local_dir, plat, arch, version)
     if not candidates:
         suffix = f" version={version}" if version else ""
         die(10, f"[ERROR] no matching tarball under {local_dir} "
@@ -654,7 +664,7 @@ def safe_extract(tarball: Path, dst: Path) -> None:
                 raise RuntimeError(f"refusing to extract outside dst: {member.name}")
         tf.extractall(tmp)   # nosec — guard above; no Python 3.12 filter for compat
     # tarball wraps everything in one top-level dir like
-    # `gspd_memory_<v>_<plat>_<arch>/`; strip it so dst is the content root.
+    # `celia_memory_<v>_<plat>_<arch>/`; strip it so dst is the content root.
     children = list(tmp.iterdir())
     if len(children) == 1 and children[0].is_dir():
         inner = children[0]
@@ -671,36 +681,36 @@ def safe_extract(tarball: Path, dst: Path) -> None:
 # ============================================================================
 #
 # Tarball ships openclaw.json with `serverBinaryPath` written as the literal
-# string `${GSPD_INSTALL_ROOT}/bin/gspd_mcp_server`. The platform install.sh
+# string `${CELIA_INSTALL_ROOT}/bin/celia_memory_mcp_server`. The platform install.sh
 # `patch_openclaw_config` step merges that string into the production
-# openclaw.json verbatim — but the matching `GSPD_INSTALL_ROOT` env var is
+# openclaw.json verbatim — but the matching `CELIA_INSTALL_ROOT` env var is
 # never written to any persistent surface (no `~/.bashrc` line, no
 # `[program:openclaw-gateway] environment=` token in supervisord.conf). The
 # install.sh's only `environment=` injections are CURL_CA_BUNDLE,
-# GSPD_LOG_FILE, OPENAI_CHAT_*, and GSPD_CHAT_UID — `GSPD_INSTALL_ROOT` is
+# CELIA_LOG_FILE, OPENAI_CHAT_*, and CELIA_CHAT_UID — `CELIA_INSTALL_ROOT` is
 # absent.
 #
 # Effect: openclaw-gateway restarts cleanly, agent reports "services
 # restarted: yes", but the moment gateway actually tries to spawn the MCP
 # server using the path from openclaw.json, the placeholder expands to
 # empty (or stays literal, depending on the gateway's parser) → the spawn
-# fails → no MCP server, no `gspd_memory.db`, no working memory plugin.
-# The user has to set GSPD_INSTALL_ROOT by hand and restart again.
+# fails → no MCP server, no `celia_memory.db`, no working memory plugin.
+# The user has to set CELIA_INSTALL_ROOT by hand and restart again.
 #
 # Skill-side fix: resolve the placeholder *inside the JSON* both before the
 # hook merges (so fresh installs get a concrete absolute path written into
 # production openclaw.json) and after (so reinstalls over a previously
 # broken config self-heal — `patch_openclaw_config` won't overwrite an
-# existing memory-gspd entry, so the pre-hook step alone isn't enough).
+# existing memory-celia entry, so the pre-hook step alone isn't enough).
 
 
-def _gspd_install_root_value(install_root: Path) -> str:
-    """The concrete value to substitute for `${GSPD_INSTALL_ROOT}`.
+def _celia_install_root_value(install_root: Path) -> str:
+    """The active value to substitute for `${CELIA_INSTALL_ROOT}`.
 
     Returns the `install/current` symlink path (NOT install_root, which is
     version-pinned). With the new layout the celiaclaw install hook lifts
     contents from `openclaw/` to install_root top level, so binaries live
-    at `<install_root>/bin/gspd_mcp_server`. By writing `current` into
+    at `<install_root>/bin/celia_memory_mcp_server`. By writing `current` into
     openclaw.json + supervisord.conf instead of the version-pinned dir, an
     upgrade only has to swing the `current` symlink — no rewrite of those
     consumer configs needed, and a hook failure that doesn't swing leaves
@@ -714,17 +724,23 @@ def _gspd_install_root_value(install_root: Path) -> str:
     return str(INSTALL_DIRS_PARENT / "current")
 
 
+def _staging_install_root_value(install_root: Path) -> str:
+    """Return the version-pinned root used while the hook is still running."""
+    return str(install_root)
+
+
 def _substitute_install_root_in_json(json_path: Path,
                                      install_root: Path,
-                                     log_path: Path | None = None) -> bool:
-    """Replace `${GSPD_INSTALL_ROOT}` literals in three GsPD-owned subtrees:
+                                     log_path: Path | None = None,
+                                     install_root_value: str | None = None) -> bool:
+    """Replace `${CELIA_INSTALL_ROOT}` literals in three Celia-owned subtrees:
 
       - `plugins.load.paths`             (load order references)
-      - `plugins.entries.memory-gspd`    (runtime config, incl. serverBinaryPath)
-      - `plugins.installs.memory-gspd`   (install-record sourcePath/installPath)
+      - `plugins.entries.memory-celia`    (runtime config, incl. serverBinaryPath)
+      - `plugins.installs.memory-celia`   (install-record sourcePath/installPath)
 
     Why JSON-aware (not blanket text replace): keep the substitution
-    contained to memory-gspd's footprint, so we don't mutate other
+    contained to memory-celia's footprint, so we don't mutate other
     plugins' incidental same-named placeholders, and so the JSON stays
     well-formed. Idempotent: a clean file (no placeholder) is a no-op.
 
@@ -740,8 +756,8 @@ def _substitute_install_root_in_json(json_path: Path,
                  log_path)
         return False
 
-    placeholder = "${GSPD_INSTALL_ROOT}"
-    replacement = _gspd_install_root_value(install_root)
+    placeholder = "${CELIA_INSTALL_ROOT}"
+    replacement = install_root_value or _celia_install_root_value(install_root)
     changed = False
 
     def _walk(node):
@@ -762,12 +778,12 @@ def _substitute_install_root_in_json(json_path: Path,
                     _walk(v)
 
     plugins = data.get("plugins") if isinstance(data.get("plugins"), dict) else {}
-    # 1. plugins.entries.memory-gspd (full subtree — includes nested config)
-    entry = plugins.get("entries", {}).get("memory-gspd")
+    # 1. plugins.entries.memory-celia (full subtree — includes nested config)
+    entry = plugins.get("entries", {}).get("memory-celia")
     if isinstance(entry, dict):
         _walk(entry)
-    # 2. plugins.installs.memory-gspd
-    inst = plugins.get("installs", {}).get("memory-gspd")
+    # 2. plugins.installs.memory-celia
+    inst = plugins.get("installs", {}).get("memory-celia")
     if isinstance(inst, dict):
         _walk(inst)
     # 3. plugins.load.paths — only walk this list (not all of load.*)
@@ -786,7 +802,7 @@ def _substitute_install_root_in_json(json_path: Path,
             encoding="utf-8",
         )
         if log_path is not None:
-            emit(f"[INFO] resolved ${{GSPD_INSTALL_ROOT}} → {replacement} "
+            emit(f"[INFO] resolved ${{CELIA_INSTALL_ROOT}} → {replacement} "
                  f"in {json_path}", log_path)
     return changed
 
@@ -795,10 +811,10 @@ def _detect_config_dir(plat: str) -> Path:
     """Production openclaw.json's parent dir, per-platform.
 
     Mirrors what the celiaclaw install.sh hook reads (matching its defaults
-    so we look at the same file the hook just wrote). `GSPD_CONFIG_DIR`
+    so we look at the same file the hook just wrote). `CELIA_CONFIG_DIR`
     env wins when set.
     """
-    env = os.environ.get("GSPD_CONFIG_DIR")
+    env = os.environ.get("CELIA_CONFIG_DIR")
     if env:
         return Path(env).expanduser()
     if plat == "celiaclaw":
@@ -808,21 +824,21 @@ def _detect_config_dir(plat: str) -> Path:
 
 def _detect_plugin_dir(plat: str) -> Path:
     """Where the platform install hook lays the runtime artifacts
-    (`bin/gspd_mcp_server`, `memory-plugin/`, `shared/`, `migrate_openclaw/`,
-    `celiaclaw/`). Under the new layout this equals the active install root
-    via the `current` symlink — i.e. `$GSPD_INSTALL_ROOT/install/current`.
-    `GSPD_PLUGIN_DIR` env wins when set (orchestrator usually sets it to
+    (`bin/celia_memory_mcp_server`, `memory-plugin/`, `shared/`, `celiaclaw/`).
+    Under the new layout this equals the active install root via the
+    `current` symlink — i.e. `$CELIA_INSTALL_ROOT/install/current`.
+    `CELIA_PLUGIN_DIR` env wins when set (orchestrator usually sets it to
     the version-pinned dir before invoking the hook so the hook writes to
     a deterministic location).
     """
-    env = os.environ.get("GSPD_PLUGIN_DIR")
+    env = os.environ.get("CELIA_PLUGIN_DIR")
     if env:
         return Path(env).expanduser()
     return INSTALL_DIRS_PARENT / "current"
 
 
 def _resolve_tarball_dir(plat: str, override: str | None = None) -> Path:
-    """Resolve the GsPD tarball cache directory for `plat`.
+    """Resolve the Celia tarball cache directory for `plat`.
 
     This directory holds tarballs (and `.sha256` sidecars) — both ones
     pre-staged by the image-build pipeline (the default local source) and
@@ -831,22 +847,22 @@ def _resolve_tarball_dir(plat: str, override: str | None = None) -> Path:
 
     Priority:
       1. explicit override (caller-passed, e.g. dev `--source <dir>`)
-      2. $GSPD_TARBALL_DIR env (recommended)
-      3. $GSPD_PREBUILT_DIR env (compatibility alias, keep honoring it
+      2. $CELIA_TARBALL_DIR env (recommended)
+      3. $CELIA_PREBUILT_DIR env (compatibility alias, keep honoring it
          so existing image-build scripts don't break)
-      4. <_detect_config_dir(plat)>/extensions/gspd_memory/package  (default)
+      4. <_detect_config_dir(plat)>/extensions/celia_memory/package  (default)
     """
     if override:
         return Path(override).expanduser().resolve()
-    env = os.environ.get("GSPD_TARBALL_DIR") or os.environ.get("GSPD_PREBUILT_DIR")
+    env = os.environ.get("CELIA_TARBALL_DIR") or os.environ.get("CELIA_PREBUILT_DIR")
     if env:
         return Path(env).expanduser().resolve()
-    return (_detect_config_dir(plat) / "extensions" / "gspd_memory" / "package").resolve()
+    return (_detect_config_dir(plat) / "extensions" / "celia_memory" / "package").resolve()
 
 
 def _prune_tarball_cache(staging_dir: Path, plat: str, keep: int,
                          log_path: Path) -> None:
-    """Keep the most recent `keep` `gspd_memory.*.{plat}.*.tar.gz` files
+    """Keep the most recent `keep` `celia_memory.*.{plat}.*.tar.gz` files
     (by mtime) under `staging_dir`; delete older ones plus their
     `.sha256` sidecars. Best-effort: failures are logged, not raised.
 
@@ -857,7 +873,7 @@ def _prune_tarball_cache(staging_dir: Path, plat: str, keep: int,
         return
     try:
         candidates = sorted(
-            staging_dir.glob(f"gspd_memory.*.{plat}.*.tar.gz"),
+            staging_dir.glob(f"celia_memory.*.{plat}.*.tar.gz"),
             key=lambda p: p.stat().st_mtime,
             reverse=True,
         )
@@ -915,46 +931,45 @@ def _prune_install_roots(install_dirs_parent: Path, log_path: Path) -> None:
         emit(f"[WARN] install root prune failed: {e}", log_path)
 
 
-# Canonical skill names: source dir name == deployed dir name. The
-# experimental-memory- prefix keeps these from colliding with stable/public
-# GsPD skills the operator drops into workspace/skills/.
-#
-# The mapping holds (canonical name -> fallback source names) for back-compat.
-# Tarballs from different rename periods may ship `experimental-memory-*`,
-# `gspd-memory-*`, or older short names such as `install-memory`.
-_SKILL_SOURCE_FALLBACKS = {
-    "experimental-memory-install": (
-        "gspd-memory-install",
-        "install-memory",
-    ),
-    "experimental-memory-install-online": (
-        "gspd-memory-install-online",
-    ),
-    "experimental-memory-upgrade": (
-        "gspd-memory-upgrade",
-        "upgrade-memory",
-    ),
-    "experimental-memory-uninstall": (
-        "gspd-memory-uninstall",
-        "uninstall-memory",
-    ),
-    "experimental-memory-status": (
-        "gspd-memory-status",
-        "memory-status",
-    ),
+def _atomic_symlink_replace(link: Path, target: Path) -> None:
+    """Atomically replace `link` with a symlink to `target`."""
+    tmp = link.with_name(f".{link.name}.tmp.{os.getpid()}")
+    if tmp.is_symlink() or tmp.exists():
+        if tmp.is_dir() and not tmp.is_symlink():
+            shutil.rmtree(tmp, ignore_errors=True)
+        else:
+            tmp.unlink()
+    tmp.symlink_to(target)
+    if link.exists() and not link.is_symlink():
+        shutil.rmtree(link, ignore_errors=True)
+    tmp.replace(link)
+
+
+# Source skill dir names are deployed as-is. Keep aliases only for old tarballs
+# from the short-name / celia-memory-name periods; this is compatibility, not a
+# whitelist. Any new valid skill dir shipped under celiaclaw/skills/ is deployed.
+_SKILL_SOURCE_ALIASES = {
+    "celia-memory-install": "experimental-memory-install",
+    "install-memory": "experimental-memory-install",
+    "celia-memory-install-online": "experimental-memory-install-online",
+    "celia-memory-upgrade": "experimental-memory-upgrade",
+    "upgrade-memory": "experimental-memory-upgrade",
+    "celia-memory-uninstall": "experimental-memory-uninstall",
+    "uninstall-memory": "experimental-memory-uninstall",
+    "celia-memory-status": "experimental-memory-status",
+    "memory-status": "experimental-memory-status",
 }
 
 
 def _deploy_skills(install_root: Path, config_dir: Path, log_path: Path) -> None:
-    """Copy GsPD memory skills from the tarball (install_root/celiaclaw/skills/)
-    into <config_dir>/workspace/skills/experimental-memory-<verb>/, replacing any
-    existing copy. No-op (with a [WARN]) if the tarball ships no skills/ —
-    means package.sh wasn't built with GSPD_SKILLS_SRC, or the operator
-    deliberately stripped them.
+    """Copy celiaclaw skills from the tarball into workspace/skills.
+
+    The Docker/celiaclaw package currently ships only experimental-memory-install,
+    but this deploy step is intentionally generic: future valid skill dirs under
+    celiaclaw/skills/ are deployed automatically without code changes.
 
     Also cleans up legacy-named bootstrap copies the user's agent may have
-    dropped into workspace/skills/ before kicking off the install, keeping a
-    single canonical experimental-memory-* per skill.
+    dropped into workspace/skills/ before kicking off the install.
     """
     src_skills = install_root / "celiaclaw" / "skills"
     if not src_skills.is_dir():
@@ -963,24 +978,17 @@ def _deploy_skills(install_root: Path, config_dir: Path, log_path: Path) -> None
         return
     dst_root = config_dir / "workspace" / "skills"
     dst_root.mkdir(parents=True, exist_ok=True)
-    for canonical, fallbacks in _SKILL_SOURCE_FALLBACKS.items():
-        src = src_skills / canonical
+    deployed = 0
+    for src in sorted(src_skills.iterdir(), key=lambda p: p.name):
         if not src.is_dir():
-            fallback_used = None
-            for fallback in fallbacks:
-                fallback_src = src_skills / fallback
-                if fallback_src.is_dir():
-                    src = fallback_src
-                    fallback_used = fallback
-                    emit(f"[INFO] tarball uses legacy skill name {fallback}; "
-                         f"deploying as {canonical}", log_path)
-                    break
-            if fallback_used is None:
-                fallback_msg = ", ".join(fallbacks)
-                emit(f"[WARN] skill {canonical} not in tarball"
-                     f" (also no fallback: {fallback_msg}); skipping",
-                     log_path)
-                continue
+            continue
+        if not (src / "SKILL.md").is_file():
+            emit(f"[WARN] skipping non-skill directory {src}", log_path)
+            continue
+        canonical = _SKILL_SOURCE_ALIASES.get(src.name, src.name)
+        if canonical != src.name:
+            emit(f"[INFO] tarball uses legacy skill name {src.name}; "
+                 f"deploying as {canonical}", log_path)
         dst = dst_root / canonical
         if dst.is_symlink() or dst.exists():
             try:
@@ -993,20 +1001,24 @@ def _deploy_skills(install_root: Path, config_dir: Path, log_path: Path) -> None
                 continue
         shutil.copytree(src, dst, symlinks=True)
         emit(f"[INFO] deployed skill {canonical} → {dst}", log_path)
-        # Remove any bootstrap copy left under a previous name.
-        for fallback in fallbacks:
-            bootstrap = dst_root / fallback
+        deployed += 1
+        # Remove any bootstrap copy left under a previous name for the same skill.
+        if canonical != src.name:
+            bootstrap = dst_root / src.name
             if (bootstrap.is_dir()
                     and bootstrap.resolve() != dst.resolve()):
                 shutil.rmtree(bootstrap, ignore_errors=True)
                 emit(f"[INFO] removed legacy bootstrap copy {bootstrap}",
                      log_path)
+    if deployed == 0:
+        emit(f"[WARN] no valid skill dirs found under {src_skills}", log_path)
 
 
 def _bootstrap_was_skipped(install_log: Path) -> bool:
-    """True iff install.sh.bootstrap_user_memories ran the temp MCP and
-    gave up on the 30s port-bind wait — its warn line contains
-    `30s 内未就绪`. We use that marker to decide whether to retry.
+    """True iff a legacy hook gave up on the temp MCP port-bind wait.
+
+    The legacy warn line contains `30s 内未就绪`; non-celiaclaw retry
+    code uses that marker to decide whether to retry.
     """
     if not install_log.exists():
         return False
@@ -1019,7 +1031,7 @@ def _bootstrap_was_skipped(install_log: Path) -> bool:
 
 def _xiaoyi_chat_env(config_dir: Path, openclaw_cfg: dict | None = None) -> dict:
     """Parse `<config_dir>/.xiaoyienv` into the OPENAI_CHAT_* env vars
-    install.sh's bootstrap step also exports for the temp MCP.
+    legacy retry code exports for the temp MCP.
 
     Falls back to `models.providers.<primary>` from openclaw_cfg when
     .xiaoyienv is missing or incomplete (e.g. user removed the legacy
@@ -1101,19 +1113,425 @@ def _xiaoyi_chat_env(config_dir: Path, openclaw_cfg: dict | None = None) -> dict
         "OPENAI_CHAT_MODEL":    model,
     }
     if uid:
-        out["GSPD_CHAT_UID"] = uid
+        out["CELIA_CHAT_UID"] = uid
     return out
+
+
+def _plugins_obj(data: dict) -> dict:
+    plugins = data.get("plugins")
+    return plugins if isinstance(plugins, dict) else {}
+
+
+def _memory_plugin_load_paths(data: dict) -> list[str]:
+    plugins = _plugins_obj(data)
+    load = plugins.get("load")
+    paths = load.get("paths") if isinstance(load, dict) else []
+    if not isinstance(paths, list):
+        return []
+    return [
+        item for item in paths
+        if isinstance(item, str) and item.rstrip("/").endswith("/memory-plugin")
+    ]
+
+
+def _is_stale_celia_memory_path(path: str) -> bool:
+    normalized = path.rstrip("/")
+    return (
+        "/celia_memory/" in normalized
+        and "/install/" in normalized
+        and not normalized.endswith("/install/current/memory-plugin")
+    )
+
+
+def _is_managed_memory_plugin_path(value) -> bool:
+    return isinstance(value, str) and value.rstrip("/").endswith(
+        "/memory-plugin",
+    )
+
+
+def _is_managed_memory_entry(name, entry, active_memory_id) -> bool:
+    if name == MEMORY_PLUGIN_ID or name == active_memory_id:
+        return True
+    if not isinstance(name, str) or not name.startswith("memory-"):
+        return False
+    if not isinstance(entry, dict):
+        return False
+
+    cfg = entry.get("config")
+    if isinstance(cfg, dict):
+        owned_keys = ("serverBinaryPath", "dbPath", "vectorDim", "embed", "chat")
+        if any(key in cfg for key in owned_keys):
+            return True
+
+    hooks = entry.get("hooks")
+    return isinstance(hooks, dict) and hooks.get("allowConversationAccess") is True
+
+
+def _clean_managed_memory_allow_list(plugins: dict,
+                                     stale_names: set[str]) -> bool:
+    allow = plugins.get("allow")
+    if not isinstance(allow, list):
+        return False
+
+    cleaned = []
+    seen = set()
+    for item in allow:
+        if item in stale_names:
+            continue
+        if item not in seen:
+            cleaned.append(item)
+            seen.add(item)
+    if MEMORY_PLUGIN_ID not in seen:
+        cleaned.append(MEMORY_PLUGIN_ID)
+    if cleaned == allow:
+        return False
+    plugins["allow"] = cleaned
+    return True
+
+
+def _has_memory_celia_runtime_config(data: dict) -> bool:
+    plugins = data.get("plugins")
+    if not isinstance(plugins, dict):
+        return False
+    slots = plugins.get("slots")
+    if isinstance(slots, dict) and slots.get("memory") == MEMORY_PLUGIN_ID:
+        return True
+    entries = plugins.get("entries")
+    if isinstance(entries, dict) and isinstance(
+        entries.get(MEMORY_PLUGIN_ID), dict,
+    ):
+        return True
+    installs = plugins.get("installs")
+    if isinstance(installs, dict) and isinstance(
+        installs.get(MEMORY_PLUGIN_ID), dict,
+    ):
+        return True
+    return bool(_memory_plugin_load_paths(data))
+
+
+def _memory_celia_runtime_config_needs_repair(data: dict) -> bool:
+    plugins = data.get("plugins")
+    if not isinstance(plugins, dict):
+        return True
+    slots = plugins.get("slots")
+    if not isinstance(slots, dict) or slots.get("memory") != MEMORY_PLUGIN_ID:
+        return True
+    entries = plugins.get("entries")
+    if not isinstance(entries, dict):
+        return True
+    entry = entries.get(MEMORY_PLUGIN_ID)
+    if not isinstance(entry, dict) or entry.get("enabled") is not True:
+        return True
+    cfg = entry.get("config")
+    if not isinstance(cfg, dict):
+        return True
+    for key in ("serverBinaryPath", "dbPath"):
+        value = cfg.get(key)
+        if not isinstance(value, str) or not value or "${" in value:
+            return True
+    load_paths = _memory_plugin_load_paths(data)
+    if not load_paths:
+        return True
+    return any(_is_stale_celia_memory_path(path) for path in load_paths)
+
+
+def _load_memory_celia_runtime_template(install_root: Path) -> dict:
+    candidates = (
+        install_root / "openclaw" / "config" / "openclaw.json",
+        install_root / "openclaw.json",
+    )
+    for path in candidates:
+        if not path.exists():
+            continue
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if isinstance(data, dict) and _has_memory_celia_runtime_config(data):
+            return data
+    return {}
+
+
+def _resolve_celia_runtime_placeholders(node, config_dir: Path,
+                                       install_root: Path,
+                                       install_root_value: str | None = None):
+    root_value = install_root_value or _celia_install_root_value(install_root)
+    replacements = {
+        "${CELIA_CONFIG_ROOT}": str(config_dir),
+        "${CELIA_CONFIG_DIR}": str(config_dir),
+        "${CELIA_INSTALL_ROOT}": root_value,
+        "${CELIA_PLUGIN_ROOT}": root_value,
+    }
+    if isinstance(node, str):
+        out = node
+        for placeholder, value in replacements.items():
+            out = out.replace(placeholder, value)
+        return out
+    if isinstance(node, list):
+        return [
+            _resolve_celia_runtime_placeholders(
+                item, config_dir, install_root, install_root_value,
+            )
+            for item in node
+        ]
+    if isinstance(node, dict):
+        return {
+            key: _resolve_celia_runtime_placeholders(
+                value, config_dir, install_root, install_root_value,
+            )
+            for key, value in node.items()
+        }
+    return node
+
+
+def _merge_memory_celia_runtime_config(data: dict, template: dict,
+                                      config_dir: Path,
+                                      install_root: Path,
+                                      install_root_value: str | None = None) -> bool:
+    changed = False
+    plugins = data.setdefault("plugins", {})
+    if not isinstance(plugins, dict):
+        plugins = {}
+        data["plugins"] = plugins
+        changed = True
+
+    slots = plugins.get("slots")
+    if not isinstance(slots, dict):
+        slots = {}
+        plugins["slots"] = slots
+        changed = True
+    existing_slots = plugins.get("slots")
+    active_memory_id = (
+        existing_slots.get("memory")
+        if isinstance(existing_slots, dict)
+        else None
+    )
+
+    if slots.get("memory") != MEMORY_PLUGIN_ID:
+        slots["memory"] = MEMORY_PLUGIN_ID
+        changed = True
+
+    src_plugins = template.get("plugins")
+    if not isinstance(src_plugins, dict):
+        src_plugins = {}
+
+    load = plugins.get("load")
+    if not isinstance(load, dict):
+        load = {}
+        plugins["load"] = load
+        changed = True
+    paths = load.get("paths")
+    if not isinstance(paths, list):
+        paths = []
+        changed = True
+    desired_paths = _memory_plugin_load_paths(template)
+    if not desired_paths:
+        root_value = install_root_value or _celia_install_root_value(install_root)
+        desired_paths = [
+            str(Path(root_value) / "memory-plugin"),
+        ]
+    desired_paths = _resolve_celia_runtime_placeholders(
+        desired_paths, config_dir, install_root, install_root_value,
+    )
+    cleaned_paths = []
+    seen_paths = set()
+    for path in paths:
+        if not isinstance(path, str):
+            changed = True
+            continue
+        if _is_managed_memory_plugin_path(path) and path not in desired_paths:
+            changed = True
+            continue
+        if path in seen_paths:
+            changed = True
+            continue
+        cleaned_paths.append(path)
+        seen_paths.add(path)
+    for path in desired_paths:
+        if isinstance(path, str) and path not in seen_paths:
+            cleaned_paths.append(path)
+            seen_paths.add(path)
+            changed = True
+    if cleaned_paths != paths:
+        load["paths"] = cleaned_paths
+        changed = True
+
+    entries = plugins.get("entries")
+    if not isinstance(entries, dict):
+        entries = {}
+        plugins["entries"] = entries
+        changed = True
+    src_entries = src_plugins.get("entries")
+    src_entry = (
+        src_entries.get(MEMORY_PLUGIN_ID)
+        if isinstance(src_entries, dict)
+        else None
+    )
+    if isinstance(src_entry, dict):
+        src_entry = _resolve_celia_runtime_placeholders(
+            src_entry, config_dir, install_root, install_root_value,
+        )
+    stale_names: set[str] = set()
+    if isinstance(active_memory_id, str) and active_memory_id != MEMORY_PLUGIN_ID:
+        stale_names.add(active_memory_id)
+    for name, entry in list(entries.items()):
+        if _is_managed_memory_entry(name, entry, active_memory_id):
+            stale_names.add(name)
+            del entries[name]
+            changed = True
+    if isinstance(src_entries, dict):
+        for name, entry in src_entries.items():
+            if name != MEMORY_PLUGIN_ID and name not in entries:
+                entries[name] = copy.deepcopy(entry)
+                changed = True
+    if isinstance(src_entry, dict):
+        next_entry = copy.deepcopy(src_entry)
+        next_entry["enabled"] = True
+        if entries.get(MEMORY_PLUGIN_ID) != next_entry:
+            entries[MEMORY_PLUGIN_ID] = next_entry
+            changed = True
+
+    src_installs = src_plugins.get("installs")
+    src_install = (
+        src_installs.get(MEMORY_PLUGIN_ID)
+        if isinstance(src_installs, dict)
+        else None
+    )
+    if isinstance(src_install, dict):
+        installs = plugins.get("installs")
+        if not isinstance(installs, dict):
+            installs = {}
+            plugins["installs"] = installs
+            changed = True
+        src_install = _resolve_celia_runtime_placeholders(
+            src_install, config_dir, install_root, install_root_value,
+        )
+        for name in stale_names:
+            if name in installs:
+                del installs[name]
+                changed = True
+        if installs.get(MEMORY_PLUGIN_ID) != src_install:
+            installs[MEMORY_PLUGIN_ID] = copy.deepcopy(src_install)
+            changed = True
+    changed = _clean_managed_memory_allow_list(plugins, stale_names) or changed
+
+    return changed
+
+
+def _enforce_memory_celia_runtime_config(config_dir: Path,
+                                        install_root: Path | None = None,
+                                        log_path: Path | None = None,
+                                        install_root_value: str | None = None) -> bool:
+    """Repair the production runtime config owned by memory-celia."""
+    cfg_path = config_dir / "openclaw.json"
+    if not cfg_path.exists():
+        return False
+    try:
+        data = json.loads(cfg_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        emit(f"[WARN] cannot parse {cfg_path} for slot repair: {e}", log_path)
+        return False
+
+    if install_root is None:
+        install_root = INSTALL_DIRS_PARENT / "current"
+    template = _load_memory_celia_runtime_template(install_root)
+    if not template and not _has_memory_celia_runtime_config(data):
+        return False
+    if not template and not _memory_celia_runtime_config_needs_repair(data):
+        return False
+
+    changed = _merge_memory_celia_runtime_config(
+        data, template, config_dir, install_root, install_root_value,
+    )
+
+    if changed:
+        cfg_path.write_text(
+            json.dumps(data, indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+        emit(f"[INFO] repaired memory-celia runtime config in {cfg_path}",
+             log_path)
+    return changed
+
+
+def _memory_celia_llm_base_urls(data: dict) -> list[tuple[str, str]]:
+    """Return configured memory-celia chat/embed base URLs."""
+    cfg = ((_plugins_obj(data).get("entries", {}) or {})
+           .get("memory-celia", {}).get("config", {})) or {}
+    if not isinstance(cfg, dict):
+        return []
+    out: list[tuple[str, str]] = []
+    for name in ("chat", "embed"):
+        block = cfg.get(name)
+        if not isinstance(block, dict):
+            continue
+        base = block.get("baseUrl")
+        if isinstance(base, str) and base:
+            out.append((name, base))
+    return out
+
+
+def _local_openai_probe_url(base_url: str) -> str | None:
+    """Build a `/v1/models` probe URL for loopback OpenAI-compatible bases."""
+    parsed = urllib.parse.urlparse(base_url)
+    if parsed.hostname not in ("127.0.0.1", "localhost", "::1"):
+        return None
+    base = base_url.rstrip("/")
+    if base.endswith("/v1"):
+        return base + "/models"
+    marker = "/v1/"
+    if marker in base:
+        return base.split(marker, 1)[0] + "/v1/models"
+    return base + "/models"
+
+
+def _warn_if_local_openai_proxy_unreachable(
+        config_dir: Path, log_path: Path | None = None) -> None:
+    """Warn when memory-celia points at an unavailable local OpenAI proxy."""
+    cfg_path = config_dir / "openclaw.json"
+    if not cfg_path.exists():
+        return
+    try:
+        data = json.loads(cfg_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError) as e:
+        emit(f"[WARN] cannot parse {cfg_path} for LLM proxy probe: {e}",
+             log_path)
+        return
+
+    seen: set[str] = set()
+    for label, base in _memory_celia_llm_base_urls(data):
+        if "${" in base:
+            emit(f"[WARN] memory-celia.config.{label}.baseUrl unresolved: "
+                 f"{base}", log_path)
+            continue
+        probe_url = _local_openai_probe_url(base)
+        if not probe_url or probe_url in seen:
+            continue
+        seen.add(probe_url)
+        try:
+            with urllib.request.urlopen(probe_url, timeout=1.5) as resp:
+                status = getattr(resp, "status", 200)
+            if status >= 400:
+                emit(f"[WARN] local OpenAI proxy probe returned HTTP "
+                     f"{status}: {probe_url}", log_path)
+            else:
+                emit(f"[INFO] local OpenAI proxy reachable: {probe_url}",
+                     log_path)
+        except (urllib.error.URLError, OSError) as e:
+            emit(f"[WARN] local OpenAI proxy unreachable for memory-celia "
+                 f"({label}): {probe_url} ({e}); raw mem_conversation rows "
+                 f"can queue, but extraction/indexing will stall", log_path)
 
 
 def _verify_runtime_paths(config_dir: Path,
                           install_root: Path,
-                          log_path: Path) -> tuple[bool, list[str]]:
-    """Post-install sanity check on the production memory-gspd config.
+                          log_path: Path | None) -> tuple[bool, list[str]]:
+    """Post-install sanity check on the production memory-celia config.
 
     Two paths must hold for memory to actually work after gateway restart:
       - serverBinaryPath: file exists and is executable (gateway spawns it
         as a child process; missing/non-exec file is the symptom the user
-        hit — gspd_memory.db never gets created).
+        hit — celia_memory.db never gets created).
       - dbPath: parent dir exists or can be created (sqlite open() needs it).
 
     Both must be free of unresolved `${...}` placeholders — if any survive
@@ -1133,11 +1551,51 @@ def _verify_runtime_paths(config_dir: Path,
         problems.append(f"cannot parse {cfg_path}: {e}")
         return False, problems
 
-    cfg = (data.get("plugins", {}).get("entries", {})
-                .get("memory-gspd", {}).get("config"))
+    plugins = _plugins_obj(data)
+    slots = plugins.get("slots") if isinstance(plugins.get("slots"), dict) else {}
+    if slots.get("memory") != "memory-celia":
+        problems.append(
+            "plugins.slots.memory is not memory-celia "
+            f"(current={slots.get('memory', '<missing>')!r})"
+        )
+
+    load_paths = _memory_plugin_load_paths(data)
+    if not load_paths:
+        problems.append("plugins.load.paths has no memory-plugin entry")
+    for path in load_paths:
+        if "${" in path:
+            problems.append(
+                f"memory-plugin load path has unresolved placeholder: {path}"
+            )
+            continue
+        if _is_stale_celia_memory_path(path):
+            problems.append(f"memory-plugin load path is stale: {path}")
+            continue
+        index_js = Path(path).expanduser() / "index.js"
+        if not index_js.is_file():
+            problems.append(f"memory-plugin runtime JS missing: {index_js}")
+
+    entries = (
+        plugins.get("entries")
+        if isinstance(plugins.get("entries"), dict)
+        else {}
+    )
+    entry = entries.get("memory-celia")
+    if not isinstance(entry, dict):
+        problems.append(
+            f"memory-celia entry missing in {cfg_path}; merge step failed?"
+        )
+        return False, problems
+    if entry.get("enabled") is not True:
+        problems.append(
+            "plugins.entries.memory-celia.enabled is not true "
+            f"(current={entry.get('enabled', '<missing>')!r})"
+        )
+
+    cfg = entry.get("config")
     if not isinstance(cfg, dict):
         problems.append(
-            f"memory-gspd.config missing in {cfg_path}; merge step failed?"
+            f"memory-celia.config missing in {cfg_path}; merge step failed?"
         )
         return False, problems
 
@@ -1155,9 +1613,19 @@ def _verify_runtime_paths(config_dir: Path,
                 f"serverBinaryPath points to missing file: {bin_path}"
             )
         elif not os.access(bp, os.X_OK):
-            problems.append(
-                f"serverBinaryPath is not executable: {bin_path}"
-            )
+            try:
+                mode = bp.stat().st_mode
+                bp.chmod(mode | 0o111)
+                emit(f"[INFO] repaired executable bit on {bin_path}", log_path)
+            except OSError as e:
+                problems.append(
+                    "serverBinaryPath is not executable and chmod repair "
+                    f"failed: {bin_path} ({e})"
+                )
+            if not os.access(bp, os.X_OK):
+                problems.append(
+                    f"serverBinaryPath is not executable: {bin_path}"
+                )
 
     db_path = cfg.get("dbPath", "")
     if "${" in db_path:
@@ -1174,35 +1642,22 @@ def _verify_runtime_paths(config_dir: Path,
 
 
 # ============================================================================
-# Historical-memory migration retry (workaround for install.sh's 30s budget)
+# Historical-memory migration retry (non-celiaclaw legacy path)
 # ============================================================================
 #
-# install.sh.bootstrap_user_memories spawns a temp gspd_mcp_server in
-# --http mode and waits up to 30 seconds for it to bind, then runs the
-# migrate_openclaw tool against the resulting endpoint. On the celiaclaw
-# sandbox the cold start frequently exceeds 30s — the leading suspect is
-# the first-time TLS handshake to api.fireworks.ai, which is slow on the
-# Chinese cloud network — and bootstrap then logs
-# `临时 gspd_mcp_server 30s 内未就绪，查看 $server_log；跳过` and gives
-# up. Historical USER.md / Memory.md files don't get imported, even
-# though everything else is configured correctly.
-#
-# Proper fix is upstream (lazy fireworks init or env-configurable timeout
-# in install.sh / gspd_mcp_server), but until that lands the orchestrator
-# detects the skip and re-runs the migration with a longer port-bind
-# budget. The retry pause-stops openclaw-gateway so the production MCP
-# server lets go of the SQLite WAL before we open the same DB from a
-# second process; gateway restarts at the end. Best-effort: any failure
-# only logs WARN, never dies the install.
+# Legacy platform hooks may still attempt historical-memory import through
+# a temp celia_memory_mcp_server. celiaclaw no longer runs automatic migration, so
+# the skill layer must not start a second temp MCP when it sees old skip
+# markers in install logs.
 
 
 def _retry_skipped_bootstrap(plat: str,
                              install_root: Path,
                              log_path: Path) -> None:
-    """Re-run historical-memory migration if install.sh skipped it.
+    """Re-run non-celiaclaw historical-memory migration if hook skipped it.
 
     Reuses install.sh's already-persisted artifacts:
-      - <plugin_dir>/gspd_mcp_server   (binary)
+      - <plugin_dir>/celia_memory_mcp_server   (binary)
       - <plugin_dir>/migrate_openclaw/ (tool, dropped by persist_migrate_tool)
     Reads embed creds + dbPath + userId from the merged production
     openclaw.json — single source of truth, matching whatever
@@ -1211,6 +1666,13 @@ def _retry_skipped_bootstrap(plat: str,
     Idempotent: migrate_openclaw uses an on-disk manifest, so re-running
     only retries entries that didn't already complete.
     """
+    if plat == "celiaclaw":
+        if _bootstrap_was_skipped(log_path):
+            emit("[INFO] retry-bootstrap: celiaclaw no longer runs "
+                 "historical-memory migration; skip skill-side temp MCP",
+                 log_path)
+        return
+
     if not _bootstrap_was_skipped(log_path):
         return
 
@@ -1219,13 +1681,13 @@ def _retry_skipped_bootstrap(plat: str,
     workspace_root = config_dir / "workspace"
     cfg_path       = config_dir / "openclaw.json"
     migrate_dir    = plugin_dir / "migrate_openclaw"
-    mcp_bin        = plugin_dir / "bin" / "gspd_mcp_server"
+    mcp_bin        = plugin_dir / "bin" / "celia_memory_mcp_server"
 
     if not workspace_root.is_dir() or not cfg_path.exists():
         return
     if not migrate_dir.is_dir() or not mcp_bin.is_file():
         emit("[WARN] retry-bootstrap: persisted migrate_openclaw or "
-             f"gspd_mcp_server missing under {plugin_dir}; cannot retry",
+             f"celia_memory_mcp_server missing under {plugin_dir}; cannot retry",
              log_path)
         return
 
@@ -1238,13 +1700,13 @@ def _retry_skipped_bootstrap(plat: str,
         emit(f"[WARN] retry-bootstrap: cannot read {cfg_path}: {e}", log_path)
         return
     mgsd = (cfg.get("plugins", {}).get("entries", {})
-                .get("memory-gspd", {}).get("config", {})) or {}
+                .get("memory-celia", {}).get("config", {})) or {}
     db_path  = mgsd.get("dbPath")
     embed    = mgsd.get("embed", {}) or {}
     user_id  = mgsd.get("userId") or "openclaw-user"
 
     # 优先级链（高 → 低,仅两档,与 memory-plugin/index.ts 保持一致）：
-    #   1. memory-gspd.config.embed.{baseUrl,apiKey,model}（JSON literal/${VAR}）
+    #   1. memory-celia.config.embed.{baseUrl,apiKey,model}（JSON literal/${VAR}）
     #   2. agents.defaults.memorySearch.remote.{baseUrl,apiKey} + memorySearch.model
     # apiKey 字段:xiaoyi 风格 OpenClaw 配置中,顶层 apiKey 经常是字面量
     # 占位符（如 "apikey"）,真实 SK 凭据在 headers["x-api-key"]。
@@ -1286,14 +1748,14 @@ def _retry_skipped_bootstrap(plat: str,
     embed_base_url = _resolve(embed.get("baseUrl"), ms_baseurl)
     embed_api_key  = _resolve(embed.get("apiKey"),  ms_apikey)
     embed_model    = _resolve(embed.get("model"),   ms_model)
-    # sandbox uid 走 GSPD_CHAT_UID（chat env 已经会从 .xiaoyienv 注入）,
+    # sandbox uid 走 CELIA_CHAT_UID（chat env 已经会从 .xiaoyienv 注入）,
     # 此处仅在 memorySearch 提供了 headers["x-uid"] 时把 chatUid 覆盖为
     # memorySearch 的值;C 端 mcp_main 复用 chatUid 作 embedUid。
     sandbox_uid    = ms_uid if isinstance(ms_uid, str) and ms_uid else ""
 
     if not (db_path and embed_base_url and embed_api_key and embed_model):
         emit("[WARN] retry-bootstrap: embed creds missing — checked "
-             "memory-gspd.config.embed and agents.defaults.memorySearch; "
+             "memory-celia.config.embed and agents.defaults.memorySearch; "
              "skipping", log_path)
         return
 
@@ -1331,12 +1793,12 @@ def _retry_skipped_bootstrap(plat: str,
     env["OPENAI_EMBED_API_KEY"]  = embed_api_key
     env["OPENAI_EMBED_MODEL"]    = embed_model
     if isinstance(mgsd.get("vectorDim"), int):
-        env["GSPD_VECTOR_DIM"] = str(mgsd["vectorDim"])
+        env["CELIA_VECTOR_DIM"] = str(mgsd["vectorDim"])
     env.update(_xiaoyi_chat_env(config_dir, openclaw_cfg=cfg))
     # memorySearch.headers["x-uid"] 优先级高于 _xiaoyi_chat_env（PERSONAL_UID）；
     # C 端 mcp_main 把 chatUid 同步复用作 embedUid 触发 sandbox 头。
     if sandbox_uid:
-        env["GSPD_CHAT_UID"] = sandbox_uid
+        env["CELIA_CHAT_UID"] = sandbox_uid
 
     # Stop openclaw-gateway so the production MCP server (just spawned by
     # install.sh's restart_services) releases its SQLite WAL lock. Two
@@ -1401,7 +1863,7 @@ def _retry_skipped_bootstrap(plat: str,
         # at plugin_dir (where migrate_openclaw lives), PYTHONPATH set so
         # `python3 -m migrate_openclaw.migrate ...` resolves.
         run_env = env.copy()
-        run_env["GSPD_BASE_URL"] = f"http://127.0.0.1:{port}"
+        run_env["CELIA_BASE_URL"] = f"http://127.0.0.1:{port}"
         existing_pp = run_env.get("PYTHONPATH", "")
         run_env["PYTHONPATH"] = (str(plugin_dir)
                                  + (os.pathsep + existing_pp
@@ -1412,7 +1874,7 @@ def _retry_skipped_bootstrap(plat: str,
             cmd = ["python3", "-m", "migrate_openclaw.migrate", "run",
                    "--workspace", str(ws),
                    "--agent-id", uid, "--user-id", uid,
-                   "--out-dir", str(ws / ".gspd_migrate")]
+                   "--out-dir", str(ws / ".celia_migrate")]
             try:
                 res = subprocess.run(
                     cmd, env=run_env, cwd=str(plugin_dir),
@@ -1468,24 +1930,12 @@ def _retry_skipped_bootstrap(plat: str,
 # ============================================================================
 
 SOURCE_POLICY_OFFLINE_ONLY = "offline-only"
-SOURCE_POLICY_REMOTE_ONLY = "remote-only"
-SOURCE_POLICY_MIXED = "mixed"
-
-
 def resolve_source_policy() -> str:
     """Return the source policy implied by the skill directory.
 
-    `experimental-memory-install` is permanently offline-only, even for direct
-    orchestrator.py calls. Online install must enter through the separate
-    `experimental-memory-install-online` skill, whose own copy of this script lives
-    under that skill directory.
+    celiaclaw `experimental-memory-install` is permanently offline-only.
     """
-    skill_dir = Path(__file__).parents[1].name
-    if skill_dir == "experimental-memory-install-online":
-        return SOURCE_POLICY_REMOTE_ONLY
-    if skill_dir == "experimental-memory-install":
-        return SOURCE_POLICY_OFFLINE_ONLY
-    return SOURCE_POLICY_MIXED
+    return SOURCE_POLICY_OFFLINE_ONLY
 
 
 def _pick_local_tarball(local_dir: Path, plat: str,
@@ -1496,15 +1946,14 @@ def _pick_local_tarball(local_dir: Path, plat: str,
     chosen_tarball = None
     chosen_arch = None
     for arch in ("any", host_arch()):
-        try:
-            chosen_tarball = find_local_tarball(local_dir, plat, arch, version)
+        candidates = _local_tarball_candidates(local_dir, plat, arch, version)
+        if candidates:
+            chosen_tarball = candidates[0]
             chosen_arch = arch
             break
-        except SystemExit:
-            continue
     if chosen_tarball is None:
         version_part = version if version else "*"
-        die(10, f"[ERROR] no gspd_memory.{version_part}.{plat}.<arch>.*.tar.gz "
+        die(10, f"[ERROR] no celia_memory.{version_part}.{plat}.<arch>.*.tar.gz "
                 f"under {local_dir}")
     return chosen_tarball, chosen_arch
 
@@ -1514,11 +1963,10 @@ def build_plan(args, lang) -> dict:
 
     Three source modes:
       - offline    default for lifecycle actions; pull tarball from the
-                   platform tarball cache dir ($GSPD_TARBALL_DIR), fail if
+                   platform tarball cache dir ($CELIA_TARBALL_DIR), fail if
                    missing. No remote, no fallback.
       - local-dir  caller passed --source <path>; dev workflow.
-      - remote     explicit --remote / --channel / --dev; download from
-                   GaussPD_Artifacts and cache into the same dir offline reads.
+      - remote     not supported by the celiaclaw install skill.
     """
     compat = load_compat()
     remote = compat["remote"]
@@ -1526,10 +1974,6 @@ def build_plan(args, lang) -> dict:
     glibc = detect_glibc()
     libc_floor = pick_libc_floor(glibc)
     policy = resolve_source_policy()
-    if policy == SOURCE_POLICY_REMOTE_ONLY and args.source_local_dir:
-        die(10, "[ERROR] experimental-memory-install-online is remote-only; "
-                "do not pass --source")
-
     # local-dir mode: caller-supplied directory (dev workflow)
     if args.source_local_dir:
         local_dir = Path(args.source_local_dir).expanduser().resolve()
@@ -1551,13 +1995,7 @@ def build_plan(args, lang) -> dict:
     remote_requested = args.remote or args.dev or bool(args.channel)
     if policy == SOURCE_POLICY_OFFLINE_ONLY and remote_requested:
         die(10, "[ERROR] experimental-memory-install is offline-only and cannot use "
-                "remote/network install flags. Use experimental-memory-install-online "
-                "for --remote / --channel / --dev.")
-    if policy == SOURCE_POLICY_REMOTE_ONLY:
-        if args.offline:
-            die(10, "[ERROR] experimental-memory-install-online is remote-only; "
-                    "do not pass --offline")
-        remote_requested = True
+                "remote/network install flags in celiaclaw.")
 
     # offline mode: default unless remote was explicitly requested. Reads from
     # the tarball cache dir, no network and no fallback.
@@ -1565,8 +2003,8 @@ def build_plan(args, lang) -> dict:
         staging = _resolve_tarball_dir(plat)
         if not staging.exists():
             die(10, f"[ERROR] tarball cache dir not found: {staging}\n"
-                    f"        Set $GSPD_TARBALL_DIR, pre-stage a tarball, "
-                    f"or pass --remote to download from the remote channel.")
+                    f"        Set $CELIA_TARBALL_DIR, pre-stage a tarball, "
+                    f"or use --source to point at a local release directory.")
         chosen_tarball, chosen_arch = _pick_local_tarball(
             staging, plat, args.version)
         version = chosen_tarball.name.split(".", 5)[1]
@@ -1837,72 +2275,102 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
     # The platform install.sh reads `$INSTALL_DIR/openclaw.json` for the
     # source config to merge into the production openclaw.json (the
     # critical clean_source_openclaw_config + patch_openclaw_config steps,
-    # which register the `memory-gspd` plugin entry). qian_kk-era tarballs
+    # which register the `memory-celia` plugin entry). qian_kk-era tarballs
     # put openclaw.json at the top of the archive; new contract-era tarballs
     # ship it at `openclaw/config/openclaw.json` instead, but install.sh
     # was not updated to match — so the merge silently no-ops.
     #
-    # Until GaussPD_Memory/integration/celiaclaw/package.sh (or install.sh
-    # itself) is fixed, mirror the deeper file up to the top level so the
-    # merge step finds it. Symlink rather than copy so any stale top-level
-    # file in a future tarball wins (no-op if already present).
+    # Mirror the deeper file up to the top level so the merge step finds it.
+    # Use a copy, not a symlink: this bridge is mutated to version-pinned
+    # staging paths for hook safety, while the deep config remains the
+    # placeholder template used after current is atomically switched.
     src_top = install_root / "openclaw.json"
     src_deep = install_root / "openclaw" / "config" / "openclaw.json"
+    bridged_top_openclaw = False
+    original_top_openclaw: bytes | None = None
     if not src_top.exists() and src_deep.exists():
         try:
-            src_top.symlink_to(src_deep)
-            emit(f"[INFO] bridged openclaw.json: {src_top} → {src_deep}", log_path)
-        except OSError as e:
-            # Filesystem doesn't support symlink — fall back to a copy.
             shutil.copy2(src_deep, src_top)
-            emit(f"[INFO] bridged openclaw.json (copied): {src_top} ({e})", log_path)
+            bridged_top_openclaw = True
+            emit(f"[INFO] bridged openclaw.json: {src_top} ← {src_deep}",
+                 log_path)
+        except OSError as e:
+            emit(f"[WARN] could not bridge openclaw.json: {e}", log_path)
+    if src_top.exists() and not bridged_top_openclaw:
+        try:
+            original_top_openclaw = src_top.read_bytes()
+        except OSError as e:
+            emit(f"[WARN] could not snapshot openclaw.json bridge: {e}",
+                 log_path)
 
-    # ---- 3c. Pre-flight: resolve ${GSPD_INSTALL_ROOT} in source openclaw.json ----
+    # ---- 3c. Pre-flight: resolve ${CELIA_INSTALL_ROOT} in source openclaw.json ----
     # See the long comment at the top of the placeholder-resolution section
     # for context on why the hook can't be relied on to handle this. We
-    # rewrite the source file the hook is about to read (following the
-    # bridge symlink to the real backing file), so when patch_openclaw_config
-    # merges memory-gspd into production, it lands with a concrete absolute
+    # rewrite the source file the hook is about to read, so patch_openclaw_config
+    # merges memory-celia into production, it lands with a concrete absolute
     # path that doesn't require any runtime env var.
+    staging_root_value = _staging_install_root_value(install_root)
+    active_root_value = _celia_install_root_value(install_root)
     if src_top.exists():
         _substitute_install_root_in_json(
-            src_top.resolve(), install_root, log_path,
+            src_top, install_root, log_path, staging_root_value,
         )
+
+    # ---- 3d. Keep install/current untouched while the hook is running ----
+    # The hook receives a version-pinned CELIA_INSTALL_ROOT, so any hot reload
+    # during the hook sees complete files under install_root instead of a
+    # half-installed active symlink. `current` is switched atomically only after
+    # the hook succeeds.
 
     # ---- 4. Run platform install hook ----
     emit(msg("exec_hook_running", lang, p=str(hook_script)), log_path)
+    config_dir = _detect_config_dir(p["platform"])
     env = os.environ.copy()
-    env["GSPD_EXTRACT_ROOT"] = str(install_root)
-    env["GSPD_LOG_FILE_PATH"] = str(log_path)
+    env["CELIA_CONFIG_DIR"] = str(config_dir)
+    env["CELIA_EXTRACT_ROOT"] = str(install_root)
+    env["CELIA_LOG_FILE_PATH"] = str(log_path)
     # Pass the resolved value through to the hook env too — defense in
     # depth so any sub-step inside install.sh that may grow a dependency
     # on this var (e.g. supervisord injection) sees the same path the JSON
     # substitution used. Harmless if no consumer reads it.
-    env["GSPD_INSTALL_ROOT"] = _gspd_install_root_value(install_root)
+    env["CELIA_INSTALL_ROOT"] = staging_root_value
     rc = subprocess.call(["bash", str(hook_script)], env=env)
     if rc != 0:
         die(50, msg("exec_hook_failed", lang, rc=rc, log=str(log_path)), log_path)
+    if bridged_top_openclaw and src_top.exists():
+        try:
+            src_top.unlink()
+        except OSError as e:
+            emit(f"[WARN] could not remove staged openclaw.json bridge: {e}",
+                 log_path)
+    elif original_top_openclaw is not None:
+        try:
+            src_top.write_bytes(original_top_openclaw)
+        except OSError as e:
+            emit(f"[WARN] could not restore openclaw.json template: {e}",
+                 log_path)
 
     # ---- 4b. Post-hook: defensive substitute on production openclaw.json ----
-    # `patch_openclaw_config` keeps an existing memory-gspd entry in dst
+    # `patch_openclaw_config` keeps an existing memory-celia entry in dst
     # untouched (line 888 of install.sh: `if k not in dst...`), so a
     # reinstall over a previously broken config wouldn't pick up our
     # pre-hook fix on its own. Scan dst, replace any residual placeholder.
     # Idempotent — silently no-ops on a clean dst.
-    config_dir = _detect_config_dir(p["platform"])
     _substitute_install_root_in_json(
         config_dir / "openclaw.json", install_root, log_path,
+        staging_root_value,
+    )
+    _enforce_memory_celia_runtime_config(
+        config_dir, install_root, log_path, staging_root_value,
     )
 
     # ---- 4c. Symlink swing: current → install_root, previous → old current ----
-    # MUST run BEFORE verify (4d). The hook writes openclaw.json's
-    # serverBinaryPath as `<install/current>/bin/gspd_mcp_server` (via
-    # `_gspd_install_root_value` — the version-pinned dir is intentionally
-    # NOT used so upgrades only need to swing this symlink, not rewrite the
-    # JSON). Verify dereferences that path, so `install/current` has to
-    # exist + point at install_root by the time verify runs. On re-install
-    # of the same version, current already points at install_root, so the
-    # previous-swap branch no-ops.
+    # MUST run BEFORE verify (4d). The hook writes openclaw.json with
+    # version-pinned paths while it runs. After it succeeds, switch current
+    # atomically and rewrite the production config to use current, so future
+    # upgrades only need to swing this symlink. On re-install of the same
+    # version, current already points at install_root, so the previous-swap
+    # branch no-ops.
     current_link  = INSTALL_DIRS_PARENT / "current"
     previous_link = INSTALL_DIRS_PARENT / "previous"
     if current_link.is_symlink():
@@ -1913,11 +2381,14 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
             # don't want to chain previous → dangling target).
             if previous_link.is_symlink() or previous_link.exists():
                 try:
-                    previous_link.unlink()
+                    if previous_link.is_dir() and not previous_link.is_symlink():
+                        shutil.rmtree(previous_link, ignore_errors=True)
+                    else:
+                        previous_link.unlink()
                 except OSError:
                     pass
             try:
-                previous_link.symlink_to(old_target)
+                _atomic_symlink_replace(previous_link, old_target)
                 emit(f"[INFO] {previous_link} → {old_target}", log_path)
             except OSError as e:
                 emit(f"[WARN] could not set previous symlink: {e}", log_path)
@@ -1931,17 +2402,23 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
                          log_path)
                 except OSError:
                     pass
-        current_link.unlink()
-    elif current_link.exists():
+    if current_link.exists() and not current_link.is_symlink():
         # Plain dir (shouldn't happen) — defensive cleanup
         shutil.rmtree(current_link, ignore_errors=True)
-    current_link.symlink_to(install_root)
+    _atomic_symlink_replace(current_link, install_root)
     emit(f"[INFO] {current_link} → {install_root}", log_path)
+
+    # Rewrite production config back to the stable active path now that the
+    # symlink is live. This keeps future upgrades config-free: they only swing
+    # install/current.
+    _enforce_memory_celia_runtime_config(
+        config_dir, install_root, log_path, active_root_value,
+    )
 
     # ---- 4d. Verify runtime-critical paths in production config ----
     # If serverBinaryPath / dbPath aren't both sane after the hook +
     # placeholder substitution + symlink swing, the install is broken —
-    # gateway will be up but the MCP server never spawns and gspd_memory.db
+    # gateway will be up but the MCP server never spawns and celia_memory.db
     # never materializes. Fail loudly instead of printing
     # services_restarted: yes on a broken state. Reusing exit 50
     # (platform-install-hook failure) since the symptom is "hook completed
@@ -1955,12 +2432,12 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
             f"issue(s)). Memory plugin is not usable in this state. "
             f"See log: {log_path}",
             log_path)
+    _warn_if_local_openai_proxy_unreachable(config_dir, log_path)
 
-    # ---- 4e. Retry historical-memory migration if install.sh skipped it ----
-    # bootstrap_user_memories has a 30s budget for the temp MCP server to
-    # bind, which the celiaclaw sandbox can blow past on cold start. Detect
-    # that skip from the install log and rerun the migration with a longer
-    # budget. Best-effort — never dies the install.
+    # ---- 4e. Retry legacy migration on non-celiaclaw platforms if skipped ---
+    # celiaclaw no longer performs historical-memory migration. Keep this
+    # best-effort retry for older non-celiaclaw hooks that still emit the
+    # 30s temp MCP skip marker.
     _retry_skipped_bootstrap(p["platform"], install_root, log_path)
 
     # ---- 5. Deploy skills into workspace/skills/experimental-memory-* ----
@@ -1974,7 +2451,7 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
     # may have multiple tarballs intentionally pre-staged for testing.
     if p.get("source_label") == "remote":
         try:
-            keep = int(os.environ.get("GSPD_TARBALL_RETENTION", "3"))
+            keep = int(os.environ.get("CELIA_TARBALL_RETENTION", "3"))
         except ValueError:
             keep = 3
         staging_dir = Path(p["tarball_dir"])
@@ -1986,13 +2463,15 @@ def _execute_locked(args, lang: str, log_path: Path) -> int:
     _prune_install_roots(INSTALL_DIRS_PARENT, log_path)
 
     # ---- 8. Print POST_INSTALL block ----
-    # The platform install.sh has already run its restart_services step
-    # (supervisorctl restart openclaw-gateway), so the agent does NOT need
-    # to prompt the user for a reboot. --mode=reboot stays available as
-    # a manual recovery path if the auto-restart didn't take.
+    # The platform install.sh normally runs restart_services. Docker deployment
+    # can set CELIA_SKIP_GATEWAY_RESTART=1 and let the deployment process start
+    # or restart openclaw-gateway once after all bootstrap scripts finish.
     print(msg("exec_post_install_header", lang))
     print(msg("exec_install_complete", lang, v=p["version"], p=str(install_root)))
-    print("services_restarted: yes (by install hook)")
+    if os.environ.get("CELIA_SKIP_GATEWAY_RESTART", "0") == "1":
+        print("services_restarted: no (CELIA_SKIP_GATEWAY_RESTART=1)")
+    else:
+        print("services_restarted: yes (by install hook)")
     print(msg("exec_post_install_footer", lang))
     return 0
 
@@ -2002,6 +2481,11 @@ def run_reboot(args, lang: str) -> int:
         die(10, "[ERROR] --confirmed required for --mode=reboot")
     plat = detect_platform(args.platform)
     log_path = LOG_DIR / f"reboot-{now_ts()}.log"
+    cur = _current_installed(plat)
+    if cur:
+        config_dir = _detect_config_dir(plat)
+        install_root = INSTALL_DIRS_PARENT / cur
+        _enforce_memory_celia_runtime_config(config_dir, install_root, log_path)
     if plat == "celiaclaw":
         if shutil.which("supervisorctl"):
             subprocess.call(["supervisorctl", "restart", "openclaw-gateway"])
@@ -2015,231 +2499,14 @@ def run_reboot(args, lang: str) -> int:
 
 
 # ============================================================================
-# Upgrade / uninstall / status modes
-# ============================================================================
-
-def _current_installed(plat: str) -> str | None:
-    """Return the version currently pointed at by <root>/install/current, or None."""
-    cur = INSTALL_DIRS_PARENT / "current"
-    if cur.is_symlink():
-        return cur.resolve().name
-    return None
-
-
-def run_upgrade_plan(args, lang: str) -> int:
-    plat = detect_platform(args.platform)
-    cur = _current_installed(plat)
-    p = build_plan(args, lang)   # resolves target version + arch
-    target = p["version"]
-    print(msg("plan_header", lang))
-    print(f"  current installed: {cur or '(none)'}")
-    print(msg("plan_target_version", lang, v=target))
-    if cur and cmp_version(target, cur) < 0:
-        print(f"  ⚠ downgrade detected ({cur} → {target}). Pass --allow-downgrade to proceed.")
-    print(f"  will snapshot DB to: {BACKUP_DIR}/upgrade_<ts>/")
-    if p["mode_resolution"] == "remote":
-        a = p["artifact"]
-        print(msg("plan_will_download", lang,
-                  url=a["download_url"], sz=a["size_bytes"], sha=a["sha256"][:12] + "…"))
-    else:
-        label = p.get("source_label", "dev")
-        if label not in ("dev", "offline"):
-            label = "dev"
-        print(msg(f"plan_local_tarball_{label}", lang, p=p["local_tarball"]))
-    print(msg("plan_will_run_hook", lang,
-              p=str(INSTALL_DIRS_PARENT / target)))
-    # Tarball install.sh detects a running gspd_mcp_server and self-dispatches
-    # to upgrade.sh, which stops/starts openclaw-gateway via supervisorctl.
-    # On hook failure, the DB snapshot above is the recovery material — manual
-    # rollback only; no auto-rollback in the orchestrator.
-    print(msg("plan_hook_actions", lang))
-    print("  on hook failure: keep DB snapshot for manual rollback (no auto-rollback)")
-    print(msg("plan_footer", lang))
-    print(msg("prompt_action_zh", lang))
-    print(msg("prompt_action_en", lang))
-    return 0
-
-
-def run_upgrade_execute(args, lang: str) -> int:
-    if not args.confirmed:
-        die(10, "[ERROR] --confirmed required for --mode=upgrade-execute")
-    plat = detect_platform(args.platform)
-    cur = _current_installed(plat)
-    log_path = LOG_DIR / f"upgrade-{now_ts()}.log"
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-
-    # Snapshot DB before any mutation. The new layout puts the DB under
-    # workspace/memory/gspd_memory/gspd_memory.db; we keep older paths as
-    # fallback for hosts that haven't been re-laid-out yet.
-    config_dir = Path(os.environ.get("GSPD_CONFIG_DIR", "/home/sandbox/.openclaw"))
-    db_candidates = [
-        Path(os.environ["GSPD_DB_PATH"]) if os.environ.get("GSPD_DB_PATH") else None,
-        config_dir / "workspace" / "memory" / "gspd_memory" / "gspd_memory.db",  # new layout
-        config_dir / "workspace" / "memory" / "gspd_memory.db",                  # legacy (pre-relayout)
-        config_dir / "memory" / "gspd_memory.db",                                # pre-migration legacy
-    ]
-    db_path = next((p for p in db_candidates if p and p.exists()), None)
-    if db_path is not None:
-        backup_dir = BACKUP_DIR / f"upgrade_{now_ts()}"
-        backup_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(db_path, backup_dir / db_path.name)
-        emit(f"[INFO] snapshotted DB ({db_path}) → {backup_dir}", log_path)
-
-    # Re-use install execute path (it does lock + extract + hook + symlink swap).
-    # install.sh's check_existing_installation detects the running mcp_server
-    # and self-dispatches to upgrade.sh internally, so we don't need a separate
-    # upgrade hook invocation here.
-    rc = run_execute(args, lang)
-    if rc != 0 and cur:
-        emit(f"[WARN] upgrade hook returned {rc}; DB snapshot preserved. "
-             f"Manual rollback: install --version={cur}", log_path)
-    return rc
-
-
-def run_uninstall_plan(args, lang: str) -> int:
-    plat = detect_platform(args.platform)
-    cur = _current_installed(plat)
-    mode = os.environ.get("GSPD_UNINSTALL_MODE", "remove")
-    print(msg("plan_header", lang))
-    print(f"  platform: {plat}")
-    print(f"  current installed: {cur or '(none — nothing to uninstall)'}")
-    print(f"  mode: {mode}")
-    if mode == "disable":
-        print("  will: only remove the memory plugin entry from openclaw.json (files preserved)")
-    elif mode == "remove":
-        print("  will: disable + remove plugin files + binary (DB preserved)")
-    elif mode == "purge":
-        print("  ⚠ will: remove + delete DB and ~/.openclaw/memory/ (UNRECOVERABLE)")
-    print(msg("plan_footer", lang))
-    print(msg("prompt_action_zh", lang))
-    print(msg("prompt_action_en", lang))
-    return 0
-
-
-def run_uninstall_execute(args, lang: str) -> int:
-    if not args.confirmed:
-        die(10, "[ERROR] --confirmed required for --mode=uninstall-execute")
-    plat = detect_platform(args.platform)
-    cur = _current_installed(plat)
-    log_path = LOG_DIR / f"uninstall-{now_ts()}.log"
-    LOG_DIR.mkdir(parents=True, exist_ok=True)
-    if cur is None:
-        emit("[INFO] nothing currently installed", log_path)
-        return 0
-
-    install_root = INSTALL_DIRS_PARENT / cur
-    hook = install_root / "scripts" / "uninstall.sh"
-    if not hook.exists():
-        # Legacy pre-contract fallback retired; tarballs without contract.toml
-        # are no longer supported on the install side and won't be encountered
-        # here — but keep a clear error in case someone hand-extracted an old tree.
-        die(60, f"[ERROR] no scripts/uninstall.sh under {install_root};"
-                f" pre-contract artifacts no longer supported", log_path)
-
-    # Tarball uninstall.sh signature: `bash uninstall.sh [disable|remove|help]`.
-    # Default = disable. We expose a third mode `purge` (remove + delete DB)
-    # which the tarball doesn't itself implement; we run `remove` and then
-    # delete the DB ourselves.
-    raw_mode = os.environ.get("GSPD_UNINSTALL_MODE", "remove")
-    hook_mode = "remove" if raw_mode == "purge" else raw_mode
-    if hook_mode not in ("disable", "remove"):
-        die(10, f"[ERROR] GSPD_UNINSTALL_MODE={raw_mode!r}; must be one of"
-                f" disable|remove|purge", log_path)
-
-    env = os.environ.copy()
-    env["GSPD_EXTRACT_ROOT"] = str(install_root)
-    env["GSPD_UNINSTALL_LOG_PATH"] = str(log_path)
-    emit(f"[INFO] running {hook} {hook_mode}", log_path)
-    rc = subprocess.call(["bash", str(hook), hook_mode], env=env)
-    if rc != 0:
-        die(50, msg("exec_hook_failed", lang, rc=rc, log=str(log_path)), log_path)
-
-    # purge: tarball uninstall.sh leaves the DB alone (intentional safety),
-    # we explicitly nuke it after a successful remove. Do this before dropping
-    # the current symlink so experimental-memory-status keeps consistent state.
-    if raw_mode == "purge":
-        config_dir = Path(os.environ.get("GSPD_CONFIG_DIR", "/home/sandbox/.openclaw"))
-        # New layout: workspace/memory/gspd_memory/{gspd_memory.db,-shm,-wal}.
-        # We also try legacy positions in case the host hasn't been re-laid-out.
-        new_db_dir = config_dir / "workspace" / "memory" / "gspd_memory"
-        for victim in (
-            new_db_dir / "gspd_memory.db",
-            new_db_dir / "gspd_memory.db-shm",
-            new_db_dir / "gspd_memory.db-wal",
-            config_dir / "workspace" / "memory" / "gspd_memory.db",      # legacy (pre-relayout)
-            config_dir / "workspace" / "memory" / "gspd_memory.db-shm",
-            config_dir / "workspace" / "memory" / "gspd_memory.db-wal",
-            config_dir / "memory" / "gspd_memory.db",                    # pre-migration legacy
-        ):
-            if victim.exists():
-                victim.unlink()
-                emit(f"[INFO] purged {victim}", log_path)
-        # Drop the now-empty new layout dir if it has no other artifacts.
-        try:
-            if new_db_dir.is_dir() and not any(new_db_dir.iterdir()):
-                new_db_dir.rmdir()
-        except OSError:
-            pass
-
-    # Drop the current symlink so experimental-memory-status reflects "uninstalled"
-    cur_link = INSTALL_DIRS_PARENT / "current"
-    if cur_link.is_symlink():
-        cur_link.unlink()
-        emit(f"[INFO] removed current symlink", log_path)
-    # Also drop previous so experimental-memory-status doesn't keep flashing a stale "previous"
-    prev_link = INSTALL_DIRS_PARENT / "previous"
-    if prev_link.is_symlink():
-        prev_link.unlink()
-        emit(f"[INFO] removed previous symlink", log_path)
-    return 0
-
-
-def run_status(args, lang: str) -> int:
-    plat = detect_platform(args.platform)
-    cur = _current_installed(plat)
-    print(f"platform: {plat}")
-    print(f"installed_version: {cur or 'none'}")
-    if cur:
-        install_root = INSTALL_DIRS_PARENT / cur
-        print(f"install_root: {install_root}")
-        # Pass plugin/config paths through so the tarball status.sh can probe
-        # the same locations the install hook actually wrote to.
-        env = os.environ.copy()
-        env["GSPD_EXTRACT_ROOT"] = str(install_root)
-        hook = install_root / "scripts" / "status.sh"
-        if hook.exists():
-            print("---")
-            subprocess.call(["bash", str(hook)], env=env)
-        else:
-            print(f"(install_root has no scripts/status.sh at {hook})")
-    # Recent log tail. Hook output streamed into the log can carry partial
-    # UTF-8 sequences (truncated bash variable expansions etc.), so decode
-    # with errors='replace' rather than letting strict UTF-8 raise.
-    if LOG_DIR.exists():
-        logs = sorted(LOG_DIR.glob("*.log"), key=lambda p: p.stat().st_mtime, reverse=True)
-        if logs:
-            print("---")
-            print(f"latest_log: {logs[0]}")
-            print("--- tail ---")
-            with logs[0].open(encoding="utf-8", errors="replace") as f:
-                lines = f.readlines()[-10:]
-                sys.stdout.writelines(lines)
-    return 0
-
-
-# ============================================================================
 # Entrypoint
 # ============================================================================
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--mode",
-                    choices=["plan", "execute", "reboot",
-                             "upgrade-plan", "upgrade-execute",
-                             "uninstall-plan", "uninstall-execute",
-                             "status"],
+                    choices=["plan", "execute", "reboot"],
                     required=True)
-    ap.add_argument("--allow-downgrade", action="store_true")
     ap.add_argument("--version")
     ap.add_argument("--dev", action="store_true")
     ap.add_argument("--remote", action="store_true",
@@ -2250,15 +2517,15 @@ def main() -> int:
     ap.add_argument("--source", dest="source_local_dir")
     ap.add_argument("--offline", action="store_true",
                     help="Install from a tarball pre-staged in the platform "
-                         "tarball cache dir ($GSPD_TARBALL_DIR, default "
-                         "$GSPD_CONFIG_DIR/extensions/gspd_memory/package/). "
+                         "tarball cache dir ($CELIA_TARBALL_DIR, default "
+                         "$CELIA_CONFIG_DIR/extensions/celia_memory/package/). "
                          "No network. This is the default for lifecycle "
                          "actions unless --remote / --channel / --dev is used.")
     ap.add_argument("--platform", choices=["openclaw", "celiaclaw", "celiapro"])
     ap.add_argument("--strict-contract", action="store_true")
     ap.add_argument("--skip-claw-skills", action="store_true")
     ap.add_argument("--lang", choices=["zh", "en"],
-                    default=os.environ.get("GSPD_LANG", "en"))
+                    default=os.environ.get("CELIA_LANG", "en"))
     ap.add_argument("--confirmed", action="store_true")
     args = ap.parse_args()
 
@@ -2277,11 +2544,6 @@ def main() -> int:
         "plan": run_plan,
         "execute": run_execute,
         "reboot": run_reboot,
-        "upgrade-plan": run_upgrade_plan,
-        "upgrade-execute": run_upgrade_execute,
-        "uninstall-plan": run_uninstall_plan,
-        "uninstall-execute": run_uninstall_execute,
-        "status": run_status,
     }
     try:
         return handlers[args.mode](args, lang)

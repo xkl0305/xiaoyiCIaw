@@ -13,17 +13,17 @@ schema_version = 2
 
 # Tarball-side `contract_version` values this skill bundle knows how to
 # drive. Append to this list when GaussPD_Memory ships a new contract.
-# v2 introduced by the layout migration (gspd_memory subtree, install/current
-# symlink, gspd_memory/ DB subdir, workspace/skills/experimental-memory-* deployment).
+# v2 introduced by the layout migration (celia_memory subtree, install/current
+# symlink, celia_memory/ DB subdir, workspace/skills/experimental-memory-* deployment).
 # v1 kept for compat with pre-relayout tarballs that this skill bundle used to
-# install (legacy /home/sandbox/plugins/ + ~/.gspd/ layout). The orchestrator's
+# install (legacy /home/sandbox/plugins/ + ~/.celia/ layout). The orchestrator's
 # code paths for v1 fall back where applicable.
 supported_contract_versions = [1, 2]
 
 [remote]
 # GaussPD_Artifacts public mirror for fetching latest-*.txt + manifests.
 # The orchestrator clones this repo (shallow, no blobs) under
-# `~/.openclaw/extensions/gspd_memory/_artifacts-mirror/` and reads pointer/manifest files from the
+# `~/.openclaw/extensions/celia_memory/_artifacts-mirror/` and reads pointer/manifest files from the
 # working tree — `raw/main/...` URLs are intercepted by the GitCode SPA
 # shell page and unusable for direct fetch.
 artifacts_repo_raw = "https://gitcode.com/CayleyVanguard/GaussPD_Artifacts/raw/main"

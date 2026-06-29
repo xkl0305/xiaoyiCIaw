@@ -1,5 +1,4 @@
 """Link to base64/image tag conversion utilities for md2doc skill."""
-import base64
 import re
 
 from logger import get_logger
@@ -20,7 +19,6 @@ def replace_image_link_with_img_tag(image_url: str, width: str, height: str, req
     The skill version doesn't fetch external images.
     """
     try:
-        mime_type = get_mime_type_from_url(image_url)
         w = int(float(width)) if width else 0
         h = int(float(height)) if height else 0
 
