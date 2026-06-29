@@ -40,7 +40,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=64b8b3eb0477d242 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1eb37f7dc8a770d4 -->
 # Memory Global Summary
 
 ## User Profile
@@ -55,6 +55,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户在系统配置中需要使用（或询问）常见场景的配置方法
 - 用户询问 https://github.com/xkl0305/xiaoyiCIaw/actions/runs/28340893569 的内容，并要求查看和修复（可能忽略某个问题）
 ### Short-term Intent
+- 用户当前面临一个关于A（yaoyao主导）方案的选择决策，用户需要了解该方案的细节后再做决定
 - 用户让把模型换成 Qwen3-Embedding-8B（1024 维）进行尝试
 - 用户询问系统（或服务）是否重启成功
 *1 more items not shown, use memory_record_search to view*
