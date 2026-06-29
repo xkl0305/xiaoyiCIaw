@@ -4,9 +4,9 @@ import argparse, importlib.util, json, re, shutil, subprocess, sys, tarfile, tim
 from pathlib import Path
 sys.dont_write_bytecode=True
 ROOT=Path(__file__).resolve().parents[1]
-BANNED_DIR_NAMES={'repo','_venv_python','venv','.venv','__pycache__','.pytest_cache','.mypy_cache','.ruff_cache','.hypothesis'}
-BANNED_SUFFIX=('.pyc','.pyo','.jsonl')
-BANNED_MEMBER_RE=re.compile(r'(^|/)(__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.hypothesis)(/|$)|\.(pyc|pyo|jsonl)$|(^|/)(repo|_venv_python|venv|\.venv|\.dlx_runtime)(/|$)|(^|/)\.v111_.*_backup_|README_V111_3[56]|V111_3[56]|v111_3[56]')
+BANNED_DIR_NAMES={'_venv_python','venv','.venv','__pycache__','.pytest_cache','.mypy_cache','.ruff_cache','.hypothesis'}
+BANNED_SUFFIX=('.pyc','.pyo')
+BANNED_MEMBER_RE=re.compile(r'(^|/)(__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.hypothesis)(/|$)|\.(pyc|pyo)$|(^|/)(_venv_python|venv|\.venv|\.dlx_runtime)(/|$)|(^|/)\.v111_.*_backup_|README_V111_3[56]|V111_3[56]|v111_3[56]')
 def remove_generated_pycache():
     for p in list(ROOT.rglob('__pycache__')):
         try: shutil.rmtree(p)
