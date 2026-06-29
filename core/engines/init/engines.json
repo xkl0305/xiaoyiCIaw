@@ -1,0 +1,254 @@
+{
+    "version": "7.0",
+    "description": "Crusheart Agent OS — 全部注册引擎配置（38个，激活所有隐式依赖引擎 + 死代码引擎）",
+    "engines": [
+        {
+            "name": "system_identity",
+            "module": "core.engines.init.system_identity",
+            "class": "none",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "系统身份引擎：读取 _meta.json 生成 .state/system_identity.json"
+        },
+        {
+            "name": "hook_engine",
+            "module": "core.engines.hooks.hook_engine",
+            "class": "HookEngine",
+            "enabled": true
+        },
+        {
+            "name": "mutex_engine",
+            "module": "core.engines.tools.mutex_engine",
+            "class": "ToolMutex",
+            "enabled": true
+        },
+        {
+            "name": "lazy_load",
+            "module": "core.engines.init.lazy_load_enforcer",
+            "class": "LazyLoadEnforcer",
+            "enabled": true
+        },
+        {
+            "name": "anti_fake",
+            "module": "core.engines.quality.anti_fake_validator",
+            "class": "AntiFakeValidator",
+            "enabled": true
+        },
+        {
+            "name": "closed_loop",
+            "module": "core.engines.quality.closed_loop",
+            "class": "ClosedLoopEngine",
+            "enabled": true
+        },
+        {
+            "name": "memory_layer",
+            "module": "core.engines.memory.memory_layer_engine",
+            "class": "MemoryLayerEngine",
+            "enabled": true
+        },
+        {
+            "name": "session_manager",
+            "module": "core.engines.init.session_manager",
+            "init_fn": "init_capsule_manager",
+            "enabled": true,
+            "description": "会话管理器（合并自 context_capsule + session_handoff）"
+        },
+        {
+            "name": "goal_compiler",
+            "module": "core.engines.workflow.engine_orchestrator",
+            "class": "GoalCompiler",
+            "enabled": true,
+            "description": "目标编译器（集成于 engine_orchestrator）"
+        },
+        {
+            "name": "autonomy_cycle",
+            "module": "core.engines.operations.autonomy_cycle",
+            "class": "AutonomyCycle",
+            "enabled": true
+        },
+        {
+            "name": "unified_judge",
+            "module": "core.engines.quality.unified_judge",
+            "class": "UnifiedJudge",
+            "enabled": true
+        },
+        {
+            "name": "dual_mode",
+            "module": "core.engines.hooks.dual_mode_classifier",
+            "init_fn": "init_dual_mode_classifier",
+            "enabled": true
+        },
+        {
+            "name": "iron_rules",
+            "module": "core.engines.quality.iron_rules",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "context_warning",
+            "module": "core.engines.tools.context_warning",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "self_evolution",
+            "module": "core.engines.hooks.self_evolution_v3",
+            "class": "SelfEvolutionEngine",
+            "enabled": true
+        },
+        {
+            "name": "quality_dashboard",
+            "module": "core.engines.quality.quality_dashboard",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "task_template",
+            "module": "core.engines.tools.task_template_library",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "plugin_sdk",
+            "module": "core.engines.tools.plugin_sdk",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "crusheart_db",
+            "module": "core.engines.tools.crusheart_db",
+            "class": "CrusheartDB",
+            "enabled": true
+        },
+        {
+            "name": "background_executor",
+            "module": "core.engines.operations.background_executor",
+            "init_fn": "init_executor",
+            "enabled": true,
+            "description": "后台任务调度（合并自 background_scheduler + unified_executor）"
+        },
+        {
+            "name": "state_manager",
+            "module": "core.engines.operations.state_manager",
+            "init_fn": "get_state_manager",
+            "enabled": true
+        },
+        {
+            "name": "decision_core",
+            "module": "core.engines.operations.decision_core",
+            "init_fn": "get_archiver",
+            "enabled": true
+        },
+        {
+            "name": "user_dynamic_portrait",
+            "module": "core.engines.memory.user_dynamic_portrait",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "用户动态画像引擎v2：偏好/决策/风险/习惯四维建模 + 信号质量门(≥5次) + 自进化/参数调优分发"
+        },
+        {
+            "name": "identity_drift_guard",
+            "module": "core.engines.quality.identity_drift_guard",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "身份漂移检测：SOUL.md 规则完整性校验"
+        },
+        {
+            "name": "rule_engine",
+            "module": "core.engines.workflow.rule_engine",
+            "class": "RuleEngine",
+            "enabled": true,
+            "description": "自动化规则引擎：条件评估/规则匹配/动作执行/持久化"
+        },
+        {
+            "name": "anomaly_detector",
+            "module": "core.engines.quality.anomaly_detector",
+            "class": "AnomalyDetector",
+            "enabled": true,
+            "description": "异常模式检测：6维度监控+告警推送"
+        },
+        {
+            "name": "unified_executor",
+            "module": "core.engines.operations.unified_executor",
+            "init_fn": "init",
+            "enabled": true
+        },
+        {
+            "name": "dag_context",
+            "module": "core.engines.memory.dag_context_manager",
+            "class": "DAGContextManager",
+            "enabled": true,
+            "description": "DAG上下文管理器：SQLite持久化+增量摘要+人格节点保护+RRF融合+记忆巩固"
+        },
+        {
+            "name": "auto_tuning",
+            "module": "core.engines.tools.auto_tuning",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "参数自调优：基于执行数据自动调整dual_mode/mutex等引擎参数"
+        },
+        {
+            "name": "circuit_breaker",
+            "module": "core.engines.quality.circuit_breaker",
+            "class": "CircuitBreakerRegistry",
+            "enabled": true,
+            "description": "熔断器：请求限流+故障隔离+降级路由+checkpoint+process_log"
+        },
+        {
+            "name": "failover",
+            "module": "core.engines.tools.failover",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "故障转移：健康检查+节点选择+自动切换+模型回退"
+        },
+        {
+            "name": "trace_timeline",
+            "module": "core.engines.tools.trace_timeline",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "执行轨迹追踪：阶段计时+快照+性能分析+慢阶段报告"
+        },
+        {
+            "name": "enhancement_engine",
+            "module": "core.engines.tools.enhancement_engine",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "增强引擎：告警管理+事件驱动+通知路由+定时任务"
+        },
+        {
+            "name": "tool_gateway",
+            "module": "core.engines.tools.tool_execution_gateway",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "统一工具执行网关：安全校验+风险分级+审计日志+能力注册"
+        },
+        {
+            "name": "device_reconciler",
+            "module": "core.engines.tools.device_receipt_reconciler",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "设备操作回执对账器：超时二次验证+状态匹配"
+        },
+        {
+            "name": "self_evolution_engine",
+            "module": "core.engines.hooks.self_evolution_engine",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "自进化引擎v4（legacy重型版）：意图合约→隐私脱敏→预算管控→模拟执行→偏好漂移→改进提案"
+        },
+        {
+            "name": "success_path_store",
+            "module": "core.engines.quality.success_path_store",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "成功路径存储：记录成功执行路径供复用（JudgeEngine回写管道）"
+        },
+        {
+            "name": "insights_engine",
+            "module": "core.engines.tools.insights_engine",
+            "init_fn": "init",
+            "enabled": true,
+            "description": "使用洞察引擎：Token/成本/模型/工具/活跃度统计（exec_logger数据源）"
+        }
+    ]
+}

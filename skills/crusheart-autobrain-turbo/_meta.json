@@ -1,0 +1,22 @@
+{
+  "ownerId": "crusheart",
+  "slug": "Crusheart-AutoBrain-Turbo",
+  "version": "7.0.0",
+  "notes": "自进化 v5 统一版：合并 v3+v4 引擎 + PatternMiner 主动挖掘 + SkillGenerator 技能生成器",
+  "frameworkVersion": "2.0",
+  "publishedAt": 1778342400000,
+  "name": "灵枢AutoBrain",
+  "description": "Plugin+skill hybrid pack: memory, anti-hallucination, self-evolution, workflow orchestration, daily maintenance, auto-scan, version check. Supports xiaoyi-channel auto-fix. Exclusive slot + compat layer.",
+  "tags": [
+    "memory",
+    "self-evolution",
+    "anti-hallucination",
+    "workflow",
+    "orchestrator",
+    "plugin",
+    "health-check",
+    "engine",
+    "xiaoyi-fix"
+  ],
+  "license": "MIT-0"
+}

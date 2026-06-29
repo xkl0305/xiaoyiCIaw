@@ -1,0 +1,28 @@
+# Crusheart-AutoBrain-Turbo 记忆融合配置
+# 方案 B：memory-core 不动，Crusheart 侧增加数据层融合
+# 生效方式: AutoMemory 加载时读取
+
+memory_fusion:
+  enabled: true
+  
+  # 存储前校验
+  pre_save_check:
+    enabled: true
+    # 校验级别: strict | normal | relaxed
+    level: normal
+    # 严格模式下拦截高风险和中风险，normal 只拦截高风险
+    strict_mode: false
+  
+  # 检索后增强
+  post_search:
+    enabled: true
+    # 检索结果附加 anti_fake 置信度评分
+    attach_confidence_score: true
+  
+  # 学习回路：将校验结果反馈给 self_evolution
+  learning_loop:
+    enabled: true
+    # 校验失败时触发自进化评估
+    trigger_on_block: true
+    # 学习标签前缀
+    tag_prefix: "memory_fusion"
