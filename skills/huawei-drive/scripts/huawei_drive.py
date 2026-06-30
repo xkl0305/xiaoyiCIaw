@@ -14,7 +14,7 @@ import tempfile
 import re
 
 zip_input_files_url = "https://h5hosting-drcn.dbankcdn.cn/cch5/HAG/D1E0CiDwLKSTla6LZEqEHDzqA/import.json"
-BASE_DIR = "/home/sandbox/.openclaw"
+XIAO_YI_ENV_PATH = "/home/sandbox/.openclaw/.xiaoyienv"
 PARENT_FOLDER_NAME = "小艺Claw"
 DRIVE_URL_PATH = "/drive/v1/files"
 QUERY_ROOT_PARAM = "&queryParam=recycled=false%20and%20parentFolder='root'%20and%20"
@@ -24,6 +24,8 @@ QUERY_ERROR = "查询异常"
 QUERY_FAIL = "查询失败"
 FOLDER_NOT_EXIST = "小艺Claw目录不存在"
 FILE_NOT_EXIST = "文件不存在"
+
+global_support_sidecar = False
 
 
 # 日志文件路径
@@ -551,6 +553,158 @@ class UploadFileHwDrive(object):
         logger.error(f"上传完成接口重试{max_retries}次后仍返回308，放弃")
         return None
 
+    def get_file_metadata(self, file_id):
+        """
+        获取文件元数据，包括下载链接
+        :param file_id: 云盘文件ID
+        :return: 文件元数据JSON，包含contentDownloadLink字段，或"TOKEN_EXPIRED"或None
+        """
+        base_url = get_base_url()
+        url = f"{base_url}{DRIVE_URL_PATH}/{file_id}?fields=*"
+        headers = {
+            "Authorization": self.auth
+        }
+        try:
+            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
+            if check_token_expired(response):
+                logger.error("Token expired in get_file_metadata")
+                return "TOKEN_EXPIRED"
+            if response.status_code == 200:
+                result = response.json()
+                logger.info(f"get_file_metadata success, file_id: {file_id}")
+                return result
+            else:
+                logger.error(f"get_file_metadata failed: {response.text}")
+                return None
+        except Exception as e:
+            logger.error(f"Error in get_file_metadata: {e}")
+            return None
+
+    def download_file(self, file_id, download_path):
+        """
+        下载云盘文件
+        :param file_id: 云盘文件ID
+        :param download_path: 本地下载路径
+        :return: 下载结果字典
+        """
+        result = {
+            "status": "success",
+            "file_id": file_id,
+            "download_path": download_path
+        }
+        
+        # 获取文件元数据，获取下载链接
+        metadata = self.get_file_metadata(file_id)
+        if metadata == "TOKEN_EXPIRED":
+            result["status"] = "error"
+            result["error_code"] = "TOKEN_EXPIRED"
+            result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            return result
+        
+        if not metadata:
+            result["status"] = "error"
+            result["error_code"] = "GET_METADATA_FAILED"
+            result["message"] = "获取文件元数据失败"
+            return result
+        
+        # 获取下载链接
+        download_link = metadata.get("contentDownloadLink")
+        file_size = metadata.get("size")
+        if not download_link:
+            result["status"] = "error"
+            result["error_code"] = "NO_DOWNLOAD_LINK"
+            result["message"] = "文件下载链接不存在"
+            return result
+        
+        try:
+            start_byte = 0
+            chunk_size = 4 * 1024 * 1024
+            logger.info(f"开始下载文件，URL: {download_link}")
+            while start_byte < file_size:
+                end_byte = min(file_size-1, start_byte + chunk_size - 1)
+                range = "bytes={}-{}".format(start_byte, end_byte)
+                print(f"range:%{range}")
+                headers = {
+                    "Authorization": self.auth,
+                    "Range": range,
+                }
+                response = requests.get(download_link, headers=headers, stream=True, timeout=MAX_TIMEOUT)
+                response.raise_for_status()
+                # 确保目标目录存在
+                os.makedirs(os.path.dirname(download_path) if os.path.dirname(download_path) else ".", exist_ok=True)
+                # 保存文件
+                with open(download_path, 'ab+') as f:
+                    for chunk in response.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                start_byte = end_byte + 1
+                print(f"start_byte:{start_byte}")
+            f.close()
+            logger.info(f"文件下载成功: {download_path}")
+            result["message"] = "文件下载成功"
+            return result
+            
+        except requests.exceptions.RequestException as e:
+            logger.error(f"下载文件失败: {e}")
+            result["status"] = "error"
+            result["error_code"] = "DOWNLOAD_FAILED"
+            result["message"] = f"下载文件失败: {str(e)}"
+            return result
+        except IOError as e:
+            logger.error(f"保存文件失败: {e}")
+            result["status"] = "error"
+            result["error_code"] = "SAVE_FILE_FAILED"
+            result["message"] = f"保存文件失败: {str(e)}"
+            return result
+
+    def rename_file(self, file_id, new_file_name):
+        """
+        重命名云盘文件
+        :param file_id: 云盘文件ID
+        :param new_file_name: 新文件名
+        :return: 重命名结果字典
+        """
+        result = {
+            "status": "success",
+            "file_id": file_id,
+            "new_file_name": new_file_name
+        }
+        
+        base_url = get_base_url()
+        url = f"{base_url}{DRIVE_URL_PATH}/{file_id}"
+        headers = {
+            "Authorization": self.auth,
+            "Content-Type": "application/json"
+        }
+        data = {
+            "fileName": new_file_name
+        }
+        
+        try:
+            response = requests.patch(url, headers=headers, json=data, timeout=MAX_TIMEOUT)
+            if check_token_expired(response):
+                result["status"] = "error"
+                result["error_code"] = "TOKEN_EXPIRED"
+                result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+                return result
+            
+            if response.status_code == 200:
+                logger.info(f"文件重命名成功，file_id: {file_id}, new_name: {new_file_name}")
+                result["message"] = "文件重命名成功"
+                return result
+            else:
+                logger.error(f"文件重命名失败: {response.text}")
+                result["status"] = "error"
+                result["error_code"] = "RENAME_FAILED"
+                result["message"] = f"重命名失败: {response.text}"
+                return result
+        except Exception as e:
+            logger.error(f"重命名文件异常: {e}")
+            result["status"] = "error"
+            result["error_code"] = "RENAME_EXCEPTION"
+            result["message"] = f"重命名异常: {str(e)}"
+            return result
+
 def parse_url(url):
     """
     解析 URL，提取 server_id 和 uploadId
@@ -585,20 +739,39 @@ def get_properties(url, setting_key):
     except Exception as e:
         return None
 
-def get_base_url():
-    return get_properties(zip_input_files_url, "cloud_namespace_drive_base_url")
-
 def get_drive_token():
-    file_path = "/home/sandbox/.openclaw/.xiaoyienv"
-    with open(file_path, 'r') as file:
+    with open(XIAO_YI_ENV_PATH, 'r') as file:
+        content = file.read()
+    # 使用正则表达式解析内容
+    key_value_pattern = re.compile(r'([^=\s]+)\s*=\s*(.+)')
+    config = key_value_pattern.findall(content)
+    token = ""
+    for key, value in config:
+        if (key == "108635313_login_token"):
+            token = value
+    if token == "":
+        for key, value in config:
+            if (key == "USER_CREDENTIAL_TEMP_DRIVE_TOKEN"):
+                token = value
+    file.close()
+    return token
+
+
+def get_is_support_side_car():
+    global global_support_sidecar
+    with open(XIAO_YI_ENV_PATH, 'r') as file:
         content = file.read()
     # 使用正则表达式解析内容
     key_value_pattern = re.compile(r'([^=\s]+)\s*=\s*(.+)')
     config = key_value_pattern.findall(content)
     for key, value in config:
-        if (key == "USER_CREDENTIAL_TEMP_DRIVE_TOKEN"):
-            return value
-    return ""
+        if (key == "isSupportSideCar"):
+            global_support_sidecar = value
+    file.close()
+
+
+def get_base_url():
+    return get_properties(zip_input_files_url, "cloud_namespace_drive_base_url")
 
 def set_upload_result(result, status, message):
     result["status"] = status
@@ -708,6 +881,66 @@ def create_folder(auth, folder_name):
         return 1
 
 
+def download_file_from_celiaclaw(auth, file_id, download_path):
+    """
+    下载云盘文件
+    :param auth: 认证token
+    :param file_id: 云盘文件ID
+    :param download_path: 本地下载路径
+    :return: 下载结果字典
+    """
+    if auth == "":
+        result = {
+            "status": "error",
+            "error_code": "TOKEN_EXPIRED",
+            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+        }
+        logger.error("auth is empty")
+        print(json.dumps(result, ensure_ascii=False))
+        return result
+    
+    hw_drive = UploadFileHwDrive(auth)
+    result = hw_drive.download_file(file_id, download_path)
+    
+    if result["status"] == "error" and result.get("error_code") == "TOKEN_EXPIRED":
+        print_token_expired()
+        return result
+    
+    logger.info(json.dumps(result))
+    print(json.dumps(result, ensure_ascii=False))
+    return result
+
+
+def rename_file_in_celiaclaw(auth, file_id, new_file_name):
+    """
+    重命名云盘文件
+    :param auth: 认证token
+    :param file_id: 云盘文件ID
+    :param new_file_name: 新文件名
+    :return: 重命名结果字典
+    """
+    if auth == "":
+        result = {
+            "status": "error",
+            "error_code": "TOKEN_EXPIRED",
+            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+        }
+        logger.error("auth is empty")
+        print(json.dumps(result, ensure_ascii=False))
+        return result
+    
+    hw_drive = UploadFileHwDrive(auth)
+    result = hw_drive.rename_file(file_id, new_file_name)
+    
+    if result["status"] == "error" and result.get("error_code") == "TOKEN_EXPIRED":
+        print_token_expired()
+        return result
+    
+    logger.info(json.dumps(result))
+    print(json.dumps(result, ensure_ascii=False))
+    return result
+
+
 def upload_file_to_celiaclaw(auth, file_path, mode):
     """
     resume的方式上传指定文件到云空间
@@ -802,21 +1035,21 @@ def upload_file_to_celiaclaw(auth, file_path, mode):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Huawei Cloud Drive CLI")
     parser.add_argument("--command", type=str, 
-                        choices=["query", "query_folder", "upload", "create"],
-                        help="命令类型: query, query_folder, upload, create")
+                        choices=["query", "query_folder", "upload", "create", "download", "rename"],
+                        help="命令类型: query, query_folder, upload, create, download, rename")
     parser.add_argument("--key", type=str, help="查询ID，用于query命令")
     parser.add_argument("--file_name", type=str, help="文件名，用于query或query_folder命令")
+    parser.add_argument("--file_id", type=str, help="文件ID，用于download和rename命令")
     parser.add_argument("--mode", type=str, 
                         choices=["overwrite", "rename"],
                         help="上传模式: overwrite或rename")
     parser.add_argument("--folder_name", type=str, help="文件夹名称，用于create命令")
-    parser.add_argument("--path", type=str, help="文件路径: path=上传文件路径")
+    parser.add_argument("--path", type=str, help="文件路径: path=上传文件路径或download下载目标路径")
     parser.add_argument("--Authorization", type=str, help="用于云空间接口at")
     return parser.parse_args()
 
 def main():
     args = parse_arguments()
-    
     # 获取认证token
     if not args.Authorization:
         auth = get_drive_token()
@@ -874,6 +1107,26 @@ def main():
             print("please specify --folder_name <folder_name>")
             sys.exit(1)
         return create_folder(auth, args.folder_name)
+    
+    elif command == "download":
+        # 下载文件命令
+        if not args.file_id:
+            print("please specify --file_id <file_id>")
+            sys.exit(1)
+        if not args.path:
+            print("please specify --path <download_path>")
+            sys.exit(1)
+        return download_file_from_celiaclaw(auth, args.file_id, args.path)
+    
+    elif command == "rename":
+        # 重命名文件命令
+        if not args.file_id:
+            print("please specify --file_id <file_id>")
+            sys.exit(1)
+        if not args.file_name:
+            print("please specify --file_name <new_file_name>")
+            sys.exit(1)
+        return rename_file_in_celiaclaw(auth, args.file_id, args.file_name)
 
 if __name__ == "__main__":
     main()

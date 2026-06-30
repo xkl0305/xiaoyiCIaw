@@ -5,7 +5,7 @@
         {
             "name": "system_identity",
             "module": "core.engines.init.system_identity",
-            "class": "none",
+            "class": "",
             "init_fn": "init",
             "enabled": true,
             "description": "系统身份引擎：读取 _meta.json 生成 .state/system_identity.json"

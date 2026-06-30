@@ -24,6 +24,8 @@ huawei_drive.py --command query --key available_space
 
 ### 输出格式
 
+说明：**必须**严格按以下格式输出云空间用量详情及跳转链接。
+
 ```markdown
 云空间用量如下：
 总空间：200 GB
@@ -47,6 +49,8 @@ huawei_drive.py --command query --key available_space
 ---
 
 ## 特殊场景处理
+
+基础服务用户，可用空间不足，空间将满三个场景**必须**按以下给出的提示语输出，并且**必须**输出超链接：[点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)
 
 ### 基础服务用户（总空间 = 0）
 

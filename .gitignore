@@ -54,6 +54,20 @@ cache/
 logs/
 # V111.51.19 clean package final excludes
 
+# Crusheart runtime state
+.crusheart.db
+.crusheart_version
+.crusheart-daemon.log
+.crusheart-state/
+.daily_maintenance_state.json
+.evolution_log.json
+.evolution_tracker/
+.inverted_index.json
+.skill_auto_index.json
+.tuning_log.json
+backups/
+data/tasks.db
+
 # memory DB files
 memory/*.db
 memory/*.db-shm

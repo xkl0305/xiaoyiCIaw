@@ -5,6 +5,8 @@
 - [查询命令](#查询命令)
 - [上传命令](#上传命令)
 - [文件夹命令](#文件夹命令)
+- [下载命令](#下载命令)
+- [重命名命令](#重命名命令)
 
 ---
 
@@ -37,7 +39,7 @@ huawei_drive.py --command query --key file_list
 ### 检查文件是否存在
 
 ```bash
-huawei_drive.py --command query --file_name <file_name>
+huawei_drive.py --command query --file_name {file_name}
 ```
 
 **返回**：
@@ -59,7 +61,7 @@ huawei_drive.py --command query_folder --file_name 小艺Claw
 ### 覆盖上传
 
 ```bash
-huawei_drive.py --command upload --mode overwrite --path <file_path>
+huawei_drive.py --command upload --mode overwrite --path {file_name}
 ```
 
 **说明**：上传文件到 `/root/小艺Claw` 目录，文件已存在则覆盖
@@ -67,7 +69,7 @@ huawei_drive.py --command upload --mode overwrite --path <file_path>
 ### 重命名上传
 
 ```bash
-huawei_drive.py --command upload --mode rename --path <file_path>
+huawei_drive.py --command upload --mode rename --path {file_name}
 ```
 
 **说明**：上传文件到 `/root/小艺Claw` 目录，文件已存在则自动重命名（添加 `(1)` 后缀）
@@ -86,13 +88,49 @@ huawei_drive.py --command create --folder_name 小艺Claw
 
 ---
 
+## 下载命令
+
+### 下载文件
+
+```bash
+huawei_drive.py --command download --file_id {file_id} --path {download_path}
+```
+
+**说明**：根据文件ID下载云盘文件到指定本地路径
+
+**示例**：
+
+```bash
+huawei_drive.py --command download --file_id abc123def456 --path /tmp/downloaded_file.txt
+```
+
+---
+
+## 重命名命令
+
+### 重命名文件
+
+```bash
+huawei_drive.py --command rename --file_id {file_id} --file_name {new_file_name}
+```
+
+**说明**：根据文件ID重命名云盘文件
+
+**示例**：
+```bash
+huawei_drive.py --command rename --file_id abc123def456 --file_name new_name.txt
+```
+
+---
+
 ## 参数说明
 
 | 参数 | 说明 | 示例 |
 |-----|------|------|
-| `--command` | 操作类型 | `query`, `upload`, `create`, `query_folder` |
+| `--command` | 操作类型 | `query`, `upload`, `create`, `query_folder`, `download`, `rename` |
 | `--key` | 查询类型 | `space`, `available_space`, `file_list` |
 | `--file_name` | 文件名 | `test.txt` |
+| `--file_id` | 文件ID | `abc123def456` |
 | `--mode` | 上传模式 | `overwrite`（覆盖）, `rename`（重命名） |
 | `--path` | 文件路径 | `/path/to/file.txt` |
 | `--folder_name` | 文件夹名称 | `小艺Claw` |

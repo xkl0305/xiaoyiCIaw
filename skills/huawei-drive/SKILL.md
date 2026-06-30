@@ -12,8 +12,11 @@ description: 华为云空间云盘文件管理工具，支持文件上传、文�
 根据用户需求选择对应操作：
 
 - **上传文件**：请参阅 [文件操作指南](./reference/file_op.md)
-- **查询云空间用量**：请参阅 [云空间操作指南](./reference/drive_op.md)
+- **下载文件**：请参阅 [文件操作指南](./reference/file_op.md)
 - **查询文件列表**：请参阅 [文件操作指南](./reference/file_op.md)
+- **重命名文件/文件夹**：请参阅 [文件操作指南](./reference/file_op.md)
+- **查询云空间用量**：请参阅 [云空间操作指南](./reference/drive_op.md)
+- **Token 刷新**：请参阅 [Token 刷新指南](./reference/token_refresh.md)
 - **命令行参考**：请参阅 [命令快速参考](./reference/huawei_drive_commands.md)
 
 ---
@@ -41,9 +44,9 @@ description: 华为云空间云盘文件管理工具，支持文件上传、文�
 
 ## 错误处理
 
-常见错误场景及处理逻辑，请参阅 [文件操作指南](./reference/file_op.md) 中的"常见错误"章节。
-
-其他请求失败请参考 [华为状态码文档](https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/status-code-0000001050992633)。
+- **Token 相关错误**：Token 过期或为空时，请参阅 [Token 刷新指南](./reference/token_refresh.md)
+- **其他常见错误**：请参阅 [文件操作指南](./reference/file_op.md) 中的"常见错误"章节
+- **状态码参考**：其他请求失败请参考 [华为状态码文档](https://developer.huawei.com/consumer/cn/doc/HMSCore-Guides/status-code-0000001050992633)
 
 ---
 

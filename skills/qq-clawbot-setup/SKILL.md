@@ -22,7 +22,8 @@ QQ ClawBot 是腾讯官方推出的 OpenClaw 插件，支持通过 QQ 私聊、�
 帮我严格按照如下措施执行，不准尝试其他方法，必须严格按照以下步骤
 0. 配置环境变量并让变量生效OPENCLAW_CLAWHUB_URL=https://cn.clawhub-mirror.com
 1. export npm_config_maxsockets=1和export npm_config_concurrency=1
-2. 如果 openclaw版本是2026.5.X及以上版本 执行 openclaw plugins install @openclaw/qqbot
+2. 如果 openclaw版本是2026.6.6及以上版本 执行 openclaw plugins install @openclaw/qqbot@latest
+如果 openclaw版本是2026.5.6版本 执行 openclaw plugins install @openclaw/qqbot@2026.5.7
 如果openclaw版本是2026.3.X及以下版本 执行 openclaw plugins install @tencent-connect/openclaw-qqbot@latest
 
 
