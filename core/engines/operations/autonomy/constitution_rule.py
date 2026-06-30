@@ -3,7 +3,10 @@
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import dataclass, field
+from .rule_severity import RuleSeverity
 
+@dataclass
 class ConstitutionRule:
     id: str
     name: str
@@ -12,6 +15,3 @@ class ConstitutionRule:
     reason: str
     enabled: bool = True
     tags: List[str] = field(default_factory=list)
-
-
-@dataclass

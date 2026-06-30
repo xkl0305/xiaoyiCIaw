@@ -1281,7 +1281,9 @@ _patch_anti_fake_validator()
 
 def get_validator() -> AntiFakeValidator:
     from core.engines.init.engine_factory import SingletonRegistry
-    return SingletonRegistry.get(AntiFakeValidator)def run(text: str, sources = None) -> dict:
+    return SingletonRegistry.get(AntiFakeValidator)
+
+def run(text: str, sources = None) -> dict:
     """统一入口：校验文本是否存在幻觉风险"""
     validator = get_validator()
     return validator.full_check(text, sources or [])

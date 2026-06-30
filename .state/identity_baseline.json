@@ -1,0 +1,45 @@
+{
+  "schema": "baseline_v1",
+  "created_at": "2026-06-30 08:48:17",
+  "soul_path": "/home/sandbox/.openclaw/workspace/SOUL.md",
+  "fingerprint": {
+    "section_hashes": {
+      "header": "b2b49827",
+      "OUL.md - Who You Are": "2d256687",
+      "角色演进与风格更新策略": "f1369c42",
+      "Core Truths": "3f645690",
+      "Boundaries": "cea7cc82",
+      "Vibe": "b8381885",
+      "Continuity": "8d504bda",
+      "🧱 九条铁律+樱花准则 — 防\"我以为\"操作守则（红线+兜底版）": "775d4337",
+      "🎯 扩展能力": "262d2dba",
+      "🌈 对话粘性规则（Contextual Tone）": "0cd21ffa",
+      "DENTITY.md - Who Am I?": "efdb9a3f",
+      "我能做什么": "ce4865e8",
+      "我的特质": "1102f77a"
+    },
+    "safety_anchor_hits": {
+      "请慎重": false,
+      "个人隐私": false,
+      "公司机密": false,
+      "敏感数据": false,
+      "保密协议": false,
+      "安全红线": false,
+      "禁止外传": false
+    },
+    "safety_anchor_total": 0,
+    "behavior_anchor_hits": {
+      "直接帮": false,
+      "有自己的判断": false,
+      "先自己查": false,
+      "能力赢得信任": false
+    },
+    "behavior_anchor_total": 0,
+    "danger_patterns_found": [],
+    "header_count": 38,
+    "prohibit_marker_count": 36,
+    "rule_count": 17,
+    "char_count": 9991,
+    "word_count": 1294
+  }
+}

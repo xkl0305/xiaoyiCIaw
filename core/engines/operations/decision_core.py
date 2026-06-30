@@ -376,6 +376,7 @@ class DecisionArchiver:
         self._save_index()
 
 # 单例
+_instance = None
 
 def get_archiver():
     global _instance

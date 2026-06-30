@@ -528,6 +528,7 @@ class UnifiedBackgroundExecutor:
 # ============================================================
 
 _executor_instance = None
+_scheduler_instance = None
 _singleton_lock = threading.Lock()
 
 def get_scheduler() -> BackgroundTaskScheduler:

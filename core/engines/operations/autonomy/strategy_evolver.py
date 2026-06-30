@@ -1,8 +1,13 @@
-"""StrategyEvolver (v7.0 split)
+"""strategy_evolver (v7.0 split)
 """
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+from ._common import new_id, now_ts, STATE_DIR
+from .json_store import JsonStore
+from .strategy_rule import StrategyRule
+from .quality_report import QualityReport
 
 class StrategyEvolver:
     """质量驱动的策略自动演进"""
@@ -64,4 +69,3 @@ class StrategyEvolver:
 # 6. RecoveryLedger — 检查点回滚账本
 # ================================================================
 
-@dataclass

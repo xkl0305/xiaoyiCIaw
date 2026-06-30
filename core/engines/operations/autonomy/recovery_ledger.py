@@ -1,8 +1,12 @@
-"""RecoveryLedger (v7.0 split)
+"""recovery_ledger (v7.0 split)
 """
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+from ._common import new_id, now_ts, STATE_DIR
+from .json_store import JsonStore
+from .recovery_entry import RecoveryEntry
 
 class RecoveryLedger:
     """检查点+回滚计划的交易账本"""
@@ -37,4 +41,3 @@ class RecoveryLedger:
 # 7. ContinuousTaskRunner — 持久化任务注册表
 # ================================================================
 
-@dataclass

@@ -3,7 +3,9 @@
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import dataclass, field
 
+@dataclass
 class AutonomyCycleResult:
     run_id: str
     goal: str

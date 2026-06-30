@@ -515,7 +515,9 @@ class CrusheartDB(TTLCacheMixin):
 
 def get_db() -> CrusheartDB:
     from core.engines.init.engine_factory import SingletonRegistry
-    return SingletonRegistry.get(CrusheartDB)def migrate_all():
+    return SingletonRegistry.get(CrusheartDB)
+
+def migrate_all():
     """从现有 JSON 文件迁移全部数据"""
     db = get_db()
     total = 0

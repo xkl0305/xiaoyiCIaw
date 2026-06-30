@@ -1,0 +1,29 @@
+[
+  {
+    "id": "rule_ad68417dae6b3b16",
+    "name": "prefer_plan_first",
+    "condition": "complexity>=medium",
+    "action": "compile_goal_before_tool_use",
+    "weight": 1.0,
+    "enabled": true,
+    "updated_at": 0.0
+  },
+  {
+    "id": "rule_4d68d175322ec7ad",
+    "name": "approval_for_external_side_effect",
+    "condition": "risk>=L3",
+    "action": "interrupt_for_approval",
+    "weight": 1.0,
+    "enabled": true,
+    "updated_at": 0.0
+  },
+  {
+    "id": "rule_b4bfd48e4a2d9f2f",
+    "name": "write_memory_after_success",
+    "condition": "quality>=0.75",
+    "action": "write_episodic_and_procedure_memory",
+    "weight": 0.8,
+    "enabled": true,
+    "updated_at": 0.0
+  }
+]

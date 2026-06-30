@@ -1,8 +1,14 @@
 """ConstitutionKernel (v7.0 split)
 """
-import os, json, logging
+import os, re, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+from ._common import new_id, now_ts, STATE_DIR
+from .json_store import JsonStore
+from .rule_severity import RuleSeverity
+from .constitution_rule import ConstitutionRule
+from .constitution_decision import ConstitutionDecision
 
 class ConstitutionKernel:
     """规则引擎 — 基于正则匹配的 allow/block/approval 决策"""
@@ -71,4 +77,3 @@ class ConstitutionKernel:
 # 3. CapabilityGapAnalyzer — 能力差距分析
 # ================================================================
 
-@dataclass

@@ -1,8 +1,11 @@
-"""CapabilityGapAnalyzer (v7.0 split)
+"""capability_gap_analyzer (v7.0 split)
 """
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from ._common import new_id
+from .capability_gap import CapabilityGap
+from .capability_gap_status import CapabilityGapStatus
 
 class CapabilityGapAnalyzer:
     """能力差距分析 — 推断目标所需能力并对比可用能力"""
@@ -50,4 +53,3 @@ class CapabilityGapAnalyzer:
 # 4. QualityEvaluator — 质量评估
 # ================================================================
 
-@dataclass

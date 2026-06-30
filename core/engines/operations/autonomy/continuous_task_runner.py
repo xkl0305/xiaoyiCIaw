@@ -1,8 +1,13 @@
-"""ContinuousTaskRunner (v7.0 split)
+"""continuous_task_runner (v7.0 split)
 """
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+from ._common import new_id, now_ts, STATE_DIR
+from .json_store import JsonStore
+from .continuous_task import ContinuousTask
+from .task_run_status import TaskRunStatus
 
 class ContinuousTaskRunner:
     """持久化任务注册表 — 供外部调度器（cron）使用"""
@@ -43,4 +48,3 @@ class ContinuousTaskRunner:
 # 8. AutonomyCycle — 7阶段自治周期编排
 # ================================================================
 
-@dataclass

@@ -3,6 +3,18 @@
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+
+from ._common import new_id, now_ts, STATE_DIR
+from .json_store import JsonStore
+from .constitution_kernel import ConstitutionKernel
+from .capability_gap_analyzer import CapabilityGapAnalyzer
+from .capability_gap_status import CapabilityGapStatus
+from .quality_evaluator import QualityEvaluator
+from .strategy_evolver import StrategyEvolver
+from .recovery_ledger import RecoveryLedger
+from .continuous_task_runner import ContinuousTaskRunner
+from .autonomy_cycle_result import AutonomyCycleResult
 
 class AutonomyCycle:
     """7阶段自治周期编排 — 升级自 Orchestrator（原 AutoBrainRouter）"""

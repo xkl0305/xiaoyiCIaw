@@ -1,8 +1,12 @@
-"""QualityEvaluator (v7.0 split)
+"""quality_evaluator (v7.0 split)
 """
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import asdict
+from ._common import new_id, STATE_DIR
+from .json_store import JsonStore
+from .quality_report import QualityReport
 
 class QualityEvaluator:
     """执行质量评估器"""
@@ -34,4 +38,3 @@ class QualityEvaluator:
 # 5. StrategyEvolver — 策略演进
 # ================================================================
 
-@dataclass

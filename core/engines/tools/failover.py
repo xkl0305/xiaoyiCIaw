@@ -402,6 +402,7 @@ class FailoverManager:
         }
 
 # ── Engine init ──
+_instance = None
 
 def init() -> FailoverManager:
     global _instance

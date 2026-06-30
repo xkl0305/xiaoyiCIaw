@@ -1,0 +1,54 @@
+{
+  "system": "Crusheart Agent OS",
+  "engine": "Crusheart Agent OS 基于灵枢AutoBrain",
+  "name": "灵枢AutoBrain",
+  "version": "0.0.0-dev",
+  "description": "Crusheart Agent OS Engine Suite - Powered by 灵枢AutoBrain 0.0.0-dev",
+  "framework": "OpenClaw 2026.5.6",
+  "engine_groups": 8,
+  "engine_groups_detail": {
+    "init": {
+      "label": "初始化",
+      "count": 13
+    },
+    "memory": {
+      "label": "记忆系统",
+      "count": 8
+    },
+    "quality": {
+      "label": "质量验证",
+      "count": 12
+    },
+    "operations": {
+      "label": "操作执行",
+      "count": 8
+    },
+    "workflow": {
+      "label": "工作流",
+      "count": 8
+    },
+    "tools": {
+      "label": "工具管理",
+      "count": 14
+    },
+    "hooks": {
+      "label": "钩子系统",
+      "count": 8
+    },
+    "compat": {
+      "label": "兼容适配",
+      "count": 4
+    }
+  },
+  "engine_modules": 77,
+  "engine_status": "ready",
+  "plugins": [
+    {
+      "name": "灵枢AutoBrain",
+      "version": "0.0.0-dev",
+      "slug": "Crusheart-AutoBrain-Turbo"
+    }
+  ],
+  "initialized_at": "2026-06-30 09:06:57",
+  "tags": []
+}

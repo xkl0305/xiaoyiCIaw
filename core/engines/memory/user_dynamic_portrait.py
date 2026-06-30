@@ -763,6 +763,8 @@ class UserDynamicPortraitEngine:
 # ================================================================
 def get_portrait() -> UserDynamicPortraitEngine:
     from core.engines.init.engine_factory import SingletonRegistry
-    return SingletonRegistry.get(UserDynamicPortraitEngine)def init() -> UserDynamicPortraitEngine:
+    return SingletonRegistry.get(UserDynamicPortraitEngine)
+
+def init() -> UserDynamicPortraitEngine:
     """engines.json init_fn 入口"""
     return get_portrait()

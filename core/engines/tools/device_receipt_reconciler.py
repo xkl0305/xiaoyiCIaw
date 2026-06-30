@@ -374,6 +374,8 @@ class DeviceReceiptReconciler:
 
 # ── Engine init ──
 
+_instance = None
+
 def init() -> "DeviceReceiptReconciler":
     global _instance
     if _instance is None:

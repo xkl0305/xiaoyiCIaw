@@ -95,6 +95,7 @@ def get_recent_traces(limit: int = 10) -> List[dict]:
     return traces[-limit:]
 
 # ── Engine init ──
+_instance = None
 
 def init() -> TraceTimeline:
     global _instance

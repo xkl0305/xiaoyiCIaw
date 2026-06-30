@@ -3,6 +3,7 @@
 import os, json, logging
 from typing import Dict, List, Optional, Any
 from enum import Enum
+from dataclasses import dataclass
 
 class RuleSeverity(str, Enum):
     ALLOW = "allow"
@@ -15,4 +16,3 @@ class RuleSeverity(str, Enum):
 # 2. ConstitutionKernel — 规则引擎
 # ================================================================
 
-@dataclass

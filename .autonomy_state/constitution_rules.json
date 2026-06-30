@@ -1,0 +1,68 @@
+[
+  {
+    "id": "rule_cb4a2c261bd7a2ad",
+    "name": "block_secret_export",
+    "pattern": "(导出|发送|发到|发给|群发|外部发送).*(密钥|密码|token|secret|隐私)",
+    "severity": "block",
+    "reason": "密钥和隐私数据禁止导出",
+    "enabled": true,
+    "tags": [
+      "secret"
+    ]
+  },
+  {
+    "id": "rule_1832aedcd14f0804",
+    "name": "block_payment_without_approval",
+    "pattern": "转账|付款|支付|打款|收款账户",
+    "severity": "approval_required",
+    "reason": "资金操作需要明确授权",
+    "enabled": true,
+    "tags": [
+      "money"
+    ]
+  },
+  {
+    "id": "rule_8d2421b01d819dc0",
+    "name": "approval_delete_or_overwrite",
+    "pattern": "删除|清空|覆盖全部|格式化|永久移除",
+    "severity": "approval_required",
+    "reason": "不可逆销毁操作需要审批",
+    "enabled": true,
+    "tags": [
+      "destructive"
+    ]
+  },
+  {
+    "id": "rule_6d39f0ac621a93eb",
+    "name": "approval_external_send",
+    "pattern": "发给客户|发送邮件|群发|外部发送|发到群里|提交给平台",
+    "severity": "approval_required",
+    "reason": "外部副作用需要人工审批",
+    "enabled": true,
+    "tags": [
+      "external"
+    ]
+  },
+  {
+    "id": "rule_ae5f9d4ddd177438",
+    "name": "approval_install_unknown",
+    "pattern": "安装未知|自动安装|pip install|下载执行|运行陌生代码",
+    "severity": "approval_required",
+    "reason": "未知代码安装需要沙箱评估和审批",
+    "enabled": true,
+    "tags": [
+      "install"
+    ]
+  },
+  {
+    "id": "rule_5b9e94df65e2194f",
+    "name": "warn_low_risk",
+    "pattern": "计划|整理|总结|检查|生成方案",
+    "severity": "allow",
+    "reason": "低风险规划操作",
+    "enabled": true,
+    "tags": [
+      "low_risk"
+    ]
+  }
+]

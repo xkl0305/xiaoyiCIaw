@@ -1,24 +1,32 @@
 {
-  "plugin": "Crusheart-AutoBrain-Turbo",
   "version": "7.0.0",
-  "started_at": "2026-06-30T08:48:06.369854+08:00",
   "overall_status": "in_progress",
-  "overall_progress": 0.7,
-  "current_phase": "final_validation",
-  "current_step": "gen_report",
+  "started_at": "2026-06-30T08:48:06.369854+08:00",
+  "completed_at": "2026-06-30T08:48:17.256149+08:00",
   "phases": [
     {
       "id": "file_deployment",
       "label": "文件部署",
       "status": "completed",
-      "progress": 1.0,
-      "steps": {}
+      "steps": {
+        "extract_engines": {
+          "status": "unknown"
+        },
+        "deploy_scripts": {
+          "status": "unknown"
+        },
+        "deploy_skill": {
+          "status": "unknown"
+        },
+        "deploy_chain": {
+          "status": "unknown"
+        }
+      }
     },
     {
       "id": "environment_setup",
       "label": "环境设置",
       "status": "completed",
-      "progress": 1.0,
       "steps": {
         "inject_rules": {
           "status": "completed",
@@ -42,7 +50,6 @@
       "id": "system_integration",
       "label": "系统集成",
       "status": "in_progress",
-      "progress": 0.75,
       "steps": {
         "register_crons": {
           "status": "completed",
@@ -65,15 +72,19 @@
     {
       "id": "final_validation",
       "label": "最终验证",
-      "status": "completed",
-      "progress": 0.3333333333333333,
+      "status": "in_progress",
       "steps": {
+        "engine_imports": {
+          "status": "unknown"
+        },
+        "hook_activation": {
+          "status": "unknown"
+        },
         "gen_report": {
-          "status": "completed",
-          "detail": "MD: /home/sandbox/.openclaw/workspace/.install-report.md, JSON: /home/sandbox/.openclaw/workspace/.install-report.json"
+          "status": "running",
+          "detail": ""
         }
       }
     }
-  ],
-  "updated_at": "2026-06-30T08:48:17.256568+08:00"
+  ]
 }

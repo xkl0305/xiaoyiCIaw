@@ -228,7 +228,9 @@ class HandoffEngine:
 
 def get_handoff() -> HandoffEngine:
     from core.engines.init.engine_factory import SingletonRegistry
-    return SingletonRegistry.get(HandoffEngine)def check_on_startup() -> bool:
+    return SingletonRegistry.get(HandoffEngine)
+
+def check_on_startup() -> bool:
     """会话启动时检查是否有待续接的上下文。"""
     handoff = get_handoff()
     prompt = handoff.get_resume_prompt()

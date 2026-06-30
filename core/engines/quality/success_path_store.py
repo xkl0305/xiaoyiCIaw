@@ -84,6 +84,8 @@ class SuccessPathStore:
 
 # ── 引擎初始化入口 ──
 
+_instance = None
+
 def init() -> SuccessPathStore:
     """engines.json 调用的初始化入口"""
     global _instance
