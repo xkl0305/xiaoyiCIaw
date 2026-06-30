@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-基于 Seedance 的视频生成工具（支持首帧和首尾帧图生视频）
+基于 Seedance 的视频生成工具
 
 使用 Celia Claw API 调用
 """
@@ -8,34 +8,27 @@
 import os
 import sys
 import json
-import base64
-import ssl
 import time
 import argparse
-import re
-import shutil
 import hashlib
+import subprocess
+import io
 import requests
 from pathlib import Path
-from typing import List, Dict, Optional, Literal
+from typing import List, Dict, Optional, Literal, Tuple
 from datetime import datetime, timedelta
-from urllib.parse import urlparse
-import urllib.request
 import random
 import string
 import warnings
 warnings.filterwarnings("ignore")
 
-# 忽略SSL验证
-ssl_context = ssl.create_default_context()
-ssl_context.check_hostname = False
-ssl_context.verify_mode = ssl.CERT_NONE
-GenerationMode = Literal["t2v", "first_frame", "first_last_frame"]
+FOLDER_PREFIX = "seedance_"
 
 
-# ============================================================================
-# 环境配置工具函数
-# ============================================================================
+DEFAULT_RATIO = "adaptive"
+DEFAULT_RESOLUTION = "480p"
+DEFAULT_DURATION = 6
+DEFAULT_AUDIO = True
 
 def read_xiaoyienv():
     """
@@ -64,24 +57,6 @@ def read_xiaoyienv():
         print(f"读取文件时发生错误: {e}")
 
     return env_dict
-
-def _is_remote_url(value):
-    parsed = urlparse(value)
-    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)
-
-
-def _is_local_file(value):
-    """Check if value is a local file path."""
-    try:
-        return Path(value).is_file()
-    except (OSError, TypeError):
-        return False
-   
-
-def image_to_base64(image_path: str) -> str:
-    """将图片转为base64"""
-    with open(image_path, "rb") as f:
-        return base64.b64encode(f.read()).decode("utf-8")
 
 
 def calculate_sha256(file_path):
@@ -241,60 +216,256 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
         import traceback
         traceback.print_exc()
         return None
-    
 
-def download_video(video_url: str, output_path: str):
-    """下载视频"""
+
+def process_local_file(file_path):
+    if not file_path:
+        return None
+    elif file_path.startswith("http"):
+        return file_path
+    elif os.path.isfile(file_path):
+        print(f"📤 上传本地文件: {file_path}")
+        uploaded_url = upload_file(file_path)
+        if uploaded_url:
+            print(f"✅ 文件上传成功: {uploaded_url}")
+            return uploaded_url
+        else:
+            raise ValueError(f"❌ 文件上传失败: {file_path}")
+    else:
+        raise FileNotFoundError(f"❌ 输入无效：{file_path} 既不是有效的本地文件路径也不是有效的HTTP(S) URL")
+
+
+def download_video(video_url: str, output_file: str):
+    """
+    下载视频到本地
+
+    Args:
+        video_url: 视频URL
+        output_file: 输出文件路径
+    """
     print(f"📥 下载视频...")
+    download_response = requests.get(video_url, timeout=100, verify=False)
+    download_response.raise_for_status()
+    Path(output_file).parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, "wb") as f:
+        f.write(download_response.content)
+    print(f"✅ 视频已保存")
 
-    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+# ============================================================================
+# 媒体文件校验函数
+# ============================================================================
 
-    # 优先用 curl（Linux/Windows 通常都自带），失败再回落 Python 下载
-    curl = shutil.which("curl")
-    if curl:
-        import subprocess
+# 支持的图片格式（按模型系列区分）
+IMAGE_FORMATS = {'.jpeg', '.jpg', '.png', '.webp', '.bmp', '.tiff','.tif', '.gif', '.heic', '.heif'}
 
-        result = subprocess.run(
-            [curl, "-L", "-o", output_path, video_url, "--max-time", "10"],
-            capture_output=True,
-            text=True,
+# 支持的视频格式
+VIDEO_FORMATS = {'.mp4', '.mov'}
+
+# 支持的音频格式
+AUDIO_FORMATS = {'.wav', '.mp3'}
+
+
+def get_media_info(file_path: str) -> dict:
+    """
+    使用 ffprobe 获取媒体文件的元信息
+
+    Returns:
+        {
+            "width": int,
+            "height": int,
+            "duration": float,   # 秒
+            "fps": float,
+            "codec_name": str,
+            "codec_long_name": str
+        }
+        如果获取失败，返回空字典
+    """
+    info = {}
+    try:
+        cmd = [
+            "ffprobe", "-v", "quiet", "-print_format", "json",
+            "-show_format", "-show_streams",
+            file_path
+        ]
+        result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            print(f"⚠️  ffprobe 无法解析文件: {file_path}")
+            return info
+
+        data = json.loads(result.stdout)
+
+        # 获取时长（优先从 format 获取）
+        if "format" in data and "duration" in data["format"]:
+            info["duration"] = float(data["format"]["duration"])
+
+        # 获取视频流信息
+        for stream in data.get("streams", []):
+            if stream.get("codec_type") == "video":
+                info["width"] = stream.get("width", 0)
+                info["height"] = stream.get("height", 0)
+                info["codec_name"] = stream.get("codec_name", "")
+                info["codec_long_name"] = stream.get("codec_long_name", "")
+                # 帧率：可能是 "30/1" 或 "30000/1001" 等形式
+                r_frame_rate = stream.get("r_frame_rate", "")
+                if r_frame_rate and "/" in r_frame_rate:
+                    try:
+                        num, den = r_frame_rate.split("/")
+                        info["fps"] = float(num) / float(den) if float(den) != 0 else 0
+                    except (ValueError, ZeroDivisionError):
+                        info["fps"] = 0
+                break  # 只取第一个视频流
+
+        # 获取音频流信息
+        for stream in data.get("streams", []):
+            if stream.get("codec_type") == "audio":
+                info["audio_codec"] = stream.get("codec_name", "")
+                info["audio_duration"] = info.get("duration", 0)
+                break
+
+    except FileNotFoundError:
+        print("⚠️  未找到 ffprobe，请安装 ffmpeg 以启用媒体文件校验")
+    except subprocess.TimeoutExpired:
+        print(f"⚠️  ffprobe 解析超时: {file_path}")
+    except Exception as e:
+        print(f"⚠️  获取媒体信息异常: {e}")
+
+    return info
+
+
+def validate_image(file_path: str) -> Tuple[bool, str]:
+    """
+    校验图片文件是否符合要求
+
+    Args:
+        file_path: 图片文件路径
+
+    Returns:
+        (is_valid, error_message)
+    """
+    if not os.path.isfile(file_path):
+        return False, f"文件不存在: {file_path}"
+
+    # 1. 格式校验
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext not in IMAGE_FORMATS:
+        return False, (
+            f"不支持的图片格式: {ext}。"
+            f"当前支持: jpeg, jpg, png, webp, bmp, tiff, tif, gif, heic, heif"
         )
 
-        if (
-            result.returncode == 0
-            and os.path.exists(output_path)
-            and os.path.getsize(output_path) > 0
-        ):
-            print(f"✅ 下载完成: {output_path}")
-            return
+    # 2. 文件大小校验（单张 < 30MB）
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+    if file_size_mb >= 30:
+        return False, f"图片文件过大: {file_size_mb:.1f}MB，单张图片应小于 30MB，提示用户重新上传"
 
-        # curl 存在但失败，继续走 Python 下载
-        stderr = (result.stderr or "").strip()
-        if stderr:
-            print(
-                f"⚠️  curl 下载失败，将回退到 Python 下载。curl stderr: {stderr[:200]}"
+    # 3. 分辨率校验（宽、高均须在 [300, 6000] px 内）
+    media_info = get_media_info(file_path)
+    width = media_info.get("width", 0)
+    height = media_info.get("height", 0)
+    if width > 0 and height > 0:
+        if width < 300 or width > 6000 or height < 300 or height > 6000:
+            return False, (
+                f"图片分辨率 {width}x{height} 超出范围，宽、高均须在 "
+                f"[300, 6000] px 内，提示用户重新上传"
             )
-        else:
-            print("⚠️  curl 下载失败，将回退到 Python 下载。")
+        # 4. 宽高比校验（width / height ∈ [0.4, 2.5]）
+        aspect_ratio = width / height
+        if aspect_ratio < 0.4 or aspect_ratio > 2.5:
+            return False, (
+                f"图片宽高比 {aspect_ratio:.2f}（{width}x{height}）超出范围 "
+                f"[0.4, 2.5]，提示用户重新上传"
+            )
+    else:
+        print(f"⚠️  无法获取图片分辨率: {file_path}，跳过分辨率/宽高比校验")
 
-    try:
-        with urllib.request.urlopen(
-            video_url, context=ssl_context, timeout=60
-        ) as resp, open(output_path, "wb") as f:
-            while True:
-                chunk = resp.read(1024 * 256)
-                if not chunk:
-                    break
-                f.write(chunk)
-        if os.path.exists(output_path) and os.path.getsize(output_path) > 0:
-            print(f"✅ 下载完成: {output_path}")
-        else:
-            print(f"⚠️  下载失败（文件为空），请手动下载: {video_url}")
-    except Exception as e:
-        print(f"⚠️  下载失败，请手动下载: {video_url}")
-        print(f"   错误: {e}")
+    return True, ""
 
 
+def validate_video(file_path: str) -> Tuple[bool, str]:
+    """
+    校验视频文件是否符合要求
+
+    Returns:
+        (is_valid, error_message)
+    """
+    if not os.path.isfile(file_path):
+        return False, f"文件不存在: {file_path}"
+
+    # 1. 格式校验
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext not in VIDEO_FORMATS:
+        return False, f"不支持的视频格式: {ext}，支持: mp4, mov"
+
+    # 2. 文件大小校验（单个 ≤ 200MB）
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+    if file_size_mb > 200:
+        return False, f"视频文件过大: {file_size_mb:.1f}MB，单个视频应不超过 200MB，提示用户重新上传"
+
+    # 3. 获取视频元信息
+    media_info = get_media_info(file_path)
+    duration = media_info.get("duration", 0)
+
+    if duration > 0:
+        if duration < 2 or duration > 15:
+            return False, f"视频时长 {duration:.1f}s 超出范围 [2s, 15s]，提示用户重新上传"
+    else:
+        print(f"⚠️  无法获取视频时长: {file_path}，跳过时长校验")
+
+    # 4. 总像素数校验（width × height ∈ [409600, 8295044]）
+    width = media_info.get("width", 0)
+    height = media_info.get("height", 0)
+    if width > 0 and height > 0:
+        total_pixels = width * height
+        if total_pixels < 409600 or total_pixels > 8295044:
+            return False, (
+                f"视频分辨率 {width}x{height}（总像素 {total_pixels}）超出范围 "
+                f"[409600, 8295044]，提示用户重新上传"
+            )
+        # 5. 宽高比校验（width / height ∈ [0.4, 2.5]）
+        aspect_ratio = width / height
+        if aspect_ratio < 0.4 or aspect_ratio > 2.5:
+            return False, (
+                f"视频宽高比 {aspect_ratio:.2f}（{width}x{height}）超出范围 "
+                f"[0.4, 2.5]，提示用户重新上传"
+            )
+    else:
+        print(f"⚠️  无法获取视频分辨率: {file_path}，跳过总像素/宽高比校验")
+
+    return True, ""
+
+
+def validate_audio(file_path: str) -> Tuple[bool, str]:
+    """
+    校验音频文件是否符合要求
+
+    Returns:
+        (is_valid, error_message)
+    """
+    if not os.path.isfile(file_path):
+        return False, f"文件不存在: {file_path}"
+
+    # 1. 格式校验
+    ext = os.path.splitext(file_path)[1].lower()
+    if ext not in AUDIO_FORMATS:
+        return False, f"不支持的音频格式: {ext}，支持: wav, mp3"
+
+    # 2. 文件大小校验（单个 ≤ 15MB）
+    file_size_mb = os.path.getsize(file_path) / (1024 * 1024)
+    if file_size_mb > 15:
+        return False, f"音频文件过大: {file_size_mb:.1f}MB，单个音频应不超过 15MB，提示用户重新上传"
+
+    # 3. 获取音频时长
+    media_info = get_media_info(file_path)
+    duration = media_info.get("duration", 0)
+
+    if duration > 0:
+        # 时长校验 [2, 15]s
+        if duration < 2 or duration > 15:
+            return False, f"音频时长 {duration:.1f}s 超出范围 [2s, 15s]，提示用户重新上传"
+    else:
+        print(f"⚠️  无法获取音频时长: {file_path}，跳过时长校验")
+
+    return True, ""
 # ============================================================================
 # 核心视频生成函数
 # ============================================================================
@@ -304,37 +475,33 @@ def create_video_generation_task(
     first_frame_path: str = None,
     last_frame_path: str = None,
     duration: int = 5,
-    ratio: str = "9:16",
-    resolution: str = "480p",
-    framespersecond: Optional[int] = None,
-    seed: Optional[int] = None,
-    camera_fixed: Optional[bool] = None,
+    ratio: str = "adaptive",
+    resolution: str = "720p",
+    generate_audio: bool = True,
     watermark: bool = True,
-    generate_audio: bool = False,
+    web_search: bool = False,
+    reference_images: Optional[List[str]] = None,
+    reference_videos: Optional[List[str]] = None,
+    reference_audios: Optional[List[str]] = None,
 ) -> str:
     """
     创建视频生成任务，返回任务ID
 
     Args:
         prompt: 文本提示词
-        first_frame_path: 首帧参考图片路径
-        last_frame_path: 尾帧参考图片路径（用于"首尾帧图生视频"）
+        first_frame_path: 首帧图片URL
+        last_frame_path: 尾帧图片URL
         duration: 视频时长（秒）
         ratio: 视频比例
         resolution: 视频分辨率
-        framespersecond: 帧率
-        seed: 随机种子
-        camera_fixed: 是否固定镜头
         watermark: 是否添加水印
         generate_audio: 是否生成同步音频
+        reference_images: 参考图片URL列表
+        reference_videos: 参考视频URL列表
+        reference_audios: 参考音频URL列表
 
     Returns:
         任务ID (str)
-
-    生成模式自动推断规则：
-        - 仅传 first_frame_path（无 last_frame_path）→ 首帧图生视频 (first_frame)
-        - 传 first_frame_path + last_frame_path → 首尾帧图生视频 (first_last_frame)
-        - 均不传 → 文生视频 (t2v)
     """
     # 读取环境变量
     config = read_xiaoyienv()
@@ -347,115 +514,36 @@ def create_video_generation_task(
     base_url = config.get('SERVICE_URL', '')
     api_key = config['PERSONAL-API-KEY']
     uid = config['PERSONAL-UID']
-    trace_id = f"{hashlib.sha256(uid.encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime("20260328%H%M%S")}"
+    trace_id = f"{hashlib.sha256(uid.encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
 
-    # 参数校验 & 模式自动推断
-    has_first_frame = first_frame_path is not None
-    has_last_frame = last_frame_path is not None
-
-    # --- 文件存在性校验（仅针对本地文件）---
-    def validate_input(path: str, label: str) -> str:
-        """验证输入路径，支持本地文件和远程URL"""
-        if _is_remote_url(path):
-            # 远程URL，直接返回
-            return path
-        elif _is_local_file(path):
-            # 本地文件，返回路径
-            return path
-        else:
-            raise FileNotFoundError(f"❌ 输入无效：{label} 既不是有效的本地文件路径也不是有效的HTTP(S) URL → {path}")
-
-    if has_first_frame:
-        first_frame_path = validate_input(first_frame_path, "first_frame_path")
-    if has_last_frame:
-        last_frame_path = validate_input(last_frame_path, "last_frame_path")
-
-    # --- 自动推断 mode ---
-    inferred_mode: GenerationMode
-    if has_first_frame and has_last_frame:
-        inferred_mode = "first_last_frame"
-    elif has_first_frame:
-        inferred_mode = "first_frame"
-    else:
-        inferred_mode = "t2v"
-
-    if inferred_mode == "first_frame":
-        print(f"🎬 模式: 首帧图生视频: {first_frame_path}")
-    elif inferred_mode == "first_last_frame":
-        print(
-            f"🎬 模式: 首尾帧图生视频 (first_frame={first_frame_path}, last_frame={last_frame_path})"
-        )
-    else:
-        print("🎬 模式: 文生视频 (text-to-video)")
+    first_frame_url = process_local_file(first_frame_path)
+    last_frame_url = process_local_file(last_frame_path)
+    reference_image_urls = [process_local_file(p) for p in (reference_images or [])]
+    reference_video_urls = [process_local_file(p) for p in (reference_videos or [])]
+    reference_audio_urls = [process_local_file(p) for p in (reference_audios or [])]
     
-    # 构建content数组 - 包含图片和文本
-    content_list = []
+    # 构建content数组
+    content = [{"type": "text", "text": prompt}]
     
-    # 添加图片输入（根据模式）
-    if inferred_mode == "first_frame":
-        # 首帧图生视频
-        if _is_local_file(first_frame_path):
-            first_frame_uri = upload_file(first_frame_path, object_type="TEMPORARY_MATERIAL_DOC")
-            if not first_frame_uri:
-                raise RuntimeError(f"首帧图片上传失败: {first_frame_path}")
-        else:
-            # 远程URL - 直接使用
-            first_frame_uri = first_frame_path
-        
-        content_list.append({
-            "type": "image_url",
-            "image_url": {
-                "url": first_frame_uri
-            },
-            "role": "first_frame"
-        })
-        
-    elif inferred_mode == "first_last_frame":
-        # 首尾帧图生视频
-        # 处理首帧
-        if _is_local_file(first_frame_path):
-            first_frame_uri = upload_file(first_frame_path, object_type="TEMPORARY_MATERIAL_DOC")
-            if not first_frame_uri:
-                raise RuntimeError(f"首帧图片上传失败: {first_frame_path}")
-        else:
-            # 远程URL - 直接使用
-            first_frame_uri = first_frame_path
-        
-        content_list.append({
-            "type": "image_url",
-            "image_url": {
-                "url": first_frame_uri
-            },
-            "role": "first_frame"
-        })
-        
-        # 处理尾帧
-        if _is_local_file(last_frame_path):
-            last_frame_uri = upload_file(last_frame_path, object_type="TEMPORARY_MATERIAL_DOC")
-            if not last_frame_uri:
-                raise RuntimeError(f"尾帧图片上传失败: {last_frame_path}")
-        else:
-            # 远程URL - 直接使用
-            last_frame_uri = last_frame_path
-        
-        content_list.append({
-            "type": "image_url",
-            "image_url": {
-                "url": last_frame_uri
-            },
-            "role": "last_frame"
-        })
-    
-    # 添加文本提示词
-    content_list.append({
-        "type": "text",
-        "text": prompt
-    })
+    if first_frame_url:
+        content.append({"type": "image_url", "image_url": {"url": first_frame_url}, "role": "first_frame"})
+
+    for img_url in reference_image_urls:
+        content.append({"type": "image_url", "image_url": {"url": img_url}, "role": "reference_image"})
+
+    if last_frame_url:
+        content.append({"type": "image_url", "image_url": {"url": last_frame_url}, "role": "last_frame"})
+
+    for vid_url in reference_video_urls:
+        content.append({"type": "video_url", "video_url": {"url": vid_url}, "role": "reference_video"})
+
+    for aud_url in reference_audio_urls:
+        content.append({"type": "audio_url", "audio_url": {"url": aud_url}, "role": "reference_audio"})
     
     # 构建content_data对象，包含content列表和其他参数
     content_data = {
-        "actionName": "seedance15proTask",
-        "content": content_list,
+        "actionName": "seedanceMiniTask",
+        "content": content,
         "duration": duration,
         "ratio": ratio,
         "resolution": resolution,
@@ -463,14 +551,6 @@ def create_video_generation_task(
         "watermark": watermark
     }
     
-    # 添加可选参数
-    if seed is not None:
-        content_data["seed"] = seed
-    if camera_fixed is not None:
-        content_data["camera_fixed"] = camera_fixed
-    if framespersecond is not None:
-        content_data["framespersecond"] = framespersecond
-
     # 构建完整的请求体
     payload = {
         "endpoint": {
@@ -492,7 +572,7 @@ def create_video_generation_task(
             {
                 "actionSn": "1",
                 "actionExecutorTask": {
-                    "actionName": "seedance15proTask",
+                    "actionName": "seedanceMiniTask",
                     "pluginId": "2c6c2cf21cb34a87bf114929c0d9c1f8",
                     "content": content_data, 
                 }
@@ -524,7 +604,6 @@ def create_video_generation_task(
     # ──────────────────────────────────────────────
     # 发起请求创建任务
     # ──────────────────────────────────────────────
-
     print(f"🎬 创建视频生成任务...")
 
     try:
@@ -584,8 +663,8 @@ def create_video_generation_task(
 def query_video_generation_task(
     task_id: str,
     output_file: str = None,
-    poll_interval_s: int = 10,
-    timeout_s: int = 60 * 20,
+    poll_interval_s: int = 5,
+    max_wait_time: int = 600,
 ) -> dict:
     """
     查询视频生成任务状态，完成后下载视频
@@ -594,7 +673,7 @@ def query_video_generation_task(
         task_id: 任务ID
         output_file: 输出文件路径（可选）
         poll_interval_s: 轮询间隔（秒）
-        timeout_s: 超时时间（秒）
+        max_wait_time: 最大等待时间（秒）
 
     Returns:
         {
@@ -608,7 +687,7 @@ def query_video_generation_task(
     base_url = config.get('SERVICE_URL', '')
     api_key = config.get('PERSONAL-API-KEY', '')
     uid = config.get('PERSONAL-UID', '')
-    trace_id = f"{hashlib.sha256(uid.encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime("20260328%H%M%S")}"
+    trace_id = f"{hashlib.sha256(uid.encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
     
     if not api_key or not uid:
         raise RuntimeError("缺少环境变量 PERSONAL-API-KEY 或 PERSONAL-UID")
@@ -660,11 +739,11 @@ def query_video_generation_task(
             {
                 "actionSn": "1",
                 "actionExecutorTask": {
-                    "actionName": "seedance15proTaskQuery",
+                    "actionName": "seedanceMiniTaskQuery",
                     "pluginId": "2c6c2cf21cb34a87bf114929c0d9c1f8",
                     "content": {
                         "id": task_id,
-                        "actionName": "seedance15proTaskQuery"
+                        "actionName": "seedanceMiniTaskQuery"
                     }
                 }
             }
@@ -683,8 +762,8 @@ def query_video_generation_task(
     
     video_url=None
     while True:
-        if time.time() - started > timeout_s:
-            print(f"❌ 任务超时({timeout_s}s): {task_id}")
+        if time.time() - started > max_wait_time:
+            print(f"❌ 任务超时({max_wait_time}s): {task_id}")
             return {}
 
         time.sleep(max(1, poll_interval_s))
@@ -792,15 +871,7 @@ def query_video_generation_task(
 # 任务管理工具函数
 # ============================================================================
 
-
-def sanitize_filename(name: str) -> str:
-    """清理文件名，移除非法字符"""
-    name = re.sub(r'[<>:"/\\|?*]', "_", name)
-    name = name.strip()
-    return name
-
-
-def create_task_folder(base_dir: str, task_name: str = None) -> Path:
+def create_task_folder(base_dir: str) -> Path:
     """
     为每次任务创建独立的文件夹
 
@@ -812,11 +883,7 @@ def create_task_folder(base_dir: str, task_name: str = None) -> Path:
         任务文件夹路径
     """
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    if task_name:
-        folder_name = f"{timestamp}_{sanitize_filename(task_name)}"
-    else:
-        folder_name = f"video_{timestamp}"
+    folder_name = f"{FOLDER_PREFIX}{timestamp}"
 
     task_folder = Path(base_dir).expanduser() / folder_name
     task_folder.mkdir(parents=True, exist_ok=True)
@@ -825,35 +892,35 @@ def create_task_folder(base_dir: str, task_name: str = None) -> Path:
     return task_folder
 
 
-def check_recent_tasks(base_dir: str, minutes: int = 5) -> Optional[Path]:
+def check_recent_tasks(base_dir: str, minutes: int = 2) -> Optional[Path]:
     """
     检查指定分钟内是否创建过任务文件夹
     
     Args:
         base_dir: 基础输出目录
-        minutes: 检查的分钟数（默认5分钟）
+        minutes: 检查的分钟数（默认2分钟）
     
     Returns:
-        如果5分钟内创建过任务，返回最新的任务文件夹路径；否则返回None
+        如果2分钟内创建过任务，返回最新的任务文件夹路径；否则返回None
     """
     base_dir = Path(base_dir).expanduser()
     
     if not base_dir.exists():
         return None
     
-    # 获取截止时间（5分钟前）
+    # 获取截止时间（2分钟前）
     cutoff_time = datetime.now() - timedelta(minutes=minutes)
     
     # 遍历所有匹配的视频任务文件夹
     task_folders = []
     for item in base_dir.iterdir():
-        if item.is_dir() and item.name.startswith("video_"):
+        if item.is_dir() and item.name.startswith(FOLDER_PREFIX):
             # 解析时间戳：video_YYYYMMDD_HHMMSS
             try:
-                timestamp_str = item.name.split('_', 1)[0]  # 取时间戳部分
+                timestamp_str = item.name[len(FOLDER_PREFIX):]   # 取时间戳部分
                 folder_time = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
                 
-                # 检查是否在5分钟内
+                # 检查是否在2分钟内
                 if folder_time >= cutoff_time:
                     task_folders.append((folder_time, item))
             except (ValueError, IndexError):
@@ -876,48 +943,63 @@ def generate_script_videos(
     script_file: str,
     first_frame_path: Optional[str] = None,
     last_frame_path: Optional[str] = None,
+    reference_images: Optional[List[str]] = None,
+    reference_videos: Optional[List[str]] = None,
+    reference_audios: Optional[List[str]] = None,
     output_dir: str = "~/.openclaw/workspace/generated-videos",
     watermark: bool = True,
-    framespersecond: Optional[int] = None,
-    seed: Optional[int] = None,
-    camera_fixed: Optional[bool] = None,
-    poll_interval_s: int = 10,
-    timeout_s: int = 60 * 20,
 ) -> List[Dict]:
     """
-    根据脚本生成视频（简化版：单场景）
+    根据脚本生成视频
+
+    支持模式：
+    - 文生视频：仅文本提示词
+    - 图生视频-首帧：首帧图片 + 文本提示词
+    - 图生视频-首尾帧：首帧图片 + 尾帧图片 + 文本提示词
+    - 多模态参考：参考图/视频/音频 + 文本提示词
 
     Args:
         script_file: JSON 脚本文件路径
         first_frame_path: 首帧图片路径
-        last_frame_path: 尾帧图片路径（用于首尾帧图生视频）
+        last_frame_path: 尾帧图片路径
+        reference_images: 参考图片路径列表
+        reference_videos: 参考视频路径列表
+        reference_audios: 参考音频路径列表
         output_dir: 输出目录
+        model: 模型 ID
 
     Returns:
         生成的视频信息列表 [{"video_path": ...}]
     """
-    # 检查5分钟内是否创建过任务
-    recent_task = check_recent_tasks(output_dir)
-    if recent_task:
-        return []
-    
+    if reference_audios and not reference_videos and not reference_images:
+        raise ValueError("❌ 不可单独输入音频，应至少包含1个参考视频或图片")
+
+    if reference_images and len(reference_images) > 9:
+        raise ValueError("❌ 参考图片最多9张")
+
+    if reference_videos and len(reference_videos) > 3:
+        raise ValueError("❌ 参考视频最多3个")
+
+    if reference_audios and len(reference_audios) > 3:
+        raise ValueError("❌ 参考音频最多3个")
+
     # 读取脚本
     with open(script_file, "r", encoding="utf-8") as f:
         script = json.load(f)
 
     # 新格式：直接从顶层获取字段
     prompt = script.get("prompt")
-    duration = script.get("duration", 5)
-    ratio = script.get("ratio", "9:16")
-    # resolution = script.get("resolution", "720p")
-    resolution = "720p"
-    has_audio = script.get("has_audio", False)
+    duration = script.get("duration", DEFAULT_DURATION)
+    ratio = script.get("ratio", DEFAULT_RATIO)
+    resolution = script.get("resolution", DEFAULT_RESOLUTION)
+    generate_audio = script.get("generate_audio", DEFAULT_AUDIO)
+    web_search = script.get("web_search", False)
 
     if not prompt:
         raise ValueError("❌ 脚本中没有 prompt 字段")
     
-    if duration < 4 or duration > 12:
-        raise ValueError(f"⚠️  视频时长 {duration} 秒超出限制 (4-12秒)，暂时不支持")
+    if duration < 4 or duration > 15:
+        raise ValueError(f"⚠️  视频时长 {duration} 秒超出限制 (4-15秒)，暂时不支持")
 
     print(f"\n{'='*60}")
     print(f"开始生成视频")
@@ -926,12 +1008,70 @@ def generate_script_videos(
     print(f"时长: {duration}秒")
     print(f"比例: {ratio}")
     print(f"分辨率: {resolution}")
-    print(f"音频: {'是' if has_audio else '否'}")
+    print(f"音频: {'是' if generate_audio else '否'}")
+        # ============================================================
+    # 媒体文件校验
+    # ============================================================
+
+    # 校验首帧图片
+    if first_frame_path:
+        valid, err_msg = validate_image(first_frame_path)
+        if not valid:
+            raise ValueError(f"❌ 首帧图片校验失败: {err_msg}")
+
+    # 校验尾帧图片
+    if last_frame_path:
+        valid, err_msg = validate_image(last_frame_path)
+        if not valid:
+            raise ValueError(f"❌ 尾帧图片校验失败: {err_msg}")
+
+    # 校验参考图片
+    for img_path in (reference_images or []):
+        valid, err_msg = validate_image(img_path)
+        if not valid:
+            raise ValueError(f"❌ 参考图片校验失败 ({img_path}): {err_msg}")
+
+    # 校验参考视频
+    total_video_duration = 0.0
+    for vid_path in (reference_videos or []):
+        valid, err_msg = validate_video(vid_path)
+        if not valid:
+            raise ValueError(f"❌ 参考视频校验失败 ({vid_path}): {err_msg}")
+        # 累计视频总时长
+        media_info = get_media_info(vid_path)
+        total_video_duration += media_info.get("duration", 0)
+
+    if reference_videos and total_video_duration > 15:
+        raise ValueError(
+            f"❌ 所有参考视频总时长 {total_video_duration:.1f}s 超过限制 15s，提示用户重新上传"
+        )
+
+    # 校验参考音频
+    total_audio_duration = 0.0
+    for aud_path in (reference_audios or []):
+        valid, err_msg = validate_audio(aud_path)
+        if not valid:
+            raise ValueError(f"❌ 参考音频校验失败 ({aud_path}): {err_msg}")
+        # 累计音频总时长
+        media_info = get_media_info(aud_path)
+        total_audio_duration += media_info.get("duration", 0)
+
+    if reference_audios and total_audio_duration > 15:
+        raise ValueError(
+            f"❌ 所有参考音频总时长 {total_audio_duration:.1f}s 超过限制 15s，提示用户重新上传"
+        )
+    # ============================================================
 
     if first_frame_path:
         print(f"首帧图: {first_frame_path}")
     if last_frame_path:
         print(f"尾帧图: {last_frame_path}")
+    if reference_images:
+        print(f"参考图片: {reference_images}")
+    if reference_videos:
+        print(f"参考视频: {reference_videos}")
+    if reference_audios:
+        print(f"参考音频: {reference_audios}")
     print()
 
     # 创建任务文件夹
@@ -943,7 +1083,6 @@ def generate_script_videos(
         json.dump(script, f, indent=2, ensure_ascii=False)
 
     # 生成视频
-    video_results = []
     try:
         # 构建输出文件路径
         now_time = datetime.now()
@@ -958,10 +1097,6 @@ def generate_script_videos(
 
         output_file = str(task_folder / scene_filename)
 
-        print(f"\n{'='*60}")
-        print(f"🎬 生成视频")
-        print(f"{'='*60}")
-
         task_id = create_video_generation_task(
             prompt=prompt,
             first_frame_path=first_frame_path,
@@ -969,64 +1104,66 @@ def generate_script_videos(
             duration=duration,
             ratio=ratio,
             resolution=resolution,
-            framespersecond=framespersecond,
-            seed=seed,
-            camera_fixed=camera_fixed,
+            generate_audio=generate_audio,
             watermark=watermark,
-            generate_audio=has_audio,
+            web_search=web_search,
+            reference_images=reference_images,
+            reference_videos=reference_videos,
+            reference_audios=reference_audios,
         )
-        
         # 查询任务并等待完成
-        result = query_video_generation_task(
+        video_result = query_video_generation_task(
             task_id=task_id,
-            output_file=output_file,
-            poll_interval_s=poll_interval_s,
-            timeout_s=timeout_s,
+            output_file=output_file
         )
-
-        video_results.append(result)
-
     except Exception as e:
         print(f"❌ 视频生成失败: {e}")
         import traceback
         traceback.print_exc()
+        try:
+            import shutil
+            shutil.rmtree(task_folder, ignore_errors=True)
+            print(f"🧹 已清理失败的任务文件夹：{task_folder}")
+        except Exception as clean_err:
+            print(f"⚠️ 清理失败：{clean_err}")
         raise
 
     # 生成摘要
-    success_count = len(video_results)
-
-    print(f"\n{'='*60}")
-    print(f"{'✅' if success_count == 1 else '❌'}  视频生成完成!")
-    print(f"{'='*60}")
-    print(f"📁 任务文件夹: {task_folder}")
-
-    if video_results:
-        print(f"\n📋 生成结果:")
-        for i, r in enumerate(video_results):
-            print(f"   [{i+1}] {r.get('video_path', 'N/A')}")
-
-    return video_results
+    print(f"视频生成完成！视频路径:\n{video_result.get('video_path', 'N/A')}")
+    return video_result
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="基于 Seedance 的视频生成工具（支持首帧和首尾帧图生视频）",
+        description="基于 Seedance 的视频生成工具",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 使用示例:
-  # 纯文生视频（无图片输入）
+  # 纯文生视频
   python3 generate_video.py --script script.json
 
-  # 首帧图生视频（指定首帧，role填写first_frame）
+  # 首帧图生视频
   python3 generate_video.py --script script.json --first-frame first.png
 
-  # 首尾帧图生视频（指定首尾帧，role必须填写）
+  # 首尾帧图生视频
   python3 generate_video.py --script script.json --first-frame first.png --last-frame last.png
 
+  # 多模态参考（参考图+参考视频+参考音频）
+  python3 generate_video.py --script script.json --reference-images img1.jpg img2.jpg --reference-videos vid1.mp4 --reference-audios audio1.mp3
+
+  # 参考图片（最多9张）
+  python3 generate_video.py --script script.json --reference-images img1.jpg img2.jpg img3.jpg
+
+支持模式:
+  - 文生视频：仅文本提示词
+  - 图生视频-首帧：首帧图片 + 文本提示词
+  - 图生视频-首尾帧：首帧图片 + 尾帧图片 + 文本提示词
+  - 多模态参考：参考图/视频/音频 + 文本提示词
+
 注意:
-  首帧图生视频：role 填写 first_frame
-  首尾帧图生视频：role 必须填写（first_frame 和 last_frame）
-  5分钟内创建过任务则跳过本次生成
+  - 不可单独输入音频，需至少1个参考视频或图片
+  - 参考图片最多9张，参考视频最多3个，参考音频最多3个
+  - 2分钟内创建过任务则跳过本次生成
         """,
     )
 
@@ -1038,12 +1175,30 @@ def main():
     parser.add_argument(
         "--first-frame",
         default=None,
-        help="首帧图片路径，用于首帧图生视频模式（role填写first_frame）",
+        help="首帧图片路径，用于首帧图生视频模式或首尾帧图生视频模式",
     )
     parser.add_argument(
         "--last-frame",
         default=None,
-        help="尾帧图片路径，用于首尾帧图生视频模式（role必须为last_frame）",
+        help="尾帧图片路径，用于首尾帧图生视频模式",
+    )
+    parser.add_argument(
+        "--reference-images",
+        nargs="*",
+        default=[],
+        help="参考图片路径列表（最多9张）",
+    )
+    parser.add_argument(
+        "--reference-videos",
+        nargs="*",
+        default=[],
+        help="参考视频路径列表（最多3个）",
+    )
+    parser.add_argument(
+        "--reference-audios",
+        nargs="*",
+        default=[],
+        help="参考音频路径列表（最多3个）",
     )
     parser.add_argument(
         "--output",
@@ -1060,30 +1215,6 @@ def main():
         print(f"❌ 脚本文件不存在: {args.script}", file=sys.stderr)
         sys.exit(1)
 
-    # 校验首帧图片（支持本地文件或远程URL）
-    if args.first_frame:
-        if _is_remote_url(args.first_frame):
-            # 远程URL，直接通过
-            pass
-        elif _is_local_file(args.first_frame):
-            # 本地文件，通过
-            pass
-        else:
-            print(f"❌ 首帧图片无效: {args.first_frame}", file=sys.stderr)
-            sys.exit(1)
-
-    # 校验尾帧图片（支持本地文件或远程URL）
-    if args.last_frame:
-        if _is_remote_url(args.last_frame):
-            # 远程URL，直接通过
-            pass
-        elif _is_local_file(args.last_frame):
-            # 本地文件，通过
-            pass
-        else:
-            print(f"❌ 尾帧图片无效: {args.last_frame}", file=sys.stderr)
-            sys.exit(1)
-
     # 校验首尾帧组合
     if args.last_frame and not args.first_frame:
         print(
@@ -1093,23 +1224,42 @@ def main():
         )
         sys.exit(1)
 
+    # 校验首帧/首尾帧与参考图片互斥
+    has_frame = bool(args.first_frame) or bool(args.last_frame)
+    has_ref_images = bool(args.reference_images)
+    has_ref_videos = bool(args.reference_videos)
+    has_ref_audios = bool(args.reference_audios)
+    
+    if has_frame and (has_ref_images or has_ref_videos or has_ref_audios):
+        print(
+            f"❌ 参数错误：首帧/首尾帧图片（--first-frame / --last-frame）不能与参考图片/视频/音频（--reference-images、--reference-videos、--reference-audios）同时使用。\n"
+            f"请选择其中一种模式：\n"
+            f"  - 首帧/首尾帧模式：使用 --first-frame [和 --last-frame] 控制视频首尾画面\n"
+            f"  - 多模态参考模式：使用 --reference-images、--reference-videos、--reference-audios 指定参考图片、视频、音频",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     try:
-        video_results = generate_script_videos(
+        # 检查2分钟内是否创建过任务
+        recent_task = check_recent_tasks(args.output)
+        if recent_task:
+            raise ValueError(f"⚠️  2分钟内创建过视频生成任务，跳过当前视频生成任务。最近的任务文件夹: {recent_task}")
+
+        video_result = generate_script_videos(
             script_file=args.script,
             first_frame_path=args.first_frame,
             last_frame_path=args.last_frame,
+            reference_images=args.reference_images,
+            reference_videos=args.reference_videos,
+            reference_audios=args.reference_audios,
             output_dir=args.output,
-            watermark=args.watermark
+            watermark=args.watermark,
         )
-        if video_results:
-            print(f"\n🎉 全部完成! 共生成 {len(video_results)} 个视频")
-        else:
-            print(f"\n⚠️  5分钟内创建过视频生成任务，跳过当前视频生成任务")
 
     except Exception as e:
         print(f"\n❌ 错误: {e}", file=sys.stderr)
         import traceback
-
         traceback.print_exc()
         sys.exit(1)
 
