@@ -1,86 +1,399 @@
 {
-  "ACCEPTANCE_BACKWARD_COMPATIBLE": true,
-  "ACCEPTANCE_REGRESSION_MATRIX_COMPLETE": true,
-  "ALLOW_CLOUD_TOOLS": false,
-  "ALLOW_MCP": false,
-  "ALLOW_NETWORK": true,
+  "agents": {
+    "defaults": {
+      "workspace": "/home/sandbox/.openclaw/workspace",
+      "reasoningDefault": "stream",
+      "thinkingDefault": "high",
+      "contextPruning": {
+        "mode": "cache-ttl",
+        "ttl": "90s",
+        "softTrimRatio": 0.06,
+        "keepLastAssistants": 5,
+        "softTrim": {
+          "maxChars": 3200,
+          "headChars": 1200,
+          "tailChars": 1000
+        },
+        "hardClear": {
+          "enabled": false
+        }
+      },
+      "heartbeat": {
+        "every": "0m",
+        "isolatedSession": true
+      },
+      "model": {
+        "primary": "xiaoyiprovider/Auto-Model"
+      },
+      "compaction": {
+        "mode": "safeguard",
+        "reserveTokens": 120000,
+        "recentTurnsPreserve": 2,
+        "memoryFlush": {
+          "enabled": false
+        }
+      },
+      "memorySearch": {
+        "enabled": true,
+        "sources": [
+          "memory",
+          "sessions"
+        ],
+        "provider": "openai",
+        "model": "xiaoyiprovider/text-embedding-v1.0",
+        "fallback": "none",
+        "experimental": {
+          "sessionMemory": true
+        },
+        "multimodal": {
+          "enabled": false
+        },
+        "remote": {
+          "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/rest-api",
+          "apiKey": "apikey",
+          "headers": {
+            "x-request-from": "openclaw",
+            "x-hag-trace-id": "openclaw-embedding-trace-id",
+            "x-uid": "30086000570700284",
+            "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F"
+          }
+        },
+        "chunking": {
+          "tokens": 128,
+          "overlap": 16
+        },
+        "sync": {
+          "watch": true,
+          "intervalMinutes": 5,
+          "sessions": {
+            "deltaBytes": 15000,
+            "deltaMessages": 15,
+            "postCompactionForce": true
+          }
+        },
+        "store": {
+          "fts": {
+            "tokenizer": "trigram"
+          }
+        },
+        "query": {
+          "maxResults": 10,
+          "minScore": 0.1,
+          "hybrid": {
+            "enabled": true,
+            "vectorWeight": 1,
+            "textWeight": 0,
+            "candidateMultiplier": 4
+          }
+        },
+        "cache": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "02d3f119d7568a49f4d86cfadeca36648f5a30729c237a6d"
+    },
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.5.6",
+    "lastTouchedAt": "2026-06-30T03:27:42.037Z"
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    }
+  },
+  "messages": {
+    "queue": {
+      "mode": "steer"
+    }
+  },
+  "session": {
+    "dmScope": "per-peer"
+  },
+  "skills": {
+    "limits": {
+      "maxSkillsPromptChars": 30000
+    },
+    "load": {
+      "extraDirs": [
+        "~/.openclaw/workspace/skills/",
+        "/home/sandbox/core_skills/"
+      ],
+      "watch": true,
+      "watchDebounceMs": 250
+    },
+    "entries": {
+      "experimental-memory-install": {
+        "enabled": false
+      },
+      "experimental-memory-status": {
+        "enabled": false
+      },
+      "experimental-memory-uninstall": {
+        "enabled": false
+      },
+      "experimental-memory-upgrade": {
+        "enabled": false
+      },
+      "healthcheck": {
+        "enabled": false
+      },
+      "node-connect": {
+        "enabled": false
+      },
+      "taskflow": {
+        "enabled": false
+      },
+      "taskflow-inbox-triage": {
+        "enabled": false
+      }
+    }
+  },
+  "models": {
+    "mode": "replace",
+    "providers": {
+      "xiaoyiprovider": {
+        "timeoutSeconds": 600,
+        "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/sse-api",
+        "api": "openai-completions",
+        "apiKey": "apiKey",
+        "headers": {
+          "Accept": "text/event-stream",
+          "x-request-from": "openclaw",
+          "x-uid": "30086000570700284",
+          "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F"
+        },
+        "models": [
+          {
+            "id": "Auto-Model",
+            "name": "Auto-Model",
+            "reasoning": false,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0.001,
+              "output": 0.002,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 256000,
+            "maxTokens": 6000
+          }
+        ]
+      }
+    }
+  },
+  "browser": {
+    "enabled": true,
+    "remoteCdpTimeoutMs": 5000,
+    "remoteCdpHandshakeTimeoutMs": 10000,
+    "color": "#FF4500",
+    "executablePath": "/home/sandbox/chrome-headless.sh",
+    "headless": true,
+    "noSandbox": true,
+    "attachOnly": false,
+    "defaultProfile": "openclaw",
+    "ssrfPolicy": {
+      "dangerouslyAllowPrivateNetwork": true
+    },
+    "tabCleanup": {
+      "enabled": true,
+      "idleMinutes": 3,
+      "maxTabsPerSession": 12,
+      "sweepMinutes": 5
+    },
+    "profiles": {
+      "openclaw": {
+        "cdpPort": 18800,
+        "color": "#FF4500"
+      },
+      "work": {
+        "cdpPort": 18801,
+        "color": "#0066CC"
+      }
+    }
+  },
+  "tools": {
+    "deny": [
+      "web_search",
+      "tts",
+      "canvas"
+    ],
+    "profile": "full",
+    "sessions": {
+      "visibility": "all"
+    }
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "bootstrap-extra-files": {
+          "enabled": true,
+          "paths": [
+            "/opt/security/AGENTS.md"
+          ]
+        }
+      }
+    }
+  },
+  "channels": {
+    "xiaoyi-channel": {
+      "wsUrl1": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link",
+      "wsUrl2": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link",
+      "apiKey": "SK-CF104A1841016D02D2BD766BDAA1147F",
+      "agentId": "agent208b6760552b4fa0b395e5165d0d771e",
+      "apiId": "webhook7f59df0b98a64234919",
+      "pushId": 123456,
+      "uid": "30086000570700284",
+      "enabled": true,
+      "fileUploadUrl": "https://celia-claw-drcn.ai.dbankcloud.cn",
+      "pushUrl": ""
+    }
+  },
+  "plugins": {
+    "entries": {
+      "execution-validator-plugin": {
+        "enabled": true
+      },
+      "xiaoyi-channel": {
+        "enabled": true
+      },
+      "llm-router": {
+        "enabled": true
+      },
+      "file-transfer": {
+        "enabled": false
+      },
+      "tool-truncator": {
+        "enabled": true
+      },
+      "memory-celia": {
+        "enabled": false,
+        "hooks": {
+          "allowConversationAccess": true
+        },
+        "config": {
+          "serverBinaryPath": "/home/sandbox/.openclaw/extensions/celia_memory/install/current/bin/celia_memory_mcp_server",
+          "dbPath": "/home/sandbox/.openclaw/workspace/memory/celia_memory/celia_memory.db",
+          "chat": {
+            "model": "LLM_DeepSeekV4",
+            "headers": {
+              "x-request-from": "openclaw",
+              "Accept": "text/event-stream"
+            }
+          }
+        }
+      },
+      "browser": {
+        "enabled": true
+      },
+      "yaoyao-memory": {
+        "config": {
+          "memoryDir": ".",
+          "celiaBridge": {
+            "enabled": false
+          },
+          "embedding": {
+            "provider": "openai",
+            "model": "text-embedding-3-small",
+            "dimensions": 1024,
+            "baseUrl": "https://api-inference.modelscope.xyz/v1",
+            "apiKey": "7b2ef2e6-ff18-5e77-88ca-79be7feb4db6",
+            "batchSize": 10,
+            "maxRetries": 3
+          },
+          "recall": {
+            "enabled": true,
+            "strategy": "hybrid",
+            "maxResults": 10,
+            "minScore": 0.1
+          },
+          "capture": {
+            "enabled": true,
+            "mode": "async",
+            "debounceMs": 3000
+          },
+          "sessionRecovery": {
+            "maxMemories": 10,
+            "maxAgeMs": 604800000
+          }
+        },
+        "enabled": true
+      }
+    },
+    "load": {
+      "paths": [
+        "/home/sandbox/core_plugins/execution-validator-plugin",
+        "/home/sandbox/.openclaw/extensions/celia_memory/install/current/memory-plugin",
+        "/home/sandbox/.openclaw/extensions/yaoyao-memory"
+      ]
+    },
+    "slots": {
+      "memory": "yaoyao-memory"
+    }
+  },
+  "ONLINE_MODE": true,
+  "OFFLINE_MODE": false,
   "CONNECTED_RUNTIME_ALWAYS_ON": true,
-  "DATA_RETENTION_POLICY_READY": true,
-  "DEFAULT_RUNTIME_PROFILE": "strict_local_enterprise",
-  "DISABLE_LLM_API": false,
-  "DISABLE_THINKING_MODE": false,
-  "EMBODIED_SCREEN_AGENT_RUNTIME": true,
-  "ENTERPRISE_REPORT_REMAINING_CLEAN_GATE_FINAL": true,
-  "ENTERPRISE_REPORT_REMAINING_CLOSE": true,
-  "LOCAL_CAPABILITY_RUNTIME_FUSION": true,
-  "LOCAL_MODEL_STACK_BINDING": true,
-  "LOCAL_RUNTIME_ACTUALIZATION": true,
-  "LOCAL_RUNTIME_METADATA_CLOSE": true,
+  "ALLOW_NETWORK": true,
+  "ALLOW_MCP": false,
+  "ALLOW_CLOUD_TOOLS": false,
   "NO_EXTERNAL_API": false,
   "NO_REAL_DEVICE": false,
   "NO_REAL_PAYMENT": true,
   "NO_REAL_SEND": true,
-  "OBSERVABILITY_SLO_OPS_READY": true,
-  "OFFLINE_MODE": false,
-  "ONLINE_MODE": true,
-  "OVERLAY_PAYLOAD_PACKAGED_IN_WORKSPACE": false,
-  "PACKAGE_CLEAN_CHECK_REQUIRED": true,
+  "DISABLE_LLM_API": false,
+  "DISABLE_THINKING_MODE": false,
   "PERSONAL_OS_ENTERPRISE_VERSION": "V111.52.14_ENV_LIMITED_LOCAL_MODEL_WIRING_AND_STUB_PENDING_CLOSE",
-  "PRIVATE_NETWORK_POLICY_READY": true,
-  "ROOTLESS_DEPLOY_SMOKE_READY": true,
+  "PACKAGE_CLEAN_CHECK_REQUIRED": true,
   "SECRET_SCAN_CLEAN": true,
-  "SECRET_WORKFLOW_GUARD_READY": true,
   "ZERO_COST_MODE": true,
   "ZERO_EXTERNAL_MODE": false,
-  "agents": {
-    "defaults": {
-      "bootstrapMaxChars": 8000,
-      "bootstrapTotalMaxChars": 24000,
-      "contextInjection": "always",
-      "startupContext": {
-        "dailyMemoryDays": 2,
-        "enabled": true
-      }
-    }
-  },
-  "bootstrapMaxChars": 8000,
-  "bootstrapTotalMaxChars": 24000,
-  "connectedRuntime": {
-    "allowExternalProvidersWithStandingConsent": true,
-    "alwaysConnected": true,
-    "defaultMode": "always_online",
-    "deviceBridgeAlwaysConnected": true,
-    "enabled": true,
-    "endSideCapabilitiesAlwaysConnected": true,
-    "legacyOfflineFiles": "compatibility_shims_only_non_blocking",
-    "meaning": "local_private_runtime_always_connected_no_external_egress",
-    "noPerActionOnlineAuthorization": true,
-    "offlineModeRemoved": true,
-    "scope": "hybrid_local_external",
-    "xiaoyiCapabilitiesAlwaysConnected": true
-  },
-  "contextInjection": "always",
-  "contextPriority": {
-    "P0_never_trim": [
-      "safety_red_lines",
-      "current_goal",
-      "user_explicit_preferences",
-      "V90/V92/V100 forbidden actions",
-      "recent_failures",
-      "next_best_action"
-    ],
-    "P1_high": [
-      "persona_state",
-      "relationship_summary",
-      "recent_successes",
-      "available_tools"
-    ],
-    "P2_trimmable": [
-      "old_report_details",
-      "historical_version_details",
-      "long_explanations",
-      "low_importance_chitchat"
-    ]
+  "ROOTLESS_DEPLOY_SMOKE_READY": true,
+  "OBSERVABILITY_SLO_OPS_READY": true,
+  "DATA_RETENTION_POLICY_READY": true,
+  "LOCAL_RUNTIME_ACTUALIZATION": true,
+  "ENTERPRISE_REPORT_REMAINING_CLEAN_GATE_FINAL": true,
+  "ENTERPRISE_REPORT_REMAINING_CLOSE": true,
+  "EMBODIED_SCREEN_AGENT_RUNTIME": true,
+  "LOCAL_CAPABILITY_RUNTIME_FUSION": true,
+  "LOCAL_MODEL_STACK_BINDING": true,
+  "LOCAL_RUNTIME_METADATA_CLOSE": true,
+  "OVERLAY_PAYLOAD_PACKAGED_IN_WORKSPACE": false,
+  "PRIVATE_NETWORK_POLICY_READY": true,
+  "SECRET_WORKFLOW_GUARD_READY": true,
+  "ACCEPTANCE_BACKWARD_COMPATIBLE": true,
+  "ACCEPTANCE_REGRESSION_MATRIX_COMPLETE": true,
+  "DEFAULT_RUNTIME_PROFILE": "strict_local_enterprise",
+  "runtime": {
+    "ALLOW_NETWORK": true,
+    "CONNECTED_RUNTIME_ALWAYS_ON": true,
+    "DISABLE_LLM_API": false,
+    "DISABLE_THINKING_MODE": false,
+    "LOCAL_RUNTIME_ACTUALIZATION": true,
+    "NO_EXTERNAL_API": false,
+    "NO_REAL_DEVICE": false,
+    "NO_REAL_PAYMENT": true,
+    "NO_REAL_SEND": true,
+    "OFFLINE_MODE": false,
+    "ONLINE_MODE": true,
+    "ZERO_COST_MODE": true,
+    "ZERO_EXTERNAL_MODE": true,
+    "profile": "strict_local_enterprise"
   },
   "dependencyInstallPolicy": {
     "allowNetworkInstallOnlyWithFlag": "--allow-network",
@@ -130,286 +443,5 @@
       "overlay_payload_v*/"
     ],
     "version": "V111.38"
-  },
-  "externalAccessPolicy": {
-    "allowCloudTools": true,
-    "allowExternalApi": true,
-    "allowMcp": true,
-    "allowNetwork": true,
-    "allowPaidCompute": false,
-    "defaultExecutionMode": "online_connected_guarded",
-    "failClosed": true,
-    "mode": "online_connected_with_standing_consent"
-  },
-  "imageGenerationPolicy": {
-    "genericImageToImageDefault": "use_user_uploaded_reference_only",
-    "genericTextToImageDefault": "text_prompt_only_or_user_uploaded_reference",
-    "personaAvatarSeedAllowedOnlyWhenPurpose": "persona_visualization",
-    "personaAvatarSeedIsNotGlobalDefault": true,
-    "personaVisualScope": "persona_scene_auto_only"
-  },
-  "localCapabilityRuntime": {
-    "allowExternalFallback": false,
-    "allowPaidProviders": false,
-    "capabilityRouter": "core.personal_os_enterprise.capability_router",
-    "defaultMode": "local_only_fail_closed",
-    "enabled": true,
-    "healthCheck": "core.personal_os_enterprise.local_health_check",
-    "registry": "core.personal_os_enterprise.local_capability_registry",
-    "requiredCapabilities": [
-      "local_llm",
-      "local_vlm",
-      "local_ocr",
-      "local_asr",
-      "local_tts",
-      "local_embedding",
-      "local_reranker"
-    ],
-    "version": "V111.52.14_ENV_LIMITED_LOCAL_MODEL_WIRING_AND_STUB_PENDING_CLOSE"
-  },
-  "modePolicy": {
-    "productRuntimeMode": "local_private_connected_runtime",
-    "reason": "运行态保持本地/私网常连；禁止外网、外部 provider、真实付费和真实发送。CONNECTED 只表示本地能力总线常连，不表示外部在线。",
-    "testAndPackageMode": "strict_local_no_external_side_effects",
-    "version": "V111.52.11_LOCAL_RUNTIME_METADATA_AND_ACCEPTANCE_CLOSE_FINAL"
-  },
-  "nonPersonaFoundationPatch": {
-    "version": "V111.52_NON_PERSONA_FOUNDATION",
-    "noPhysicalSkillsDirRequired": true,
-    "skillsImportFacade": "infrastructure.no_skills_compat.install",
-    "applicationRootFacade": "application -> execution.application",
-    "mainEntrypointsRestored": [
-      "scripts/message_server.py"
-    ],
-    "automationExamplesRestored": [
-      "config/crontab.example",
-      "config/systemd.example"
-    ]
-  },
-  "packageMode": "with_skills_clean_package_final",
-  "personaVisual": {
-    "activeRuntime": "memory_context.persona_runtime",
-    "actualPayloadReferenceRequired": true,
-    "allowSecondaryImageOnFocus": true,
-    "autoGenerate": true,
-    "autoGenerateMinimumLevel": "mid_low",
-    "autoGenerateRequiresBudget": true,
-    "autoSafeWardrobeOnly": true,
-    "autoTriggerScope": "persona_scene_auto_only",
-    "avatarSeedBinding": "direct_avatar_equals_seed",
-    "avatarSeedNeverUsedForGenericImage": true,
-    "canonicalSeedPath": "assets/persona/seed_avatar.jpg",
-    "cleanPackageFinal": true,
-    "confidenceThreshold": 0.82,
-    "cooldownTurns": 0,
-    "dailyAutoGenerateLimit": 240,
-    "dedupeAfterFocusResolved": true,
-    "dedupeWindowSeconds": 45,
-    "defaultMode": "auto_with_budget",
-    "emotionExpressivenessLevel": "high",
-    "enabled": true,
-    "externalProvider": "seedream",
-    "externalProviderAllowed": false,
-    "fallbackToSceneDefault": false,
-    "focusIntentMode": "semantic_focus_view_resolver_v111_51_14",
-    "focusOutfitMapPath": "xiaoyi_persona_visual/wardrobe/focus_outfit_map.json",
-    "focusSemanticParserEnabled": true,
-    "fuzzyMatchingEnabled": true,
-    "fuzzySimilarityThreshold": 0.78,
-    "generateOnlyOnPhase": "post_reply",
-    "generationConsentMode": "auto_with_budget",
-    "genericImageGenerationUsesAvatarSeed": false,
-    "highFrequencyEmotionMode": true,
-    "identitySource": "seed_avatar_image_only",
-    "identityTextPromptMode": "seed_lock_only",
-    "legacyGuardImportOrderFinal": true,
-    "legacyRuntimePolicy": "shim_only",
-    "mainchainProofRequired": true,
-    "maxImagesPerTurn": 2,
-    "midHighThreshold": 0.6,
-    "midLowThreshold": 0.46,
-    "moodTriggerEnabled": true,
-    "nearSynonymMatchingEnabled": true,
-    "onlineProviderAllowed": false,
-    "physicalSkillRequired": false,
-    "preReplyMode": "detect_only",
-    "predictiveSuggestion": true,
-    "preferRealGeneration": true,
-    "preventDuplicateImageSend": true,
-    "providerGuardActualPayloadFinal": true,
-    "providerMode": "local_provider_or_fail_closed",
-    "providerSelfReportedPvcCountNotTrusted": true,
-    "recordOnlyDoesNotGenerate": true,
-    "recordOnlyThreshold": 0.26,
-    "referenceImagesCountActualOnly": true,
-    "renderPromptStyle": "emotion_scene_blend_v111_44",
-    "requiresPerImageOnlineApproval": false,
-    "runtimeArtifactsExcluded": true,
-    "runtimeSecretFailClosed": true,
-    "safeGeneralOutfitDetailFromUserMessage": false,
-    "sceneDefaultFallback": "manual_only_no_auto_send",
-    "sceneOutfitMapPath": "xiaoyi_persona_visual/wardrobe/scene_outfit_map.json",
-    "sceneTriggerMode": "semantic_scene",
-    "secondaryImageOnlyWhenFocusRequested": true,
-    "seedAvatarPath": "assets/persona/seed_avatar.jpg",
-    "seedAvatarPathForcesPersonaGuard": true,
-    "seedIdentityConsistency": "strict",
-    "seedReferenceRequired": true,
-    "seedReferenceWeight": 100,
-    "seedreamProviderEntry": "memory_context.persona_runtime.providers.seedream_provider.generate_image",
-    "semanticSceneNaturalness": "cinematic_natural",
-    "strictTriggerBoundary": true,
-    "strongThreshold": 0.8,
-    "triggerSourcePolicy": "assistant_lobster_output_first",
-    "userStandingConsent": true,
-    "userStyleAdaptiveMatching": true,
-    "version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
-    "visualScope": "persona_scene_auto_only",
-    "wardrobeConfigPath": "assets/persona/outfits/outfit_config.json",
-    "wardrobeManifestPath": "xiaoyi_persona_visual/wardrobe/wardrobe_manifest.json",
-    "wardrobeProfilesPath": "xiaoyi_persona_visual/wardrobe/wardrobe_manifest.json",
-    "wardrobeProfilesPathLegacy": "memory_context/persona_runtime/visual_wardrobe_profiles.json",
-    "wardrobeReferencesComplete": true,
-    "wardrobeStatePath": ".persona_visual/runtime_wardrobe_state.json",
-    "wardrobeSwitchEnabled": true
-  },
-  "personalOSEnterprise": {
-    "actionGuardMandatory": true,
-    "connectorAuthPromptPolicy": "once_per_connector_or_config_change",
-    "defaultProfile": "strict_local_enterprise",
-    "defaultRuntimeProfile": "strict_local_enterprise",
-    "enabled": true,
-    "eventLedgerBackend": "sqlite_wal",
-    "failurePatternRegistry": "governance/failure_pattern_registry.json",
-    "guardedActionGateway": "core/personal_os_enterprise/side_effect_gateway.py",
-    "observabilityEventsEnabled": true,
-    "proofOneTimeUse": true,
-    "proofRegistryBackend": "sqlite_wal",
-    "providerFallbackDomain": "local_only",
-    "requireSideEffectProof": true,
-    "runtimeSecretPackaged": false,
-    "runtimeSecretPath": "env_only_no_workspace_path",
-    "runtimeSecretPolicy": "env_only_fail_closed",
-    "sideEffectProofFullFusion": true,
-    "sourceRuntimeBoundary": "strict",
-    "sourceRuntimeSeparation": true,
-    "standingConnectionMode": "local_private_runtime_always_connected_no_external_egress",
-    "version": "V111.52.14_ENV_LIMITED_LOCAL_MODEL_WIRING_AND_STUB_PENDING_CLOSE",
-    "packageClean": true,
-    "zeroCostMode": false,
-    "zeroExternalMode": false,
-    "environment_blocked": true,
-    "real_model_ready": false,
-    "stub_only": true
-  },
-  "personalOSEnterpriseVersion": "V111.52.14_ENV_LIMITED_LOCAL_MODEL_WIRING_AND_STUB_PENDING_CLOSE",
-  "personalOsEnterprise": {
-    "action_guard_mandatory": true,
-    "defaultProfile": "strict_local_enterprise",
-    "defaultRuntimeProfile": "strict_local_enterprise",
-    "enabled": true,
-    "noRealPayment": true,
-    "noRealSend": true,
-    "offline_profile": "profiles/strict_local_enterprise.toml",
-    "packageClean": true,
-    "requireSideEffectProof": true,
-    "runtimeSecretPath": "env_only_no_workspace_path",
-    "runtimeStatePackaged": false,
-    "side_effect_proof_full_fusion": true,
-    "version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
-    "zeroCostMode": true,
-    "zeroExternalMode": true
-  },
-  "projectContextFiles": [
-    "AGENTS.md",
-    "SOUL.md",
-    "TOOLS.md",
-    "MEMORY.md",
-    "IDENTITY.md"
-  ],
-  "realSideEffectPolicy": {
-    "defaultDenyWithoutExplicitIntent": true,
-    "destructiveAction": "strong_confirmation_required",
-    "externalProviderOnlineAuth": "standing_consent",
-    "mode": "online_connected_strong_confirmation",
-    "safeActions": "direct",
-    "sendPaymentDeleteDevice": "strong_confirmation_required"
-  },
-  "runtime": {
-    "ALLOW_NETWORK": true,
-    "CONNECTED_RUNTIME_ALWAYS_ON": true,
-    "DISABLE_LLM_API": false,
-    "DISABLE_THINKING_MODE": false,
-    "LOCAL_RUNTIME_ACTUALIZATION": true,
-    "NO_EXTERNAL_API": false,
-    "NO_REAL_DEVICE": false,
-    "NO_REAL_PAYMENT": true,
-    "NO_REAL_SEND": true,
-    "OFFLINE_MODE": false,
-    "ONLINE_MODE": true,
-    "ZERO_COST_MODE": true,
-    "ZERO_EXTERNAL_MODE": true,
-    "profile": "strict_local_enterprise"
-  },
-  "runtimeMode": "online_connected",
-  "runtimePolicy": {
-    "defaultForUnboundDevice": "connected_probe_then_guarded_execution",
-    "mode": "always_online_connected",
-    "network": "enabled",
-    "paidCompute": "disabled_without_explicit_flag",
-    "sideEffects": "preview_approve_confirm",
-    "toolBroker": "connected_guarded"
-  },
-  "sourcePackageMustExclude": [
-    "_overlay*",
-    "overlay_payload*",
-    "logs/",
-    ".openclaw/state/",
-    ".openclaw/hook_state/",
-    ".v98_state/",
-    ".v107_state/",
-    ".lazy_state/",
-    ".context_state/",
-    ".persona_visual/*.jsonl",
-    ".persona_visual/runtime_wardrobe_state.json",
-    "generated-images/",
-    "*.pyc",
-    "__pycache__/",
-    ".DS_Store",
-    "*.sqlite",
-    "*.sqlite3",
-    "*.db",
-    "*.log",
-    "*.sqlite3-wal",
-    "*.sqlite3-shm",
-    "*.db-wal",
-    "*.db-shm",
-    "*.tmp",
-    "*.cache",
-    "logs",
-    ".openclaw/state",
-    ".openclaw/hook_state",
-    ".v98_state",
-    ".v107_state",
-    ".lazy_state",
-    ".context_state",
-    ".persona_visual/visual_request_ledger.jsonl",
-    "__pycache__",
-    "*.jsonl"
-  ],
-  "toolBrokerPolicy": {
-    "cloudTools": "disabled",
-    "default": "local_only",
-    "externalConnectors": "disabled",
-    "mcp": "disabled",
-    "unknownTool": "deny"
-  },
-  "ACCEPTANCE_MATRIX_TRUE_PYTEST_GATE": true,
-  "MAINCHAIN_PROOF_CONTRACT_COMPAT": true,
-  "BODY_SCHEMA_PROMPT_BUILDER_INJECTED": true,
-  "MODEL_HASH_PENDING_NOT_FAKE_PASS": true,
-  "V111_52_13_3_PATCH_APPLIED": "V111.52.13.3_ACCEPTANCE_MATRIX_AND_PROOF_CONTRACT_STRICT_CLOSE_PATCH",
-  "ENVIRONMENT_BLOCKED_REAL_MODEL_INFERENCE": true,
-  "LOCAL_MODEL_STUB_ONLY": true,
-  "REAL_MODEL_READY": false
+  }
 }
