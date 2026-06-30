@@ -88,6 +88,7 @@
 
 - **当前方案**: A️⃣ yaoyao 主导（2026-06-30 切换）
 - **插件**: yaoyao-memory v1.9.2 | **hooks**: capture(async+vector) + recall(hybrid+vector)
+- **技能**: yaoyao-memory v4.0.1 | `skills/yaoyao-memory/`（管理 CLI + dashboard）
 - **嵌入**: Gitee AI / text-embedding / 1024d
 - **DB**: ~/.openclaw/memory/main.sqlite（共享表）
 - **celia 状态**: disabled（db 保留未删）
