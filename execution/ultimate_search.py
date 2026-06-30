@@ -4,23 +4,24 @@ from infrastructure.offline_runtime_guard import activate as _openclaw_offline_g
 Ultimate Search - 终极优化搜索
 包含：向量预计算 + 增量缓存 + LLM响应缓存 + 智能路由 + 结果压缩
 """
-import subprocess
-import sys
-import json
-import hashlib
-import struct
-import urllib.request
-import threading
-import time
+import os
 import gzip
 import base64
+import json
+import sys
+import struct
+import subprocess
+import threading
+import time
+import urllib.request
+import hashlib
 from pathlib import Path
 from datetime import datetime, timedelta
 from concurrent.futures import ThreadPoolExecutor
 
 # 配置
 VECTORS_DB = Path.home() / ".openclaw" / "memory-tdai" / "vectors.db"
-from paths import VEC_EXT
+from infrastructure.paths import VEC_EXT
 GITEE_API = None  # 从配置文件读取
 GITEE_KEY = os.environ.get("EMBEDDING_API_KEY", "")
 GLM5_URL = "YOUR_LLM_API_ENDPOINT  # SECURITY FIX: hardcoded endpoint removed"

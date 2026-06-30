@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from infrastructure.offline_runtime_guard import activate as _openclaw_offline_guard_activate; _openclaw_offline_guard_activate()
-from safe_extension_loader import safe_load_extension
+from infrastructure.safe_extension_loader import safe_load_extension
 """
 混合记忆搜索（安全修复版）
 
