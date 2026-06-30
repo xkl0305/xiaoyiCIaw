@@ -1,6 +1,6 @@
 {
   "version": "V111.46_SKILLS_FUSION_CLEAN",
-  "count": 194,
+  "count": 195,
   "skills": {
     "2nd-brain": {
       "name": "2nd-brain",
@@ -1358,6 +1358,13 @@
       "version": "7.2.0",
       "description": "name: prd-doc-writer",
       "entry": "skills/yunshu0909-yunshu-skillshub-prd-doc-writer/SKILL.md",
+      "triggers": []
+    },
+    "yaoyao-memory": {
+      "name": "yaoyao-memory",
+      "version": "4.0.0",
+      "description": "六层架构记忆系统 - 跨会话上下文、知识沉淀、持续进化",
+      "entry": "skills/yaoyao-memory/SKILL.md",
       "triggers": []
     }
   },
