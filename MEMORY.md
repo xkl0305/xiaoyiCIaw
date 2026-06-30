@@ -4,7 +4,7 @@
 
 ## 项目状态
 
-- **版本**: V10.0.0 Self-Evolving Personal OS Agent
+- **版本**: V10.9.0 Self-Evolving Personal OS Agent
 - **阶段**: 自进化个人OS代理
 - **状态**: 稳定
 - **更新时间**: 2026-06-30
@@ -13,13 +13,13 @@
 ## 技能信息
 
 - **技能名称**: 🦊鸽子王
-- **版本**: 10.0.0
+- **版本**: 10.9.0
 - **ClawHub**: xiaoyi-claw-omega-final
 - **技能ID**: k977z2jr14tqanspkysfkk1bhh84hvqw
 
 ## 架构升级记录
 
-### 2026-04-26 V10.0.0 Self-Evolving Personal OS Agent
+### 2026-04-26 V10.9.0 Self-Evolving Personal OS Agent
 
 **升级来源**: V9.2.0 Connected Adapter Bootstrap
 
