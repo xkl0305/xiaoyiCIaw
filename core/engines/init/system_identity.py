@@ -39,10 +39,20 @@ TOTAL_ENGINES = sum(g["count"] for g in ENGINE_GROUPS.values())
 
 def _find_meta_json() -> dict:
     """从插件目录或 skill 目录读取 _meta.json"""
+    # 扩展插件目录（优先级最高）
+    ext_dir = os.path.join(WORKSPACE, "..", "..", "extensions", "crusheart-autobrain-turbo")
+    if os.path.isdir(ext_dir):
+        ext_dir = os.path.realpath(ext_dir)
+    else:
+        ext_dir = os.path.expanduser("~/.openclaw/extensions/crusheart-autobrain-turbo")
+
+    skill_dir = os.path.join(WORKSPACE, "skills", "crusheart-autobrain-turbo")
+
     candidates = [
-        os.path.join(WORKSPACE, "plugins", "Crusheart-AutoBrain-Turbo", "_meta.json"),
-        os.path.join(WORKSPACE, "skills", "Crusheart-AutoBrain-Turbo", "_meta.json"),
-        os.path.join(WORKSPACE, ".crusheart-meta.json"),
+        os.path.join(ext_dir, "_meta.json"),                                          # 扩展插件
+        os.path.join(ext_dir, "skill", "_meta.json"),                                # 扩展内 skill 子目录
+        os.path.join(skill_dir, "_meta.json"),                                        # skill 目录
+        os.path.join(WORKSPACE, ".crusheart-meta.json"),                             # 工作区根
     ]
     for path in candidates:
         if os.path.exists(path):

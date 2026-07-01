@@ -365,9 +365,19 @@ def run_full_validation() -> bool:
         log(f"   ⚠️ engines.json 不存在，跳过校验")
 
     # ── 3. AutoBrain config.json ──
-    autotune_cfg = load_json(os.path.join(
-        WORKSPACE, "skills", "Crusheart-AutoBrain-Turbo", "config.json"
-    ))
+    # 搜索可能的 config 路径（支持驼峰/小写、extensions/skills 目录）
+    autotune_cfg = None
+    _config_candidates = [
+        os.path.join(WORKSPACE, "..", "..", "extensions", "crusheart-autobrain-turbo", "bundle", ".crusheart-config.json"),
+        os.path.expanduser("~/.openclaw/extensions/crusheart-autobrain-turbo/bundle/.crusheart-config.json"),
+        os.path.join(WORKSPACE, "skills", "crusheart-autobrain-turbo", "config.json"),
+        os.path.join(WORKSPACE, "skills", "crusheart-autobrain-turbo", ".crusheart-config.json"),
+    ]
+    for _cp in _config_candidates:
+        autotune_cfg = load_json(_cp)
+        if autotune_cfg:
+            break
+
     if autotune_cfg:
         validator2 = ConfigValidator()
         validator2.add_ruleset("autotune_config.json", build_autotune_rules())
@@ -379,7 +389,7 @@ def run_full_validation() -> bool:
         else:
             log(f"   ✅ AutoBrain config.json 通过")
     else:
-        log(f"   ⚠️ AutoBrain config.json 不存在，跳过校验")
+        log(f"   ⚠️ AutoBrain config.json 未找到（可选），跳过校验")
 
     # ── 4. 环境变量 ──
     env_errors = validate_env_vars()
