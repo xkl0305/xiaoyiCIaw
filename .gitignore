@@ -1,80 +1,79 @@
 
-# 大文件和缓存
-*.pyc
-__pycache__/
-*.egg-info/
-.eggs/
-dist/
-build/
-*.tar.gz
-*.zip
-node_modules/
-.venv/
-venv/
-# 大型资源文件
-skills/darwin-skill/assets/hero.gif
-skills/gtht-realtimemarketdata-skill/skill-entry.js
-skills/gtht-ranklist-skill/skill-entry.js
-skills/alphaear-predictor/scripts/predictor/exports/models/*.pt
-# 保留 releases 目录
 !releases/
 !releases/*.tar.gz
-repo/
-_venv_python/
-.dlx_runtime/
-.pytest_cache/
+# Crusheart runtime state
+# V111.51.14 persona visual clean package excludes
+# V111.51.19 clean package final excludes
+# memory DB files
+# 保留 releases 目录
+# 大型资源文件
+# 大文件和缓存
+*.egg-info/
 *.jsonl
-.openclaw/hook_state/
-generated-images/
+*.pyc
 *.pyo
-.v111_*_backup_*
-reports/V111_35*
-reports/V111_36*
-README_V111_35.txt
-README_V111_36.txt
+*.tar.gz
+*.zip
 *V111_35*
 *V111_36*
+*_overlay.tar.gz
+*_overlay.zip
+*_overlay/
 *v111_35*
 *v111_36*
-# V111.51.14 persona visual clean package excludes
-V*_overlay/
-V*_overlay.zip
-V*_overlay.tar.gz
-*_overlay/
-*_overlay.zip
-*_overlay.tar.gz
-.persona_visual/generated/
-.persona_visual/*.jsonl
-.persona_visual/runtime_wardrobe_state.json
-.v98_state/
-.v107_state/
-.lazy_state/
 .context_state/
-cache/
-logs/
-# V111.51.19 clean package final excludes
-
-# Crusheart runtime state
-.crusheart.db
-.crusheart_version
 .crusheart-daemon.log
 .crusheart-state/
+.crusheart.db
+.crusheart_version
 .daily_maintenance_state.json
+.dlx_runtime/
+.eggs/
+.engine_logs/
 .evolution_log.json
 .evolution_tracker/
 .inverted_index.json
+.lazy_state/
+.openclaw/hook_state/
+.persona_visual/*.jsonl
+.persona_visual/generated/
+.persona_visual/runtime_wardrobe_state.json
+.pytest_cache/
 .skill_auto_index.json
+.state/
 .tuning_log.json
+.v107_state/
+.v111_*_backup_*
+.v98_state/
+.venv/
+MaoZeDongAnthology/
+README_V111_35.txt
+README_V111_36.txt
+V*_overlay.tar.gz
+V*_overlay.zip
+V*_overlay/
+__pycache__/
+_venv_python/
 backups/
+build/
+cache/
 data/tasks.db
-
-# memory DB files
+dist/
+generated-images/
+logs/
 memory/*.db
 memory/*.db-shm
 memory/*.db-wal
 memory/*.sqlite3
+memory/[0-9]*-[0-9]*-[0-9]*.md
 memory/celia_memory/
 memory/yaoyao-*.db
-memory/[0-9]*-[0-9]*-[0-9]*.md
-.engine_logs/
-.state/
+node_modules/
+repo/
+reports/V111_35*
+reports/V111_36*
+skills/alphaear-predictor/scripts/predictor/exports/models/*.pt
+skills/darwin-skill/assets/hero.gif
+skills/gtht-ranklist-skill/skill-entry.js
+skills/gtht-realtimemarketdata-skill/skill-entry.js
+venv/
