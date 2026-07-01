@@ -86,13 +86,25 @@
   "no_external_api": true,
   "no_real_payment": true,
   "no_real_send": true,
+  "non_persona_foundation_patch": {
+    "does_not_change_persona_visual_rules": true,
+    "fixes": [
+      "no_skills_import_facade_without_physical_skills_dir",
+      "application_root_facade",
+      "message_server_entrypoint",
+      "automation_config_examples",
+      "online_connected_policy_normalization"
+    ],
+    "scope": "non_persona",
+    "version": "V111.52_NON_PERSONA_FOUNDATION"
+  },
   "offline_mode": true,
   "online_mode": false,
   "overlay_payload_packaged_in_workspace": false,
   "package_mode": "strict_local_no_skills_physical_skill_not_required",
   "package_type": "overlay",
   "persona_visual_mainchain_unchanged": true,
-  "personal_os_enterprise_version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
+  "personal_os_enterprise_version": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL",
   "report_remaining_close": true,
   "runtime_clean_close": true,
   "runtime_state_packaged": false,
@@ -103,19 +115,7 @@
   },
   "side_effect_proof_unchanged": true,
   "source_runtime_boundary_enforced": true,
-  "version": "V111.52.13.2_ACTIVE_METADATA_AND_CLEAN_BASE_FINAL",
+  "version": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL",
   "zero_cost_mode": true,
-  "zero_external_mode": true,
-  "non_persona_foundation_patch": {
-    "version": "V111.52_NON_PERSONA_FOUNDATION",
-    "scope": "non_persona",
-    "does_not_change_persona_visual_rules": true,
-    "fixes": [
-      "no_skills_import_facade_without_physical_skills_dir",
-      "application_root_facade",
-      "message_server_entrypoint",
-      "automation_config_examples",
-      "online_connected_policy_normalization"
-    ]
-  }
+  "zero_external_mode": true
 }

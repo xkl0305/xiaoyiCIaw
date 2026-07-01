@@ -1,220 +1,138 @@
 {
+  "ACCEPTANCE_BACKWARD_COMPATIBLE": true,
+  "ACCEPTANCE_REGRESSION_MATRIX_COMPLETE": true,
+  "ALLOW_CLOUD_TOOLS": false,
+  "ALLOW_MCP": false,
+  "ALLOW_NETWORK": false,
+  "CONNECTED_RUNTIME_ALWAYS_ON": true,
+  "DATA_RETENTION_POLICY_READY": true,
+  "DEFAULT_RUNTIME_PROFILE": "strict_local_enterprise",
+  "DISABLE_LLM_API": false,
+  "DISABLE_THINKING_MODE": false,
+  "EMBODIED_SCREEN_AGENT_RUNTIME": true,
+  "ENTERPRISE_REPORT_REMAINING_CLEAN_GATE_FINAL": true,
+  "ENTERPRISE_REPORT_REMAINING_CLOSE": true,
+  "LOCAL_CAPABILITY_RUNTIME_FUSION": true,
+  "LOCAL_MODEL_STACK_BINDING": true,
+  "LOCAL_RUNTIME_ACTUALIZATION": true,
+  "LOCAL_RUNTIME_METADATA_CLOSE": true,
+  "NO_EXTERNAL_API": true,
+  "NO_REAL_DEVICE": false,
+  "NO_REAL_PAYMENT": true,
+  "NO_REAL_SEND": true,
+  "OBSERVABILITY_SLO_OPS_READY": true,
+  "OFFLINE_MODE": true,
+  "ONLINE_MODE": false,
+  "OVERLAY_PAYLOAD_PACKAGED_IN_WORKSPACE": false,
+  "PACKAGE_CLEAN_CHECK_REQUIRED": true,
+  "PERSONAL_OS_ENTERPRISE_VERSION": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL",
+  "PRIVATE_NETWORK_POLICY_READY": true,
+  "ROOTLESS_DEPLOY_SMOKE_READY": true,
+  "SECRET_SCAN_CLEAN": true,
+  "SECRET_WORKFLOW_GUARD_READY": true,
+  "ZERO_COST_MODE": true,
+  "ZERO_EXTERNAL_MODE": true,
   "agents": {
     "defaults": {
-      "workspace": "/home/sandbox/.openclaw/workspace",
-      "reasoningDefault": "stream",
-      "thinkingDefault": "high",
-      "contextPruning": {
-        "mode": "cache-ttl",
-        "ttl": "90s",
-        "softTrimRatio": 0.06,
-        "keepLastAssistants": 5,
-        "softTrim": {
-          "maxChars": 3200,
-          "headChars": 1200,
-          "tailChars": 1000
+      "compaction": {
+        "memoryFlush": {
+          "enabled": false
         },
+        "mode": "safeguard",
+        "recentTurnsPreserve": 2,
+        "reserveTokens": 120000
+      },
+      "contextPruning": {
         "hardClear": {
           "enabled": false
-        }
+        },
+        "keepLastAssistants": 5,
+        "mode": "cache-ttl",
+        "softTrim": {
+          "headChars": 1200,
+          "maxChars": 3200,
+          "tailChars": 1000
+        },
+        "softTrimRatio": 0.06,
+        "ttl": "90s"
       },
       "heartbeat": {
         "every": "0m",
         "isolatedSession": true
       },
-      "model": {
-        "primary": "xiaoyiprovider/Auto-Model"
-      },
-      "compaction": {
-        "mode": "safeguard",
-        "reserveTokens": 120000,
-        "recentTurnsPreserve": 2,
-        "memoryFlush": {
-          "enabled": false
-        }
-      },
       "memorySearch": {
+        "cache": {
+          "enabled": true
+        },
+        "chunking": {
+          "overlap": 16,
+          "tokens": 128
+        },
         "enabled": true,
+        "experimental": {
+          "sessionMemory": true
+        },
+        "fallback": "none",
+        "model": "xiaoyiprovider/text-embedding-v1.0",
+        "multimodal": {
+          "enabled": false
+        },
+        "provider": "openai",
+        "query": {
+          "hybrid": {
+            "candidateMultiplier": 4,
+            "enabled": true,
+            "textWeight": 0,
+            "vectorWeight": 1
+          },
+          "maxResults": 10,
+          "minScore": 0.1
+        },
+        "remote": {
+          "apiKey": "apikey",
+          "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/rest-api",
+          "headers": {
+            "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F",
+            "x-hag-trace-id": "openclaw-embedding-trace-id",
+            "x-request-from": "openclaw",
+            "x-uid": "30086000570700284"
+          }
+        },
         "sources": [
           "memory",
           "sessions"
         ],
-        "provider": "openai",
-        "model": "xiaoyiprovider/text-embedding-v1.0",
-        "fallback": "none",
-        "experimental": {
-          "sessionMemory": true
-        },
-        "multimodal": {
-          "enabled": false
-        },
-        "remote": {
-          "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/rest-api",
-          "apiKey": "apikey",
-          "headers": {
-            "x-request-from": "openclaw",
-            "x-hag-trace-id": "openclaw-embedding-trace-id",
-            "x-uid": "30086000570700284",
-            "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F"
-          }
-        },
-        "chunking": {
-          "tokens": 128,
-          "overlap": 16
-        },
-        "sync": {
-          "watch": true,
-          "intervalMinutes": 5,
-          "sessions": {
-            "deltaBytes": 15000,
-            "deltaMessages": 15,
-            "postCompactionForce": true
-          }
-        },
         "store": {
           "fts": {
             "tokenizer": "trigram"
           }
         },
-        "query": {
-          "maxResults": 10,
-          "minScore": 0.1,
-          "hybrid": {
-            "enabled": true,
-            "vectorWeight": 1,
-            "textWeight": 0,
-            "candidateMultiplier": 4
-          }
-        },
-        "cache": {
-          "enabled": true
+        "sync": {
+          "intervalMinutes": 5,
+          "sessions": {
+            "deltaBytes": 15000,
+            "deltaMessages": 15,
+            "postCompactionForce": true
+          },
+          "watch": true
         }
-      }
-    }
-  },
-  "gateway": {
-    "mode": "local",
-    "auth": {
-      "mode": "token",
-      "token": "02d3f119d7568a49f4d86cfadeca36648f5a30729c237a6d"
-    },
-    "controlUi": {
-      "allowedOrigins": [
-        "http://localhost:18789",
-        "http://127.0.0.1:18789"
-      ]
-    }
-  },
-  "meta": {
-    "lastTouchedVersion": "2026.5.6",
-    "lastTouchedAt": "2026-06-30T03:27:42.037Z"
-  },
-  "discovery": {
-    "mdns": {
-      "mode": "off"
-    }
-  },
-  "messages": {
-    "queue": {
-      "mode": "steer"
-    }
-  },
-  "session": {
-    "dmScope": "per-peer"
-  },
-  "skills": {
-    "limits": {
-      "maxSkillsPromptChars": 30000
-    },
-    "load": {
-      "extraDirs": [
-        "~/.openclaw/workspace/skills/",
-        "/home/sandbox/core_skills/"
-      ],
-      "watch": true,
-      "watchDebounceMs": 250
-    },
-    "entries": {
-      "experimental-memory-install": {
-        "enabled": false
       },
-      "experimental-memory-status": {
-        "enabled": false
+      "model": {
+        "primary": "xiaoyiprovider/Auto-Model"
       },
-      "experimental-memory-uninstall": {
-        "enabled": false
-      },
-      "experimental-memory-upgrade": {
-        "enabled": false
-      },
-      "healthcheck": {
-        "enabled": false
-      },
-      "node-connect": {
-        "enabled": false
-      },
-      "taskflow": {
-        "enabled": false
-      },
-      "taskflow-inbox-triage": {
-        "enabled": false
-      }
-    }
-  },
-  "models": {
-    "mode": "replace",
-    "providers": {
-      "xiaoyiprovider": {
-        "timeoutSeconds": 600,
-        "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/sse-api",
-        "api": "openai-completions",
-        "apiKey": "apiKey",
-        "headers": {
-          "Accept": "text/event-stream",
-          "x-request-from": "openclaw",
-          "x-uid": "30086000570700284",
-          "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F"
-        },
-        "models": [
-          {
-            "id": "Auto-Model",
-            "name": "Auto-Model",
-            "reasoning": false,
-            "input": [
-              "text"
-            ],
-            "cost": {
-              "input": 0.001,
-              "output": 0.002,
-              "cacheRead": 0,
-              "cacheWrite": 0
-            },
-            "contextWindow": 256000,
-            "maxTokens": 6000
-          }
-        ]
-      }
+      "reasoningDefault": "stream",
+      "thinkingDefault": "high",
+      "workspace": "/home/sandbox/.openclaw/workspace"
     }
   },
   "browser": {
-    "enabled": true,
-    "remoteCdpTimeoutMs": 5000,
-    "remoteCdpHandshakeTimeoutMs": 10000,
+    "attachOnly": false,
     "color": "#FF4500",
+    "defaultProfile": "openclaw",
+    "enabled": true,
     "executablePath": "/home/sandbox/chrome-headless.sh",
     "headless": true,
     "noSandbox": true,
-    "attachOnly": false,
-    "defaultProfile": "openclaw",
-    "ssrfPolicy": {
-      "dangerouslyAllowPrivateNetwork": true
-    },
-    "tabCleanup": {
-      "enabled": true,
-      "idleMinutes": 3,
-      "maxTabsPerSession": 12,
-      "sweepMinutes": 5
-    },
     "profiles": {
       "openclaw": {
         "cdpPort": 18800,
@@ -224,176 +142,32 @@
         "cdpPort": 18801,
         "color": "#0066CC"
       }
-    }
-  },
-  "tools": {
-    "deny": [
-      "web_search",
-      "tts",
-      "canvas"
-    ],
-    "profile": "full",
-    "sessions": {
-      "visibility": "all"
-    }
-  },
-  "hooks": {
-    "internal": {
+    },
+    "remoteCdpHandshakeTimeoutMs": 10000,
+    "remoteCdpTimeoutMs": 5000,
+    "ssrfPolicy": {
+      "dangerouslyAllowPrivateNetwork": true
+    },
+    "tabCleanup": {
       "enabled": true,
-      "entries": {
-        "bootstrap-extra-files": {
-          "enabled": true,
-          "paths": [
-            "/opt/security/AGENTS.md"
-          ]
-        }
-      }
+      "idleMinutes": 3,
+      "maxTabsPerSession": 12,
+      "sweepMinutes": 5
     }
   },
   "channels": {
     "xiaoyi-channel": {
-      "wsUrl1": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link",
-      "wsUrl2": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link",
-      "apiKey": "SK-CF104A1841016D02D2BD766BDAA1147F",
       "agentId": "agent208b6760552b4fa0b395e5165d0d771e",
       "apiId": "webhook7f59df0b98a64234919",
-      "pushId": 123456,
-      "uid": "30086000570700284",
+      "apiKey": "SK-CF104A1841016D02D2BD766BDAA1147F",
       "enabled": true,
       "fileUploadUrl": "https://celia-claw-drcn.ai.dbankcloud.cn",
-      "pushUrl": ""
+      "pushId": 123456,
+      "pushUrl": "",
+      "uid": "30086000570700284",
+      "wsUrl1": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link",
+      "wsUrl2": "wss://celia-claw-drcn.ai.dbankcloud.cn/openclaw/v1/xiaoyi/ws/link"
     }
-  },
-  "plugins": {
-    "entries": {
-      "execution-validator-plugin": {
-        "enabled": true
-      },
-      "xiaoyi-channel": {
-        "enabled": true
-      },
-      "llm-router": {
-        "enabled": true
-      },
-      "file-transfer": {
-        "enabled": false
-      },
-      "tool-truncator": {
-        "enabled": true
-      },
-      "memory-celia": {
-        "enabled": false,
-        "hooks": {
-          "allowConversationAccess": true
-        },
-        "config": {
-          "serverBinaryPath": "/home/sandbox/.openclaw/extensions/celia_memory/install/current/bin/celia_memory_mcp_server",
-          "dbPath": "/home/sandbox/.openclaw/workspace/memory/celia_memory/celia_memory.db",
-          "chat": {
-            "model": "LLM_DeepSeekV4",
-            "headers": {
-              "x-request-from": "openclaw",
-              "Accept": "text/event-stream"
-            }
-          }
-        }
-      },
-      "browser": {
-        "enabled": true
-      },
-      "yaoyao-memory": {
-        "config": {
-          "memoryDir": ".",
-          "celiaBridge": {
-            "enabled": false
-          },
-          "embedding": {
-            "provider": "openai",
-            "model": "text-embedding-3-small",
-            "dimensions": 1024,
-            "baseUrl": "https://api-inference.modelscope.xyz/v1",
-            "apiKey": "7b2ef2e6-ff18-5e77-88ca-79be7feb4db6",
-            "batchSize": 10,
-            "maxRetries": 3
-          },
-          "recall": {
-            "enabled": true,
-            "strategy": "hybrid",
-            "maxResults": 10,
-            "minScore": 0.1
-          },
-          "capture": {
-            "enabled": true,
-            "mode": "async",
-            "debounceMs": 3000
-          },
-          "sessionRecovery": {
-            "maxMemories": 10,
-            "maxAgeMs": 604800000
-          }
-        },
-        "enabled": true
-      }
-    },
-    "load": {
-      "paths": [
-        "/home/sandbox/core_plugins/execution-validator-plugin",
-        "/home/sandbox/.openclaw/extensions/celia_memory/install/current/memory-plugin",
-        "/home/sandbox/.openclaw/extensions/yaoyao-memory"
-      ]
-    },
-    "slots": {
-      "memory": "yaoyao-memory"
-    }
-  },
-  "ONLINE_MODE": true,
-  "OFFLINE_MODE": false,
-  "CONNECTED_RUNTIME_ALWAYS_ON": true,
-  "ALLOW_NETWORK": true,
-  "ALLOW_MCP": false,
-  "ALLOW_CLOUD_TOOLS": false,
-  "NO_EXTERNAL_API": false,
-  "NO_REAL_DEVICE": false,
-  "NO_REAL_PAYMENT": true,
-  "NO_REAL_SEND": true,
-  "DISABLE_LLM_API": false,
-  "DISABLE_THINKING_MODE": false,
-  "PERSONAL_OS_ENTERPRISE_VERSION": "V111.52.14_ENV_LIMITED_LOCAL_MODEL_WIRING_AND_STUB_PENDING_CLOSE",
-  "PACKAGE_CLEAN_CHECK_REQUIRED": true,
-  "SECRET_SCAN_CLEAN": true,
-  "ZERO_COST_MODE": true,
-  "ZERO_EXTERNAL_MODE": false,
-  "ROOTLESS_DEPLOY_SMOKE_READY": true,
-  "OBSERVABILITY_SLO_OPS_READY": true,
-  "DATA_RETENTION_POLICY_READY": true,
-  "LOCAL_RUNTIME_ACTUALIZATION": true,
-  "ENTERPRISE_REPORT_REMAINING_CLEAN_GATE_FINAL": true,
-  "ENTERPRISE_REPORT_REMAINING_CLOSE": true,
-  "EMBODIED_SCREEN_AGENT_RUNTIME": true,
-  "LOCAL_CAPABILITY_RUNTIME_FUSION": true,
-  "LOCAL_MODEL_STACK_BINDING": true,
-  "LOCAL_RUNTIME_METADATA_CLOSE": true,
-  "OVERLAY_PAYLOAD_PACKAGED_IN_WORKSPACE": false,
-  "PRIVATE_NETWORK_POLICY_READY": true,
-  "SECRET_WORKFLOW_GUARD_READY": true,
-  "ACCEPTANCE_BACKWARD_COMPATIBLE": true,
-  "ACCEPTANCE_REGRESSION_MATRIX_COMPLETE": true,
-  "DEFAULT_RUNTIME_PROFILE": "strict_local_enterprise",
-  "runtime": {
-    "ALLOW_NETWORK": true,
-    "CONNECTED_RUNTIME_ALWAYS_ON": true,
-    "DISABLE_LLM_API": false,
-    "DISABLE_THINKING_MODE": false,
-    "LOCAL_RUNTIME_ACTUALIZATION": true,
-    "NO_EXTERNAL_API": false,
-    "NO_REAL_DEVICE": false,
-    "NO_REAL_PAYMENT": true,
-    "NO_REAL_SEND": true,
-    "OFFLINE_MODE": false,
-    "ONLINE_MODE": true,
-    "ZERO_COST_MODE": true,
-    "ZERO_EXTERNAL_MODE": true,
-    "profile": "strict_local_enterprise"
   },
   "dependencyInstallPolicy": {
     "allowNetworkInstallOnlyWithFlag": "--allow-network",
@@ -401,6 +175,11 @@
     "target": ".dlx_runtime/python_deps",
     "version": "V111.38",
     "wheelhouse": "vendor/wheels"
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    }
   },
   "environmentPolicy": {
     "defaultInstallMode": "offline_wheelhouse_only",
@@ -443,5 +222,257 @@
       "overlay_payload_v*/"
     ],
     "version": "V111.38"
+  },
+  "gateway": {
+    "auth": {
+      "mode": "token",
+      "token": "02d3f119d7568a49f4d86cfadeca36648f5a30729c237a6d"
+    },
+    "controlUi": {
+      "allowedOrigins": [
+        "http://localhost:18789",
+        "http://127.0.0.1:18789"
+      ]
+    },
+    "mode": "local"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "bootstrap-extra-files": {
+          "enabled": true,
+          "paths": [
+            "/opt/security/AGENTS.md"
+          ]
+        }
+      }
+    }
+  },
+  "messages": {
+    "queue": {
+      "mode": "steer"
+    }
+  },
+  "meta": {
+    "lastTouchedAt": "2026-06-30T03:27:42.037Z",
+    "lastTouchedVersion": "2026.5.6"
+  },
+  "models": {
+    "mode": "replace",
+    "providers": {
+      "xiaoyiprovider": {
+        "api": "openai-completions",
+        "apiKey": "apiKey",
+        "baseUrl": "https://celia-claw-drcn.ai.dbankcloud.cn/celia-claw/v1/sse-api",
+        "headers": {
+          "Accept": "text/event-stream",
+          "x-api-key": "SK-CF104A1841016D02D2BD766BDAA1147F",
+          "x-request-from": "openclaw",
+          "x-uid": "30086000570700284"
+        },
+        "models": [
+          {
+            "contextWindow": 256000,
+            "cost": {
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "input": 0.001,
+              "output": 0.002
+            },
+            "id": "Auto-Model",
+            "input": [
+              "text"
+            ],
+            "maxTokens": 6000,
+            "name": "Auto-Model",
+            "reasoning": false
+          }
+        ],
+        "timeoutSeconds": 600
+      }
+    }
+  },
+  "personalOSEnterprise": {
+    "defaultProfile": "strict_local_enterprise",
+    "defaultRuntimeProfile": "strict_local_enterprise",
+    "runtimeSecretPath": "env_only_no_workspace_path",
+    "version": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL"
+  },
+  "personalOSEnterpriseVersion": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL",
+  "personalOsEnterprise": {
+    "defaultProfile": "strict_local_enterprise",
+    "defaultRuntimeProfile": "strict_local_enterprise",
+    "runtimeSecretPath": "env_only_no_workspace_path",
+    "version": "V111.52.12.1_FULL_LOCAL_STACK_RUNTIME_CLEAN_CLOSE_FINAL"
+  },
+  "plugins": {
+    "entries": {
+      "browser": {
+        "enabled": true
+      },
+      "execution-validator-plugin": {
+        "enabled": true
+      },
+      "file-transfer": {
+        "enabled": false
+      },
+      "llm-router": {
+        "enabled": true
+      },
+      "memory-celia": {
+        "config": {
+          "chat": {
+            "headers": {
+              "Accept": "text/event-stream",
+              "x-request-from": "openclaw"
+            },
+            "model": "LLM_DeepSeekV4"
+          },
+          "dbPath": "/home/sandbox/.openclaw/workspace/memory/celia_memory/celia_memory.db",
+          "serverBinaryPath": "/home/sandbox/.openclaw/extensions/celia_memory/install/current/bin/celia_memory_mcp_server"
+        },
+        "enabled": false,
+        "hooks": {
+          "allowConversationAccess": true
+        }
+      },
+      "tool-truncator": {
+        "enabled": true
+      },
+      "xiaoyi-channel": {
+        "enabled": true
+      },
+      "yaoyao-memory": {
+        "config": {
+          "capture": {
+            "debounceMs": 3000,
+            "enabled": true,
+            "mode": "async"
+          },
+          "celiaBridge": {
+            "enabled": false
+          },
+          "embedding": {
+            "apiKey": "7b2ef2e6-ff18-5e77-88ca-79be7feb4db6",
+            "baseUrl": "https://api-inference.modelscope.xyz/v1",
+            "batchSize": 10,
+            "dimensions": 1024,
+            "maxRetries": 3,
+            "model": "text-embedding-3-small",
+            "provider": "openai"
+          },
+          "memoryDir": ".",
+          "recall": {
+            "enabled": true,
+            "maxResults": 10,
+            "minScore": 0.1,
+            "strategy": "hybrid"
+          },
+          "sessionRecovery": {
+            "maxAgeMs": 604800000,
+            "maxMemories": 10
+          }
+        },
+        "enabled": true
+      }
+    },
+    "load": {
+      "paths": [
+        "/home/sandbox/core_plugins/execution-validator-plugin",
+        "/home/sandbox/.openclaw/extensions/celia_memory/install/current/memory-plugin",
+        "/home/sandbox/.openclaw/extensions/yaoyao-memory"
+      ]
+    },
+    "slots": {
+      "memory": "yaoyao-memory"
+    }
+  },
+  "runtime": {
+    "ALLOW_NETWORK": false,
+    "CONNECTED_RUNTIME_ALWAYS_ON": true,
+    "DISABLE_LLM_API": false,
+    "DISABLE_THINKING_MODE": false,
+    "LOCAL_RUNTIME_ACTUALIZATION": true,
+    "NO_EXTERNAL_API": true,
+    "NO_REAL_DEVICE": false,
+    "NO_REAL_PAYMENT": true,
+    "NO_REAL_SEND": true,
+    "OFFLINE_MODE": true,
+    "ONLINE_MODE": false,
+    "ZERO_COST_MODE": true,
+    "ZERO_EXTERNAL_MODE": true,
+    "profile": "strict_local_enterprise"
+  },
+  "session": {
+    "dmScope": "per-peer"
+  },
+  "skills": {
+    "entries": {
+      "experimental-memory-install": {
+        "enabled": false
+      },
+      "experimental-memory-status": {
+        "enabled": false
+      },
+      "experimental-memory-uninstall": {
+        "enabled": false
+      },
+      "experimental-memory-upgrade": {
+        "enabled": false
+      },
+      "healthcheck": {
+        "enabled": false
+      },
+      "node-connect": {
+        "enabled": false
+      },
+      "taskflow": {
+        "enabled": false
+      },
+      "taskflow-inbox-triage": {
+        "enabled": false
+      }
+    },
+    "limits": {
+      "maxSkillsPromptChars": 30000
+    },
+    "load": {
+      "extraDirs": [
+        "~/.openclaw/workspace/skills/",
+        "/home/sandbox/core_skills/"
+      ],
+      "watch": true,
+      "watchDebounceMs": 250
+    }
+  },
+  "sourcePackageMustExclude": [
+    "overlay_payload*",
+    "_overlay*",
+    "logs",
+    ".openclaw/state",
+    ".openclaw/hook_state",
+    ".v98_state",
+    ".v107_state",
+    ".lazy_state",
+    ".context_state",
+    ".persona_visual/runtime_wardrobe_state.json",
+    ".persona_visual/visual_request_ledger.jsonl",
+    "__pycache__",
+    "*.pyc",
+    "*.jsonl",
+    "*.sqlite3",
+    "*.db"
+  ],
+  "tools": {
+    "deny": [
+      "web_search",
+      "tts",
+      "canvas"
+    ],
+    "profile": "full",
+    "sessions": {
+      "visibility": "all"
+    }
   }
 }

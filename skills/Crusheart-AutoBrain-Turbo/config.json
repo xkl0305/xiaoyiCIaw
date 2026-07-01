@@ -1,0 +1,41 @@
+{
+  "anti_fake": {
+    "risk_threshold": "high",
+    "authority_domains": [
+      ".gov.cn",
+      ".gov",
+      ".edu.cn",
+      ".edu",
+      "arxiv.org",
+      "reuters.com",
+      "xinhuanet.com"
+    ]
+  },
+  "dual_mode": {
+    "default_mode": "fast",
+    "auto_switch": true,
+    "fast_keyword_weight": 10,
+    "agent_keyword_weight": 8,
+    "multi_tool_weight": 15,
+    "text_length_threshold": 120
+  },
+  "lazy_load": {
+    "search_interval_ms": 500,
+    "max_searches_per_task": 5,
+    "cache_ttl_seconds": 1800
+  },
+  "mutex": {
+    "task_timeout_seconds": 180,
+    "max_retry": 3
+  },
+  "self_evolution": {
+    "enabled": true,
+    "require_confirmation": true
+  },
+  "memory_layer": {
+    "l2_retention_days": 7,
+    "decay_start_days": 30,
+    "decay_end_days": 90,
+    "decay_min_weight": 0.5
+  }
+}
