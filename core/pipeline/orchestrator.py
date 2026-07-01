@@ -3,6 +3,7 @@ Crusheart Agent OS — 消息预处理流水线主编排器
 将7个阶段按顺序串行执行，生成结构化分析结果
 """
 
+import json
 import os, sys, time
 from datetime import datetime, timezone, timedelta
 
@@ -10,6 +11,20 @@ WORKSPACE = os.environ.get("OPENCLAW_WORKSPACE") or os.path.expanduser("~/.openc
 if WORKSPACE not in sys.path: sys.path.insert(0, WORKSPACE)
 
 BEIJING_TZ = timezone(timedelta(hours=8))
+
+try:
+    from core.pipeline.pipeline_profiler import PipelineTimer, log_profile_to_jsonl
+except ImportError:
+    class PipelineTimer:
+        def __init__(self): self._timings = {}
+        def measure(self, stage_name):
+            import contextlib
+            @contextlib.contextmanager
+            def dummy(stage): yield
+            return dummy(stage_name)
+        def get_profile(self): return {}
+        def to_result_profile(self, result): return result
+    def log_profile_to_jsonl(profile, result=None): pass
 
 
 def now_str():
@@ -80,9 +95,11 @@ def run_pipeline(user_message: str) -> dict:
     """
     消息预处理全流水线
     顺序执行：阶段0→1→2→3→4→5→6→7
+    每个阶段自动计时，结果写入 pipeline_profiles.jsonl 供 quality_dashboard 消费。
     """
     result = _init_result(user_message)
     t0 = time.monotonic()
+    _timer = PipelineTimer()
 
     # 看门狗 — pipeline 启动
     try:
@@ -94,8 +111,9 @@ def run_pipeline(user_message: str) -> dict:
         wd = None
 
     # 阶段0: 引擎状态检测
-    from core.pipeline.engines import run_stage0
-    result = run_stage0(result, user_message)
+    with _timer.measure("engines"):
+        from core.pipeline.engines import run_stage0
+        result = run_stage0(result, user_message)
     if wd: watchdog_tick("stage0_engines")
 
     # 钩子阻止则提前返回
@@ -105,82 +123,93 @@ def run_pipeline(user_message: str) -> dict:
         return result
 
     # 阶段1: 双模式分类
-    from core.pipeline.dual_mode import run_stage1
-    result = run_stage1(result, user_message)
+    with _timer.measure("dual_mode"):
+        from core.pipeline.dual_mode import run_stage1
+        result = run_stage1(result, user_message)
     if wd: watchdog_tick("stage1_dual_mode")
 
     # 阶段2: 技能匹配
-    from core.pipeline.skill_match import run_stage2
-    result = run_stage2(result, user_message)
+    with _timer.measure("skill_match"):
+        from core.pipeline.skill_match import run_stage2
+        result = run_stage2(result, user_message)
     if wd: watchdog_tick("stage2_skill_match")
 
     # 阶段3: 防幻觉风险提示
-    from core.pipeline.anti_fake import run_stage3
-    result = run_stage3(result, user_message)
+    with _timer.measure("anti_fake"):
+        from core.pipeline.anti_fake import run_stage3
+        result = run_stage3(result, user_message)
     if wd: watchdog_tick("stage3_anti_fake")
 
     # 阶段4: 引擎路由预分析
-    from core.pipeline.engine_route import run_stage4
-    result = run_stage4(result, user_message)
+    with _timer.measure("engine_route"):
+        from core.pipeline.engine_route import run_stage4
+        result = run_stage4(result, user_message)
     if wd: watchdog_tick("stage4_engine_route")
 
     # 阶段5: 热RAM层
-    from core.pipeline.session_state import run_stage5
-    result = run_stage5(result, user_message)
+    with _timer.measure("session_state"):
+        from core.pipeline.session_state import run_stage5
+        result = run_stage5(result, user_message)
     if wd: watchdog_tick("stage5_session_state")
 
     # 阶段5.5: 对话粘性引擎（语气调整）
-    try:
-        from core.engines.hooks.contextual_tone import generate_tone_hints
-        tone_hints = generate_tone_hints(
-            conversation_rounds=result.get("session_state", {}).get("round", 0),
-            is_first_today=result.get("session_state", {}).get("first_today", False),
-        )
-        result["tone_hints"] = tone_hints
-    except Exception:
-        result["tone_hints"] = {"tone_hints": {"period": "default", "voice_style": ""}}
+    with _timer.measure("contextual_tone"):
+        try:
+            from core.engines.hooks.contextual_tone import generate_tone_hints
+            tone_hints = generate_tone_hints(
+                conversation_rounds=result.get("session_state", {}).get("round", 0),
+                is_first_today=result.get("session_state", {}).get("first_today", False),
+            )
+            result["tone_hints"] = tone_hints
+        except Exception:
+            result["tone_hints"] = {"tone_hints": {"period": "default", "voice_style": ""}}
     if wd: watchdog_tick("stage55_contextual_tone")
 
     # 阶段5.6: 上下文策略编排（策略层统一调度）
-    try:
-        from core.pipeline.context_orchestrator import get_context_policy
-        mode = result.get("dual_mode", {}).get("mode", "fast")
-        risk_level = "suspicious" if result.get("risk_check", {}).get("is_suspicious") else "normal"
-        is_memory_instruction = bool(result.get("engine_route", {}).get("finish_process", {}).get("should_evolve", False))
-        context_policy = get_context_policy(
-            mode="agent" if mode == "agent" else "balanced",
-            risk_level=risk_level,
-            is_memory_instruction=is_memory_instruction,
-        )
-        result["context_policy"] = context_policy
-    except Exception as e:
-        result["context_policy"] = {
-            "budget_tokens": 400,
-            "recall": {"depth": 10, "min_score": 0.4, "load_core_anchor": False},
-            "inject_results": False,
-            "injection_context": [],
-            "compaction": {"should_compact": False},
-        }
+    with _timer.measure("context_policy"):
+        try:
+            from core.pipeline.context_orchestrator import get_context_policy
+            mode = result.get("dual_mode", {}).get("mode", "fast")
+            risk_level = "suspicious" if result.get("risk_check", {}).get("is_suspicious") else "normal"
+            is_memory_instruction = bool(result.get("engine_route", {}).get("finish_process", {}).get("should_evolve", False))
+            context_policy = get_context_policy(
+                mode="agent" if mode == "agent" else "balanced",
+                risk_level=risk_level,
+                is_memory_instruction=is_memory_instruction,
+            )
+            result["context_policy"] = context_policy
+        except Exception as e:
+            result["context_policy"] = {
+                "budget_tokens": 400,
+                "recall": {"depth": 10, "min_score": 0.4, "load_core_anchor": False},
+                "inject_results": False,
+                "injection_context": [],
+                "compaction": {"should_compact": False},
+            }
     if wd: watchdog_tick("stage56_context_policy")
 
     # 阶段5.7: 记忆路由（MemoryRouter）
-    from core.pipeline.memory_router import run_stage57
-    result = run_stage57(result, user_message)
+    with _timer.measure("memory_router"):
+        from core.pipeline.memory_router import run_stage57
+        result = run_stage57(result, user_message)
     if wd: watchdog_tick("stage57_memory_router")
 
     # 阶段6: 记忆对齐
-    from core.pipeline.memory_align import run_stage6
-    result = run_stage6(result, user_message)
+    with _timer.measure("memory_align"):
+        from core.pipeline.memory_align import run_stage6
+        result = run_stage6(result, user_message)
     if wd: watchdog_tick("stage6_memory_align")
 
     # 阶段6.5: 自进化上下文注入
-    from core.pipeline.evolution_context import run_stage_evolution_context
-    result = run_stage_evolution_context(result, user_message)
+    with _timer.measure("evolution_context"):
+        from core.pipeline.evolution_context import run_stage_evolution_context
+        result = run_stage_evolution_context(result, user_message)
     if wd: watchdog_tick("stage6_evolution_context")
 
     # 阶段7: 自进化复盘
-    from core.pipeline.self_reflection import run_stage7
-    result = run_stage7(result, user_message)
+    with _timer.measure("self_reflect"):
+        from core.pipeline.self_reflection import run_stage7
+        result = run_stage7(result, user_message)
     if wd: watchdog_tick("stage7_self_reflection")
 
     # 阶段6.7: 反遗忘扫描（非阻塞）
@@ -196,6 +225,13 @@ def run_pipeline(user_message: str) -> dict:
     # 阶段8: 出站防幻觉校验（占位，实际调用在响应生成后由调用方传入content）
     # 初始化 outbound_fake_check 为空字典
     result["outbound_fake_check"] = result.get("outbound_fake_check", {})
+
+    # pipeline profile 注入（不阻塞主流程）
+    try:
+        result = _timer.to_result_profile(result)
+        log_profile_to_jsonl(_timer.get_profile(), result)
+    except Exception:
+        pass
 
     # 汇总
     result = _finalize(result)

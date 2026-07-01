@@ -410,6 +410,9 @@ def watchdog_status() -> dict:
 # 单例
 # ═══════════════════════════════════════════════════════════
 
+_instance = None
+
+
 def get_watchdog() -> WatchdogEngine:
     global _instance
     if _instance is None:
