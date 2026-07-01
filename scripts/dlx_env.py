@@ -34,8 +34,8 @@ def local_site_paths() -> list[str]:
 
 def sanitized_env(extra_pythonpath: list[str] | None = None) -> dict[str, str]:
     env = dict(os.environ)
-    raw = {k: env.get(k) for k in ['PIP_PREFIX','PYTHONPATH','PYTHONHOME','VIRTUAL_ENV'] if env.get(k)}
-    for k in ['PIP_PREFIX','PYTHONHOME','VIRTUAL_ENV']:
+    raw = {k: env.get(k) for k in ['PIP_PREFIX','PYTHONPATH','PYTHONHOME','VIRTUAL_ENV','PYTHONNOUSERSITE'] if env.get(k)}
+    for k in ['PIP_PREFIX','PYTHONHOME','VIRTUAL_ENV','PYTHONNOUSERSITE']:
         env.pop(k, None)
     old_paths = _split_paths(env.get('PYTHONPATH',''))
     kept_old = [p for p in old_paths if p and str(ROOT) in p and not any(f in p for f in FORBIDDEN)]
@@ -50,12 +50,13 @@ def sanitized_env(extra_pythonpath: list[str] | None = None) -> dict[str, str]:
     env['DLX_ENV_SANITIZED'] = '1'
     env['DLX_ENV_RAW_PIP_PREFIX'] = raw.get('PIP_PREFIX','') or ''
     env['DLX_ENV_RAW_PYTHONPATH'] = raw.get('PYTHONPATH','') or ''
+    env['DLX_ENV_RAW_NOUSERSITE'] = raw.get('PYTHONNOUSERSITE','') or ''
     return env
 
 
 def status() -> dict:
     env = sanitized_env()
-    raw = {k: os.environ.get(k) for k in ['PIP_PREFIX','PYTHONPATH','PYTHONHOME','VIRTUAL_ENV']}
+    raw = {k: os.environ.get(k) for k in ['PIP_PREFIX','PYTHONPATH','PYTHONHOME','VIRTUAL_ENV','PYTHONNOUSERSITE']}
     clean = {k: env.get(k) for k in ['PIP_PREFIX','PYTHONPATH','PYTHONHOME','VIRTUAL_ENV','PYTHONDONTWRITEBYTECODE','DLX_ENV_SANITIZED']}
     return {
         'root': str(ROOT),
