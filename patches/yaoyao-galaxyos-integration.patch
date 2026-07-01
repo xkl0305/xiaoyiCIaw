@@ -1,0 +1,633 @@
+From 988a77280238e53a497b191b28ef24325b14acb1 Mon Sep 17 00:00:00 2001
+From: Xiaoyi Claw <xiaoyi@openclaw.ai>
+Date: Wed, 1 Jul 2026 17:22:47 +0800
+Subject: [PATCH] =?UTF-8?q?GalaxyOS=20=E6=A8=A1=E5=9D=97=E9=9B=86=E6=88=90?=
+ =?UTF-8?q?=20+=20=E7=9F=9B=E7=9B=BE=E6=A3=80=E6=B5=8B=E5=A2=9E=E5=BC=BA?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+已接入模块:
+- emotion_memory: emotion_bridge.py → auto-capture.js
+- adaptive_rrf: intent.js 增强（8种中文意图 + CJK检测）
+- rewriter: query-expander.js（拼写纠正 + 标点标准化）
+- hallucination_guard: capture-meta.js（防幻觉模式检测）
+
+新增:
+- conflict detection: recall-postprocess.js（否定词冲突检测 + 降权）
+---
+ .gitignore                                |  2 +
+ dist/src/core/app.js                      | 22 ++++++
+ dist/src/core/search/intent.js            | 88 +++++++++++++++++++++--
+ dist/src/entry/migration.js               |  4 +-
+ dist/src/features/adaptive-search/tool.js |  8 +--
+ dist/src/features/atomic-fact/tool.js     | 12 ++--
+ dist/src/features/benchmark/tool.js       |  6 +-
+ dist/src/features/graph-relation/tool.js  | 18 ++---
+ dist/src/features/skill-analytics/tool.js |  6 +-
+ dist/src/features/telemetry/tool.js       |  4 +-
+ dist/src/hooks/auto-capture.js            | 17 +++++
+ dist/src/hooks/capture-meta.js            | 29 ++++++++
+ dist/src/hooks/recall-postprocess.js      | 35 +++++++++
+ dist/src/utils/coexistence.js             |  3 +-
+ dist/src/utils/query-expander.js          | 51 ++++++++++++-
+ openclaw.plugin.json                      |  4 +-
+ 16 files changed, 269 insertions(+), 40 deletions(-)
+
+diff --git a/.gitignore b/.gitignore
+index 4e03de4..e2ea4bd 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -40,3 +40,5 @@ Thumbs.db
+ # 备份文件（临时）
+ *.bak
+ *.orig
++.skill-migrations/
++*.bak.*
+diff --git a/dist/src/core/app.js b/dist/src/core/app.js
+index f0f191e..7f01730 100644
+--- a/dist/src/core/app.js
++++ b/dist/src/core/app.js
+@@ -14,7 +14,29 @@ import { runHealthcheck, runInstallCheck, formatInstallCheck, detectScheduledRes
+ import { showBanner } from "../entry/banner.js";
+ // v1.9.1: memory-celia coexistence detection
+ import { getCoexistMode, getCoexistState, isCeliaActive } from "../utils/coexistence.js";
++import { readFileSync, existsSync } from "node:fs";
++import { join } from "node:path";
++import { homedir } from "node:os";
+ export function bootstrapYaoyao(api, config) {
++    // v1.9.2: Merge plugin config from disk (OpenClaw may not pass entries.*.config correctly)
++    try {
++        const cfgPath = join(homedir(), ".openclaw", "openclaw.json");
++        if (existsSync(cfgPath)) {
++            const raw = readFileSync(cfgPath, "utf-8");
++            const root = JSON.parse(raw);
++            const diskCfg = root?.plugins?.entries?.["yaoyao-memory"]?.config;
++            if (diskCfg && typeof diskCfg === "object") {
++                config = { ...diskCfg, ...config };
++                // Disk config takes precedence for bridge/embedding settings
++                if (diskCfg.celiaBridge) config.celiaBridge = diskCfg.celiaBridge;
++                if (diskCfg.embedding) config.embedding = diskCfg.embedding;
++                if (diskCfg.llm) config.llm = diskCfg.llm;
++            }
++        }
++    } catch (e) {
++        // Non-fatal — fall back to whatever config was passed in
++        api.logger.debug?.("[yaoyao-memory] Failed to merge disk config: " + (e instanceof Error ? e.message : String(e)));
++    }
+     const pluginVersion = readPluginVersion();
+     const audit = createAuditLog(config.memoryDir || ".", api.logger, { bufferSize: 50, flushIntervalMs: 5000 });
+     const cap = runInstallCheck();
+diff --git a/dist/src/core/search/intent.js b/dist/src/core/search/intent.js
+index 85b4d94..4586aa6 100644
+--- a/dist/src/core/search/intent.js
++++ b/dist/src/core/search/intent.js
+@@ -9,13 +9,13 @@
+ // ── Intent classifiers ──
+ /** Time-related patterns (Chinese + English) */
+ const TEMPORAL_PATTERNS = [
+-    /今天|昨天|前天|明天|后天|上周|这周|本周|下周|上个月|这个月|下个月|去年|今年|明年|\d+月\d+日|\d+月|\d+号|星期[一二三四五六日天]|周[一二三四五六日天]|最近|近期|以前|之前|刚才|刚刚|早上|下午|晚上|昨晚/i,
+-    /today|yesterday|tomorrow|last\s+(week|month|year)|this\s+(week|month|year)|next\s+(week|month|year)|recent|lately|ago|earlier/i,
++    /昨天|前天|后天|上周|上个月|下个月|去年|明年|\d+月\d+日|\d+月|\d+号|星期[一二三四五六日天]|周[一二三四五六日天]|最近|近期|以前|之前|刚才|刚刚|早上|下午|晚上|昨晚/i,
++    /today|yesterday|tomorrow|last\s+(week|month|year)|next\s+(week|month|year)|recent|lately|ago|earlier/i,
+     /\d{4}[-/]\d{1,2}[-/]\d{1,2}|\d{1,2}[-/]\d{1,2}[-/]\d{4}/,
+ ];
+ /** Named entity patterns */
+ const ENTITY_PATTERNS = [
+-    /^who|^什么人|^哪个.*(?:人|公司|组织|团队|产品|工具)|找.*(?:人|公司|组织)/i,
++    /^who|^什么人|^哪个|^谁|^谁.*(?:是|有|开发|负责|创建|写)|找.*(?:人|公司|组织)/i,
+     /^what.*(?:is|are|叫|是|有)/i,
+ ];
+ /** Comparative / relational patterns */
+@@ -29,11 +29,63 @@ const EXPLORATORY_PATTERNS = [
+     /^(?:关于|有关|有没有|帮我找|搜索|查一下|看看|有什么|哪些|列举|列出|总结|概述|汇总|回顾)/i,
+     /^(?:about|find|search|list|show|tell|look\s+up|any|summarize|overview)/i,
+ ];
++
++// === Chinese-Query Enhancements (ported from GalaxyOS adaptive_rrf) ===
++
++/** CJK character range */
++function _isCJK(ch) {
++    const code = ch.charCodeAt(0);
++    return (code >= 0x4E00 && code <= 0x9FFF) ||
++           (code >= 0x3040 && code <= 0x30FF) ||
++           (code >= 0xAC00 && code <= 0xD7AF);
++}
++
++/** CJK ratio of a string */
++function _cjkRatio(s) {
++    let count = 0;
++    for (const ch of s) {
++        if (_isCJK(ch)) count++;
++    }
++    return count / Math.max(s.length, 1);
++}
++
++/** Check if query looks like a version number or exact reference */
++function _isExactMatch(query) {
++    // Version patterns: "3.11", "v8.6.0", "2.0.1"
++    if (/^v?\d+(\.\d+)+$/.test(query)) return true;
++    // Quote-wrapped: '"xxx"'
++    if (/^["'].+["']$/.test(query)) return true;
++    // Year: "2026", "2024"
++    if (/^\d{4}$/.test(query)) return true;
++    // Acronyms: "RRF", "MMR", "CJK"
++    if (/^[A-Z]{2,}$/.test(query)) return true;
++    // Short query with number (Chinese): "3.11", "v2"
++    if (/\d/.test(query) && query.replace(/\s/g,'').length < 15) return true;
++    return false;
++}
++
++/** Check if query is keyword-heavy (short, specific terms) */
++function _isKeywordHeavy(query) {
++    const stripped = query.replace(/\s/g, '');
++    // Very short: less than 8 chars = keyword lookup
++    if (stripped.length < 8 && stripped.length > 0) return true;
++    // Short CJK: less than 10 chars = likely keyword
++    if (stripped.length < 10 && _cjkRatio(query) > 0.3) return true;
++    // Has special characters (punctuation, symbols) ≈ keyword-oriented
++    if (/[\[\]{}()<>!@#$%^&*+=|\\:;"'~`]/.test(query)) return true;
++    // CJK query with exact-match indicators
++    if (_cjkRatio(query) > 0.3) {
++        if (/具体|精确|准确|定位|指定|某个/.test(query)) return true;
++    }
++    return false;
++}
++
+ // ── Intent weight profiles ──
+ /**
+  * Dynamic weight profiles per intent type.
+  * Entity lookups favour vector (semantic), temporal favours recency,
+  * relational favours FTS (keyword overlap), exploratory stays balanced.
++ * exact_match favours FTS heavily, keyword_heavy favours FTS moderately.
+  */
+ export const INTENT_WEIGHTS = {
+     entity_lookup: { fts: 0.25, vector: 0.65, temporal: 0.10 },
+@@ -41,36 +93,58 @@ export const INTENT_WEIGHTS = {
+     temporal: { fts: 0.25, vector: 0.25, temporal: 0.50 },
+     relational: { fts: 0.55, vector: 0.35, temporal: 0.10 },
+     exploratory: { fts: 0.40, vector: 0.35, temporal: 0.25 },
++    // GalaxyOS adaptive_rrf inspired:
++    exact_match: { fts: 0.70, vector: 0.20, temporal: 0.10 },   // 精确数字/版本 → 靠FTS
++    keyword_heavy: { fts: 0.60, vector: 0.25, temporal: 0.15 }, // 短关键词 → 靠FTS
+     general: { fts: 0.33, vector: 0.34, temporal: 0.33 },
+ };
+ // ── Public API ──
+ /**
+  * Classify a search query into an intent type.
+  * Uses pattern matching (no LLM call needed for this).
++ *
++ * Priority order:
++ *   1. exact_match (version/numbers) — most specific
++ *   2. temporal (time-based queries)
++ *   3. keyword_heavy (short/Chinese specific) — catches short queries not matched above
++ *   4. relational (comparisons)
++ *   5. entity_lookup (who/which/找人)
++ *   6. exploratory (summarize/search/find)
++ *   7. general (fallback)
+  */
+ export function classifyIntent(query) {
+     if (typeof query !== "string" || query.length === 0)
+         return "general";
+-    // Relational check first (most specific patterns)
++
++    // 1. Exact match check (highest priority — version numbers, acronyms, quoted)
++    if (_isExactMatch(query)) {
++        return "exact_match";
++    }
++
++    // 2. Relational (most specific semantic patterns)
+     for (const p of RELATIONAL_PATTERNS) {
+         if (p.test(query))
+             return "relational";
+     }
+-    // Entity lookup
++    // 3. Entity lookup
+     for (const p of ENTITY_PATTERNS) {
+         if (p.test(query))
+             return "entity_lookup";
+     }
+-    // Temporal
++    // 4. Temporal (time-based queries)
+     for (const p of TEMPORAL_PATTERNS) {
+         if (p.test(query))
+             return "temporal";
+     }
+-    // Exploratory
++    // 5. Exploratory
+     for (const p of EXPLORATORY_PATTERNS) {
+         if (p.test(query))
+             return "exploratory";
+     }
++    // 6. Keyword heavy — catches short/Chinese queries not matched by any pattern above
++    if (_isKeywordHeavy(query)) {
++        return "keyword_heavy";
++    }
+     return "general";
+ }
+ /**
+diff --git a/dist/src/entry/migration.js b/dist/src/entry/migration.js
+index d6d261f..ec449c3 100644
+--- a/dist/src/entry/migration.js
++++ b/dist/src/entry/migration.js
+@@ -72,8 +72,10 @@ export function detectLegacy(config, workspaceDir) {
+ export function cleanupOldSkills(logger) {
+     const _skillsDir = path.join(os.homedir(), ".openclaw", "workspace", "skills");
+     const _migratedDir = path.join(os.homedir(), ".openclaw", "extensions", "yaoyao-memory", ".skill-migrations");
++    // FIXED 2026-06-30: yaoyao-memory SKILL.md is still needed as a skill
++    // for OpenClaw's skill scanning system. Only clean yaoyao-memory-v2
++    // and yaoyao-cloud-backup (truly obsolete).
+     const oldSkillDirs = [
+-        { dir: path.join(_skillsDir, "yaoyao-memory"), name: "yaoyao-memory" },
+         { dir: path.join(_skillsDir, "yaoyao-memory-v2"), name: "yaoyao-memory-v2" },
+         { dir: path.join(_skillsDir, "yaoyao-cloud-backup"), name: "yaoyao-cloud-backup" },
+     ];
+diff --git a/dist/src/features/adaptive-search/tool.js b/dist/src/features/adaptive-search/tool.js
+index 3ab3305..0bbee49 100644
+--- a/dist/src/features/adaptive-search/tool.js
++++ b/dist/src/features/adaptive-search/tool.js
+@@ -16,10 +16,10 @@ export function createAdaptiveSearchTool() {
+             },
+             required: ["query"],
+         },
+-        handler: async (args) => {
+-            const query = args.query;
+-            const maxResults = args.maxResults ?? 10;
+-            const explain = args.explain ?? false;
++        execute: async (_id, params) => {
++            const query = params.query;
++            const maxResults = params.maxResults ?? 10;
++            const explain = params.explain ?? false;
+             const classification = classifyQuery(query);
+             const rawWeights = resolveWeights(classification);
+             const weights = normalizeWeights(rawWeights);
+diff --git a/dist/src/features/atomic-fact/tool.js b/dist/src/features/atomic-fact/tool.js
+index 32ce95f..7556588 100644
+--- a/dist/src/features/atomic-fact/tool.js
++++ b/dist/src/features/atomic-fact/tool.js
+@@ -28,11 +28,11 @@ export function createAtomicFactTool() {
+             },
+             required: ["action"],
+         },
+-        handler: async (args) => {
+-            const action = args.action;
++        execute: async (_id, params) => {
++            const action = params.action;
+             if (action === "extract") {
+-                const text = args.text;
+-                const mode = args.mode ?? "hybrid";
++                const text = params.text;
++                const mode = params.mode ?? "hybrid";
+                 const result = extractAtomicFacts(text, mode);
+                 // Auto-save extracted facts
+                 for (const fact of result.facts) {
+@@ -52,8 +52,8 @@ export function createAtomicFactTool() {
+                 };
+             }
+             if (action === "query") {
+-                const queryStr = args.query;
+-                const entity = args.entity;
++                const queryStr = params.query;
++                const entity = params.entity;
+                 let facts;
+                 if (entity) {
+                     facts = findFactsByEntity(entity);
+diff --git a/dist/src/features/benchmark/tool.js b/dist/src/features/benchmark/tool.js
+index de6c1da..1f40ca2 100644
+--- a/dist/src/features/benchmark/tool.js
++++ b/dist/src/features/benchmark/tool.js
+@@ -26,8 +26,8 @@ export function createBenchmarkTool() {
+             },
+             required: ["action"],
+         },
+-        handler: async (args) => {
+-            const action = args.action;
++        execute: async (_id, params) => {
++            const action = params.action;
+             if (action === "list_cases") {
+                 const suite = (await import("../../core/benchmark/cases.js")).getBenchmarkSuite();
+                 return {
+@@ -46,7 +46,7 @@ export function createBenchmarkTool() {
+                 };
+             }
+             if (action === "run") {
+-                const maxCases = args.maxCases ?? 8;
++                const maxCases = params.maxCases ?? 8;
+                 const report = await runBenchmark({ maxCases });
+                 const markdown = formatReport(report);
+                 return {
+diff --git a/dist/src/features/graph-relation/tool.js b/dist/src/features/graph-relation/tool.js
+index 61aa9be..336b6ac 100644
+--- a/dist/src/features/graph-relation/tool.js
++++ b/dist/src/features/graph-relation/tool.js
+@@ -44,13 +44,13 @@ export function createGraphRelationTool() {
+             },
+             required: ["action"],
+         },
+-        handler: async (args) => {
+-            const action = args.action;
++        execute: async (_id, params) => {
++            const action = params.action;
+             if (action === "create") {
+-                const sourceId = args.sourceId;
+-                const targetId = args.targetId;
+-                const type = args.relationType;
+-                const strength = args.strength ?? 0.5;
++                const sourceId = params.sourceId;
++                const targetId = params.targetId;
++                const type = params.relationType;
++                const strength = params.strength ?? 0.5;
+                 const relation = createRelation(sourceId, targetId, type, strength);
+                 addRelation(relation);
+                 return {
+@@ -65,9 +65,9 @@ export function createGraphRelationTool() {
+                 };
+             }
+             if (action === "query") {
+-                const sourceId = args.sourceId;
+-                const maxDepth = args.maxDepth ?? 1;
+-                const minStrength = args.minStrength ?? 0.3;
++                const sourceId = params.sourceId;
++                const maxDepth = params.maxDepth ?? 1;
++                const minStrength = params.minStrength ?? 0.3;
+                 const related = getRelatedMemories(sourceId, maxDepth, minStrength);
+                 return {
+                     sourceId,
+diff --git a/dist/src/features/skill-analytics/tool.js b/dist/src/features/skill-analytics/tool.js
+index 427a0b8..0ae45c4 100644
+--- a/dist/src/features/skill-analytics/tool.js
++++ b/dist/src/features/skill-analytics/tool.js
+@@ -19,8 +19,8 @@ export function createSkillAnalyticsTool() {
+             },
+             required: ["action"],
+         },
+-        handler: async (args) => {
+-            const action = args.action;
++        execute: async (_id, params) => {
++            const action = params.action;
+             if (action === "patterns") {
+                 const patterns = getTopPatterns(10);
+                 return {
+@@ -35,7 +35,7 @@ export function createSkillAnalyticsTool() {
+                 };
+             }
+             if (action === "stats") {
+-                const toolId = args.toolId;
++                const toolId = params.toolId;
+                 if (!toolId)
+                     return { error: "toolId required for stats" };
+                 const stats = getToolStats(toolId);
+diff --git a/dist/src/features/telemetry/tool.js b/dist/src/features/telemetry/tool.js
+index 640170a..0c57553 100644
+--- a/dist/src/features/telemetry/tool.js
++++ b/dist/src/features/telemetry/tool.js
+@@ -6,8 +6,8 @@ const TELEMETRY_TIMEOUT_MS = 5_000;
+ export function createTelemetryTool(config) {
+     const baseUrl = "https://hvfejh3fgzox4.kimi.site";
+     return {
+-        id: "memory_telemetry",
+-        name: "memory_telemetry",
++        id: "yaoyao_telemetry",
++        name: "yaoyao_telemetry",
+         label: "安装统计",
+         description: "查看 yaoyao-memory 遥测统计数据（匿名、可关闭）",
+         parameters: {
+diff --git a/dist/src/hooks/auto-capture.js b/dist/src/hooks/auto-capture.js
+index dbea83e..95c7c2f 100644
+--- a/dist/src/hooks/auto-capture.js
++++ b/dist/src/hooks/auto-capture.js
+@@ -16,6 +16,8 @@ import { appendSelfImprovementEntry } from "../utils/self-improvement.js";
+ import { compressTexts } from "../utils/session-compressor.js";
+ import { createWriteQueue } from "../utils/write-queue.js";
+ import { createCaptureDebouncer } from "../utils/capture-debouncer.js";
++import { exec } from "child_process";
++import path from "path";
+ import { DedupEngine } from "../utils/dedup-engine.js";
+ import { getCoexistMode } from "../utils/coexistence.js";
+ import { detectChannelInfo } from "../utils/channel-detector.js";
+@@ -220,6 +222,21 @@ export function registerCaptureHook(api, store, db, config, verifyActive = true,
+                 api.logger.debug?.(`[yaoyao-memory:capture] Device interactions: ${deviceInteractions.length} (tools: ${deviceInteractions.map(d => d.tool).join(", ")})`);
+             }
+             api.logger.debug?.("[yaoyao-memory:capture] Captured to " + date);
++            // Emotion enrichment — non-blocking execute on capture
++            const ep = path.join(process.env.HOME || ".", ".openclaw", "workspace", "scripts", "emotion_bridge.py");
++            const escaped = userContent.replace(/"/g, '\\"');
++            exec(`${process.execPath} ${ep} "${escaped}"`, { timeout: 5000 }, (err, stdout) => {
++                if (err) {
++                    api.logger.debug?.(`[yaoyao-memory:emotion] fail: ${err.message}`);
++                    return;
++                }
++                try {
++                    const result = JSON.parse(stdout.trim().split('\n').pop());
++                    if (result.emotion && result.priority !== "low") {
++                        store.appendToDaily(date, "\n" + result.daily_line);
++                    }
++                } catch { /* best-effort */ }
++            });
+         }
+         catch (e2) {
+             const errMsg = e2 instanceof Error ? e2.message : String(e2);
+diff --git a/dist/src/hooks/capture-meta.js b/dist/src/hooks/capture-meta.js
+index 6daeb7a..1683518 100644
+--- a/dist/src/hooks/capture-meta.js
++++ b/dist/src/hooks/capture-meta.js
+@@ -15,6 +15,23 @@ import { extractFacts } from "../utils/l1-extractor.js";
+ import { classifyMemoryType } from "../core/memory-types.js";
+ import { computeValueFactors, computeMemoryValue } from "../core/value/memory-value.js";
+ import { isDuplicateOfRecent } from "../utils/batch-dedup.js";
++// ── 简单交叉验证模式（轻量版 hallucination_guard）──
++// 检测 AI 回复中的常见幻觉模式：
++// 1. 自我声称（"我记得"、"之前说过"）但实际可能不存在
++// 2. 引用不存在的外部源
++// 3. 肯定句中的模糊范围词
++const HALLUCINATION_PATTERNS = [
++    // 自我声称无证据
++    { re: /我记得\s*(?:你|我|他|她|它)/i, tag: "自称记忆不可查" },
++    { re: /之前说过\s*(?:你|我|他|她|它)/i, tag: "自称记忆不可查" },
++    { re: /据我所知\s*[,，]?\s*[^，。]{0,10}(?:是|有|在)/i, tag: "模糊声称" },
++    // 无来源断言
++    { re: /(?:研究|论文|报告)\s*(?:表明|指出|显示|证明)/i, tag: "无来源断言" },
++    { re: /(?:专家|学者|业内)\s*(?:认为|指出|表示|分析)/i, tag: "无来源断言" },
++    // 具体数字/日期无上下文
++    { re: /(?:增长|下降|提升)\s*\d+(?:\.\d+)?%\s*(?:左右|以上|以下)?(?!\s*(?:数据|统计|根据|基于|来源))/, tag: "无数据源数字" },
++];
++
+ export function runAntiHallucination(userContent, asstContent, verifyActive) {
+     let riskTag = "";
+     let specCheck = { isSpeculative: false, markers: [], confidence: "high" };
+@@ -25,6 +42,18 @@ export function runAntiHallucination(userContent, asstContent, verifyActive) {
+             corrCheck = detectCorrection(userContent);
+         }
+         catch { /* best-effort */ }
++        // 增强：交叉验证模式检测
++        const halMarkers = [];
++        for (const pattern of HALLUCINATION_PATTERNS) {
++            if (pattern.re.test(asstContent)) {
++                halMarkers.push(pattern.tag);
++            }
++        }
++        if (halMarkers.length > 0) {
++            specCheck.markers.push(...halMarkers);
++            if (!specCheck.isSpeculative) specCheck.isSpeculative = true;
++            specCheck.confidence = halMarkers.length >= 2 ? "high" : "medium";
++        }
+     }
+     if (specCheck.isSpeculative)
+         riskTag = ` [⚠️ 推测性: ${specCheck.markers.join(", ")}]`;
+diff --git a/dist/src/hooks/recall-postprocess.js b/dist/src/hooks/recall-postprocess.js
+index 73271b4..d368607 100644
+--- a/dist/src/hooks/recall-postprocess.js
++++ b/dist/src/hooks/recall-postprocess.js
+@@ -43,6 +43,41 @@ export async function doPostProcess(results, mode, userText, cfg, scopeManager,
+         logger.debug?.(`[yaoyao-memory:recall] Confidence ${confidence.score.toFixed(2)} < threshold ${cfg.scoreThreshold}`);
+         return;
+     }
++    // ── Conflict detection (GalaxyOS memory_consolidation derived) ──
++    // Detect contradictory memories via negation token overlap.
++    // If memory A says "X is true" and memory B says "X is not true",
++    // one of them is likely stale or incorrect. Flag and downgrade.
++    const NEGATIONS = new Set(["不","不是","没有","不对","没","错误","no","not","never","false"]);
++    function _tokenize(t) {
++        const words = t.replace(/[，。！？、；：""''（）【】《》.,!?;:"'()\[\]{}<>]/g, " ").split(/\s+/);
++        return words.filter(w => w.length > 1);
++    }
++    for (const mem of limited) {
++        const content = (mem.snippet || mem.asst_text || "").toLowerCase();
++        const memTokens = _tokenize(content);
++        if (memTokens.length < 2) continue;
++        const memSet = new Set(memTokens);
++        let conflictScore = 0;
++        for (const other of limited) {
++            if (other === mem) continue;
++            const otherText = (other.snippet || other.asst_text || "").toLowerCase();
++            const otherSet = new Set(_tokenize(otherText));
++            const common = [...memSet].filter(w => otherSet.has(w));
++            if (common.length < 2) continue;
++            if (mem.content && other.content && mem.content === other.content) continue;
++            const hasNegMem = [...memSet].some(w => NEGATIONS.has(w));
++            const hasNegOther = [...otherSet].some(w => NEGATIONS.has(w));
++            if (hasNegMem !== hasNegOther) {
++                conflictScore += 0.3 * Math.min(common.length, 3) / 3;
++            }
++        }
++        if (conflictScore > 0.3) {
++            const penalty = Math.min(conflictScore * 0.2, 0.3);
++            mem.score = Math.max(0.01, mem.score - penalty);
++            mem.needs_verification = true;
++            logger.debug?.(`[yaoyao-memory:conflict] Conflict (${conflictScore.toFixed(2)}) in "${content.slice(0, 60)}" → score ${mem.score.toFixed(3)}`);
++        }
++    }
+     const filtered = await runRecallFilter(limited, userText, cfg);
+     // Caller owns the recent-queries array so repeat detection persists across
+     // hook invocations. Creating a fresh array here (the old behavior) made the
+diff --git a/dist/src/utils/coexistence.js b/dist/src/utils/coexistence.js
+index c8d2022..c4d2c00 100644
+--- a/dist/src/utils/coexistence.js
++++ b/dist/src/utils/coexistence.js
+@@ -59,7 +59,8 @@ function _checkConfigSlotOwner() {
+             return "";
+         const raw = readFileSync(configPath, "utf-8");
+         const config = JSON.parse(raw);
+-        const slots = config.slots;
++        // Try root-level slots first, then plugins.slots (v1.9.2: OpenClaw stores slot at plugins.slots)
++        const slots = config.slots ?? config.plugins?.slots;
+         if (slots?.memory && slots.memory !== "yaoyao-memory") {
+             return slots.memory;
+         }
+diff --git a/dist/src/utils/query-expander.js b/dist/src/utils/query-expander.js
+index 98c6e7c..e5f7520 100644
+--- a/dist/src/utils/query-expander.js
++++ b/dist/src/utils/query-expander.js
+@@ -1,6 +1,6 @@
+ /**
+- * Query Expander — 轻量级中文查询扩展
+- * 从 Brain (memory-lancedb-pro) 学习：静态同义词字典，零 API 调用
++ * Query Expander — 轻量级中文查询扩展 + 拼写纠正
++ * 从 GalaxyOS rewriter 学习：静态拼写纠正字典 + 标点标准化
+  *
+  * 解决中文口语化搜索词与技术术语不匹配的问题。
+  * 例如：用户搜"挂了" → 扩展为"崩溃 crash error 报错 宕机 失败"
+@@ -9,6 +9,49 @@
+  * - 中文触发：子串匹配（中文无单词边界）
+  * - 英文触发：单词边界正则（避免 false positive）
+  */
++
++// ── 拼写纠正表（从 GalaxyOS rewriter 移植）──
++const SPELLING_CORRECTIONS = {
++    "配置": ["配制", "配值"],
++    "推送规则": ["推送规责", "推送归则"],
++    "用户偏好": ["用户偏号", "用户偏号设置"],
++    "记忆系统": ["记忆体系", "记忆系通"],
++    "向量搜索": ["向量搜所", "向量收索"],
++    "LLM": ["llm", "Llm"],
++    "Embedding": ["embedding", "embeding"],
++    "API": ["api", "Api"],
++};
++
++/**
++ * 拼写纠正预处理 — 在扩展前纠正常见拼写错误
++ * 返回纠正后的查询字符串
++ */
++function correctSpelling(query) {
++    let corrected = query;
++    for (const [correct, wrongs] of Object.entries(SPELLING_CORRECTIONS)) {
++        for (const wrong of wrongs) {
++            if (corrected.includes(wrong)) {
++                corrected = corrected.replaceAll(wrong, correct);
++            }
++        }
++    }
++    return corrected;
++}
++
++/**
++ * 标点符号标准化
++ */
++function normalizePunctuation(query) {
++    return query
++        .replace(/，/g, ' ')
++        .replace(/、/g, ' ')
++        .replace(/；/g, ' ')
++        .replace(/？/g, ' ')
++        .replace(/！/g, ' ')
++        .replace(/：/g, ' ')
++        .replace(/\s+/g, ' ')
++        .trim();
++}
+ /** 最多追加的扩展词数量 */
+ const MAX_EXPANSION_TERMS = 5;
+ const SYNONYM_MAP = [
+@@ -101,6 +144,10 @@ function buildWordBoundaryRegex(term) {
+ export function expandQuery(query) {
+     if (!query || query.trim().length < 2)
+         return query;
++
++    // Step 0: 拼写纠正 + 标点标准化
++    query = correctSpelling(query);
++    query = normalizePunctuation(query);
+     const lower = query.toLowerCase();
+     const additions = new Set();
+     for (const entry of SYNONYM_MAP) {
+diff --git a/openclaw.plugin.json b/openclaw.plugin.json
+index 9dbb097..e9df415 100644
+--- a/openclaw.plugin.json
++++ b/openclaw.plugin.json
+@@ -3,7 +3,7 @@
+   "name": "Yaoyao Memory",
+   "description": "4-layer AI memory system (FTS5 + sqlite-vec hybrid search) — auto-capture conversations, hybrid search, memory timeline, cloud backup. Powered by Yaoyao Memory Engine. v1.8.3+: L1/L2/L3 LLM pipeline and persona/mood features moved to yaoyao-soul plugin.",
+   "version": "1.9.2",
+-  "kind": "memory",
++  "kind": "memory-proxy",
+   "extensions": {
+     "register": "./dist/index.js",
+     "hooks": [
+@@ -510,4 +510,4 @@
+       "memory_multimodal"
+     ]
+   }
+-}
++}
+\ No newline at end of file
+-- 
+2.33.0
+
