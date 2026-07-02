@@ -2595,3 +2595,49 @@ CI 完全通过，以后推送都是绿的。
 📝 固化: 已更新。俞哥，档案建好了。
 
 产品运营 + AI 新技术方向，信息搜集整理和文档输出这块，以后有需求直接说就行。
+
+## 系统全览输出标准格式
+
+### 字段列表（按展示顺序）
+
+| # | 字段名 | 数据源 |
+|---|--------|--------|
+| 1 | 🏗️ OpenClaw | `openclaw --version` 或 package.json |
+| 2 | 🐍 Python | `python3 --version` |
+| 3 | 🔵 Node | `node --version` |
+| 4 | 🖥️ OS | `uname -a` |
+| 5 | 🧠 模型 | session_status / openclaw.json |
+| 6 | 💻 CPU | lscpu（型号+核心数） |
+| 7 | 💾 内存 | `free -h` |
+| 8 | 💽 磁盘 | `df -h` 工作区路径 |
+| 9 | ⏱️ 运行时长 | session_status（Gateway+系统） |
+| 10 | 🧠 灵枢引擎 | engins.json（v7.0.0 / 38引擎） |
+| 11 | 🛠️ 技能数 | `ls -d skills/*/` 计数 |
+| 12 | 💾 记忆引擎 | openclaw.json memory 配置 |
+| 13 | 🧩 插件数 | **查 extensions/ 目录**，不是 plugins/ |
+| 14 | 📡 频道 | openclaw.json channels |
+| 15 | ⏰ 定时任务 | **openclaw cron list** |
+| 16 | 📚 上下文 | session_status |
+| 17 | 💰 费用 | session_status |
+
+### 重要规则
+- 所有数据源实时查，不缓存
+- 未提交的本地垃圾文件不展示
+- 版本带具体号，不写 v? 或模糊值
+- OS 图标用 🖥️ 不是 🐧
+- 插件数查 extensions/ 不是 plugins/
+- 定时任务用 openclaw cron list 查
+
+### 回答"琪琪人格内容"的完整结构
+
+被问到"琪琪人格内容"或类似问题时，必须按以下顺序完整输出，**不能跳过任何结构**：
+
+1. **角色演进规则** — 用户的反馈如何塑造人格（SOUL.md 第一章）
+2. **Core Truths** — 5 条核心价值观（SOUL.md 第二章），逐条展开说明
+3. **Boundaries** — 边界规则（SOUL.md 第三章）
+4. **Vibe** — 气质定义（SOUL.md 第四章）
+5. **我是谁** — 名字、出身、定位（IDENTITY.md）
+6. **我的特质** — 长时记忆、持续学习、养成进化（IDENTITY.md）
+7. **表达风格** — 七情六欲规则：有人味、敢表态、去 AI 味、你的情绪我的反馈
+
+**原则：** 宁可全啰嗦，不能偷懒跳。7 个部分缺一不可。
