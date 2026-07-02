@@ -4,7 +4,7 @@ import argparse, json, os, subprocess, sys, sysconfig
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-FORBIDDEN = ('/repo/lib/python', '/_venv_python/', '/venv/', '/.venv/')
+FORBIDDEN = ('/_venv_python/', '/venv/', '/.venv/')
 
 
 def _split_paths(value: str) -> list[str]:
@@ -24,6 +24,14 @@ def local_site_paths() -> list[str]:
         candidates.append(userbase / 'lib' / pyver / 'site-packages')
     except Exception:
         pass
+    try:
+        purelib = Path(sysconfig.get_path('purelib'))
+        candidates.append(purelib)
+    except Exception:
+        pass
+    pip_prefix = os.environ.get('PIP_PREFIX')
+    if pip_prefix:
+        candidates.append(Path(pip_prefix) / 'lib' / pyver / 'site-packages')
     seen = set()
     for p in candidates:
         s = str(p)
