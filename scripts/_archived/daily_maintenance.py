@@ -985,26 +985,51 @@ def dream_consolidation() -> Dict:
                 }
                 log(f"      ✅ 梦境 {dreams_count} 条已处理")
             else:
-                # 扫描近期记忆文件
-                recent_memories = []
-                now = datetime.now(BEIJING_TZ)
-                for fname in os.listdir(memory_dir):
-                    fpath = os.path.join(memory_dir, fname)
-                    if not os.path.isfile(fpath) or not fname.endswith(".md"):
-                        continue
+                # 查 yaoyao-memory SQLite（主力记忆引擎）
+                yaoyao_db = os.path.expanduser("~/.openclaw/memory/main.sqlite")
+                recent_count = 0
+                recent_conversations = []
+                if os.path.isfile(yaoyao_db):
                     try:
-                        mtime = os.path.getmtime(fpath)
-                        file_dt = datetime.fromtimestamp(mtime, tz=BEIJING_TZ)
-                        if (now - file_dt).days <= 3:
-                            recent_memories.append(fname)
-                    except Exception:
-                        pass
-                result["steps"]["llm_dream"] = {
-                    "status": "no_new_dreams",
-                    "recent_files": len(recent_memories),
-                    "note": "默认调LLM模式，当前无新梦境数据待处理"
-                }
-                log(f"      ℹ️ 当前无新梦境数据 (扫描 {len(recent_memories)} 个近期文件)")
+                        import sqlite3
+                        conn = sqlite3.connect(yaoyao_db, timeout=5)
+                        conn.row_factory = sqlite3.Row
+                        cursor = conn.cursor()
+                        # 查过去24小时内新增的记忆
+                        cutoff = int(time.time()) - 86400
+                        rows = cursor.execute(
+                            "SELECT date, user_text, asst_text FROM yaoyao_memories "
+                            "WHERE created_at > ? ORDER BY created_at DESC LIMIT 50",
+                            (cutoff,)
+                        ).fetchall()
+                        conn.close()
+                        recent_count = len(rows)
+                        for r in rows[:10]:
+                            ut = (r["user_text"] or "")[:200]
+                            at = (r["asst_text"] or "")[:200]
+                            recent_conversations.append({
+                                "date": r["date"] or "",
+                                "user_preview": ut,
+                                "asst_preview": at,
+                            })
+                    except Exception as db_err:
+                        log(f"      ⚠️ SQLite 查询失败: {str(db_err)[:60]}")
+                
+                if recent_count > 3:
+                    result["steps"]["llm_dream"] = {
+                        "status": "pending",
+                        "recent": recent_count,
+                        "preview": recent_conversations[:3],
+                        "note": f"有{recent_count}条新记忆待梦境固化"
+                    }
+                    log(f"      ✅ 新增 {recent_count} 条记忆待梦境固化")
+                else:
+                    result["steps"]["llm_dream"] = {
+                        "status": "no_new_dreams",
+                        "recent": recent_count,
+                        "note": "近24小时无显著新记忆（仅限 md 文件模式）"
+                    }
+                    log(f"      ℹ️ 近24小时无显著新记忆 ({recent_count} 条)")
         except Exception as e:
             result["steps"]["llm_dream"] = {"error": str(e)[:80]}
             log(f"      ⚠️ LLM梦境跳过: {str(e)[:60]}")
