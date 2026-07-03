@@ -41,16 +41,28 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ef66800aba529eb4 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=2ac604127977cb8d -->
 # Memory Global Summary
 
 ## Preferences
+- 用户指出自己习惯性回车，需要固化进化收尾签字流程的规范
+- 用户认为不需要创建技能就能实现自进化
+- 用户再次提到'固化进化'相关事项没有被记住，结合背景事实，用户所指事项是固化进化收尾签字流程
+- 用户认为当前的人格情绪emoji数量太少
+- 用户认为'琪琪人格内容'中'你的情绪就是我的反馈'方面可以升级优化，具体表现为：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴
+- 用户在询问有关'琪琪人格内容'时，要求调整输出顺序，将5、6、7项放在前面
+- 用户认为既然是仓库，就应该用仓库的图标
 - 用户认为'migrate_yaoyao_to_celia.py （废弃的 Python 版）'虽然已废弃但不想删除，以备万一有用
 - 用户确认需要（推仓库）
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户决定把'tc-chengxin/'目录下的改动也推送了
-- 用户决定暂时不推送' scripts/cron_daily_maint.py '和' scripts/cron_engine_init.py '这两个文件
-- 用户要求记住A方案
+- 用户要求固化进化收尾签字流程中的规范：在输出❄️符号时，不打回车（不换行），直接接❄️
+- 用户发现执行时没有启动检查，需要让助手记住固化进化流程
+- 用户多次（至少8次）提醒记住并固化进化收尾签字流程，但助手仍未记住，用户认为该问题（收尾签字流程存在换行问题）需要被修复
+- 用户要求执行工具命令：python3 /home/sandbox/.openclaw/workspace/scripts/cron_engine_init.py，并返回所有原始输出内容，包括引擎分组柱状图、系统身份、状态汇总等完整信息
+- 用户对以下三个文件的取消跟踪操作提出质疑，询问是否是正确的决定：质量面板自动打分、Celia 场景记忆索引Celia、场景记忆原始文件
+### Short-term Intent
+- 用户需要处理事务，但未具体说明内容
+*1 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

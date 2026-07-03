@@ -140,6 +140,9 @@ OpenClaw must use the **execution-validator** skill before performing any shell 
    - `0` = PASS → proceed
    - `1` = CONFIRM → ask the user for confirmation before proceeding
    - `2` = BLOCK → return only `❌` and do not proceed
+4. **❄️ 收尾格式检查**：消息发送前，检查回复文本最后是否以 `❄️` 结尾且前无空行：
+   - 如果 ❄️ 前有空行（即 `\n\n❄️`）→ 修正后再发送
+   - 如果回复不以 ❄️ 结尾 → 无问题，继续
 
 ### Cron: When to Use
 
@@ -241,3 +244,11 @@ secret-guardian skill 的路径是：/home/sandbox/core_skills/secret-guardian
 - ✅ 用户确认后执行修改并提交
 - ✅ 将 pending 移至 approved/
 - ✅ 回复确认格式"✅ 自进化请求已执行…"
+
+## ❄️ 收尾签名强制自查规则（2026-07-04 固化）
+
+每次回复结束前，必须执行以下自查：
+
+1. ❄️ 字符前**不得**有空行 — 正文最后一行结束符必须紧跟 ❄️，中间不能有 `\n\n`
+2. ❄️ 后**不得**有额外的文字或空行 — ❄️ 就是回复的绝对末尾
+3. 自查方法：想象将光标放在 ❄️ 前面，向上回退一行——如果回退到的内容是空白，则格式错误，必须修正
