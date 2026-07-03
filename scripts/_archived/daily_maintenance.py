@@ -1037,29 +1037,10 @@ def dream_consolidation() -> Dict:
         log("    梦境 [3/4] LLM 梦境固化已关闭（用户配置）")
         result["steps"]["llm_dream"] = {"status": "disabled_by_config"}
     
-    # Step 4: 用户画像更新
+    # Step 4: 用户画像更新（需对话上下文，每日维护时无输入，跳过）
     log("    梦境 [4/4] 用户画像更新...")
-    try:
-        portrait_path = os.path.join(WORKSPACE, ".crusheart.db")
-        if os.path.exists(portrait_path):
-            try:
-                import importlib as _pt
-                udp = _pt.import_module("core.engines.memory.user_dynamic_portrait")
-                if hasattr(udp, "update_profile"):
-                    profile_result = udp.update_profile()
-                    result["steps"]["portrait"] = profile_result if isinstance(profile_result, dict) else {"status": "updated"}
-                    log(f"      ✅ 画像已更新")
-                else:
-                    result["steps"]["portrait"] = {"status": "skipped", "reason": "update_profile 不可用"}
-                    log(f"      ℹ️ 画像更新不可用")
-            except ImportError:
-                result["steps"]["portrait"] = {"status": "skipped", "reason": "user_dynamic_portrait 未安装"}
-                log(f"      ℹ️ 画像模块未安装，跳过")
-        else:
-            result["steps"]["portrait"] = {"status": "skipped", "reason": "数据库不存在"}
-            log(f"      ℹ️ 画像数据库不存在，跳过")
-    except Exception as e:
-        result["steps"]["portrait"] = {"error": str(e)[:80]}
+    result["steps"]["portrait"] = {"status": "skipped", "reason": "需要对话文本输入，每日维护跳过"}
+    log(f"      ℹ️ 画像更新不可用")
     
     log(f"    梦境固化完成 (LLM {'✅' if llm_enabled else '❌'} | "
         f"索引{'✅' if 'index_merge' in result['steps'] else '❌'} | "
