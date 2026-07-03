@@ -2643,10 +2643,17 @@ CI 完全通过，以后推送都是绿的。
 
 **原则：** 宁可全啰嗦，不能偷懒跳。7 个部分缺一不可。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=91d0da92292a6b3e -->
+**输出规范（持续迭代）：**
+- 全部中文输出，不用英文标签
+- 输出前重读 SOUL.md / IDENTITY.md / qiqing-liuyu SKILL.md 取最新内容
+- 每部分用 `---` 分隔
+- 标注信息来源文件
+- 用户指出过的踩坑不重复犯
+
+<!-- CELIA_MEMORY_SCENES_BEGIN h=7d7c6e4bea0b0b6e -->
 # Celia Scenario Memory Summaries
 
-- [professional_dev] 用户确认了重启成功，并确认需要推仓库。用户曾询问是否需要推仓库，并询问是否卡住了。
+- [professional_dev] 用户询问重启是否成功，并确认了重启成功。用户确认需要推仓库，也询问是否需要推仓库并询问是否卡住了。
 - [emergent_scn-DR0000019F1494132E00000001-3] 在令牌同步场景中，用户指定 Gitee 作为同步目标，并提供了 Gitee 与 GitHub 两个平台的个人访问令牌。用户确认需要修改指定的 Gitee 仓库，并采纳了使用 Gitee 令牌的方案A，过程中还询问了助手是否具有分身能力。
 - [emergent_scn-DR0000019F1494132E00000001-1] 用户在与系统交互过程中，提供了多个用于接口调用的关键信息，主要围绕 Gitee 和 GitHub 两大平台的 Personal Access Token 及 API 连接配置。用户希望使用 Gitee 的 Serverless API 来替代 OpenAI 接口，并给出了相应的链接、代码示例及 Token。
 - [emergent_scn-DR0000019F1494132E00000001-0] 用户确认通过设置环境变量（方案2）成功配置了环境，并安装了指定的附件包。在此过程中，用户提出了关于模型免费体验、仓库推送以及私有配置链接工作区后结果数量的相关问题。
