@@ -1415,15 +1415,6 @@ def _format_report(results: Dict, elapsed: float) -> str:
         else:
             lines.append(f"📈 统一评分: ✅ 系统运行健康，无需建议")
 
-    # 11. 梦境固化
-    dm = results.get("dreaming", {})
-    dream_llm = dm.get("llm_enabled", True)
-    dream_status = dm.get("steps", {}).get("llm_dream", {}).get("status", "skipped")
-    dream_note = f"梦境: {'✅' if dream_llm else '❌'}"
-    if dream_status not in ("skipped", "no_new_dreams"):
-        dream_note += f" ({dream_status})"
-    lines.append(f"💤 {dream_note}")
-
     # 12. 会话归档
     sa = results.get("session_archive", {})
     sa_archived = sa.get("archived", 0)
