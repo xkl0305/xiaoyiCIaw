@@ -85,3 +85,7 @@ SOUL.md.bak*
 # Mac system files
 .DS_Store
 **/.DS_Store
+
+# Celia 记忆系统自动生成文件（不跟踪）
+.quality_scores.json
+memory/celia_memory/
