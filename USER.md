@@ -41,10 +41,16 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=64189dde4f44fac9 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ef66800aba529eb4 -->
 # Memory Global Summary
+
+## Preferences
+- 用户认为'migrate_yaoyao_to_celia.py （废弃的 Python 版）'虽然已废弃但不想删除，以备万一有用
+- 用户确认需要（推仓库）
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户决定把'tc-chengxin/'目录下的改动也推送了
+- 用户决定暂时不推送' scripts/cron_daily_maint.py '和' scripts/cron_engine_init.py '这两个文件
 - 用户要求记住A方案
 <!-- CELIA_MEMORY_OVERVIEW_END -->
