@@ -81,3 +81,7 @@ venv/
 # V111.38 自动审计报告
 reports/V111_38_*
 SOUL.md.bak*
+
+# Mac system files
+.DS_Store
+**/.DS_Store
