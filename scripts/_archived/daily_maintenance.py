@@ -933,8 +933,31 @@ def dream_consolidation() -> Dict:
     # Step 2: 冷热存储调整
     log("    梦境 [2/4] 冷热存储调整...")
     try:
-        cold_hot = auto_memory_mod.cold_hot_policy if hasattr(auto_memory_mod, "cold_hot_policy") else None
+        cold_hot = am.cold_hot_policy if hasattr(am, "cold_hot_policy") else None
         if cold_hot:
+            # 扫描所有记忆文件
+            now_ts = time.time()
+            DAY = 86400
+            hot_count = warm_count = cold_count = 0
+            memory_dir = os.path.join(WORKSPACE, "memory")
+            if os.path.isdir(memory_dir):
+                for fname in os.listdir(memory_dir):
+                    fpath = os.path.join(memory_dir, fname)
+                    if not os.path.isfile(fpath) or not fname.endswith(".md"):
+                        continue
+                    try:
+                        mtime = os.path.getmtime(fpath)
+                        days_since = int((now_ts - mtime) / DAY)
+                        tier = cold_hot(days_since, is_anchor=False)
+                        if tier == "hot":
+                            hot_count += 1
+                        elif tier == "cold":
+                            cold_count += 1
+                        else:
+                            warm_count += 1
+                    except Exception:
+                        continue
+            ch_result = {"status": "done", "hot": hot_count, "warm": warm_count, "cold": cold_count}
             ch_result = cold_hot()
             result["steps"]["cold_hot"] = ch_result if isinstance(ch_result, dict) else {"status": str(ch_result)}
             log(f"      ✅ 冷热调整完成")
