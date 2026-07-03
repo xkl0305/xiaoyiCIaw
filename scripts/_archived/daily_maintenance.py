@@ -1042,9 +1042,13 @@ def dream_consolidation() -> Dict:
     result["steps"]["portrait"] = {"status": "skipped", "reason": "需要对话文本输入，每日维护跳过"}
     log(f"      ℹ️ 画像更新不可用")
     
-    log(f"    梦境固化完成 (LLM {'✅' if llm_enabled else '❌'} | "
-        f"索引{'✅' if 'index_merge' in result['steps'] else '❌'} | "
-        f"画像{'✅' if 'portrait' in result['steps'] else '❌'})")
+    llm_status = result.get("steps", {}).get("llm_dream", {}).get("status", "")
+    llm_ok = llm_status in ("pending", "processed", "done") or result.get("steps", {}).get("llm_dream", {}).get("recent", 0) > 0
+    idx_ok = result.get("steps", {}).get("index_merge", {}).get("status") == "done" or result.get("steps", {}).get("index_merge", {}).get("entries", 0) > 0
+    pt_ok = result.get("steps", {}).get("portrait", {}).get("status") == "updated"
+    log(f"    梦境固化完成 (LLM {'✅' if llm_ok else '⬜'} | "
+        f"索引{'✅' if idx_ok else '⬜'} | "
+        f"画像{'✅' if pt_ok else '⬜'})")
     
     return result
 
