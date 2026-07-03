@@ -1,17 +1,18 @@
 {
   "version": "V111.38",
-  "generated_at": "2026-06-29T10:20:33",
+  "generated_at": "2026-07-02T08:31:05",
   "env_self_heal": {
     "root": "/home/sandbox/.openclaw/workspace",
     "raw_env": {
       "PIP_PREFIX": "/home/sandbox/.openclaw/workspace/repo",
       "PYTHONPATH": null,
       "PYTHONHOME": null,
-      "VIRTUAL_ENV": null
+      "VIRTUAL_ENV": null,
+      "PYTHONNOUSERSITE": "1"
     },
     "sanitized_env": {
       "PIP_PREFIX": null,
-      "PYTHONPATH": "/home/sandbox/.openclaw/workspace:/home/sandbox/.local/lib/python3.12/site-packages",
+      "PYTHONPATH": "/home/sandbox/.openclaw/workspace:/home/sandbox/.local/lib/python3.12/site-packages:/home/slave1/.conanbuild/.conan/data/Python/v3.12.10-h7.b1/ccs.WiseFunction.WiseFunctionService.python/release/package/95dc96b1aaeea1b8464a094dd202ed0fbab12856/lib/python3.12/site-packages:/home/sandbox/.openclaw/workspace/repo/lib/python3.12/site-packages",
       "PYTHONHOME": null,
       "VIRTUAL_ENV": null,
       "PYTHONDONTWRITEBYTECODE": "1",
@@ -20,7 +21,9 @@
     "raw_has_forbidden_repo_path": false,
     "sanitized_has_forbidden_repo_path": false,
     "local_site_paths": [
-      "/home/sandbox/.local/lib/python3.12/site-packages"
+      "/home/sandbox/.local/lib/python3.12/site-packages",
+      "/home/slave1/.conanbuild/.conan/data/Python/v3.12.10-h7.b1/ccs.WiseFunction.WiseFunctionService.python/release/package/95dc96b1aaeea1b8464a094dd202ed0fbab12856/lib/python3.12/site-packages",
+      "/home/sandbox/.openclaw/workspace/repo/lib/python3.12/site-packages"
     ],
     "ok": true
   },
@@ -38,27 +41,27 @@
   },
   "config_policy": {
     "ok": true,
-    "product_online_ok": true,
+    "product_online_ok": false,
     "real_side_effect_guard_ok": false,
     "dependency_install_policy_ok": true,
     "environment_policy_ok": true,
     "top_level": {
-      "ONLINE_MODE": true,
-      "OFFLINE_MODE": false,
+      "ONLINE_MODE": false,
+      "OFFLINE_MODE": true,
       "CONNECTED_RUNTIME_ALWAYS_ON": true,
-      "ALLOW_NETWORK": true,
-      "NO_EXTERNAL_API": false,
+      "ALLOW_NETWORK": false,
+      "NO_EXTERNAL_API": true,
       "DISABLE_LLM_API": false,
       "NO_REAL_PAYMENT": true,
       "NO_REAL_SEND": true,
       "NO_REAL_DEVICE": false
     },
     "runtime": {
-      "ONLINE_MODE": true,
-      "OFFLINE_MODE": false,
+      "ONLINE_MODE": false,
+      "OFFLINE_MODE": true,
       "CONNECTED_RUNTIME_ALWAYS_ON": true,
-      "ALLOW_NETWORK": true,
-      "NO_EXTERNAL_API": false,
+      "ALLOW_NETWORK": false,
+      "NO_EXTERNAL_API": true,
       "DISABLE_LLM_API": false,
       "NO_REAL_PAYMENT": true,
       "NO_REAL_SEND": true,

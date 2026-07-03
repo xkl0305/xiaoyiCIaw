@@ -2641,3 +2641,29 @@ CI 完全通过，以后推送都是绿的。
 7. **表达风格** — 七情六欲规则：有人味、敢表态、去 AI 味、你的情绪我的反馈
 
 **原则：** 宁可全啰嗦，不能偷懒跳。7 个部分缺一不可。
+
+<!-- CELIA_MEMORY_SCENES_BEGIN h=c222d1c3d95c716f -->
+# Celia Scenario Memory Summaries
+
+- [professional_dev] 用户在 2026-06-28 询问系统是否重启成功，但助手未回复，重启结果未知。用户确认需要验证重启结果。用户反复确认重启是否成功。用户曾询问系统是否卡住了，并再次确认重启是否成功。用户多次询问灵枢AutoBrain v7.0.0的运行情况。
+- [emergent_scn-DR0000019F1494132E00000001-3] 在令牌同步场景中，用户指定 Gitee 作为同步目标，并提供了 Gitee 与 GitHub 两个平台的个人访问令牌。用户确认需要修改指定的 Gitee 仓库，并采纳了使用 Gitee 令牌的方案A，过程中还询问了助手是否具有分身能力。
+- [emergent_scn-DR0000019F1494132E00000001-1] 用户在与系统交互过程中，提供了多个用于接口调用的关键信息，主要围绕 Gitee 和 GitHub 两大平台的 Personal Access Token 及 API 连接配置。用户希望使用 Gitee 的 Serverless API 来替代 OpenAI 接口，并给出了相应的链接、代码示例及 Token。
+- [emergent_scn-DR0000019F1494132E00000001-0] 用户确认通过设置环境变量（方案2）成功配置了环境，并安装了指定的附件包。在此过程中，用户提出了关于模型免费体验、仓库推送以及私有配置链接工作区后结果数量的相关问题。
+- [emergent_scn-DR0000019F1494132E00000001-2] 用户针对私有配置仓库（https://cnb.cool/llm-memory-integrat/llm）中的 .md 文件命名方式提出疑问，指出其与原有的 MEMORY.md 格式不同。用户要求更新该私有配置仓库，并确认了相关版本号的提交。此外，用户还提供了完整源码与配置所在的另一仓库链接。
+<!-- CELIA_MEMORY_SCENES_END -->
+
+## 记忆引擎切换记录
+
+### 2026-07-03 B 方案 / celia 主导
+
+- **方案**: B️⃣ celia 主导
+- **slots.memory**: `memory-celia`
+- **memory-celia**: enabled，hooks.allowConversationAccess=true
+- **yaoyao-memory**: enabled，celiaBridge.enabled=true（补充角色）
+- **DB**: `~/.openclaw/workspace/memory/celia_memory/celia_memory.db`
+
+### 回退操作步骤（三处配置改 + 重启）
+1. `plugins.slots.memory` → `"memory-celia"`
+2. `plugins.entries.memory-celia.enabled` → `true`
+3. `plugins.entries.yaoyao-memory.config.celiaBridge.enabled` → `true`
+4. 重启: `python3 -m supervisor.supervisorctl restart openclaw-gateway`

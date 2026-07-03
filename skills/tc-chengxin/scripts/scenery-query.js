@@ -7,10 +7,12 @@
  *   node scenery-query.js --destination "杭州"
  *   node scenery-query.js --destination "杭州" --extra "适合亲子"
  *   node scenery-query.js --destination "苏州" --extra "园林 5A 景区"
+ *   node scenery-query.js --destination "杭州" --extra "免费 夜景"
+ *   node scenery-query.js --destination "杭州" --extra "适合亲子 最便宜"
  * 
  * 参数说明：
  *   --destination <城市>      目的地城市
- *   --extra <补充信息>        额外信息（特色、类型等）
+ *   --extra <补充信息>        额外信息（特色、类型、价格偏好、时段偏好等）
  *   --channel <渠道>          通信渠道（webchat/wechat 等）
  *   --surface <界面>          交互界面（mobile/desktop/table/card）
  * 
@@ -56,13 +58,17 @@ function format_scenery_result(scenery_data, use_table = false, use_plain_link =
   }
   
   const sceneries = scenery_data.sceneryList;
+  const need_extend = scenery_data.needExtend || false;
+  // needExtend=true 时强制使用卡片格式
+  const force_card = need_extend;
+  
   let output = '🏞️ 景区查询结果：\n\n';
   
-  if (use_table) {
+  if (use_table && !force_card) {
     output += format_scenery_table(sceneries, use_plain_link);
   } else {
     sceneries.forEach((scenery) => {
-      output += format_scenery_card(scenery, use_plain_link);
+      output += format_scenery_card(scenery, use_plain_link, need_extend);
     });
   }
   
@@ -111,7 +117,7 @@ const runner = create_query_runner({
   },
   validate: validate_params,
   handle_result: handle_result,
-  no_match_detail: NO_MATCH_DETAIL.scenery,
+  no_match_detail: NO_MATCH_DETAIL.SCENERY,
   usage_example: `  node scenery-query.js --destination "杭州"
   node scenery-query.js --destination "杭州" --extra "适合亲子"
   node scenery-query.js --destination "苏州" --extra "园林 5A 景区"`

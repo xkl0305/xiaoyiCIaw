@@ -77,3 +77,7 @@ skills/darwin-skill/assets/hero.gif
 skills/gtht-ranklist-skill/skill-entry.js
 skills/gtht-realtimemarketdata-skill/skill-entry.js
 venv/
+
+# V111.38 自动审计报告
+reports/V111_38_*
+SOUL.md.bak*

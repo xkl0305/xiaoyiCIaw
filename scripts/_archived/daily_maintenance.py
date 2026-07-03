@@ -1232,9 +1232,6 @@ def run() -> Dict:
 
     results["summary"] = summary
 
-    # 统一输出：只输出完整详细报告
-    print(_format_report(results, elapsed))
-
     return results
 
 

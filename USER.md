@@ -41,23 +41,10 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=c0f06680e4e90f3d -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=64189dde4f44fac9 -->
 # Memory Global Summary
-
-## User Profile
-- 用户确认GitHub仓库 https://github.com/xkl0305/xiaoyiCIaw 是用户自己的仓库
-- 用户确认无法访问OpenAI网站（OpenAI网站已不提供服务或无法访问）
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户想了解A方案的具体配置项怎么写、数据迁移怎么搞
-- 用户正在尝试将yaoyao-memory v4.0.1和v1.9.2进行互补，采用方案二——由celia主导、yaoyao补充，并需要开启celiaBridge
-- 用户指定Gitee为同步目标
-- 用户确认仓库 https://gitee.com/starry-sky-love/xiaoyi-claw-backup2 需要修改，并指定Gitee为同步目标
-- 用户在系统配置中需要使用（或询问）常见场景的配置方法
-### Short-term Intent
-- 用户当前面临一个关于A（yaoyao主导）方案的选择决策，用户需要了解该方案的细节后再做决定
-- 用户让把模型换成 Qwen3-Embedding-8B（1024 维）进行尝试
-- 用户询问系统（或服务）是否重启成功
-*1 more items not shown, use memory_record_search to view*
+- 用户要求记住A方案
 <!-- CELIA_MEMORY_OVERVIEW_END -->
