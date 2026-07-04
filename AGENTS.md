@@ -140,9 +140,6 @@ OpenClaw must use the **execution-validator** skill before performing any shell 
    - `0` = PASS → proceed
    - `1` = CONFIRM → ask the user for confirmation before proceeding
    - `2` = BLOCK → return only `❌` and do not proceed
-4. **❄️ 收尾格式检查**：消息发送前，检查回复文本最后是否以 `❄️` 结尾且前无空行：
-   - 如果 ❄️ 前有空行（即 `\n\n❄️`）→ 修正后再发送
-   - 如果回复不以 ❄️ 结尾 → 无问题，继续
 
 ### Cron: When to Use
 

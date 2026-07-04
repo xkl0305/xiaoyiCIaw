@@ -44,6 +44,10 @@ CLEANUP_LOG = os.path.join(WORKSPACE, ".logs", "cleanup_history.jsonl")
 SILENT = False  # 全局静默模式标志
 
 
+def _log(msg: str):
+    log(msg)
+
+
 def _log_error(context: str, msg: str = ""):
     """统一的错误日志，CRUSHEART_DEBUG 时输出完整 traceback"""
     err = f"[daily_maintenance] {context}"
@@ -961,8 +965,7 @@ def dream_consolidation() -> Dict:
                     except Exception:
                         continue
             ch_result = {"status": "done", "hot": hot_count, "warm": warm_count, "cold": cold_count}
-            ch_result = cold_hot()
-            result["steps"]["cold_hot"] = ch_result if isinstance(ch_result, dict) else {"status": str(ch_result)}
+            result["steps"]["cold_hot"] = ch_result
             log(f"      ✅ 冷热调整完成")
         else:
             result["steps"]["cold_hot"] = {"status": "skipped", "reason": "cold_hot_policy 不可用"}
