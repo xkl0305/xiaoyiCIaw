@@ -1347,18 +1347,22 @@ def run() -> Dict:
 
 
 def _format_report(results: Dict, elapsed: float) -> str:
-    """将 run() 的 results dict 格式化为详细报告文本"""
+    """将 run() 的 results dict 格式化为表格形式"""
     now = datetime.now(BEIJING_TZ).strftime("%Y-%m-%d %H:%M")
     lines = []
-    lines.append(f"🦞 统一维护报告 | {now}")
-    lines.append("━" * 40)
+    lines.append(f"🦞 每日维护报告 | {now}")
 
-    s = results.get("summary", {})
+    def T_(label: str, value: str) -> str:
+        """表格行"""
+        return f"│ {label.ljust(12)}│ {value} │"
+
+    lines.append("┌──────────────┬──────────────────────────────────────┐")
 
     # 执行用时
-    lines.append(f"⏱ 执行用时: {elapsed:.1f}s")
+    lines.append(T_("⏱ 执行用时", f"{elapsed:.1f}s"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 1. 健康巡检
+    # 健康巡检
     hc = results.get("health_check", {})
     issues = hc.get("issues", [])
     warns = hc.get("warnings", [])
@@ -1366,211 +1370,264 @@ def _format_report(results: Dict, elapsed: float) -> str:
     disk_info = checks.get("disk", {})
     disk_str = f"磁盘 {disk_info.get('usage_pct', '?')}% ({disk_info.get('free_gb', '?')}GB/{disk_info.get('total_gb', '?')}GB)" if disk_info else ""
     if not issues and not warns:
-        lines.append(f"🩺 健康巡检: ✅ 正常 | {disk_str}")
+        lines.append(T_("🩺 健康巡检", f"✅ {disk_str}"))
     else:
         parts = []
         if issues:
-            parts.append(f"🔴 {len(issues)} 个问题")
+            parts.append(f"🔴{len(issues)}")
         if warns:
-            parts.append(f"⚠️ {len(warns)} 个警告")
-        lines.append(f"🩺 健康巡检: {'; '.join(parts)} | {disk_str}")
-        for i in issues:
-            lines.append(f"   🔴 {i}")
-        for w in warns:
-            lines.append(f"   ⚠️ {w}")
+            parts.append(f"⚠️{len(warns)}")
+        lines.append(T_("🩺 健康巡检", f"{' '.join(parts)} {disk_str}"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 5. 垃圾扫描与清理
+    # 垃圾清理
     gc = results.get("garbage_cleanup", {})
     cleaned = gc.get("cleaned", 0)
     freed_kb = gc.get("freed_bytes", 0) / 1024
     if cleaned > 0:
-        lines.append(f"🗑️ 垃圾清理: 清理 {cleaned} 个文件 ({freed_kb:.0f} KB)")
+        lines.append(T_("🗑️ 垃圾清理", f"清理 {cleaned} 个文件 ({freed_kb:.0f} KB)"))
     else:
-        lines.append(f"🗑️ 垃圾清理: 无待清理项 ✅")
+        lines.append(T_("🗑️ 垃圾清理", "✅ 无待清理"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 3. 自纠错
+    # 自纠错
     cc = results.get("correction", {})
     cc_files = cc.get("files_checked", 0)
     cc_paths = cc.get("paths", [])
     cc_ok = all(os.path.exists(p) for p in cc_paths) if cc_paths else True
-    lines.append(f"🔧 自纠错: {'✅ 正常' if cc_ok else '⚠️ 部分缺失'} | 检查 {cc_files} 项")
+    lines.append(T_("🔧 自纠错", f"{'✅ 正常' if cc_ok else '⚠️ 部分缺失'} (检查 {cc_files} 项)"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 4. 记忆维护
+    # 记忆维护
     mem = results.get("memory", {})
     mem_detail = mem.get("detail", {})
     scan_info = mem_detail.get("scan", {}) or {}
     ingested = scan_info.get("entries_ingested", 0)
     archived = mem_detail.get("archive", {}).get("archived", 0)
     promoted = mem.get("steps", {}).get("signal_promote", {}).get("promoted", 0)
-    lines.append(f"🧠 记忆整理: 采集 {ingested} 条 / 梦境提升 {promoted} 条 / 归档 {archived} 条")
+    lines.append(T_("🧠 记忆整理", f"采集 {ingested} / 梦境 {promoted} / 归档 {archived}"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 5. Replay 蒸馏
+    # 蒸馏
     rp = results.get("replay", {})
     if rp.get("status") == "ok":
         records = rp.get("records_count", 0)
         duplicate = rp.get("removed_duplicates", 0)
         reinforced = rp.get("reinforced_count", 0)
-        lines.append(f"🧪 蒸馏: 共 {records} 条 / 去重 {duplicate} 条 / 强化 {reinforced} 条")
+        lines.append(T_("🧪 蒸馏", f"共 {records} / 去重 {duplicate} / 强化 {reinforced}"))
     else:
-        lines.append(f"🧪 蒸馏: {rp.get('status', '跳过')} ({rp.get('reason', rp.get('error', ''))})")
+        lines.append(T_("🧪 蒸馏", rp.get('status', '跳过')[:28]))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 6. 执行复盘
+    # 执行复盘
     rv = results.get("review", {})
     logs_checked = rv.get("logs_checked", 0)
     errors = rv.get("errors_found", 0)
     if errors == 0:
-        lines.append(f"📋 执行复盘: ✅ 检查 {logs_checked} 条日志，无错误")
+        lines.append(T_("📋 执行复盘", f"✅ 检查 {logs_checked} 条日志，无错误"))
     else:
-        lines.append(f"📋 执行复盘: ⚠️ 检查 {logs_checked} 条日志，发现 {errors} 个错误")
+        lines.append(T_("📋 执行复盘", f"⚠️ 检查 {logs_checked} 条，{errors} 个错误"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 7. 技能维护
+    # 技能维护
     cr = results.get("curator", {})
     total_skills = cr.get("total_skills", 0)
     archived_count = cr.get("archived_count", 0)
     stale_count = cr.get("stale_count", 0)
-    active = cr.get("active", 0)
     if archived_count > 0 or stale_count > 0:
-        lines.append(f"📦 技能扫描: 共 {total_skills} 个 / 归档 {archived_count} 个 / 过期 {stale_count} 个")
+        lines.append(T_("📦 技能", f"{total_skills} 个 / 归档 {archived_count} / 过期 {stale_count}"))
     else:
-        lines.append(f"📦 技能扫描: 共 {total_skills} 个，全部活跃 ✅")
+        lines.append(T_("📦 技能", f"{total_skills} 个，全部活跃 ✅"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 8. 异常报告
+    # 异常报告
     ar = results.get("anomaly_report", {})
     ar_level = ar.get("level", "ok")
     if ar_level == "ok" or ar.get("error"):
-        lines.append(f"🚨 异常报告: ✅ 无异常")
+        lines.append(T_("🚨 异常报告", "✅ 无异常"))
     else:
         counts = ar.get("counts", {})
         parts = []
-        if counts.get("critical"):
-            parts.append(f"🔴{counts['critical']}")
-        if counts.get("warning"):
-            parts.append(f"⚠️{counts['warning']}")
-        if counts.get("info"):
-            parts.append(f"ℹ️{counts['info']}")
-        lines.append(f"🚨 异常报告: {' '.join(parts)} | {ar.get('summary', '')[:60]}")
+        if counts.get("critical"): parts.append(f"🔴{counts['critical']}")
+        if counts.get("warning"): parts.append(f"⚠️{counts['warning']}")
+        if counts.get("info"): parts.append(f"ℹ️{counts['info']}")
+        lines.append(T_("🚨 异常报告", f"{' '.join(parts)} {ar.get('summary', '')[:25]}"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 8.2 Pipeline 回灌
+    # Pipeline 回灌
     pf = results.get("pipeline_feedback", {})
     if pf.get("status") == "ok":
-        lines.append(f"📊 Pipeline 回灌: 数据已回灌 quality_dashboard ✅")
+        lines.append(T_("📊 Pipeline", "数据已回灌 ✅"))
     else:
-        lines.append(f"📊 Pipeline 回灌: {pf.get('reason', pf.get('status', '?'))}")
+        lines.append(T_("📊 Pipeline", pf.get('reason', pf.get('status', '?'))[:28]))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 8.5 版本检查
+    # 版本检查
     vc = results.get("version_check", {})
     if vc.get("status") == "current":
-        lines.append(f"🔖 版本检查: {vc.get('current', '?')} 已是最新 ✅")
+        lines.append(T_("🔖 版本检查", f"{vc.get('current', '?')} 已是最新 ✅"))
     elif vc.get("status") == "update_available":
-        lines.append(f"🔖 版本检查: ⚠️ 新版本 {vc.get('latest', '?')} 可用 (当前 {vc.get('current', '?')})")
+        lines.append(T_("🔖 版本检查", f"新版本 {vc.get('latest', '?')} 可用"))
     else:
-        lines.append(f"🔖 版本检查: {'跳过' if vc.get('status')=='skipped' else vc.get('error','?')}")
+        s = '跳过' if vc.get('status') == 'skipped' else vc.get('error', '?')
+        lines.append(T_("🔖 版本检查", s[:28]))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 9. 红线审计
+    # 红线审计
     ra = results.get("redline_audit", {})
+    total_rules = ra.get("total_rules", 0)
+    total_breaches = ra.get("total_breaches", 0)
+    no_fallback = ra.get("rules_without_fallback", 0)
     if ra.get("status") == "skipped":
-        lines.append(f"🚩 红线审计: 跳过")
-    else:
-        total_rules = ra.get("total_rules", 0)
-        total_breaches = ra.get("total_breaches", 0)
-        no_fallback = ra.get("rules_without_fallback", 0)
-        lines.append(f"🚩 红线审计: {total_rules} 条规则 / 累计违规 {total_breaches} 次")
+        lines.append(T_("🚩 红线审计", "跳过"))
+        txt = f"{total_rules} 条 / 违规 {total_breaches} 次"
         if no_fallback > 0:
-            fb_list = ra.get("rules_without_fallback_list", [])
-            lines.append(f"   缺兜底: {no_fallback} 条")
-            for rn in fb_list[:3]:
-                lines.append(f"     - {rn}")
-            if len(fb_list) > 3:
-                lines.append(f"     ... 还有 {len(fb_list)-3} 条")
+            txt += f" / 缺兜底 {no_fallback}"
+        lines.append(T_("🚩 红线审计", txt))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 10. 统一评分
+    # 红线明细
+    if no_fallback > 0:
+        fb_list = ra.get("rules_without_fallback_list", [])
+        fb_names = ', '.join(fb_list[:3])
+        if len(fb_list) > 3:
+            fb_names += f" ...({len(fb_list)-3})"
+        lines.append(T_("   缺兜底规则", fb_names[:28]))
+        lines.append("├──────────────┼──────────────────────────────────────┤")
+
+    # 统一评分
     us = results.get("unified_insight", {})
     if us.get("status") == "skipped":
-        lines.append(f"📈 统一评分: 跳过")
+        lines.append(T_("📈 统一评分", "跳过"))
     else:
         suggestions = us.get("suggestions", [])
-        degrade_fail = us.get("degrade_fail_24h", 0)
         if suggestions:
-            lines.append(f"📈 统一评分: {len(suggestions)} 条改进建议")
-            for sg in suggestions:
-                lines.append(f"   💡 {sg}")
+            lines.append(T_("📈 统一评分", f"{len(suggestions)} 条建议"))
         else:
-            lines.append(f"📈 统一评分: ✅ 系统运行健康，无需建议")
+            degrade_fail = us.get("degrade_fail_24h", 0)
+            txt = "✅ 运行健康"
+            if degrade_fail > 0:
+                txt += f" (降级链失败 {degrade_fail} 次)"
+            lines.append(T_("📈 统一评分", txt))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 12. 会话归档
+    # 梦境步骤
+    dream = results.get("dreaming", {}).get("steps", {})
+    dream_lines_added = False
+    for step_key, step_label in [
+        ("index_merge", "索引合并"),
+        ("cold_hot", "冷热调整"),
+        ("llm_dream", "梦境固化"),
+        ("profile_update", "画像更新"),
+    ]:
+        st = dream.get(step_key, {})
+        if not st:
+            continue
+        if not dream_lines_added:
+            dream_lines_added = True
+        status = st.get("status", "?")
+        if status == "error":
+            icon = "❌"
+        elif status == "ok" or status == "done":
+            icon = "✅"
+        elif status == "skipped":
+            icon = "ℹ️"
+        else:
+            icon = "⏭️"
+        detail = st.get("reason", "")
+        if not detail and status == "done":
+            h = st.get("hot", 0)
+            w = st.get("warm", 0)
+            c = st.get("cold", 0)
+            if h > 0 or w > 0 or c > 0:
+                detail = f"hot={h} warm={w} cold={c}"
+        txt = f"{icon} {status}"
+        if detail:
+            txt += f" {detail[:20]}"
+        lines.append(T_(f"💤 {step_label}", txt))
+        lines.append("├──────────────┼──────────────────────────────────────┤")
+
+    # 会话归档
     sa = results.get("session_archive", {})
     sa_archived = sa.get("archived", 0)
     sa_freed_kb = sa.get("freed_bytes", 0) / 1024 if sa.get("freed_bytes", 0) > 0 else 0
     if sa_archived > 0:
-        lines.append(f"🗄️ 会话归档: 压缩 {sa_archived} 个文件，节省 {sa_freed_kb:.0f} KB")
-        for f in sa.get("files", [])[:5]:
-            lines.append(f"     {f}")
-        if len(sa.get("files", [])) > 5:
-            lines.append(f"     ... 还有 {len(sa.get('files', []))-5} 个")
+        lines.append(T_("🗄️ 会话归档", f"压缩 {sa_archived} 个 (节省 {sa_freed_kb:.0f} KB)"))
     elif sa.get("status") == "no_agents_dir":
-        lines.append(f"🗄️ 会话归档: agents 目录不存在")
+        lines.append(T_("🗄️ 会话归档", "agents 目录不存在"))
     else:
-        lines.append(f"🗄️ 会话归档: 无30天以上旧会话 ✅")
+        lines.append(T_("🗄️ 会话归档", "✅ 无30天以上旧会话"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 13. 技能完整性检查
+    # 技能完整性
     si = results.get("skill_integrity", {})
     si_total = si.get("total", 0)
-    si_missing_md = si.get("missing_skill_md", [])
-
-    si_empty = si.get("empty_dirs", [])
     si_issues = si.get("issues", 0)
     if si_issues > 0:
-        lines.append(f"📦 技能完整性: ⚠️ 共 {si_total} 个技能，发现 {si_issues} 个问题")
-        if si_missing_md:
-            lines.append(f"   缺失 SKILL.md: {', '.join(si_missing_md[:5])}")
-            if len(si_missing_md) > 5:
-                lines.append(f"     ... 还有 {len(si_missing_md)-5} 个")
+        si_missing = si.get("missing_skill_md", [])
+        si_empty = si.get("empty_dirs", [])
+        detail_parts = []
+        if si_missing:
+            detail_parts.append(f"缺SKILL.md: {', '.join(si_missing[:2])}")
+            if len(si_missing) > 2:
+                detail_parts[-1] += f" +{len(si_missing)-2}"
         if si_empty:
-            lines.append(f"   空目录: {', '.join(si_empty[:3])}")
+            detail_parts.append(f"空目录: {', '.join(si_empty[:2])}")
+        lines.append(T_("📦 技能完整性", f"⚠️ {si_total} 个 / {si_issues} 问题"))
+        if detail_parts:
+            for dp in detail_parts:
+                lines.append(T_("   ", dp[:28]))
+                lines.append("├──────────────┼──────────────────────────────────────┤")
     else:
-        lines.append(f"📦 技能完整性: 共 {si_total} 个技能，全部 OK ✅")
+        lines.append(T_("📦 技能完整性", f"{si_total} 个全部 OK ✅"))
+        lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 14. 备份健康度检查
+    # 备份检查
     bh = results.get("backup_health", {})
-    git_status = bh.get("git_status", "无Git仓库")
     git_commits = bh.get("git_commits", 0)
     git_uncommitted = bh.get("git_uncommitted", 0)
-    backup_files = bh.get("backup_files", [])
-    bh_issues = bh.get("issues", [])
     if os.path.isdir(os.path.join(WORKSPACE, ".git")):
-        lines.append(f"🔐 备份检查: Git提交 {git_commits} 次")
+        lines.append(T_("🔐 备份检查", f"Git提交 {git_commits} 次"))
+        backup_files = bh.get("backup_files", [])
+        if backup_files:
+            total_backup_kb = sum(f["size_bytes"] for f in backup_files) / 1024
+            lines.append(T_("   备份文件", f"{len(backup_files)} 个 ({total_backup_kb:.0f} KB)"))
         if git_uncommitted > 0:
-            lines.append(f"   未提交变更: {git_uncommitted} 个文件")
-        if git_status == "clean":
-            lines.append(f"   Git状态: 干净 ✅")
+            lines.append(T_("   未提交", f"{git_uncommitted} 个文件"))
     else:
-        lines.append(f"🔐 备份检查: 无Git仓库")
-    if backup_files:
-        total_backup_kb = sum(f["size_bytes"] for f in backup_files) / 1024
-        names = [f["name"] for f in backup_files[:3]]
-        backup_note = f"   备份文件: {len(backup_files)} 个 ({total_backup_kb:.0f} KB)"
-        if names:
-            backup_note += f" - {', '.join(names)}"
-            if len(backup_files) > 3:
-                backup_note += " ..."
-        lines.append(backup_note)
+        lines.append(T_("🔐 备份检查", "无Git仓库"))
+    lines.append("├──────────────┼──────────────────────────────────────┤")
+
+    bh_issues = bh.get("issues", [])
     if bh_issues:
         for bi in bh_issues:
-            lines.append(f"   ⚠️ {bi}")
+            lines.append(T_("⚠️", bi[:28]))
+        lines.append("├──────────────┼──────────────────────────────────────┤")
 
-    # 其他说明
+    # 建议 + 评分说明
     notes = []
     engine_report = hc.get("engine_report", {})
     if engine_report:
         notes.append(f"引擎评分: {engine_report.get('score', '?')} ({engine_report.get('level', '?')})")
     if us.get("degrade_fail_24h", 0) > 0:
-        notes.append(f"24h 降级链失败 {us.get('degrade_fail_24h', 0)} 次")
+        notes.append(f"降级链失败 {us.get('degrade_fail_24h', 0)} 次")
     if notes:
-        lines.append(f"💬 其他说明: {'; '.join(notes)}")
+        lines.append(T_("💬 其他", '; '.join(notes)[:28]))
     else:
-        lines.append(f"💬 其他说明: 无")
+        lines.append(T_("💬 其他", "无"))
 
-    lines.append("━" * 40)
+    # 异常明细
+    if issues:
+        lines.append("├──────────────┼──────────────────────────────────────┤")
+        for i in issues:
+            lines.append(T_("🔴 问题", i[:28]))
+    if warns:
+        if not issues:
+            lines.append("├──────────────┼──────────────────────────────────────┤")
+        for w in warns:
+            lines.append(T_("⚠️ 警告", w[:28]))
+
+    lines.append("└──────────────┴──────────────────────────────────────┘")
     return "\n".join(lines)
 
 
