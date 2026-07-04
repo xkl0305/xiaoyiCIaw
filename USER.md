@@ -41,13 +41,14 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=3478148dabb848a8 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=94335fa96a5249c4 -->
 # Memory Global Summary
 
 ## User Profile
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户认为当前系统可能无法实现Markdown表格渲染，并确认有此需求
 - 用户询问是否有出图和出视频的AI模型
 - 用户询问重启是否成功
 - 用户指出自己习惯性回车，需要固化进化收尾签字流程的规范
@@ -62,11 +63,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求查看清单的完整图，并最终要求恢复之前的渲染样式
+- 用户要求重新执行所有定时任务
+- 用户要求重新执行所有定时任务
+- 用户要求将凌晨每日维护的输出从当前格式改为表格形式
 - 助手没有按用户要求推送三个仓库，用户对此表示不满
-- 用户要求输出人格视角出图系统相关内容
-- 用户要求测试横屏尺寸图、正方形尺寸图和竖屏尺寸图
-- 用户要求测试4K或8K分辨率出图
-- 用户要求以2K分辨率出图，并询问大概能调整到多大尺寸
 ### Short-term Intent
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 - 用户询问当前助手的记忆是由什么主导的

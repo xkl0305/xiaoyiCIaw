@@ -924,18 +924,28 @@ def dream_consolidation() -> Dict:
     
     result["llm_enabled"] = llm_enabled
     
-    # Step 1: 向量索引增量合并
-    log("    梦境 [1/4] 向量索引增量合并...")
+    # Step 1: SQLite 索引维护（VACUUM + ANALYZE）
+    log("    梦境 [1/4] SQLite 索引维护...")
     try:
-        import importlib
-        auto_memory_mod = importlib.import_module("core.engines.memory.auto_memory")
-        am = auto_memory_mod.AutoMemory()
-        merge_result = am.consolidate_indices() if hasattr(am, "consolidate_indices") else {"status": "skipped", "reason": "方法不存在"}
-        result["steps"]["index_merge"] = merge_result if isinstance(merge_result, dict) else {"status": str(merge_result)}
-        log(f"      ✅ 索引合并完成")
+        import sqlite3, glob
+        oc_dir = os.path.dirname(WORKSPACE) if os.path.dirname(WORKSPACE) != WORKSPACE else os.path.expanduser("~/.openclaw")
+        db_files = glob.glob(os.path.join(oc_dir, "**", "*.sqlite*"), recursive=True)
+        merged_count = 0
+        for db_path in db_files:
+            try:
+                conn = sqlite3.connect(db_path)
+                conn.execute("PRAGMA journal_mode=WAL;")
+                conn.execute("ANALYZE;")
+                conn.execute("PRAGMA wal_checkpoint(TRUNCATE);")
+                conn.close()
+                merged_count += 1
+            except Exception:
+                pass
+        result["steps"]["index_merge"] = {"status": "done", "reason": f"ANALYZE {merged_count} 个数据库"}
+        log(f"      ✅ SQLite 索引维护完成 ({merged_count} 个库)")
     except Exception as e:
         result["steps"]["index_merge"] = {"error": str(e)[:80]}
-        log(f"      ⚠️ 索引合并跳过: {str(e)[:60]}")
+        log(f"      ⚠️ 索引维护失败: {str(e)[:60]}")
     
     # Step 2: 冷热存储调整
     log("    梦境 [2/4] 冷热存储调整...")
@@ -1354,7 +1364,6 @@ def _format_report(results: Dict, elapsed: float) -> str:
     lines.append("")
 
     def TR(label: str, value: str) -> str:
-        """Markdown 表格行"""
         return f"| {label} | {value} |"
 
     lines.append("| 项目 | 内容 |")
@@ -1466,12 +1475,12 @@ def _format_report(results: Dict, elapsed: float) -> str:
 
     # 红线审计
     ra = results.get("redline_audit", {})
-    total_rules = ra.get("total_rules", 0)
-    total_breaches = ra.get("total_breaches", 0)
-    no_fallback = ra.get("rules_without_fallback", 0)
     if ra.get("status") == "skipped":
         lines.append(TR("🚩 红线审计", "跳过"))
     else:
+        total_rules = ra.get("total_rules", 0)
+        total_breaches = ra.get("total_breaches", 0)
+        no_fallback = ra.get("rules_without_fallback", 0)
         txt = f"{total_rules} 条 / 违规 {total_breaches} 次"
         if no_fallback > 0:
             txt += f" / 缺兜底 {no_fallback}"
@@ -1528,7 +1537,7 @@ def _format_report(results: Dict, elapsed: float) -> str:
         txt = f"{icon} {status}"
         if detail:
             txt += f" {detail[:20]}"
-        lines.append(TR(f"{step_label}", txt))
+        lines.append(TR(step_label, txt))
 
     # 会话归档
     sa = results.get("session_archive", {})

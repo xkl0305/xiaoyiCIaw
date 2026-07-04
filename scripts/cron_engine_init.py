@@ -74,7 +74,7 @@ if os.path.exists(status_file):
 healthy = f"✅ {success}/{total} 就绪 · 0 告警" if not fails else f"✅ {success}/{total} 就绪 · ⚠️ {len(fails)} 异常"
 
 table = f"""| 指标 | 值 |
-|---|---|
+|------|------|
 | ⚙️ 引擎 | {healthy} |
 | 📡 版本 | {ver_note} |
 | 🆔 系统 | {sys_id} |
