@@ -327,6 +327,14 @@
       "enabled": true,
       "description": "Self-RAG + CRAG 引擎：注入真实LLM的检索增强生成+纠错校验（galaxyos_modules移植）",
       "version": "1.0.0"
+    },
+    {
+      "name": "persona_visual",
+      "module": "core.engines.persona.persona_visual_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "鸽子王人格视觉出图引擎：注册全管线（控制器/衣柜/提示词/焦点解析/负向守卫），运行时按七情情绪+场景匹配触发seedream生图",
+      "version": "1.0.0"
     }
   ]
 }

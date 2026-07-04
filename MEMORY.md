@@ -2662,14 +2662,14 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=758d59b07e66691b -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=b0591b15112a68d5 -->
 # Celia Scenario Memory Summaries
 
 - [life_assistant] 用户在2026-07-03凌晨5点多醒来，早上发送了问候消息。当日在17:25之后，用户说了晚安，表示要结束对话或去睡觉。此外，用户的日常事务辅助与决策主要涉及出行旅行、文件管理和生活决策等子场景。
 - [smart_office] 由Celia主导的A方案，用户要求记住。用户之后询问是否出现bug。
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
 - [creative_creation] 该场景涉及图像创作、内容写作、可视化设计等子场景。
-- [professional_dev] 用户确认了重启成功，需要推送仓库。用户决定暂时不推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py` 这两个文件。用户询问了 `tc-chengxin/` 目录下的20多个文件改动是什么，并决定将该目录下的改动也推送。用户还询问了一个包含3326行删除的改动。
+- [professional_dev] 用户确认了重启成功，需要推送仓库。用户决定暂时不推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py` 这两个文件。用户询问了 `tc-chengxin/` 目录下的20多个文件改动是什么，并决定将该目录下的改动也推送。用户还询问了一个包含3326行删除的改动。用户要求将仓库内容进行推送。用户之前在仓库
 - [knowledge_research] 用户询问了以下三个问题：
 - [emergent_scn-DR0000019F1494132E00000001-3] 在令牌同步场景中，用户指定 Gitee 作为同步目标，并提供了 Gitee 与 GitHub 两个平台的个人访问令牌。用户确认需要修改指定的 Gitee 仓库，并采纳了使用 Gitee 令牌的方案A，过程中还询问了助手是否具有分身能力。
 - [emergent_scn-DR0000019F1494132E00000001-1] 用户在与系统交互过程中，提供了多个用于接口调用的关键信息，主要围绕 Gitee 和 GitHub 两大平台的 Personal Access Token 及 API 连接配置。用户希望使用 Gitee 的 Serverless API 来替代 OpenAI 接口，并给出了相应的链接、代码示例及 Token。

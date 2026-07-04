@@ -7,7 +7,7 @@
   "resolved_seed_avatar_path": "assets/persona/seed_avatar.jpg",
   "sha256": "f8e59b54cd534dc7460b5c3cf13ed6fa0fa397dbb64c6bc21908d9f4136bdd91",
   "size_bytes": 1019258,
-  "updated_at": "2026-05-15 22:21:33",
+  "updated_at": "2026-07-04 11:02:10",
   "source": "canonical_existing",
   "identity_rules": [
     "Use this avatar image as the only character identity source.",

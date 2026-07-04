@@ -375,13 +375,22 @@
           }
         },
         "enabled": true
+      },
+      "persona-visual": {
+        "enabled": true,
+        "config": {
+          "enabled": true,
+          "dryRun": false,
+          "workspacePath": "/home/sandbox/.openclaw/workspace"
+        }
       }
     },
     "load": {
       "paths": [
         "/home/sandbox/core_plugins/execution-validator-plugin",
         "/home/sandbox/.openclaw/extensions/celia_memory/install/current/memory-plugin",
-        "/home/sandbox/.openclaw/extensions/yaoyao-memory"
+        "/home/sandbox/.openclaw/extensions/yaoyao-memory",
+        "/home/sandbox/.openclaw/workspace/plugins/persona-visual"
       ]
     },
     "slots": {
@@ -474,5 +483,41 @@
     "sessions": {
       "visibility": "all"
     }
+  },
+  "personaVisual": {
+    "enabled": true,
+    "predictiveSuggestion": true,
+    "generationConsentMode": "auto_with_budget",
+    "autoGenerate": true,
+    "autoGenerateRequiresBudget": true,
+    "confidenceThreshold": 0.82,
+    "strongThreshold": 0.82,
+    "midHighThreshold": 0.65,
+    "midLowThreshold": 0.5,
+    "recordOnlyThreshold": 0.3,
+    "cooldownTurns": 0,
+    "dailyAutoGenerateLimit": 100,
+    "externalProvider": "seedream",
+    "seedAvatarPath": "assets/persona/seed_avatar.jpg",
+    "canonicalSeedPath": "assets/persona/seed_avatar.jpg",
+    "avatarSeedBinding": "direct_avatar_equals_seed",
+    "identitySource": "seed_avatar_image_only",
+    "identityTextPromptMode": "seed_lock_only",
+    "sceneTriggerMode": "semantic_scene",
+    "seedIdentityConsistency": "strict",
+    "seedReferenceRequired": true,
+    "seedReferenceWeight": 100,
+    "defaultMode": "auto_with_budget",
+    "userStandingConsent": true,
+    "activeRuntime": "memory_context.persona_runtime",
+    "legacyRuntimePolicy": "shim_only",
+    "triggerSourcePolicy": "assistant_lobster_output_first",
+    "fuzzyMatchingEnabled": true,
+    "nearSynonymMatchingEnabled": true,
+    "userStyleAdaptiveMatching": true,
+    "visualScope": "persona_scene_auto_only",
+    "autoTriggerScope": "persona_scene_auto_only",
+    "genericImageGenerationUsesAvatarSeed": false,
+    "avatarSeedNeverUsedForGenericImage": true
   }
 }

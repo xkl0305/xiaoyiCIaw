@@ -1,0 +1,23 @@
+{
+  "id": "persona-visual",
+  "name": "Persona Visual",
+  "description": "鸽子王人格视觉出图：对话前后挂 hook，通过 seedream 出图",
+  "contracts": {
+    "tools": []
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "hooks": {
+    "allowConversationAccess": true
+  },
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "enabled": { "type": "boolean", "default": true },
+      "dryRun": { "type": "boolean", "default": false },
+      "workspacePath": { "type": "string", "default": "/home/sandbox/.openclaw/workspace" }
+    },
+    "additionalProperties": false
+  }
+}

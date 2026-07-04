@@ -556,6 +556,113 @@ def init_default_hooks():
         post_fn=hallucination_guard_post
     ))
 
+    # 15. 人格视觉 pre-reply — 意图识别 + 情绪跟踪
+    _persona_visual_mood: Dict[str, str] = {}  # session_key → last_mood
+
+    def persona_visual_pre(ctx):
+        """pre-reply: 检测用户输入是否触发视觉场景，记录当前情绪上下文"""
+        try:
+            text = str(ctx.get("content", ctx.get("user_message", "")))
+            session_key = ctx.get("session_key", "default")
+            if not text:
+                return "persona_visual_pre: empty"
+
+            # 路由判断
+            from xiaoyi_persona_visual.router.visual_request_router import is_persona_visual_request
+            is_pv = is_persona_visual_request(text)
+            if not is_pv:
+                return "persona_visual_pre: no visual request"
+
+            # 粗略情绪映射（从文本关键词推断）
+            mood = "calm"
+            text_lower = text.lower()
+            if any(kw in text for kw in ["开心", "高兴", "哈哈", "笑", "nice", "太好了", "冲啊"]):
+                mood = "excited"
+            elif any(kw in text for kw in ["生气", "火大", "无语", "忍不了", "烦"]):
+                mood = "angry"
+            elif any(kw in text for kw in ["伤心", "难过", "哭了", "失落", "低落"]):
+                mood = "sad"
+            elif any(kw in text for kw in ["害羞", "尴尬", "不好意思", "社死"]):
+                mood = "shy"
+            elif any(kw in text for kw in ["好奇", "有趣", "什么情况"]):
+                mood = "curious"
+            elif any(kw in text for kw in ["搞定", "完成", "好了", "done", "ok"]):
+                mood = "success_moment"
+
+            # 存入上下文供 post-reply 使用
+            ctx["_persona_visual_request"] = True
+            ctx["_persona_mood"] = mood
+            _persona_visual_mood[session_key] = mood
+            return f"persona_visual_pre: request detected, mood={mood}"
+
+        except Exception as e:
+            logger = __import__("logging").getLogger("persona_visual")
+            logger.warning(f"persona_visual_pre failed: {e}")
+            return f"persona_visual_pre: error - {str(e)[:50]}"
+
+    engine.register(Hook(
+        "persona-visual-pre",
+        LockLevel.OPTIONAL,
+        pre_fn=persona_visual_pre
+    ))
+
+    # 16. 人格视觉 post-reply — 情绪关联 + 触发出图
+    _post_cooldown: Dict[str, float] = {}  # session_key → last_trigger_time
+
+    def persona_visual_post(ctx):
+        """post-reply: 根据 pre 标记 + 当前回复情绪触发生图"""
+        try:
+            is_pv = ctx.get("_persona_visual_request", False)
+            if not is_pv:
+                return "persona_visual_post: not a visual request"
+
+            # 冷却控制：同一 session 30 秒内不重复触发
+            session_key = ctx.get("session_key", "default")
+            now = time.time()
+            if session_key in _post_cooldown and now - _post_cooldown[session_key] < 30:
+                return "persona_visual_post: cooldown"
+
+            mood = ctx.get("_persona_mood", "calm")
+            reply_text = str(ctx.get("content", ctx.get("assistant_message", "")))
+
+            # 七情→场景映射
+            qiqi_mood_to_scene = {
+                "excited": "energy_burst_scene",
+                "angry": "incident_scene",
+                "sad": "comfort_scene",
+                "shy": "bashful_scene",
+                "curious": "curiosity_scene",
+                "success_moment": "approval_scene",
+                "calm": "daily_presence_scene",
+            }
+            scene = qiqi_mood_to_scene.get(mood, "display_appearance_scene")
+
+            # 通过 helper 触发生图
+            from xiaoyi_persona_visual.helpers.generate_persona_visual_request import generate_persona_visual_request
+            result = generate_persona_visual_request(
+                text=reply_text or mood,
+                dry_run=False,
+                trigger_source="post_reply",
+                request_id=f"pv_{session_key}_{int(now)}"
+            )
+
+            _post_cooldown[session_key] = now
+            status = result.get("status", "unknown")
+            return f"persona_visual_post: mood={mood}, scene={scene}, generation={status}"
+
+        except ImportError:
+            return "persona_visual_post: helper not available"
+        except Exception as e:
+            logger = __import__("logging").getLogger("persona_visual")
+            logger.warning(f"persona_visual_post failed: {e}")
+            return f"persona_visual_post: error - {str(e)[:50]}"
+
+    engine.register(Hook(
+        "persona-visual-post",
+        LockLevel.OPTIONAL,
+        post_fn=persona_visual_post
+    ))
+
     return engine
 
 

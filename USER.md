@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ea79fd83c0d3a24a -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ccf5756f94a2ef59 -->
 # Memory Global Summary
 
 ## Preferences
@@ -58,11 +58,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求接上那些文件存在但完全没接线的模块
-- 用户要求接上有桥接线但没接上的模块
-- 用户要求检查哪些模块已经接线并跑起来了，哪些没有接和没有跑
-- 用户指示将未拆解过的组件全部拆下来并集成
-- 用户要求进行'拆下来集成'的操作，目标是获取所有未拆解过的组件并拆解集成
+- 用户询问是否有一个用于存储".learnings/"文件以避免重复犯错的位置，并要求助手在每次会话开始时读取该文件
+- 用户要求助手介绍已安装的"self-improving-agent"技能，并给出快速开始样例
+- 用户已安装名为"wenjuan-survey"的skill（技能），并希望了解其介绍和快速开始样例
+- 用户已安装名为"brand-logo-designer"的skill（技能），并希望了解其介绍和快速开始样例
+- 用户已安装名为"travel-plan-designer"的skill（技能），并希望了解其介绍和快速开始样例
 ### Short-term Intent
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 - 用户询问当前助手的记忆是由什么主导的

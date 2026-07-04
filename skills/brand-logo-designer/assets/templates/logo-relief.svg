@@ -1,0 +1,25 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="暮山归远 浮雕云纹 Logo">
+  <title>暮山归远 · 浮雕云纹</title>
+  <desc>层叠暮山搭配流云线条，浅浮雕质感模拟礼盒与瓶身工艺，古典大气</desc>
+  <defs>
+    <linearGradient id="gb1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D4A3E" stop-opacity="0.9"/><stop offset="100%" stop-color="#2D4A3E" stop-opacity="0.5"/></linearGradient>
+    <linearGradient id="gb2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#3A5C4E" stop-opacity="0.8"/><stop offset="100%" stop-color="#2D4A3E" stop-opacity="0.6"/></linearGradient>
+    <linearGradient id="gb3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4A6A5A" stop-opacity="0.7"/><stop offset="100%" stop-color="#3A5C4E" stop-opacity="0.5"/></linearGradient>
+    <linearGradient id="gb4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#5A7A6A" stop-opacity="0.5"/><stop offset="100%" stop-color="#4A6A5A" stop-opacity="0.3"/></linearGradient>
+    <linearGradient id="ggold" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#C9A96E" stop-opacity="0.5"/><stop offset="50%" stop-color="#C9A96E" stop-opacity="0.15"/><stop offset="100%" stop-color="#C9A96E" stop-opacity="0.5"/></linearGradient>
+  </defs>
+  <ellipse cx="300" cy="220" rx="220" ry="140" fill="#C9A96E" opacity="0.03"/>
+  <path d="M 0,240 Q 80,170 160,210 Q 240,160 330,190 Q 420,150 500,180 Q 560,160 600,190 L 600,360 L 0,360 Z" fill="url(#gb4)" stroke="#C9A96E" stroke-width="0.5" opacity="0.5"/>
+  <path d="M 80,230 C 120,220 140,238 180,225 C 220,212 240,230 280,218" fill="none" stroke="#C9A96E" stroke-width="1.2" opacity="0.25" stroke-linecap="round"/>
+  <path d="M 0,270 Q 100,210 190,240 Q 280,190 380,230 Q 460,190 530,220 Q 570,200 600,230 L 600,360 L 0,360 Z" fill="url(#gb3)" stroke="#C9A96E" stroke-width="0.6" opacity="0.55"/>
+  <path d="M 180,255 C 220,240 250,258 300,245 C 350,232 370,250 420,238" fill="none" stroke="#C9A96E" stroke-width="1" opacity="0.2" stroke-linecap="round"/>
+  <path d="M 0,310 Q 130,250 240,280 Q 340,230 440,270 Q 510,240 540,260 Q 570,245 600,270 L 600,360 L 0,360 Z" fill="url(#gb2)" stroke="#C9A96E" stroke-width="0.7" opacity="0.6"/>
+  <path d="M 280,280 C 320,268 340,285 390,272 C 440,259 460,278 510,265" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.3" stroke-linecap="round"/>
+  <path d="M 0,340 Q 180,290 300,320 Q 420,280 600,330 L 600,360 L 0,360 Z" fill="url(#gb1)" stroke="#C9A96E" stroke-width="0.8" opacity="0.65"/>
+  <rect x="30" y="40" width="540" height="290" rx="4" fill="none" stroke="url(#ggold)" stroke-width="0.8" opacity="0.4"/>
+  <rect x="35" y="45" width="530" height="280" rx="3" fill="none" stroke="url(#ggold)" stroke-width="0.3" opacity="0.2"/>
+  <g transform="translate(300,348)">
+    <rect x="-70" y="-14" width="140" height="28" rx="3" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.4"/>
+    <text x="0" y="4" text-anchor="middle" font-family="Georgia,'Noto Serif SC','Songti SC',serif" font-size="13" fill="#C9A96E" letter-spacing="6" opacity="0.75">暮山归远</text>
+  </g>
+</svg>

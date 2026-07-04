@@ -1,0 +1,16 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="暮山归远 现代极简山峦 Logo">
+  <title>暮山归远 · 现代极简</title>
+  <desc>以极简线条勾勒暮色山峦，克制留白，体现高端香氛品牌的静谧美学</desc>
+  <defs>
+    <linearGradient id="gm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#C9A96E" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#C9A96E" stop-opacity="0.04"/>
+    </linearGradient>
+  </defs>
+  <polygon points="160,320 260,100 340,200 400,130 480,320" fill="url(#gm)" stroke="#C9A96E" stroke-width="1.8" stroke-linejoin="round"/>
+  <polyline points="220,320 290,160 340,240 380,170 450,320" fill="none" stroke="#C9A96E" stroke-width="0.8" opacity="0.35" stroke-dasharray="3,5"/>
+  <line x1="120" y1="320" x2="480" y2="320" stroke="#C9A96E" stroke-width="1.2" opacity="0.5"/>
+  <line x1="335" y1="100" x2="335" y2="40" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" opacity="0.3"/>
+  <circle cx="335" cy="32" r="3" fill="#C9A96E" opacity="0.25"/>
+  <text x="300" y="348" text-anchor="middle" font-family="Georgia,'Noto Serif SC','Songti SC',serif" font-size="18" fill="#F5F0E8" letter-spacing="10" opacity="0.85">暮山归远</text>
+</svg>

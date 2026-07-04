@@ -1,0 +1,26 @@
+<svg viewBox="0 0 600 360" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="暮山归远 水墨写意 Logo">
+  <title>暮山归远 · 水墨写意</title>
+  <desc>以SVG路径模拟毛笔水墨笔触，层叠晕染营造山中暮色的写意意境</desc>
+  <defs>
+    <linearGradient id="gw1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2D4A3E" stop-opacity="0.35"/><stop offset="100%" stop-color="#2D4A3E" stop-opacity="0.05"/></linearGradient>
+    <linearGradient id="gw2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4A3728" stop-opacity="0.2"/><stop offset="100%" stop-color="#4A3728" stop-opacity="0.02"/></linearGradient>
+    <filter id="fb"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="fs"><feGaussianBlur stdDeviation="1.5"/></filter>
+  </defs>
+  <ellipse cx="300" cy="220" rx="240" ry="100" fill="#2D4A3E" opacity="0.05" filter="url(#fb)"/>
+  <path d="M 120,330 C 180,300 200,230 250,210 C 290,195 310,150 360,140 C 400,130 430,175 470,175 C 500,175 520,210 540,220" fill="none" stroke="#2D4A3E" stroke-width="14" stroke-linecap="round" opacity="0.75" filter="url(#fs)"/>
+  <path d="M 120,330 C 180,300 200,230 250,210 C 290,195 310,150 360,140 C 400,130 430,175 470,175 C 500,175 520,210 540,220" fill="none" stroke="#2D4A3E" stroke-width="8" stroke-linecap="round" opacity="0.55"/>
+  <path d="M 80,350 C 160,330 190,250 280,240 C 340,230 380,185 460,175 C 500,170 540,200 570,210" fill="none" stroke="#4A3728" stroke-width="10" stroke-linecap="round" opacity="0.3" filter="url(#fs)"/>
+  <path d="M 160,320 C 220,280 240,230 310,210 C 360,195 380,170 440,160 C 480,155 510,190 540,195 L 540,340 L 160,340 Z" fill="url(#gw1)"/>
+  <path d="M 220,340 C 280,310 300,260 370,240 C 420,225 440,195 500,185 L 500,340 Z" fill="url(#gw2)"/>
+  <circle cx="200" cy="210" r="2.5" fill="#2D4A3E" opacity="0.5"/>
+  <circle cx="370" cy="125" r="1.5" fill="#4A3728" opacity="0.4"/>
+  <circle cx="440" cy="150" r="2" fill="#2D4A3E" opacity="0.35"/>
+  <circle cx="210" cy="200" r="1" fill="#2D4A3E" opacity="0.6"/>
+  <path d="M 330,140 C 335,110 340,80 345,55" fill="none" stroke="#C9A96E" stroke-width="1.5" stroke-linecap="round" opacity="0.35"/>
+  <g transform="translate(485,115)">
+    <rect x="-18" y="-18" width="36" height="36" rx="2" fill="none" stroke="#6B3A3A" stroke-width="2" opacity="0.5"/>
+    <text x="0" y="2" text-anchor="middle" font-family="Georgia,'Noto Serif SC','Songti SC',serif" font-size="11" fill="#6B3A3A" opacity="0.6">远</text>
+  </g>
+  <text x="300" y="352" text-anchor="middle" font-family="Georgia,'Noto Serif SC','Songti SC',serif" font-size="14" fill="#F5F0E8" letter-spacing="6" opacity="0.6">暮山归远</text>
+</svg>
