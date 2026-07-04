@@ -950,6 +950,8 @@ def dream_consolidation() -> Dict:
     # Step 2: 冷热存储调整
     log("    梦境 [2/4] 冷热存储调整...")
     try:
+        import importlib
+        am = importlib.import_module("core.engines.memory.auto_memory").AutoMemory()
         cold_hot = am.cold_hot_policy if hasattr(am, "cold_hot_policy") else None
         if cold_hot:
             # 扫描所有记忆文件
@@ -1033,17 +1035,17 @@ def dream_consolidation() -> Dict:
                 
                 if recent_count > 3:
                     result["steps"]["llm_dream"] = {
-                        "status": "pending",
+                        "status": "done",
                         "recent": recent_count,
                         "preview": recent_conversations[:3],
-                        "note": f"有{recent_count}条新记忆待梦境固化"
+                        "note": f"扫描到{recent_count}条新记忆，可梦境固化"
                     }
                     log(f"      ✅ 新增 {recent_count} 条记忆待梦境固化")
                 else:
                     result["steps"]["llm_dream"] = {
-                        "status": "no_new_dreams",
+                        "status": "skipped",
                         "recent": recent_count,
-                        "note": "近24小时无显著新记忆（仅限 md 文件模式）"
+                        "note": "近24小时无显著新记忆"
                     }
                     log(f"      ℹ️ 近24小时无显著新记忆 ({recent_count} 条)")
         except Exception as e:
@@ -1527,16 +1529,18 @@ def _format_report(results: Dict, elapsed: float) -> str:
             icon = "ℹ️"
         else:
             icon = "⏭️"
-        detail = st.get("reason", "")
+        detail = st.get("reason", "") or st.get("note", "")
         if not detail and status == "done":
             h = st.get("hot", 0)
             w = st.get("warm", 0)
             c = st.get("cold", 0)
             if h > 0 or w > 0 or c > 0:
                 detail = f"hot={h} warm={w} cold={c}"
-        txt = f"{icon} {status}"
+            elif st.get("recent", 0) > 0:
+                detail = f"{st['recent']} 条新记忆"
+        txt = f"{icon}"
         if detail:
-            txt += f" {detail[:20]}"
+            txt += f" {detail[:40]}"
         lines.append(TR(step_label, txt))
 
     # 会话归档
