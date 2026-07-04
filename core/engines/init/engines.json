@@ -287,6 +287,46 @@
       "enabled": true,
       "description": "使用洞察引擎：Token/成本/模型/工具/活跃度统计（exec_logger数据源）",
       "version": "7.0.0"
+    },
+    {
+      "name": "hierarchical_memory",
+      "module": "core.engines.memory.hierarchical_memory_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "层次化记忆引擎：工作集/近期集/归档集三级调度，减少冗余召回（galaxyos_modules移植）",
+      "version": "1.0.0"
+    },
+    {
+      "name": "hallucination_guard",
+      "module": "core.engines.quality.hallucination_guard_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "防幻觉守护引擎：自熟悉度检测/来源溯源/冲突检测/置信度衰减（galaxyos_modules移植）",
+      "version": "1.0.0"
+    },
+    {
+      "name": "rccam_classifier",
+      "module": "core.engines.quality.rccam_classifier_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "R-CCAM查询分类引擎：用户输入分流（simple直答 vs complex走管线）（galaxyos_modules移植）",
+      "version": "1.0.0"
+    },
+    {
+      "name": "lfm_skill_bank",
+      "module": "core.engines.memory.lfm_skill_bank_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "LFM技能库引擎：从记忆轨迹自动发现/升级/维护可复用技能（galaxyos_modules移植）",
+      "version": "1.0.0"
+    },
+    {
+      "name": "selfrag_crag",
+      "module": "core.engines.quality.selfrag_crag_engine",
+      "init_fn": "init",
+      "enabled": true,
+      "description": "Self-RAG + CRAG 引擎：注入真实LLM的检索增强生成+纠错校验（galaxyos_modules移植）",
+      "version": "1.0.0"
     }
   ]
 }

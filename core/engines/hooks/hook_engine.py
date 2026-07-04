@@ -515,6 +515,47 @@ def init_default_hooks():
         post_fn=save_writing_draft_and_learn
     ))
 
+    # 13. R-CCAM 查询分类钩子 — 用户输入提前分流（OPTIONAL）
+    def rccam_classifier_pre(ctx):
+        try:
+            from core.engines.quality.rccam_classifier_engine import RCCAMClassifierEngine
+            engine = RCCAMClassifierEngine()
+            return engine.pre_hook(ctx)
+        except Exception as e:
+            logger = __import__("logging").getLogger("rccam_classifier_engine")
+            logger.warning(f"rccam_classifier 加载失败: {e}")
+            return "rccam_classifier: skipped"
+
+    engine.register(Hook(
+        "rccam-classifier",
+        LockLevel.OPTIONAL,
+        pre_fn=rccam_classifier_pre
+    ))
+
+    # 14. 防幻觉守护钩子 — 输出验证（OPTIONAL）
+    def hallucination_guard_post(ctx):
+        try:
+            from core.engines.quality.hallucination_guard_engine import HallucinationGuardEngine
+            guard = HallucinationGuardEngine()
+            content = str(ctx.get("content", ""))
+            if len(content) > 20:
+                result = guard.validate_output(content)
+                if not result["passed"]:
+                    ctx["hallucination_warning"] = result
+                    return f"hallucination_guard: ⚠️ {len(result.get('issues', []))} issues (risk={result.get('risk_level','unknown')})"
+                return f"hallucination_guard: ✅ passed (risk={result.get('risk_level','low')})"
+            return "hallucination_guard: skipped (content too short)"
+        except Exception as e:
+            logger = __import__("logging").getLogger("hallucination_guard_engine")
+            logger.warning(f"hallucination_guard 加载失败: {e}")
+            return "hallucination_guard: skipped"
+
+    engine.register(Hook(
+        "hallucination-guard",
+        LockLevel.OPTIONAL,
+        post_fn=hallucination_guard_post
+    ))
+
     return engine
 
 

@@ -24,8 +24,8 @@ IDENTITY_FILE = os.path.join(STATE_DIR, "system_identity.json")
 # 引擎分组统计（硬编码以防运行时目录不可用）
 ENGINE_GROUPS = {
     "init": {"label": "初始化", "count": 13},
-    "memory": {"label": "记忆系统", "count": 8},
-    "quality": {"label": "质量验证", "count": 12},
+    "memory": {"label": "记忆系统", "count": 10},
+    "quality": {"label": "质量验证", "count": 15},
     "operations": {"label": "操作执行", "count": 8},
     "workflow": {"label": "工作流", "count": 8},
     "tools": {"label": "工具管理", "count": 14},

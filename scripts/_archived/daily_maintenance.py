@@ -17,6 +17,9 @@ daily_maintenance.py — 统一每日维护 v7.1.0
   12. 红线审计 / 统一评分趋势分析
   13. TODO归档 / 子Agent清理 / 消息队列清理
   14. 梦境固化
+  15. 情绪分析（批量分析今日对话情绪标签）
+  16. 技能库喂养（从今日记忆轨迹自动发现/升级技能）
+  17. 输出质量校验（Self-RAG/CRAG 批量验证今日输出的可靠性）
 
 统一在凌晨 1:00 运行，合并为一个任务。
 
@@ -1221,6 +1224,78 @@ def run() -> Dict:
     results["skill_integrity"] = skill_integrity_check()
     results["backup_health"] = backup_health_check()
     results["dreaming"] = dream_consolidation()
+
+    # 15. 情绪分析（批量分析今日对话情绪）
+    try:
+        _log("    情绪分析 [15/15] 批量分析今日对话情绪...")
+        sys.path.insert(0, os.path.join(WORKSPACE, "scripts"))
+        from emotion_bridge import batch_analyze_daily_file
+        daily_path = Path.home() / ".openclaw" / "workspace" / "memory" / f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.md"
+        emotion_result = batch_analyze_daily_file(daily_path)
+        results["emotion_analysis"] = emotion_result
+        if emotion_result.get("status") == "ok":
+            dominant = emotion_result.get("dominant_emotion", "unknown")
+            total = emotion_result.get("total_lines", 0)
+            log(f"      ✅ 情绪分析完成: 主导={dominant}, 总条数={total}")
+        else:
+            log(f"      ⏭️  情绪分析跳过: {emotion_result.get('reason', 'unknown')}")
+    except Exception as e:
+        _log_error("emotion_analysis", str(e)[:120])
+        results["emotion_analysis"] = {"status": "error", "error": str(e)[:120]}
+
+    # 16. 技能库喂养（LFM Skill Bank）
+    try:
+        _log("    技能库 [16/16] 从今日记忆喂养技能库...")
+        import sys as _sys
+        _sys.path.insert(0, os.path.join(WORKSPACE, "scripts", "galaxyos_modules"))
+        from lfm_skill_bank import feed_memory_to_skill_bank
+        import sqlite3
+        today_start = datetime.now(BEIJING_TZ).replace(hour=0, minute=0, second=0, microsecond=0)
+        today_ts = int(today_start.timestamp() * 1000)
+        db_path = os.path.expanduser("~/.openclaw/memory/main.sqlite")
+        memories = []
+        if os.path.exists(db_path):
+            conn = sqlite3.connect(db_path)
+            conn.row_factory = sqlite3.Row
+            cur = conn.cursor()
+            try:
+                cur.execute("SELECT content, source, created_at FROM yaoyao_memories WHERE created_at >= ? ORDER BY created_at ASC LIMIT 500", (today_ts,))
+                for row in cur.fetchall():
+                    memories.append({"content": row["content"] or "", "source": row["source"] or "conversation", "timestamp": row["created_at"] / 1000, "created_at": row["created_at"] / 1000, "metadata": {}})
+            except Exception:
+                pass
+            conn.close()
+        skill_result = {"status": "skip", "reason": "no memories"}
+        if memories:
+            try:
+                skill_result = feed_memory_to_skill_bank(memories, WORKSPACE)
+                skill_result["total_memories"] = len(memories)
+            except Exception as e2:
+                skill_result = {"status": "error", "error": str(e2)[:120]}
+        results["skill_bank"] = skill_result
+        ing = skill_result.get("ingested", 0)
+        disc = skill_result.get("discovered", 0)
+        prom = skill_result.get("promoted", 0)
+        log(f"      {'✅' if skill_result.get('status') == 'ok' else '⏭️'} 技能库: ingested={ing}, discovered={disc}, promoted={prom}")
+    except Exception as e:
+        _log_error("skill_bank", str(e)[:120])
+        results["skill_bank"] = {"status": "error", "error": str(e)[:120]}
+
+    # 17. 输出质量校验（Self-RAG/CRAG）
+    try:
+        _log("    输出校验 [17/17] 批量验证今日输出可靠性...")
+        _sys.path.insert(0, os.path.join(WORKSPACE, "scripts", "galaxyos_modules"))
+        from core.engines.quality.selfrag_crag_engine import SelfRAGCragEngine
+        rag_engine = SelfRAGCragEngine()
+        rag_result = rag_engine.batch_validate()
+        results["selfrag_validate"] = rag_result
+        if rag_result.get("status") == "ok":
+            log(f"      ✅ 输出校验: validated={rag_result.get('validated',0)}, issues={rag_result.get('issues_found',0)}, reliability={rag_result.get('reliability_rate','?')}%")
+        else:
+            log(f"      ⏭️  输出校验跳过: {rag_result.get('reason', '')}")
+    except Exception as e:
+        _log_error("selfrag_validate", str(e)[:120])
+        results["selfrag_validate"] = {"status": "error", "error": str(e)[:120]}
 
     elapsed = time.time() - start
 

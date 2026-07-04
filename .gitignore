@@ -8,6 +8,7 @@
 # 保留 releases 目录
 # 大型资源文件
 # 大文件和缓存
+.hooks/
 *.egg-info/
 *.jsonl
 *.pyc
