@@ -309,6 +309,9 @@ _SIZE_MAP: Dict[str, str] = {
     '2K': '1440x2880',
     '3K': '1920x3840',
     '4K': '4096x3072',
+    '4K-wide': '3840x2160',
+    '4K-portrait': '3072x4096',
+    '4K-square': '4096x4096',
 }
 
 def generate_image(

@@ -529,7 +529,8 @@ def main():
         type=validate_image_input,
         help="Remote image URL (HTTP/HTTPS) or local file path. Repeat for multiple images."
     )
-    parser.add_argument("--size", default="2K", choices=["2K", "3K", "4K"], help="Output image size (default: 2K)")
+    _CLI_SIZE_CHOICES = ["2K", "3K", "4K", "4K-wide", "4K-portrait", "4K-square"]
+    parser.add_argument("--size", default="2K", choices=_CLI_SIZE_CHOICES, help=f"Output image size: {', '.join(_CLI_SIZE_CHOICES)} (default: 2K)")
     parser.add_argument("--output", default='~/.openclaw/workspace/generated-images', help="Output file path")
     parser.add_argument("--watermark", action=argparse.BooleanOptionalAction, default=True,
                     help="Add watermark to generated image")
