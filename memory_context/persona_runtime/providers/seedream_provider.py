@@ -305,6 +305,12 @@ def _validate_output_image(path: Optional[str], start_time: float) -> Dict[str, 
     return {'send_ok': True, 'blocked_send': False}
 
 
+_SIZE_MAP: Dict[str, str] = {
+    '2K': '1440x2880',
+    '3K': '1920x3840',
+    '4K': '4096x3072',
+}
+
 def generate_image(
     prompt: str,
     input_image: str = '',
@@ -410,7 +416,7 @@ def generate_image(
             'model': ark_model,
             'prompt': prompt,
             'n': max_images or 1,
-            'size': '1440x2880',
+            'size': _SIZE_MAP.get(size, '1440x2880'),
         }
         if negative_prompt:
             ark_payload['negative_prompt'] = negative_prompt
