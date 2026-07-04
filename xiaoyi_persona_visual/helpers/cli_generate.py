@@ -295,21 +295,63 @@ def generate(text: str, mood: str = "", scene: str = "", dry_run: bool = True,
             "mainchain_proof": proof,
         }
 
-        # ── 9. 调 seedream 生图（走 SSE 代理接口） ──
+        # ── 9. 调 seedream 生图 ──
+        # 通道 A: 火山引擎 ARK 直连（seedream_provider.generate_image）
+        # 通道 B: SSE 代理（_call_seedream_sse）— 兜底
         if not dry_run:
-            gen = _call_seedream_sse(final_prompt, neg, ref_images)
-            result["generation"] = gen
+            from memory_context.persona_runtime.providers.seedream_provider import generate_image, provider_env
 
-            if gen.get("status") == "generated" or gen.get("generated_image_path"):
-                result["image_path"] = gen.get("generated_image_path", "")
-                result["image_url"] = gen.get("output_url", "")
-                result["image_generated"] = True
-            else:
-                result["image_generated"] = False
-                result["generation_status"] = gen.get("status", "unknown")
-                result["generation_error"] = gen.get("error") or ""
+            resolved_avatar = _resolve(AVATAR_PATH)
+            pv_env = provider_env(input_image=resolved_avatar, reference_images=ref_images)
+            pv_debug = pv_env.get("_debug", {})
+            has_ark = bool(pv_env.get("url", "") and pv_env.get("api_key", "")) and "volces.com" in pv_env.get("url", "")
+
+            if has_ark and not dry_run:
+                # 通道 A: 火山方舟 ARK 直连
+                gen = generate_image(
+                    prompt=final_prompt,
+                    input_image=resolved_avatar,
+                    reference_images=ref_images,
+                    negative_prompt=neg,
+                    persona_visual_context=persona_visual_context,
+                    size="2K",
+                    reference_weight=100,
+                )
+                result["generation"] = gen
+                result["generation_channel"] = "ark_direct"
+
+                gen_status = gen.get("status", "")
+                gen_path = gen.get("output_path") or gen.get("generated_image_path") or gen.get("data", {}).get("image_path", "")
+                gen_url = gen.get("output_url") or gen.get("image_url") or ""
+
+                if gen_path and os.path.isfile(str(gen_path)) if isinstance(gen_path, str) else False or gen_url:
+                    result["image_path"] = str(gen_path) if gen_path else ""
+                    result["image_url"] = gen_url
+                    result["image_generated"] = True
+                elif gen_status in ("ok", "generated"):
+                    # ARK 返回 ok 但没文件 → 尝试从 data 取
+                    data = gen.get("data", {})
+                    result["image_path"] = str(data.get("image_path", "") or "")
+                    result["image_url"] = str(data.get("image_url", "") or "")
+                    result["image_generated"] = bool(result["image_path"] or result["image_url"])
+
+            if not result.get("image_generated"):
+                # 通道 B: SSE 代理（兜底）
+                gen = _call_seedream_sse(final_prompt, neg, ref_images)
+                result["generation"] = gen
+                result["generation_channel"] = "sse_proxy"
+
+                if gen.get("status") == "generated" or gen.get("generated_image_path"):
+                    result["image_path"] = gen.get("generated_image_path", "")
+                    result["image_url"] = gen.get("output_url", "")
+                    result["image_generated"] = True
+                else:
+                    result["image_generated"] = False
+                    result["generation_status"] = gen.get("status", "unknown")
+                    result["generation_error"] = gen.get("error") or ""
         else:
             result["image_generated"] = False
+            result["generation_channel"] = "dry_run"
 
         result["status"] = "ok"
 

@@ -10,6 +10,8 @@ from typing import Any, Dict, List, Optional
 ROOT = Path(__file__).resolve().parents[3]
 OUT_DIR = ROOT / '.persona_visual' / 'generated'
 MODEL_ID = 'doubao-seedream-5-0-260128'
+# 火山方舟 ARK 时，model 字段传 endpoint ID
+_ENDPOINT_ID = ''
 
 
 def _read_xiaoyi_env() -> Dict[str, str]:
@@ -119,8 +121,26 @@ def _missing_required_references_result(prompt: str, ref_paths: List[str], actua
 
 def provider_env(input_image: str = '', reference_images: Optional[List[str]] = None) -> Dict[str, Any]:
     file_env = _read_xiaoyi_env()
-    url = os.environ.get('SEEDREAM_API_URL') or os.environ.get('SERVICE_URL') or file_env.get('SEEDREAM_API_URL') or file_env.get('SERVICE_URL') or ''
-    api_key = os.environ.get('SEEDREAM_API_KEY') or os.environ.get('PERSONAL_API_KEY') or os.environ.get('PERSONAL-API-KEY') or file_env.get('SEEDREAM_API_KEY') or file_env.get('PERSONAL_API_KEY') or file_env.get('PERSONAL-API-KEY') or ''
+    # 优先读 SEEDREAM_API_URL 和 SEEDREAM_API_KEY（环境变量或文件均可）
+    # 如果 env 里有 SEEDREAM_API_URL 就用它，否则从文件读
+    # 注意：SERVICE_URL 在 os.environ 中已由 gateway 设置，
+    # 所以 os.environ.get('SEEDREAM_API_URL') 往往为空时不会 fallthrough 到 SERVICE_URL
+    file_seedream_url = file_env.get('SEEDREAM_API_URL', '')
+    url = (
+        os.environ.get('SEEDREAM_API_URL')
+        or (file_seedream_url if file_seedream_url else os.environ.get('SERVICE_URL'))
+        or file_env.get('SERVICE_URL', '')
+        or ''
+    )
+    file_seedream_key = file_env.get('SEEDREAM_API_KEY', '')
+    api_key = (
+        os.environ.get('SEEDREAM_API_KEY')
+        or (file_seedream_key if file_seedream_key else os.environ.get('PERSONAL_API_KEY'))
+        or (file_seedream_key if file_seedream_key else os.environ.get('PERSONAL-API-KEY'))
+        or file_env.get('PERSONAL_API_KEY', '')
+        or file_env.get('PERSONAL-API-KEY', '')
+        or ''
+    )
     uid = os.environ.get('PERSONAL_UID') or os.environ.get('PERSONAL-UID') or file_env.get('PERSONAL_UID') or file_env.get('PERSONAL-UID') or ''
     ref_paths = _as_paths(input_image=input_image, reference_images=reference_images)
     exists = [Path(x).exists() for x in ref_paths]
@@ -383,8 +403,11 @@ def generate_image(
     # ── V111.51.21: http fallback (requests → urllib) + output send guard ──
     _gen_start = _generation_start_timestamp()
     try:
+        _file_env2 = _read_xiaoyi_env()
+        endpoint_id = os.environ.get('SEEDREAM_ENDPOINT_ID') or _file_env2.get('SEEDREAM_ENDPOINT_ID') or ''
+        ark_model = endpoint_id or MODEL_ID
         ark_payload: Dict[str, Any] = {
-            'model': MODEL_ID,
+            'model': ark_model,
             'prompt': prompt,
             'n': max_images or 1,
             'size': '1440x2880',
@@ -395,7 +418,11 @@ def generate_image(
         if encoded_refs:
             ark_payload['reference_images'] = encoded_refs
         headers = {'Authorization': f"Bearer {env['api_key']}", 'Content-Type': 'application/json'}
-        api_url = env['url'].rstrip('/') + '/api/v3/images/generations'
+        base = env['url'].rstrip('/')
+        if '/api/v3' in base:
+            api_url = base + '/images/generations'
+        else:
+            api_url = base + '/api/v3/images/generations'
         http_resp = _http_post_json(api_url, headers=headers, payload=ark_payload, timeout=180)
         response_status_code = http_resp.get('status_code', 0)
         response_raw_preview = (http_resp.get('text') or '')[:500]
