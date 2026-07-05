@@ -11,27 +11,53 @@ description: 小艺图像创作，基于Seedream5的AI图像生成能力，支�
 
 ## 使用示例
 
+## 三通道切换
+
+支持三个图像生成通道，默认自动选择（A → B → C），也可手动切换：
+
+| 通道 | 名称 | 说明 |
+|:----:|------|------|
+| A | `huawei_sse` | 华为云 SSE（默认优先） |
+| B | `ark` | 火山引擎 ARK |
+| C | `siliconflow` | 硅基流动 |
+
+**手动指定通道**（不指定则自动走 A）：
+
 ```bash
-# Text-to-image
+# 用华为云
+python3 scripts/generate_seedream.py --prompt "..." --channel huawei_sse
+
+# 用火山 ARK
+python3 scripts/generate_seedream.py --prompt "..." --channel ark
+
+# 用硅基流动
+python3 scripts/generate_seedream.py --prompt "..." --channel siliconflow
+```
+
+```bash
+# Text-to-image (默认通道 A 华为云)
 python3 scripts/generate_seedream.py --prompt "生成一张爵士音乐节海报，风格复古，色彩鲜艳"
 
+# 指定硅基流动通道
+python3 scripts/generate_seedream.py --prompt "极简主义山水画，留白" --channel siliconflow
+
 # Image-to-image with remote URL
-python3 scripts/generate_seedream.py --prompt "图像风格转换" --image https://example.com/a.png
+python3 scripts/generate_seedream.py --prompt "图像风格转换" --input-image https://example.com/a.png
 
 # Image-to-image with local file path
-python3 scripts/generate_seedream.py --prompt "图像风格转换" --image /path/to/local/image.png
+python3 scripts/generate_seedream.py --prompt "图像风格转换" --input-image /path/to/local/image.png
 
 # Multi-image reference (mix of URLs and local paths)
-python3 scripts/generate_seedream.py --prompt "参考多张图片风格" --image https://a.png --image /path/to/b.png --max-images 3
+python3 scripts/generate_seedream.py --prompt "参考多张图片风格" --input-image https://a.png --input-image /path/to/b.png --max-images 3
 
 # Generate multiple images (3 images) - IMPORTANT: specify count in prompt
 python3 scripts/generate_seedream.py --prompt "请生成3张不同风格的猫咪图片：第一张写实风格，第二张卡通风格，第三张油画风格" --max-images 3
 
 # Image-to-multiple images (图生多图) - generate 3 variations based on one reference
-python3 scripts/generate_seedream.py --prompt "请基于这张参考图生成3张不同光影效果的照片" --image https://example.com/photo.png --max-images 3
+python3 scripts/generate_seedream.py --prompt "请基于这张参考图生成3张不同光影效果的照片" --input-image https://example.com/photo.png --max-images 3
 
-# Multiple-images-to-multiple images (多图生多图) - generate using multiple references
-python3 scripts/generate_seedream.py --prompt "请基于提供的两张参考图，生成3张融合两种风格的艺术作品" --image https://example.com/a.png --image /path/to/b.png --max-images 3
+# Multiple-images-to-multiple images (多图生多图)
+python3 scripts/generate_seedream.py --prompt "请基于提供的两张参考图，生成3张融合两种风格的艺术作品" --input-image https://example.com/a.png --input-image /path/to/b.png --max-images 3
 ```
 
 ## 输出

@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=28a716310ea09e4d -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=a9e8c8818c34410b -->
 # Memory Global Summary
 
 ## User Profile
@@ -49,6 +49,9 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户对“方案B：多模型后端”的评价是“最实用”
+- 用户认为单通道系统的说明应该用表格形式展示，但当前未使用表格
+- 用户偏好用表格来展示信息
 - 用户发现之前设置的规则（每次回应以 ❄️ 收尾签名，不回车不空行）没有被正确应用（“怎么没了”）
 - 用户多次表达对 '---❄️' 格式处理结果的不满和困惑（'什么情况？'、'怎么还是没有去掉'、'中间不能有空行，你还是有了'、'你怎么回事（---）怎么还在'）
 - 用户认为助手在生成内容时，---❄️ 的格式必须直接紧跟，中间不能有空行，且助手之前尝试时中间仍有空行导致格式错误
@@ -68,14 +71,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求每次回应必须以 ❄️ 收尾签名，并且不回车不空行
-- 用户设置了新的人格，人格名字叫“琪琪”
-- 用户要求助手在对话框里展示某内容的完整原文
-- 用户要求助手查阅'原文'（指仓库中的原始版本）
-- 用户要求查看名为'琪琪人格完整内容'的完整版
+- 用户计划接下来开发人格视角出图系统的三通道，使用硅基流动
+- 用户询问seedream-image-gen是否能支持二通道、三通道
+- 用户要求介绍已安装的"find-skills"skill，并给出1-2个快速开始示例
+- 用户要求介绍已安装的"minimax-music-gen"skill，并给出1-2个快速开始示例
+- 用户指出AI助手之前的回复存在不必要的回车和空格格式问题
 ### Short-term Intent
+- 用户准备开始开发人格视角出图系统的二通道
 - 用户决定推送未提交的修改
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
-- 用户询问当前助手的记忆是由什么主导的
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

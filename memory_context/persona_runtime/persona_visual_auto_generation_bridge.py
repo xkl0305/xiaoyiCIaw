@@ -550,6 +550,7 @@ def generate_from_prediction(
             }
 
         # V111.51.5: always pass persona_visual_context when calling generate_image from the main pipeline
+        # V10.9.0: 人格视角默认走通道 B（火山 ARK），与 seedream-image-gen skill（华为云）分开
         main_res = generate_image(
             prompt=focus_prompt,
             input_image=str(ref_paths[0]),
@@ -559,6 +560,7 @@ def generate_from_prediction(
             max_images=generated_image_target_count,
             reference_weight=int(cfg.get('seedReferenceWeight', 100) or 100),
             negative_prompt=prompt_bundle.get('negative_prompt') or '',
+            channel='ark',
             persona_visual_context={
                 'persona_visual_request': True,
                 'persona_subject': '鸽子王',
