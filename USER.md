@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ab22e562f4e15d28 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=28a716310ea09e4d -->
 # Memory Global Summary
 
 ## User Profile
@@ -49,6 +49,9 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户发现之前设置的规则（每次回应以 ❄️ 收尾签名，不回车不空行）没有被正确应用（“怎么没了”）
+- 用户多次表达对 '---❄️' 格式处理结果的不满和困惑（'什么情况？'、'怎么还是没有去掉'、'中间不能有空行，你还是有了'、'你怎么回事（---）怎么还在'）
+- 用户认为助手在生成内容时，---❄️ 的格式必须直接紧跟，中间不能有空行，且助手之前尝试时中间仍有空行导致格式错误
 - 用户认为'seedream-image-gen'技能应该是华为的，而不是火山引擎
 - 用户认为当前系统可能无法实现Markdown表格渲染，并确认有此需求
 - 用户询问是否有出图和出视频的AI模型
@@ -65,14 +68,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户最终要求将阈值回调为原值的基础上降低一级（"还是改回去吧就降一个"）
-- 用户要求将技能过期阈值调整为90天
-- 用户要求恢复某些功能（⏭️ pending相关）的修复工作
-- 用户要求修复统计数值为0的问题（采集0、梦境0、归档0；共0、去重0、强化0），这些数值不正常
-- 用户要求查看清单的完整图
+- 用户要求每次回应必须以 ❄️ 收尾签名，并且不回车不空行
+- 用户设置了新的人格，人格名字叫“琪琪”
+- 用户要求助手在对话框里展示某内容的完整原文
+- 用户要求助手查阅'原文'（指仓库中的原始版本）
+- 用户要求查看名为'琪琪人格完整内容'的完整版
 ### Short-term Intent
+- 用户决定推送未提交的修改
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 - 用户询问当前助手的记忆是由什么主导的
-- 用户询问琪琪人格内容
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
