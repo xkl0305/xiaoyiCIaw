@@ -48,6 +48,7 @@ DEFAULT_STATE = {
 # ── 评分/Pipeline 参数 ──
 PRUNE_AGE_DAYS = 90             # 超过90天且低评分 → 删除
 CONSOLIDATE_AGE_DAYS = 14       # 超过14天高分 → 巩固到长期
+ARCHIVE_AGE_DAYS = 30           # 超过30天 → 归档到冷存储
 LOW_SCORE_THRESHOLD = 0.3       # 低于这个分的条目会被衰减
 HIGH_SCORE_THRESHOLD = 0.7      # 高于这个分的条目入长期
 
@@ -337,6 +338,55 @@ def integrate_to_short_term(messages: List[Dict]) -> Dict:
 # ================================================================
 # L2 → L3：蒸馏巩固
 # ================================================================
+def archive_stale() -> Dict:
+    """
+    归档过期的 L2 条目到冷存储（tier → cold）
+    超过 ARCHIVE_AGE_DAYS 且非锚点、未固化的条目标记为冷存储。
+    """
+    stats = {"archived": 0, "skipped": 0, "errors": 0}
+    try:
+        import sqlite3
+        db_path = os.path.expanduser("~/.openclaw/memory/main.sqlite")
+        if not os.path.exists(db_path):
+            return stats
+        conn = sqlite3.connect(db_path, timeout=5)
+        cur = conn.cursor()
+
+        now = datetime.now(BEIJING_TZ)
+        cutoff = now - timedelta(days=ARCHIVE_AGE_DAYS)
+        cutoff_iso = cutoff.isoformat()
+
+        # 查找超过30天、仍为 active 且不是 system/core_anchor 的条目
+        cur.execute(
+            """SELECT id FROM yaoyao_meta
+               WHERE tier = 'active'
+                 AND created_at < ?
+                 AND (json_extract(meta, '$.memory_type') IS NULL
+                      OR json_extract(meta, '$.memory_type') NOT IN ('system', 'core_anchor'))
+               ORDER BY created_at ASC
+               LIMIT 200""",
+            (cutoff_iso,)
+        )
+        ids = [row[0] for row in cur.fetchall()]
+        if not ids:
+            conn.close()
+            return stats
+
+        # 批量更新 tier=active → cold
+        placeholders = ','.join('?' * len(ids))
+        cur.execute(
+            f"UPDATE yaoyao_meta SET tier = 'cold' WHERE id IN ({placeholders})",
+            ids
+        )
+        conn.commit()
+        stats["archived"] = cur.rowcount
+        conn.close()
+    except Exception as e:
+        logger.error(f"archive_stale error: {e}")
+        stats["errors"] += 1
+    return stats
+
+
 def distill(state: Dict, max_process: int = 100) -> Dict:
     """
     评分蒸馏：
@@ -516,7 +566,11 @@ def run_maintenance() -> Dict:
     inc = run_incremental(max_files=20)
     report["steps"]["incremental"] = inc
 
-    # 2. 蒸馏巩固
+    # 2. 归档过期记忆
+    arch = archive_stale()
+    report["steps"]["archive"] = arch
+
+    # 3. 蒸馏巩固
     dist = distill(state, max_process=500)
     report["steps"]["distill"] = dist
 
@@ -532,6 +586,8 @@ def run_maintenance() -> Dict:
         summary_parts.append(f"采集 {inc['steps']['integrate']['ingested']} 条")
     else:
         summary_parts.append("无新对话")
+    if arch.get("archived"):
+        summary_parts.append(f"归档 {arch['archived']} 条冷存储")
     if dist.get("promoted"):
         summary_parts.append(f"巩固 {dist['promoted']} 条到长期")
     if dist.get("pruned"):

@@ -364,6 +364,8 @@ def memory_maintenance() -> Dict:
         steps = report.get("steps", {})
         inc_steps = steps.get("incremental", {}).get("steps", {})
         ingested = inc_steps.get("integrate", {}).get("ingested", 0)
+        arch_steps = steps.get("archive", {})
+        archived = arch_steps.get("archived", 0)
         dist_steps = steps.get("distill", {})
         promoted = dist_steps.get("promoted", 0)
         pruned = dist_steps.get("pruned", 0)
@@ -371,7 +373,7 @@ def memory_maintenance() -> Dict:
             "status": "ok",
             "detail": {
                 "scan": {"entries_ingested": ingested},
-                "archive": {"archived": 0},
+                "archive": {"archived": archived},
             },
             "steps": {
                 "signal_promote": {"promoted": promoted},
