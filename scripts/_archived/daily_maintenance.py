@@ -817,8 +817,8 @@ def skill_integrity_check() -> Dict:
         sdir = os.path.join(skills_dir, name)
         if not os.path.isdir(sdir):
             continue
-        # 跳过归档目录
-        if name == ".archive":
+        # 跳过归档目录和自动生成的缓存目录
+        if name in (".archive", "__pycache__"):
             continue
         total += 1
         has_skill_md = os.path.isfile(os.path.join(sdir, "SKILL.md"))
