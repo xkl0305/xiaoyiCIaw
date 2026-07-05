@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=94335fa96a5249c4 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=cb5c815d668c44a4 -->
 # Memory Global Summary
 
 ## User Profile
@@ -63,11 +63,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求修复统计数值为0的问题（采集0、梦境0、归档0；共0、去重0、强化0），这些数值不正常
+- 用户要求查看清单的完整图
 - 用户要求查看清单的完整图，并最终要求恢复之前的渲染样式
 - 用户要求重新执行所有定时任务
 - 用户要求重新执行所有定时任务
-- 用户要求将凌晨每日维护的输出从当前格式改为表格形式
-- 助手没有按用户要求推送三个仓库，用户对此表示不满
 ### Short-term Intent
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 - 用户询问当前助手的记忆是由什么主导的
