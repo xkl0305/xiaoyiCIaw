@@ -461,13 +461,16 @@ def generate_image(
             'persona_subject': PERSONA_SUBJECT if persona_visual_context else None,
         }
 
-    # ── 通道选择：channel 参数指定就直接用，默认走第一个可用 ──
+    # ── 通道选择：channel 参数 — 逗号分隔列表（双通道）或单通道名 ──
+    # seedream-image-gen skill: 不传 channel → 三通道全开（huawei_sse → ark → siliconflow）
+    # 人格视角出图: channel='ark,siliconflow' → 双通道（ark → siliconflow, 跳过 huawei_sse）
     if channel:
-        matched = [c for c in channels if c['name'] == channel]
+        names = [c.strip() for c in channel.split(',') if c.strip()]
+        matched = [c for c in channels if c['name'] in names]
         if not matched:
             return {
                 'status': 'channel_not_found',
-                'error': f'指定通道 "{channel}" 不存在',
+                'error': f'指定通道 "{channel}" 无一可用',
                 'available_channels': [c['name'] for c in channels],
                 'generated_image_path': None,
                 'output_path': None,
@@ -476,6 +479,9 @@ def generate_image(
                 'model': MODEL_ID,
                 'persona_subject': PERSONA_SUBJECT if persona_visual_context else None,
             }
+        # 按 names 顺序重排，保留指定列表内的优先级
+        name_order = {n: i for i, n in enumerate(names)}
+        matched.sort(key=lambda c: name_order.get(c['name'], 999))
         channels = matched
 
     _last_error = ''

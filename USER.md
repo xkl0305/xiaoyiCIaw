@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=a9e8c8818c34410b -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=d85bad9df07e80db -->
 # Memory Global Summary
 
 ## User Profile
@@ -71,11 +71,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求推送三个仓库
+- 用户要求seedream-image-gen的三通道与人格视角出图系统的双通道区分开，默认优先顺序不同
+- 用户确认seedream-image-gen的三通道尚未搞定，需要继续开发
 - 用户计划接下来开发人格视角出图系统的三通道，使用硅基流动
 - 用户询问seedream-image-gen是否能支持二通道、三通道
-- 用户要求介绍已安装的"find-skills"skill，并给出1-2个快速开始示例
-- 用户要求介绍已安装的"minimax-music-gen"skill，并给出1-2个快速开始示例
-- 用户指出AI助手之前的回复存在不必要的回车和空格格式问题
 ### Short-term Intent
 - 用户准备开始开发人格视角出图系统的二通道
 - 用户决定推送未提交的修改
