@@ -355,7 +355,10 @@ def memory_maintenance() -> Dict:
     try:
         sys.path.insert(0, WORKSPACE)
         import importlib
-        mp = importlib.import_module("scripts.memory_pipeline")
+        # memory_pipeline 在 _archived 目录下
+        sys.path.insert(0, os.path.join(WORKSPACE, "scripts", "_archived"))
+        mp = importlib.import_module("memory_pipeline")
+        sys.path.pop(0)
         report = mp.run_maintenance()
         steps = report.get("steps", {})
         inc_steps = steps.get("incremental", {}).get("steps", {})
@@ -393,25 +396,49 @@ def _text_similarity(a: str, b: str) -> float:
     return len(intersection) / len(union) if union else 0.0
 
 def replay_distill() -> Dict:
-    """纠正信号蒸馏（含 Jaccard 相似度去重过滤）"""
+    """纠正信号蒸馏（含 Jaccard 相似度去重过滤）
+
+    数据来源优先级：
+    1. .replay_buffer/records.jsonl（传统纠正数据）
+    2. yaoyao-memory main.sqlite 中的 corrected 记忆（主用）
+    """
     replay_dir = os.path.join(WORKSPACE, ".replay_buffer")
-    if not os.path.isdir(replay_dir):
-        return {"status": "skipped", "reason": "无 replay_buffer 目录"}
+    raw_records = []
+    
+    # 尝试从 yaoyao-memory 获取纠正数据
+    yaoyao_db = os.path.expanduser("~/.openclaw/memory/main.sqlite")
+    if os.path.isfile(yaoyao_db):
+        try:
+            import sqlite3
+            conn = sqlite3.connect(yaoyao_db, timeout=5)
+            rows = conn.execute(
+                "SELECT text, score, created_at FROM yaoyao_memories WHERE score < 0 OR correction IS NOT NULL ORDER BY created_at DESC LIMIT 100"
+            ).fetchall()
+            conn.close()
+            for row in rows:
+                raw_records.append({"text": row[0] or "", "score": row[1] or 0.5, "source": "yaoyao_correction"})
+        except Exception:
+            pass
+    
+    # 补充传统 replay_buffer 数据
     records_file = os.path.join(replay_dir, "records.jsonl")
-    if not os.path.exists(records_file):
-        return {"status": "skipped", "reason": "无 records.jsonl"}
+    if os.path.exists(records_file):
+        try:
+            with open(records_file, encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        try:
+                            raw_records.append(json.loads(line))
+                        except Exception:
+                            pass
+        except Exception:
+            pass
+    
+    count = len(raw_records)
+    if count == 0:
+        return {"status": "skipped", "reason": "无纠正或反馈数据需要蒸馏"}
     try:
-        count = 0
-        raw_records = []
-        with open(records_file, encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if line:
-                    try:
-                        raw_records.append(json.loads(line))
-                        count += 1
-                    except Exception as e:
-                        _log_error("replay_distill", str(e)[:80])
 
         # Jaccard 相似度过滤 + 强化（参考 Hippocampus 方案）：
         #   > 0.85 → 跳过（真正的重复）
@@ -1422,9 +1449,13 @@ def _format_report(results: Dict, elapsed: float) -> str:
         records = rp.get("records_count", 0)
         duplicate = rp.get("removed_duplicates", 0)
         reinforced = rp.get("reinforced_count", 0)
-        lines.append(TR("🧪 蒸馏", f"共 {records} / 去重 {duplicate} / 强化 {reinforced}"))
+        if records > 0:
+            lines.append(TR("🧪 蒸馏", f"共 {records} / 去重 {duplicate} / 强化 {reinforced}"))
+        else:
+            lines.append(TR("🧪 蒸馏", "✅ 无待蒸馏数据"))
     else:
-        lines.append(TR("🧪 蒸馏", rp.get('status', '跳过')[:28]))
+        reason = rp.get('reason', '跳过')
+        lines.append(TR("🧪 蒸馏", f"ℹ️ {reason[:28]}"))
 
     # 执行复盘
     rv = results.get("review", {})
