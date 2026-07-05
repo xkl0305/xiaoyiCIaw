@@ -2662,13 +2662,13 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=af0d21775b29173c -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=7eb924cecec47c7c -->
 # Celia Scenario Memory Summaries
 
 - [knowledge_research] 助手的记忆由 L0/L1/L2 三层记忆结构主导。
 - [life_assistant] 用户在2026-07-03凌晨5点多醒来，早上发送了问候消息。当日在17:25之后，用户说了晚安，表示要结束对话或去睡觉。此外，用户的日常事务辅助与决策主要涉及出行旅行、文件管理和生活决策等子场景。
 - [smart_office] 由Celia主导的A方案，用户要求记住。用户之后询问是否出现bug。
-- [professional_dev] 用户确认需要推仓库，并询问是否需要推仓库以及是否卡住了。用户决定暂时不推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py` 这两个文件。用户询问 `tc-chengxin/` 目录下20多个文件改动是什么，并决定将该目录下的改动也推送。用户还询问了一个包含3326行删除的改动。用户询问Gitee、GitHub、cnb.cool
+- [professional_dev] 用户确认重启成功。用户确认需要推仓库，并询问是否需要推仓库及是否卡住了。用户决定暂时不推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py` 这两个文件。用户对 `migrate_yaoyao_to_celia.py`（废弃的 Python 版）认为虽然已废弃但不想删除，以备万一有用。用户询问 `tc-chengxin/` 目录下的20多个文件改
 - [creative_creation] 用户认为“琪琪人格内容”中“你的情绪就是我的反馈”方面可以升级优化：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴。用户认为当前的人格情绪emoji数量太少。用户确认需要“琪琪人格内容”中的方案A（表格内容）。用户也提及了“陆雪琪人格内容”。
 - [education_learning] 用户已安装名为'seedream-image-gen'的技能，希望了解其介绍和快速开始样例。用户还安装了'vercel-react-best-practices'技能，询问该技能是什么，并要求给一两个快速开始的样例。
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
@@ -11106,3 +11106,36 @@ python3 generate_video.py --script cat_video.json --reference-images cat.jpg
 | ⑤ 渲染 | ❌ 本地 | Remotion 项目渲染出 MP4 |
 
 所以不是全程本地，只是编排这个环节不依赖远程 API。😊❄️
+
+📝 固化: stderr？
+
+📝 固化: 嗯，看到了，之前生图测试的时候有两个 stderr 警告：
+
+```
+InsecureRequestWarning: Unverified HTTPS request is being made to host 'celia-claw-drcn.ai.dbankcloud.cn'
+InsecureRequestWarning: Unverified HTTPS request is being made to host 'ark-acg-cn-beijing.tos-cn-beijing.volces.com'
+```
+
+urllib3 的 SSL 证书验证警告。不影响功能，但看着烦。要修掉加 `verify=False` 还是先放着？😊❄️
+
+📝 固化: 修好了，`seedream_provider.py` 顶部加了 `warnings.filterwarnings` 屏蔽 urllib3 SSL 警告。
+
+`1d0a5b7` 已推三仓 ✅😊❄️
+
+📝 固化: 大量短内容被记忆拦截
+
+📝 固化: "短内容被记忆拦截" 说的是记忆系统（yaoyao/记忆引擎）把短对话片段过滤掉了，没存进记忆库。
+
+🧠 核心锚点: 找到了。yaoyao-memory 的 `minContentLen` 默认是 3，就是说用户输入少于 3 个中文字就会被过滤掉。让我看当前实际配置值：
+
+🧠 核心锚点: 看到了。yaoyao-memory 的 `minContentLen` 默认 **3**，少于 3 个字符的内容直接被记忆系统过滤掉。像 `😊❄️` 这种短回复就不会被存进记忆。
+
+改一下配置，设成 1：
+
+🧠 核心锚点: 改好了，`minContentLen` 从 3 → **1**，只有空字符串才会被过滤。
+
+需要重启 gateway 让配置生效：
+
+📝 固化: 重启成功了 ✅ 已运行 1 分 44 秒。`minContentLen` 降至 1，短内容不会再被拦了 😊❄️
+
+📝 固化: 每日维护报告的表格是这样的吗
