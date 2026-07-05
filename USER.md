@@ -41,13 +41,15 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=cb5c815d668c44a4 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ab22e562f4e15d28 -->
 # Memory Global Summary
 
 ## User Profile
+- 助手对用户的称呼是'俞哥'
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户认为'seedream-image-gen'技能应该是华为的，而不是火山引擎
 - 用户认为当前系统可能无法实现Markdown表格渲染，并确认有此需求
 - 用户询问是否有出图和出视频的AI模型
 - 用户询问重启是否成功
@@ -63,11 +65,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户最终要求将阈值回调为原值的基础上降低一级（"还是改回去吧就降一个"）
+- 用户要求将技能过期阈值调整为90天
+- 用户要求恢复某些功能（⏭️ pending相关）的修复工作
 - 用户要求修复统计数值为0的问题（采集0、梦境0、归档0；共0、去重0、强化0），这些数值不正常
 - 用户要求查看清单的完整图
-- 用户要求查看清单的完整图，并最终要求恢复之前的渲染样式
-- 用户要求重新执行所有定时任务
-- 用户要求重新执行所有定时任务
 ### Short-term Intent
 - 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 - 用户询问当前助手的记忆是由什么主导的

@@ -7,13 +7,13 @@ import sys
 from typing import Any, Dict
 import sys
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[3]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 
 def run(prompt: str, input_image: str = '', size: str = '2K', dry_run: bool = False, negative_prompt: str = '', **kwargs: Any) -> Dict[str, Any]:
-    from memory_context.persona_runtime.providers.seedream_provider import provider_env, provider_ready, generate_image
+    from memory_context.persona_runtime.providers.huawei_provider import provider_env, provider_ready, generate_image
     env = provider_env()
     debug = env.get('_debug', {})
     input_exists = bool(input_image and Path(input_image).exists())
@@ -24,7 +24,8 @@ def run(prompt: str, input_image: str = '', size: str = '2K', dry_run: bool = Fa
         'provider_backed': True,
         'physical_skill_required': True,
         'payload_mode': 'image_to_image' if input_image else 'text_to_image',
-        'model': 'seedream5.0',
+        'provider': 'huawei_xiaoyi',
+        'model': 'seedreamBatch5 (Huawei Cloud)',
         'provider_ready': provider_ready(),
         'provider_env_debug': debug,
         'prompt_preview': (prompt or '')[:300],

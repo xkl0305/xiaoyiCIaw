@@ -1,6 +1,6 @@
-# Seedream 5.0 Image Generation Skill
+# Seedream Image Generation Skill (Huawei Cloud)
 
-Provider-backed skill bridge for Seedream 5.0 image-to-image generation.
+Provider-backed skill bridge for Xiaoyi image generation via Huawei Cloud.
 
 ## Canonical ID
 
@@ -10,11 +10,11 @@ Provider-backed skill bridge for Seedream 5.0 image-to-image generation.
 
 Use `python skills/seedream-image-gen/skill.py --prompt "..." --input-image path/to/image.jpg --dry-run` for diagnostics, or omit `--dry-run` for real provider calls.
 
-The skill calls `memory_context.persona_runtime.providers.seedream_provider.generate_image` and therefore shares the same provider configuration:
+The skill calls `memory_context.persona_runtime.providers.huawei_provider.*` (Huawei Cloud channel) and reads credentials from:
 
-- `SEEDREAM_API_URL`
-- `SEEDREAM_API_KEY`
-- `PERSONAL_UID` optional
+- `SERVICE_URL` (default: `celia-claw-drcn.ai.dbankcloud.cn`)
+- `PERSONAL_API_KEY` / `PERSONAL-API-KEY`
+- `PERSONAL_UID` / `PERSONAL-UID`
 - or `~/.openclaw/.xiaoyienv`
 
 ## Safety
