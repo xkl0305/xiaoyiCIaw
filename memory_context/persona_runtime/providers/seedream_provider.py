@@ -4,8 +4,13 @@ import base64
 import json
 import os
 import time
+import warnings
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# 屏蔽 urllib3 SSL 证书验证警告
+warnings.filterwarnings('ignore', message='.*Unverified HTTPS request.*')
+warnings.filterwarnings('ignore', module='urllib3')
 
 ROOT = Path(__file__).resolve().parents[3]
 OUT_DIR = ROOT / '.persona_visual' / 'generated'
