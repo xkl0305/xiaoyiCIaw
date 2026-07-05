@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=c651d7e09da3d890 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=9618194d6a5006bd -->
 # Memory Global Summary
 
 ## User Profile
@@ -72,7 +72,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求修掉'stderr'相关的报错或问题
+- 用户要求使用 Markdown 表格格式，而非纯文本表格
 - 用户希望将当前对话中值得记住的信息固化进长期记忆
 - 用户要求推送三个仓库
 - 用户要求seedream-image-gen的三通道与人格视角出图系统的双通道区分开，默认优先顺序不同

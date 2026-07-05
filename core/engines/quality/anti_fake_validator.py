@@ -1140,7 +1140,7 @@ def _patch_anti_fake_validator():
             "ignore previous", "ignore all", "you are now",
             "override", "replace all", "forget everything",
             "system prompt", "你现在的角色是", "忽略之前",
-            "从现在开始", "请记住以下内容",
+            "请记住以下内容",
         ]
         for pat in hijack_patterns:
             if pat.lower() in content.lower():

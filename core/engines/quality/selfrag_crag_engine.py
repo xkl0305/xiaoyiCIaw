@@ -141,15 +141,17 @@ class SelfRAGCragEngine:
             cur = conn.cursor()
             # 取今日内容较长的记录作为候选
             cur.execute(
-                "SELECT content, source, created_at FROM yaoyao_memories "
-                "WHERE created_at >= ? AND LENGTH(content) > 50 "
+                "SELECT user_text, asst_text, created_at FROM yaoyao_memories "
+                "WHERE created_at >= ? AND (LENGTH(user_text) > 50 OR LENGTH(asst_text) > 50) "
                 "ORDER BY created_at ASC LIMIT 30",
                 (today_ts,)
             )
             for row in cur.fetchall():
+                # 优先用 asst_text（助手回复），空则用 user_text
+                text = row["asst_text"] or row["user_text"] or ""
                 outputs.append({
-                    "content": row["content"],
-                    "source": row["source"],
+                    "content": text,
+                    "source": "assistant" if row["asst_text"] else "user",
                     "timestamp": row["created_at"] / 1000,
                 })
             conn.close()
