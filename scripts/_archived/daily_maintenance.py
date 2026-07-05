@@ -562,7 +562,7 @@ def skill_curator_maintenance():
             days_since = (now - mtime).days
         except Exception:
             continue
-        if days_since > 180:
+        if days_since > 90:
             archive_dir = os.path.join(skills_dir, ".archive")
             os.makedirs(archive_dir, exist_ok=True)
             try:
@@ -574,9 +574,9 @@ def skill_curator_maintenance():
                     results["stale"].append({"name": item, "days_inactive": days_since, "note": "归档同名"})
             except Exception as e:
                 _log_error("skill_curator_maintenance", str(e)[:80])
-        elif days_since > 90:
+        elif days_since > 30:
             results["stale"].append({"name": item, "days_inactive": days_since})
-        elif days_since <= 30:
+        elif days_since <= 7:
             results["active"] += 1
         else:
             results["kept"] += 1
