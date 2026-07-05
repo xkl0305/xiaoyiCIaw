@@ -574,11 +574,11 @@ def skill_curator_maintenance():
                     results["stale"].append({"name": item, "days_inactive": days_since, "note": "归档同名"})
             except Exception as e:
                 _log_error("skill_curator_maintenance", str(e)[:80])
-        elif days_since > 30:
-            results["stale"].append({"name": item, "days_inactive": days_since})
+        # 阈值已调整为 90 天（俞哥要求），90 天以上直接归档
         elif days_since <= 7:
             results["active"] += 1
         else:
+            # 8~90 天 -> kept，不再标"过期"
             results["kept"] += 1
     results["stale_count"] = len(results["stale"])
     results["archived_count"] = len(results["archived"])
