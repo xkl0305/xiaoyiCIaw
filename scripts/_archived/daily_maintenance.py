@@ -1386,14 +1386,17 @@ def run() -> Dict:
 
 
 def _format_report(results: Dict, elapsed: float) -> str:
-    """将 run() 的 results dict 格式化为键值对文本（xiaoyi-channel 兼容）"""
+    """将 run() 的 results dict 格式化为 markdown 表格"""
     now = datetime.now(BEIJING_TZ).strftime("%Y-%m-%d %H:%M")
     lines = []
     lines.append(f"🦞 **每日维护报告 | {now}**")
     lines.append("")
 
     def TR(label: str, value: str) -> str:
-        return f"  {label}：{value}"
+        return f"| {label} | {value} |"
+
+    lines.append("| 项目 | 内容 |")
+    lines.append("|------|------|")
 
     # 执行用时
     lines.append(TR("⏱ 执行用时", f"{elapsed:.1f}s"))
