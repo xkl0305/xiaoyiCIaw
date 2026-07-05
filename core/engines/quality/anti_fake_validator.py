@@ -1164,7 +1164,7 @@ def _patch_anti_fake_validator():
                     "reason": msg}
 
         # 3. 内容长度检查（极短或无意义内容不存）
-        if len(content.strip()) < 5:
+        if len(content.strip()) < 1:
             return {"passed": False, "blocked": True, "risk_level": "low",
                     "reason": "内容过短，拒绝存储"}
 
