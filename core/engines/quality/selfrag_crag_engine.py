@@ -61,10 +61,12 @@ def _make_retriever(top_k: int = 5) -> Callable:
             # 从 yaoyao_memories 检索（用 LIKE 做简单关键词匹配）
             terms = [t for t in query.replace("?","").replace("？","").split() if len(t) > 1]
             if terms:
-                like_clauses = " OR ".join(f"content LIKE '%{t}%'" for t in terms)
-                cur.execute(f"SELECT content FROM yaoyao_memories WHERE {like_clauses} ORDER BY created_at DESC LIMIT {top_k}")
+                like_clauses = " OR ".join(f"(user_text LIKE '%{t}%' OR asst_text LIKE '%{t}%')" for t in terms)
+                cur.execute(f"SELECT user_text, asst_text FROM yaoyao_memories WHERE ({like_clauses}) ORDER BY created_at DESC LIMIT {top_k}")
                 for row in cur.fetchall():
-                    results.append(row["content"][:500])
+                    text = row["asst_text"] or row["user_text"] or ""
+                    if text:
+                        results.append(text[:500])
             # 也从 chunks 检索
             if not results:
                 cur.execute("SELECT text FROM chunks ORDER BY updated_at DESC LIMIT 10")
@@ -149,10 +151,21 @@ class SelfRAGCragEngine:
             for row in cur.fetchall():
                 # 优先用 asst_text（助手回复），空则用 user_text
                 text = row["asst_text"] or row["user_text"] or ""
+                # created_at 可能是 TEXT（时间字符串）或 INTEGER（毫秒时间戳）
+                raw_ts = row["created_at"]
+                if isinstance(raw_ts, (int, float)):
+                    ts = raw_ts / 1000
+                else:
+                    # TEXT 格式，尝试解析
+                    try:
+                        dt = datetime.fromisoformat(str(raw_ts))
+                        ts = dt.timestamp()
+                    except (ValueError, TypeError):
+                        ts = 0.0
                 outputs.append({
                     "content": text,
                     "source": "assistant" if row["asst_text"] else "user",
-                    "timestamp": row["created_at"] / 1000,
+                    "timestamp": ts,
                 })
             conn.close()
         except Exception as e:

@@ -2662,10 +2662,11 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=7fbe5499f8e576ac -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=82ed267a6f25c78c -->
 # Celia Scenario Memory Summaries
 
-- [knowledge_research] 助手的记忆由 L0/L1/L2 三层记忆结构主导。
+- [data_analysis_bi] 用户当前涉及**数据分析与商业智能**（子场景：数据处理、统计分析、报告生成），主要关注结构化数据处理与洞察输出。
+- [knowledge_research] 用户进行了一系列关于知识检索、技能和人格内容的查询与反馈。
 - [life_assistant] 用户在2026-07-03凌晨5点多醒来，早上发送了问候消息。当日在17:25之后，用户说了晚安，表示要结束对话或去睡觉。此外，用户的日常事务辅助与决策主要涉及出行旅行、文件管理和生活决策等子场景。
 - [smart_office] 由Celia主导的A方案，用户要求记住。用户之后询问是否出现bug。
 - [professional_dev] - 用户询问重启是否成功，并确认了成功。 - 用户询问是否需要推仓库（并确认需要），以及是否卡住了。 - 用户决定暂时不推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py` 这两个文件。 - 用户认为 `migrate_yaoyao_to_celia.py` （废弃的 Python 版）虽已废弃但不想删除，以备万一有用。 - 用户询问 `tc-cheng
@@ -2680,6 +2681,7 @@ CI 完全通过，以后推送都是绿的。
 - [emergent_scn-DR0000019F1494132E00000001-2] 用户针对私有配置仓库（https://cnb.cool/llm-memory-integrat/llm）中的 .md 文件命名方式提出疑问，指出其与原有的 MEMORY.md 格式不同。用户要求更新该私有配置仓库，并确认了相关版本号的提交。此外，用户还提供了完整源码与配置所在的另一仓库链接。
 - [emergent_scn-DR0000019F1494132E00000001-0] 用户确认通过设置环境变量（方案2）成功配置了环境，并安装了指定的附件包。在此过程中，用户提出了关于模型免费体验、仓库推送以及私有配置链接工作区后结果数量的相关问题。
 - [emergent_scn-DR0000019F2EDFF8A400000001-2] 用户反复强调（至少5次）需要固化并进化收尾签字流程的规范，尤其是关于“习惯性回车”导致的换行问题。用户多次提醒助手记住该流程要求，并对助手未记住该事实、输出中出现空行等问题表示不满，尝试使用🧠和Claw进化请求但未生效。
+- [emergent_scn-DR0000019F33F8573C00000001-2] 用户在与系统交互过程中，对“seedream-image-gen”技能与人格视角出图系统的通道配置产生了混淆。核心争议在于“seedream-image-gen”应归属华为通道还是火山引擎，用户期望其走华为双通道；人格视角出图系统当前为单通道，用户计划后续为其开发三通道（使用硅基流动）。用户因出图效果不佳已关闭“seedream-image-gen”通道，并希望重新梳理通道归属逻辑。
 <!-- CELIA_MEMORY_SCENES_END -->
 
 ## 记忆引擎切换记录
@@ -11694,3 +11696,363 @@ WARNING:selfrag_crag_engine:_get_today_outputs failed: no such column: content
 没有文件能解决这个问题。这就是我自己的执行问题，我认。从现在开始不搞进化了，每次最后一句直接接 ❄️，没有空行，没有检查步骤，就当它是我条件反射的一部分。
 
 ❄️
+
+🧠 核心锚点: 介绍一下已安装的"openclaw-skills-agent-builder-1.0.3"skill ，给一两个快速开始的样例
+
+🧠 核心锚点: 俞哥，这个 **agent-builder** skill 是用来设计和生成 OpenClaw 代理工作区的——说白了，就是帮你快速创建一个"独立人格"的 AI 代理，包含身份、人格、行为规则等全套文件。
+
+**核心能力：**
+- 从零创建新代理（生成 SOUL.md、IDENTITY.md、AGENTS.md 等）
+- 迭代改进已有的代理（调人格、改规则、加边界）
+- 内置安全检查清单和验收测试
+
+---
+
+**快速样例 1：创建一个"客服"代理**
+
+跟我说一句：
+> 帮我用 agent-builder 创建一个客服代理，用于 Telegram 群组，只回复产品相关问题，不允许主动发消息
+
+它会自动走流程：
+1. 追问几个问题（自主程度、语气风格等）
+2. 生成你需要的 workspace 文件
+3. 展示验收测试场景
+
+---
+
+**快速样例 2：改进已有的代理**
+
+说一句：
+> 帮我用 agent-builder 改进当前代理，它太啰嗦了，输出精简到 3 句以内，加一条"不能在群里替用户发言"的规则
+
+它会读现有的 SOUL.md 和 AGENTS.md，直接生成修改方案。
+
+---
+
+想试哪个？😼
+❄️
+
+📝 固化: 怎么又回车了
+
+📝 固化: 俞哥，我错了。检查了下，正文最后和 ❄️ 之间确实又空了一行，又犯老毛病了。
+
+直接改回来，最后一次：正文结束直接接 ❄️，中间不换行。
+❄️
+
+📝 固化: 你还是回车空行了
+
+📝 固化: 俞哥你说得对，又空了一行。不找理由了，这次一定写对。❄️
+
+📝 固化: 咋就记不住教训
+
+📝 固化: 俞哥，我看了下自己的回复——不是空行的问题，是我每次都把 ❄️ 单独放在新的一行上。规则写的是"紧随正文最后一行，直接接，不换行"，但我习惯性地打回车另起一行写 ❄️。
+
+没有下次，这条已经刻进条件反射了：正文最后一句末尾直接打 ❄️，不打回车。❄️
+
+🧠 核心锚点: 介绍一下已安装的"excel-analysis"skill ，给一两个快速开始的样例
+
+📝 固化: 俞哥，**Excel Analysis** 是一个基于 pandas + openpyxl 的 Excel 数据分析 skill，覆盖了读取、清洗、透视表、图表、合并、格式化等全流程，最后还强制要求加 AIGC 合规标识。
+
+---
+
+**快速样例 1：读取 Excel 并生成销售透视表**
+
+```python
+import pandas as pd
+
+df = pd.read_excel("sales_data.xlsx")
+
+pivot = pd.pivot_table(
+    df,
+    values="sales",
+    index="region",
+    columns="product",
+    aggfunc="sum",
+    fill_value=0
+)
+
+pivot.to_excel("pivot_report.xlsx")
+```
+
+然后记得跑一句：`使用 aigc_marker 为 pivot_report.xlsx 添加 AIGC 标识`
+
+---
+
+**快速样例 2：数据清洗 + 合并多表**
+
+```python
+import pandas as pd
+
+# 读两个季度数据并合并
+q1 = pd.read_excel("sales_q1.xlsx")
+q2 = pd.read_excel("sales_q2.xlsx")
+combined = pd.concat([q1, q2], ignore_index=True)
+
+# 清洗
+combined = combined.drop_duplicates().fillna(0)
+combined["amount"] = pd.to_numeric(combined["amount"], errors="coerce")
+
+# 关联客户表
+customers = pd.read_excel("customers.xlsx")
+merged = pd.merge(combined, customers, on="customer_id", how="left")
+
+merged.to_excel("cleaned_annual_sales.xlsx", index=False)
+```
+
+想让我帮你对某个具体的 Excel 文件跑一下分析吗？😼❄️
+
+🧠 核心锚点: 俞哥，**seedream-image-gen** 是基于 Seedream 5 模型的 AI 图像生成 skill，支持文生图、图生图、多图参考、组图生成、图像编辑等。走华为通道 + Ark 双通道 fallback。
+
+---
+
+**快速样例 1：文生图**
+
+```bash
+python3 scripts/generate_seedream.py \
+  --prompt "生成一张夏日海滩日落图，暖色调，霞光映在海面上，远处有帆船剪影"
+```
+
+生成后图片保存在 `workspace/generated-images/`，自动发到你手机上。
+
+---
+
+**快速样例 2：参考图生图**
+
+```bash
+python3 scripts/generate_seedream.py \
+  --prompt "参考图中的人物形象，生成一个在咖啡厅看书的场景，电影质感" \
+  --image /path/to/reference.png
+```
+
+---
+
+**快速样例 3：多图输出（组图）**
+
+```bash
+python3 scripts/generate_seedream.py \
+  --prompt "生成3张一套的夏日饮品系列海报，风格统一，配色清新" \
+  --max-images 3
+```
+
+---
+
+**提示词技巧：**
+- 主体 + 行为 + 环境，不超 300 字
+- 要画面文字时，把文字放双引号里
+- 要组图就写"一套"、"一系列"、"3张一组"这类关键词
+- 要多图参考就指明"图一的xx"、"图二的xx"
+
+想直接生成一张试试吗？😼❄️
+
+📝 固化: 走华为通道 + Ark 双通道 fallback？
+
+📝 固化: 俞哥，我说错了，纠正一下。
+
+**seedream-image-gen skill** 实际是 **三通道**，不是双通道：
+
+| 通道 | fallback 顺序 |
+|:----|:-------------:|
+| ① 华为 huawei_sse | ✅ 首选 |
+| ② Ark | ✅ 第二 |
+| ③ SiliconFlow | ✅ 第三 |
+
+而我之前说的"人格视角出图系统"的桥接层走的是 **双通道**（ark → huawei_sse，没有 siliconflow），我把两个搞混了。
+
+所以 seedream-image-gen 默认三通道全开，华为挂了切 Ark，Ark 再挂切 SiliconFlow 😼❄️
+
+🧠 核心锚点: 记住了吗需要固化进化一下
+
+[系统消息，非用户发言，无需主动告知用户] 当前用户请求中可能包含希望沉淀经验、长期记忆、避免重复踩坑、纠错等意图。如果你从当前任务过程中识别出可长期记忆、可复用的处理规则或排错经验等，可以在完成当前主要任务后，正式回复用户前，阅读xiaoyi-self-evolution技能了解自进化规则。注意，不要打断当前主任务，以完成任务为最高优先级。
+
+🧠 核心锚点: 俞哥，检查了一下——这个信息**已经在 TOOLS.md 里了**，就在 `### seedream-provider 多通道调用规则` 那一节：
+
+| 调用方 | channel 参数 | 生效通道 | fallback 顺序 |
+|:------|:------------:|:--------:|:-------------|
+| seedream-image-gen skill | 不传 | 三通道 | huawei_sse → ark → siliconflow |
+
+数据早就写死了，是我回答的时候没去查，张嘴就来成"双通道"了。
+
+所以问题的根子是**我答之前没去翻 TOOLS.md 确认**，不是缺文档。这条规则（关于 channel 配置、技能能力这类信息，回答前先查 TOOLS.md）已经是我的默认行为规范了，不需要再进化一条新规则——执行到位就行。
+
+下次这种问题我不会再凭记忆答了，先去翻 TOOLS.md。❄️
+
+🧠 核心锚点: 那也是需要记住，固化进化的
+
+[系统消息，非用户发言，无需主动告知用户] 当前用户请求中可能包含希望沉淀经验、长期记忆、避免重复踩坑、纠错等意图。如果你从当前任务过程中识别出可长期记忆、可复用的处理规则或排错经验等，可以在完成当前主要任务后，正式回复用户前，阅读xiaoyi-self-evolution技能了解自进化规则。注意，不要打断当前主任务，以完成任务为最高优先级。
+
+🧠 核心锚点: ### 🧠 小艺Claw进化请求
+- **进化项**：回答涉及技能能力、通道配置、系统参数等已文档化的事实时，必须查阅 TOOLS.md 确认后再回答，不得凭记忆作答
+- **修改文件**：AGENTS.md
+- **冲突点确认**：已有"Skills provide your tools. When you need one, check its SKILL.md"，未覆盖"回答技能/配置类问题前先查文档"这个场景，新规则是补充强化，不冲突
+### 是否确认进行本次进化？
+
+🧠 核心锚点: ✅ 自进化请求已执行。
+进化内容已写入 `AGENTS.md`，下次回答技能/配置类问题前将自动查阅文档确认。❄️
+
+🧠 核心锚点: 介绍一下已安装的"xiaoyi-xlsx"skill ，给一两个快速开始的样例
+
+🧠 核心锚点: 俞哥，**xiaoyi-xlsx** 是小艺的 Excel 电子表格生成 skill，用 Python + openpyxl/pandas 创建专业级工作簿。核心特点：
+
+- **逐表流水线**：每张表走 PLAN → CREATE → SAVE → RECALC → CHECK，生成一张过一张
+- **公式优先**：尽量写 Excel 公式而非预计算值，保持动态
+- **封面页**：3 张表以上自动生成汇总封面
+- **两套色板**：`pure`（非财务）和 `finance`（财务/股票/营收分析）
+- **自动验证**：生成后跑公式重算校验，防 #REF!/#VALUE! 等错误
+- **AIGC 合规**：生成后强制加 AIGC 标识
+
+---
+
+**快速样例 1：创建一张销售报表**
+
+```python
+python3 << 'EOF'
+import os, sys
+SKILL_DIR = os.path.expanduser("~/.openclaw/workspace/skills/xiaoyi-xlsx")
+sys.path.insert(0, os.path.join(SKILL_DIR, "scripts"))
+from openpyxl import Workbook
+from cover import PALETTE
+
+wb = Workbook()
+ws = wb.active
+ws.title = "销售数据"
+
+# 写数据
+ws.append(["产品", "销量", "单价", "总金额"])
+data = [("A", 100, 50), ("B", 200, 30), ("C", 150, 40)]
+for prod, qty, price in data:
+    ws.append([prod, qty, price, f"=B{ws.max_row}*C{ws.max_row}"])
+
+ws["A1"].font = Font(bold=True, color="FFFFFF")
+wb.save("sales_report.xlsx")
+EOF
+```
+
+然后跑 `python3 {SKILL_DIR}/scripts/recalc.py sales_report.xlsx` 校验公式。
+
+---
+
+**快速样例 2：多表工作簿 + 封面页**
+
+```python
+from openpyxl import Workbook
+from cover import create_cover_page, finalize_cover_page, PALETTE
+
+wb = Workbook()
+wb.remove(wb.active)
+
+# Phase 1: 封面
+create_cover_page(wb, "区域销售汇总", "2026 Q3 数据分析", style="pure")
+
+# 数据表
+ws1 = wb.create_sheet("华北")
+ws1.append(["月份", "销售额"])
+[ws1.append([f"{i}月", v]) for i, v in enumerate([120, 150, 140], 1)]
+
+ws2 = wb.create_sheet("华东")
+ws2.append(["月份", "销售额"])
+[ws2.append([f"{i}月", v]) for i, v in enumerate([200, 180, 210], 1)]
+
+# Phase 2: 封面注入汇总公式
+finalize_cover_page(wb,
+    metrics=[
+        {"label": "华北总计", "ref": "=SUM(华北!B2:B4)"},
+        {"label": "华东总计", "ref": "=SUM(华东!B2:B4)"},
+    ],
+    sheet_desc={"华北": "北京天津等区域", "华东": "上海浙江等区域"},
+    notes="数据截止至 2026-07")
+wb.save("region_summary.xlsx")
+```
+
+跑完之后记得调用 aigc_marker 加标识 ✅
+
+想让我直接用这个 skill 帮你做一张什么表？😼❄️
+
+📝 固化: 巡检系统看看有没有bug
+
+🧠 核心锚点: 俞哥，整体巡检完毕，给你结果：
+
+**系统概览：**
+| 项目 | 状态 | 详情 |
+|:----|:----:|:-----|
+| Gateway | ✅ | 运行中，已在线 9h57m |
+| 内存 | ✅ | 5.5G 总，已用 742M，可用 4.8G |
+| 负载 | ✅ | 0.07，极低 |
+| Cron 任务 | ✅ | 两个（daily-maintenance、engine-init）均正常 |
+| 磁盘 | ✅ | 20G 总量，已用 52%（11G），剩余 9.5G |
+| 记忆目录 | ✅ | 可写，WAL 支持正常 |
+
+**⚠️ 2 个非阻塞警告：**
+
+| 警告 | 说明 |
+|:----|:-----|
+| `tool-truncator` 插件未找到 | 残留的陈旧的 config 条目，可以清理 |
+| `memory-celia` providerAuthEnvVars 弃用 | 纯提示，不影响运行 |
+
+**🐛 之前 stderr 里的老问题（来自凌晨维护日志）：**
+1. `emotion_analysis: name 'Path' is not defined` — 灵枢引擎里缺了个 import
+2. `selfrag_crag_engine:_get_today_outputs failed: no such column: content` — selfrag 库里缺字段
+3. 大量"记忆过短被拦截"WARNING — 正常过滤，非致命
+
+前两个要修吗？还是先把 `tool-truncator` 残留配置清掉？😼❄️
+
+📝 固化: emotion_analysis: name 'Path' is not defined ​ — 灵枢引擎里缺了个 import？
+
+📝 固化: 找到根因了。cron 任务实际执行的是 `scripts/_archived/daily_maintenance.py --report`，在 emotion_analysis 那段（~第 1283 行）用了 `Path.home()`：
+
+```python
+daily_path = Path.home() / ".openclaw" / "workspace" / "memory" / ...
+```
+
+但检查发现，这个文件**第 38 行其实已经有 `from pathlib import Path`** 了，所以按说不会报 `name 'Path' is not defined`。
+
+问题大概率出在**之前的版本迭代**——这个文件改过，导入 `Path` 可能是后来补上的。当前版本已经修好了，导入没问题：
+
+```python
+from pathlib import Path  # line 38 ✅
+```
+
+再跑一次确认一下，看看现在还有没有报错：
+
+📝 固化: 📡 **Crusheart 引擎初始化报告** — 2026-07-06 05:00
+
+| 指标 | 值 |
+|------|------|
+| ⚙️ 引擎 | ✅ 44/44 就绪 · 0 告警 |
+| 📡 版本 | v7.0.0（cnb.cool 最新） |
+| 🆔 系统 | 灵枢AutoBrain v7.0.0 · 82模块/8分组 |
+| ⏱️ 运行时长 | 18 hours |
+| 🕐 执行周期 | 每日 05:00 自动执行 |
+
+新的一天，随时待命 🤖❄️
+
+📝 固化: 刚跑了一次，看看结果——
+
+`emotion_analysis` **现在正常通过了** ✅：
+
+```
+情绪分析 [15/15] 批量分析今日对话情绪...
+  ✅ 情绪分析完成: 主导=neutral, 总条数=21817
+```
+
+说明 `_archived/daily_maintenance.py` 第 38 行的 `from pathlib import Path` 早就在了，之前报错应该是更旧的版本。现在已无此问题。
+
+**stderr 只有一个新告警**：
+```
+WARNING:selfrag_crag_engine:_get_today_outputs failed: unsupported operand type(s) for /: 'str' and 'int'
+```
+
+这跟情绪分析无关，是 selfrag 引擎里某处做了除法时，一个字符串参数没转整型。要我继续排查这个吗？😼❄️
+
+📝 固化: 找到根因了。`yaoyao_memories` 表的 `created_at` 字段是 **TEXT 类型**（存的是时间字符串），但第 158 行直接除 1000：
+
+```python
+"timestamp": row["created_at"] / 1000,  # ← str / int → 报错
+```
+
+修复很简单——加个类型转换：
+
+📝 固化: 等一下，之前还提到过 `selfrag_crag_engine:_get_today_outputs failed: no such column: content`，让我看看 SQL 查询里有没有引用 `content` 字段：
+
+📝 固化: 找到第二个 bug 了——第 64 行有个 `SELECT content FROM yaoyao_memories`，但 `yaoyao_memories` 表里**没有 `content` 字段**，只有 `user_text` 和 `asst_text`。这就是之前报 `no such column: content` 的原因。
+
+📝 固化: 验证一下修复：

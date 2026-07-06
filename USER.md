@@ -41,14 +41,16 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=9618194d6a5006bd -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=8fe1135fec8e6dd8 -->
 # Memory Global Summary
 
 ## User Profile
+- 用户已安装名为‘xiaoyi-xlsx’的技能，并希望了解该技能的基本介绍和快速开始的样例
 - 助手对用户的称呼是'俞哥'
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户多次指出助手不应在回答中输出多余的回车空行，但助手再次出现该问题，用户对此表示不满
 - 用户发现AI助手的回复中又没有回车换行，用户不喜欢这种格式，希望助手的回复有正常的回车换行
 - 用户对“方案B：多模型后端”的评价是“最实用”
 - 用户认为单通道系统的说明应该用表格形式展示，但当前未使用表格
@@ -72,14 +74,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
+- 用户要求补充归档逻辑，对过期的L2条目进行定期归档
+- 用户发出了'stderr报错（供排查参考）？'的询问，正在排查stderr相关的报错，并要求修掉相关的报错或问题
 - 用户要求使用 Markdown 表格格式，而非纯文本表格
 - 用户希望将当前对话中值得记住的信息固化进长期记忆
-- 用户要求推送三个仓库
-- 用户要求seedream-image-gen的三通道与人格视角出图系统的双通道区分开，默认优先顺序不同
-- 用户计划接下来开发人格视角出图系统的三通道，使用硅基流动
 ### Short-term Intent
+- 用户想要了解已安装技能的基本介绍和快速开始的样例
 - 用户准备开始开发人格视角出图系统的二通道
 - 用户决定推送未提交的修改
-- 用户提供了一个Git仓库链接：https://cnb.cool/llm-memory-integrat/GalaxyOS/-/commits/v8.6.0，并询问是否还有可以拆下来集成的组件
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
