@@ -1296,19 +1296,24 @@ def run() -> Dict:
         from lfm_skill_bank import feed_memory_to_skill_bank
         import sqlite3
         today_start = datetime.now(BEIJING_TZ).replace(hour=0, minute=0, second=0, microsecond=0)
-        today_ts = int(today_start.timestamp() * 1000)
-        db_path = os.path.expanduser("~/.openclaw/memory/main.sqlite")
+        today_str = today_start.strftime("%Y-%m-%d")
+        # AutoMemory 写 .crusheart.db → memories 表
+        db_path = os.path.join(WORKSPACE, ".crusheart.db")
         memories = []
         if os.path.exists(db_path):
             conn = sqlite3.connect(db_path)
             conn.row_factory = sqlite3.Row
             cur = conn.cursor()
             try:
-                cur.execute("SELECT content, source, created_at FROM yaoyao_memories WHERE created_at >= ? ORDER BY created_at ASC LIMIT 500", (today_ts,))
+                cur.execute(
+                    "SELECT content, tags, scene, created_at FROM memories WHERE created_at >= ? ORDER BY created_at ASC LIMIT 500",
+                    (today_str,)
+                )
                 for row in cur.fetchall():
-                    memories.append({"content": row["content"] or "", "source": row["source"] or "conversation", "timestamp": row["created_at"] / 1000, "created_at": row["created_at"] / 1000, "metadata": {}})
-            except Exception:
-                pass
+                    text = row["content"] or ""
+                    memories.append({"content": text, "source": "conversation", "timestamp": 0, "created_at": 0, "metadata": {}})
+            except Exception as e3:
+                _log(f"      ⚠️ 技能库SQL异常: {e3}")
             conn.close()
         skill_result = {"status": "skip", "reason": "no memories"}
         if memories:
@@ -1543,7 +1548,7 @@ def _format_report(results: Dict, elapsed: float) -> str:
                 txt += f" (降级链失败 {degrade_fail} 次)"
             lines.append(TR("📈 统一评分", txt))
 
-    # 梦境步骤
+    # 梦境步骤（results.dreaming.steps）
     dream = results.get("dreaming", {}).get("steps", {})
     for step_key, step_label in [
         ("index_merge", "💤 索引合并"),
@@ -1576,6 +1581,39 @@ def _format_report(results: Dict, elapsed: float) -> str:
         if detail:
             txt += f" {detail[:40]}"
         lines.append(TR(step_label, txt))
+
+    # 情绪分析（results 顶层）
+    ea = results.get("emotion_analysis", {})
+    if ea.get("status") == "ok":
+        dom = ea.get("dominant_emotion", "?")
+        total = ea.get("total_lines", 0)
+        lines.append(TR("💬 情绪分析", f"主导={dom}, {total} 条"))
+    elif ea.get("status") == "skip":
+        lines.append(TR("💬 情绪分析", f"⏭️ {ea.get('reason','')[:28]}"))
+    elif ea.get("status") == "error":
+        lines.append(TR("💬 情绪分析", f"❌ {ea.get('error','')[:28]}"))
+
+    # 技能库（results 顶层）
+    sb = results.get("skill_bank", {})
+    if sb.get("status") == "ok":
+        ing = sb.get("ingested", 0)
+        disc = sb.get("discovered", 0)
+        prom = sb.get("promoted", 0)
+        lines.append(TR("🔧 技能库", f"ingested={ing} discovered={disc} promoted={prom}"))
+    elif sb.get("status") in ("skip", "error"):
+        txt = f"{'⏭️' if sb.get('status')=='skip' else '❌'} {sb.get('reason','') or sb.get('error','')}"
+        lines.append(TR("🔧 技能库", txt[:28]))
+
+    # 输出校验（results 顶层）
+    sr = results.get("selfrag_validate", {})
+    if sr.get("status") == "ok":
+        val = sr.get("validated", 0)
+        issues = sr.get("issues_found", 0)
+        rel = sr.get("reliability_rate", "?")
+        lines.append(TR("📐 输出校验", f"validated={val} issues={issues} reliability={rel}%"))
+    elif sr.get("status") in ("skip", "error"):
+        txt = f"{'⏭️' if sr.get('status')=='skip' else '❌'} {sr.get('reason','') or sr.get('error','')}"
+        lines.append(TR("📐 输出校验", txt[:28]))
 
     # 会话归档
     sa = results.get("session_archive", {})
