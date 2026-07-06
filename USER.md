@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=8fe1135fec8e6dd8 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1dbba9e26d8ae516 -->
 # Memory Global Summary
 
 ## User Profile
@@ -74,14 +74,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
-- 用户要求补充归档逻辑，对过期的L2条目进行定期归档
-- 用户发出了'stderr报错（供排查参考）？'的询问，正在排查stderr相关的报错，并要求修掉相关的报错或问题
-- 用户要求使用 Markdown 表格格式，而非纯文本表格
-- 用户希望将当前对话中值得记住的信息固化进长期记忆
+- 用户提出需要解决3个小问题
+- 用户询问是否需要将处理规则或排错经验记忆下来并固化进化
+- 方案B：给celia加一个空provider配置（最小改动），用户询问该方案是否已经搞定了
+- 要彻底消除providerAuthEnvVars的弃用，需要将celia迁移到新格式
+- 用户询问重启是否成功
 ### Short-term Intent
+- 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
 - 用户想要了解已安装技能的基本介绍和快速开始的样例
 - 用户准备开始开发人格视角出图系统的二通道
-- 用户决定推送未提交的修改
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
