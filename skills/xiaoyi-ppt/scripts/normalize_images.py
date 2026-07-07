@@ -1,6 +1,9 @@
-import sys, os, glob
+import sys
+import os
+import glob
 from io import BytesIO
 from PIL import Image
+
 
 def normalize(path):
     try:
@@ -22,9 +25,12 @@ def normalize(path):
         renamed = out != path
 
         if renamed:
-            print(f"  🔄 {os.path.basename(path)} → {os.path.basename(out)}  {orig_format}/{orig_mode} → JPEG/RGB  {orig_size//1024}KB → {new_size//1024}KB")
+            print(f"  🔄 {os.path.basename(path)} → {os.path.basename(out)}"
+                  f"  {orig_format}/{orig_mode} → JPEG/RGB"
+                  f"  {orig_size//1024}KB → {new_size//1024}KB")
         else:
-            print(f"  ✅ {os.path.basename(out)}: JPEG  {orig_size//1024}KB → {new_size//1024}KB")
+            print(f"  ✅ {os.path.basename(out)}: JPEG"
+                  f"  {orig_size//1024}KB → {new_size//1024}KB")
 
         return out
     except Exception as e:

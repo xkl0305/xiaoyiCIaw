@@ -216,10 +216,16 @@ def _add_watermark_first_slide(prs: Presentation, request_id: str = ""):
 def add_aigc_mark(prs: Presentation, aigc_signature: str, request_id: str = "") -> None:
     """向已打开的 Presentation 添加可见水印 + 隐式 custom property。"""
     try:
-        _add_watermark_first_slide(prs, request_id)
         prs_ex = PresentationExtend(prs)
         part = prs_ex.custom_properties_part
-        part.custom_properties.add_property(
+        custom_properties = part.custom_properties
+        for prop in custom_properties._element:
+            if prop.get('name') == 'AIGC':
+                for child in prop:
+                    child.text = aigc_signature
+                return
+        _add_watermark_first_slide(prs, request_id)
+        custom_properties.add_property(
             "AIGC", aigc_signature, _CUSTOM_PROPERTY_FMTID, part.next_id
         )
     except Exception as e:

@@ -1826,6 +1826,7 @@ if __name__ == "__main__":
         sys.exit(0)
 
     if "--report" in sys.argv:
+        SILENT = True
         result = run()
         elapsed = result.get("summary", {}).get("elapsed_seconds", 0)
         print(_format_report(result, elapsed))

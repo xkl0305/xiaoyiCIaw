@@ -177,3 +177,20 @@ printf '%d\n' $((RANDOM%12*5))
 | 人格视角出图（桥接层） | `"ark,huawei_sse"` | 双通道 | ark → huawei_sse（无 siliconflow） |
 
 **加新通道时**：在 `_load_all_channel_configs()` 里加配置即可，各调用方的默认优先级通过改其传的 channel 值控制，不需要动 provider 内部。
+
+
+### 记忆系统双数据源排查指南
+
+OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
+
+| 系统 | 数据库 | 表 | 谁写入 |
+|:----|:------|:---|:-------|
+| AutoMemory（memory_pipeline） | `.crusheart.db` | `memories` | 每日维护记忆采集、对话记录 |
+| yaoyao 记忆系统（Celia/yaoyao） | `main.sqlite` | `yaoyao_memories` | yaoyao 插件日常对话写入 |
+
+**排查规则：**
+- 遇到记忆查询/技能库投喂数据为空时，先确认数据写在哪张表
+- 查看 .crusheart.db 的 memories 表：AutoMemory 的写入目标
+- 查看 main.sqlite 的 yaoyao_memories 视图：yaoyao 系统的写入目标
+- 两个表的查询列不同：memories 用 content, yaoyao_memories 用 user_text/asst_text
+- created_at 格式也不同：memories 是 ISO 字符串, yaoyao_memories 也是字符串

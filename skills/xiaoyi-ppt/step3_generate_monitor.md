@@ -1,13 +1,13 @@
 # 子流程三：调用云服务 & 监控 & 交付
 
 > **模型须知**：进入此子流程前必须先完整阅读本文件，再执行任何操作。
-> 前置条件：大纲文件已在子流程二中保存至 `$PPT_SESSION_DIR/outline.md`。
+> 前置条件：大纲文件已在子流程二中保存至 `$PPT_SESSION_DIR/outline_pre.md`，图片已在子流程二·一中生成替换至 `$PPT_SESSION_DIR/outline.md`。
 
 ---
 
 ## 步骤一：调用 PPT 生成脚本
 
-**目标**：将用户原始指令和本地大纲文件路径作为参数，在后台启动 PPT 生成任务（脚本内部自动完成上传）。
+**目标**：将用户原始指令、替换图片后的大纲文件路径和图片 URL 列表作为参数，在后台启动 PPT 生成任务（脚本内部自动完成上传）。
 
 > **重要**：将 exec 工具的 `yieldMs` 设置为 `1200000`（20 分钟），`timeout` 设置为 `1200`（20 分钟）再执行此步骤。
 
@@ -16,6 +16,7 @@ PPT_SESSION_ID="$PPT_SESSION_ID" \
   $PYTHON_CMD "~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/generate_ppt.py" \
   "<用户的完整原始指令>" \
   --outline-file "$PPT_SESSION_DIR/outline.md" \
+  --image-urls-file "$PPT_SESSION_DIR/image_urls.json" \
   > /dev/null 2>&1 &
 
 PPT_PID=$!
@@ -99,7 +100,7 @@ tail -5 "$PPT_SESSION_DIR/generate.log"
 
 ## 步骤三：交付结果
 
-**目标**：将生成的 PPT 文件传送给用户。
+**目标**：分析用户意图，将生成的PPT文件重命名后发送给用户。
 
 ### 3.1 查找生成文件
 
@@ -110,7 +111,33 @@ ls -la "$PPT_SESSION_DIR"
 从日志中提取：
 - **本地路径**：`[文件已保存]` 行中的绝对路径
 
-### 3.2 发送 PPT 给用户
+### 3.2 分析用户意图生成文件名
+
+综合分析以下信息推断合适的文件名：
+- 用户 query 中的主题关键词
+- 用户上传文件的名称（如有）
+- 用户明确表达的目的或场景
+
+```bash
+# 根据用户意图推断文件名，例如：
+# "帮我做一个项目汇报PPT" -> "项目汇报.pptx"
+# "制作产品发布会演示文稿" -> "产品发布会.pptx"
+# "季度工作总结" -> "季度工作总结.pptx"
+
+SUGGESTED_NAME="<根据用户意图分析得出的文件名>"
+if [ -n "$SUGGESTED_NAME" ]; then
+  mv "$PPT_SESSION_DIR/<原文件名>.pptx" "$PPT_SESSION_DIR/${SUGGESTED_NAME}.pptx"
+fi
+```
+
+### 3.3 AIGC 水印标记
+打包出最终 PPTX 后，**必须调用水印脚本**为文件添加 AIGC 标识：
+
+```bash
+$PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/ppt_aigc_mark.py $PPT_SESSION_DIR/${SUGGESTED_NAME}.pptx
+```
+
+### 3.4 发送 PPT 给用户
 
 向用户提供 PPT 文件及完成通知：
 

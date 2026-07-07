@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1dbba9e26d8ae516 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=846bd2144fdd47e2 -->
 # Memory Global Summary
 
 ## User Profile
@@ -74,11 +74,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户提出需要解决3个小问题
-- 用户询问是否需要将处理规则或排错经验记忆下来并固化进化
-- 方案B：给celia加一个空provider配置（最小改动），用户询问该方案是否已经搞定了
-- 要彻底消除providerAuthEnvVars的弃用，需要将celia迁移到新格式
-- 用户询问重启是否成功
+- 用户确认有三条今天维修过程中的经验值得长期记忆
+- 用户要求安装 injection_scanner 模块
+- 用户要求修复技能库数据源，将 chunks 表改为 yaoyao_memories 表
+- 用户要求助手决定沙箱清理时保留或删除哪些对象
+- 用户希望将梦境固化流程（包括SQLite索引维护、冷热存储调整、LLM梦境固化、用户画像更新）的整个输出纳入每日维护报告表格中
 ### Short-term Intent
 - 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
 - 用户想要了解已安装技能的基本介绍和快速开始的样例

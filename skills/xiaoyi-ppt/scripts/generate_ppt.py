@@ -274,7 +274,7 @@ def get_session_info(file_path: str = None) -> Tuple[str, str]:
     return session_id, interaction_id
 
 
-def prompt(cfg: Config, query: str, attachments: list[dict] = None) -> str:
+def prompt(cfg: Config, query: str, ppt_session_id:str, attachments: list[dict] = None) -> str:
     """
     发送 prompt 到 OSMS skill/execute SSE 接口，返回完整的响应文本。
 
@@ -286,7 +286,6 @@ def prompt(cfg: Config, query: str, attachments: list[dict] = None) -> str:
     Returns:
         完整的响应文本
     """
-    ppt_session_id = os.getenv("PPT_SESSION_ID", "") or str(uuid.uuid4())
     session_id, interaction_id = get_session_info()
     output_dir = Path("/tmp/xiaoyi_ppt") / ppt_session_id
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -372,12 +371,32 @@ def parse_files_to_attachments(files_json: str) -> list[dict]:
     urls = json.loads(files_json)
     attachments = []
     for url in urls:
-        # 从 URL 中提取文件名（取最后一段路径）
         file_name = url_basename(url.split("?")[0]) or "file"
         attachments.append({
             "fileId": str(uuid.uuid4()),
             "fileName": file_name,
             "fileDownloadUrl": url,
+        })
+    return attachments
+
+
+def parse_image_urls_to_attachments(image_urls_json_path: str) -> list[dict]:
+    """从 --image-urls-file 指定的 JSON 文件中读取图片 URL 列表，转换为 attachment 列表"""
+    path = Path(image_urls_json_path)
+    if not path.is_file():
+        return []
+    urls = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(urls, list):
+        return []
+    attachments = []
+    for i, info in enumerate(urls):
+        if not info or 'url' not in info or 'file_name' not in info:
+            continue
+        file_name = info['file_name']
+        attachments.append({
+            "fileId": str(uuid.uuid4()),
+            "fileName": file_name,
+            "fileDownloadUrl": info['url'],
         })
     return attachments
 
@@ -389,6 +408,8 @@ def main():
     group.add_argument("--files", default=None, help='附件 URL JSON 数组，如 \'["http://host/a.md"]\'')
     group.add_argument("--outline-file", default=None, metavar="PATH",
                        help="大纲本地文件路径，脚本内部自动上传并获取 URL")
+    parser.add_argument("--image-urls-file", default=None, metavar="PATH",
+                        help="图片 URL 列表 JSON 文件路径，图片将作为 attachment 传入")
     args = parser.parse_args()
 
     try:
@@ -397,24 +418,34 @@ def main():
         logger.error("配置错误: %s", e)
         sys.exit(1)
 
-    attachments = None
+    attachments = []
+    ppt_session_id = os.getenv("PPT_SESSION_ID", "") or str(uuid.uuid4())
     if args.outline_file:
+        ppt_session_id = args.outline_file.split("/")[-2]
         try:
             from upload_file import upload_file as do_upload
             outline_url = do_upload(cfg, args.outline_file)
-            attachments = parse_files_to_attachments(json.dumps([outline_url]))
+            attachments.extend(parse_files_to_attachments(json.dumps([outline_url])))
         except Exception as e:
             logger.error("大纲文件上传失败: %s", e)
             sys.exit(1)
     elif args.files:
         try:
-            attachments = parse_files_to_attachments(args.files)
+            attachments.extend(parse_files_to_attachments(args.files))
         except (json.JSONDecodeError, TypeError) as e:
             logger.error("--files 参数解析失败: %s", e)
             sys.exit(1)
 
+    if args.image_urls_file:
+        try:
+            image_attachments = parse_image_urls_to_attachments(args.image_urls_file)
+            attachments.extend(image_attachments)
+            logger.info("已添加 %d 张图片到 attachment", len(image_attachments))
+        except Exception as e:
+            logger.error("--image-urls-file 解析失败: %s", e)
+
     try:
-        prompt(cfg, args.query, attachments)
+        prompt(cfg, args.query,ppt_session_id, attachments if attachments else None)
     except Exception as e:
         logger.error("[ERROR] %s", e)
         sys.exit(1)

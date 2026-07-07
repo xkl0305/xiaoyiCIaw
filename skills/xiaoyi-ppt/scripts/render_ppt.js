@@ -90,7 +90,8 @@ function rgbToHex(r, g, b) {
   return [r, g, b].map((c) => Math.max(0, Math.min(255, Math.round(c))).toString(16).padStart(2, "0")).join("").toUpperCase();
 }
 function mixHex(hexA, hexB, t) {
-  const a = hexToRgb(hexA), b = hexToRgb(hexB);
+  const a = hexToRgb(hexA);
+  const b = hexToRgb(hexB);
   return rgbToHex(a.r + (b.r - a.r) * t, a.g + (b.g - a.g) * t, a.b + (b.b - a.b) * t);
 }
 function lighten(hex, amount) { return mixHex(hex, "FFFFFF", amount); }
@@ -332,7 +333,8 @@ function addPageTitle(slide, title, p, pres) {
 
 /** 统一双层圆圈绘制：外圈半透明 + 内圈实色 */
 function drawColoredCircle(slide, pres, opts) {
-  const r = opts.radius, he = opts.haloExtra != null ? opts.haloExtra : 0.06;
+  const r = opts.radius;
+  const he = opts.haloExtra != null ? opts.haloExtra : 0.06;
   slide.addShape(pres.shapes.OVAL, {
     x: opts.cx - r - he, y: opts.cy - r - he,
     w: (r + he) * 2, h: (r + he) * 2,
@@ -352,11 +354,14 @@ async function addIconInCircle(slide, pres, opts) {
   const iconData = await resolveIcon(opts.iconName, opts.iconColor || "#FFFFFF");
   if (iconData) {
     const inner = opts.radius * (opts.iconScale || 0.68);
-    const px = opts.cx - inner / 2, py = opts.cy - inner / 2 + opts.radius * 0.02;
+    const px = opts.cx - inner / 2;
+    const py = opts.cy - inner / 2 + opts.radius * 0.02;
     slide.addImage({ data: iconData, x: px, y: py, w: inner, h: inner });
   }
   return opts.radius;
 }
+
+/** 同步绘制圆圈，返回图标规格（供批处理使用） */
 
 /** 同步绘制圆圈，返回图标规格（供批处理使用） */
 function drawIconCircle(slide, pres, opts) {
@@ -377,7 +382,8 @@ async function batchAddIconImages(slide, pres, iconSpecs) {
     const opts = validSpecs[i];
     if (!iconData) continue;
     const inner = opts.radius * (opts.iconScale || 0.68);
-    const px = opts.cx - inner / 2, py = opts.cy - inner / 2 + opts.radius * 0.02;
+    const px = opts.cx - inner / 2;
+    const py = opts.cy - inner / 2 + opts.radius * 0.02;
     slide.addImage({ data: iconData, x: px, y: py, w: inner, h: inner });
   }
 }
@@ -683,7 +689,9 @@ const renderers = {
     }
 
     // Image area — real image or layered decorative frame
-    const imgW = 3.9, imgH = 3.6, imgY = 1.25;
+    const imgW = 3.9;
+    const imgH = 3.6;
+    const imgY = 1.25;
     const hasSrc = !!(data.src && fs.existsSync(data.src));
 
     if (hasSrc) {
@@ -779,14 +787,16 @@ const renderers = {
       const isHorizontal = data.cardStyle === "horizontal" && cols <= 3;
       if (isHorizontal) {
         const iconSize = cols === 3 ? 0.50 : 0.58;
-        const iconX = x + 0.22, iconCenterY = y + cardH / 2;
+        const iconX = x + 0.22;
+        const iconCenterY = y + cardH / 2;
         iconSpecs.push(drawIconCircle(slide, pres, {
           cx: iconX + iconSize / 2, cy: iconCenterY,
           radius: iconSize / 2, color: cc,
           iconName: card.icon, iconColor: card.iconColor || "#FFFFFF",
           haloExtra: 0.05, haloTransparency: 80,
         }));
-        const textX = iconX + iconSize + 0.18, textW = x + cardW - textX - 0.15;
+        const textX = iconX + iconSize + 0.18;
+        const textW = x + cardW - textX - 0.15;
         slide.addText(card.title, {
           x: textX, y: y + 0.25, w: textW, h: 0.42,
           fontSize: 14, fontFace: p.fonts.title,
@@ -918,8 +928,11 @@ const renderers = {
     contentSlideSetup(slide, data, p, pres);
 
     const rows = data.rows || [];
-    const colW = 3.3, dimW = 2.0, rowH = 0.50;
-    const tableX = 0.6, tableY = 1.45;
+    const colW = 3.3;
+    const dimW = 2.0;
+    const rowH = 0.50;
+    const tableX = 0.6;
+    const tableY = 1.45;
     const maxRows = Math.min(rows.length, 8);
 
     // 表头
@@ -978,7 +991,9 @@ const renderers = {
 
     if (compact) {
       const lineY = 2.75;
-      const startX = 0.8, endX = 9.2, totalLen = endX - startX;
+      const startX = 0.8;
+      const endX = 9.2;
+      const totalLen = endX - startX;
       const nodeW = 1.55;
       slide.addShape(pres.shapes.LINE, {
         x: startX, y: lineY, w: totalLen, h: 0,
@@ -1015,13 +1030,16 @@ const renderers = {
     } else {
       // 宽松模式 — 时间轴下移，避免与标题冲突
       const lineY = 3.1;
-      const startX = 1.3, endX = 8.7, totalLen = endX - startX;
+      const startX = 1.3;
+      const endX = 8.7;
+      const totalLen = endX - startX;
       slide.addShape(pres.shapes.LINE, {
         x: startX, y: lineY, w: totalLen, h: 0,
         line: { color: lighten(p.secondary, 0.2), width: 2.5 },
       });
 
-      const cardW = 1.9, cardH = 1.4;
+      const cardW = 1.9;
+      const cardH = 1.4;
       for (let i = 0; i < count; i++) {
         const step = steps[i];
         const cx = count === 1 ? startX + totalLen / 2 : startX + (totalLen / (count - 1)) * i;
@@ -1188,7 +1206,11 @@ const renderers = {
     });
 
     const valLen = String(data.value).length;
-    const valFs = valLen > 10 ? 48 : valLen > 8 ? 56 : valLen > 6 ? 66 : 80;
+    let valFs;
+    if (valLen > 10) valFs = 48;
+    else if (valLen > 8) valFs = 56;
+    else if (valLen > 6) valFs = 66;
+    else valFs = 80;
     slide.addText(String(data.value), {
       x: 1.2, y: 1.2, w: 7.6, h: 1.8,
       fontSize: valFs, fontFace: p.fonts.title, color: p.accent,
@@ -1216,7 +1238,8 @@ const renderers = {
 
     const steps = data.steps || [];
     const count = Math.min(steps.length, 6);
-    const startX = 1.2, startY = 1.4;
+    const startX = 1.2;
+    const startY = 1.4;
     const stepH = Math.min(0.76, 3.8 / count);
     const gap = 0.1;
     const getColor = createColorCycler(p);
@@ -1246,7 +1269,8 @@ const renderers = {
         bold: true, align: "center", valign: "middle",
       });
 
-      const cardX = startX + 0.78, cardW = 7.0;
+      const cardX = startX + 0.78;
+      const cardW = 7.0;
       slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
         x: cardX, y: y + 0.02, w: cardW, h: stepH - 0.04,
         fill: { color: "FFFFFF" }, shadow: softShadow({ blur: 5, opacity: 0.05 }),
@@ -1412,7 +1436,8 @@ const renderers = {
       });
 
       const iconSize = 0.52;
-      const iconCX = 0.9 + iconSize / 2, iconCY = y + rowH / 2;
+      const iconCX = 0.9 + iconSize / 2;
+      const iconCY = y + rowH / 2;
       iconSpecs.push(drawIconCircle(slide, pres, {
         cx: iconCX, cy: iconCY, radius: iconSize / 2, color: cc,
         iconName: item.icon, iconColor: item.iconColor || "#FFFFFF",
@@ -1442,7 +1467,10 @@ const renderers = {
   async highlight_box(slide, data, p, pres) {
     contentSlideSetup(slide, data, p, pres);
 
-    const boxX = 0.8, boxY = 1.5, boxW = 8.4, boxH = 3.2;
+    const boxX = 0.8;
+    const boxY = 1.5;
+    const boxW = 8.4;
+    const boxH = 3.2;
     // 阴影底层
     slide.addShape(pres.shapes.ROUNDED_RECTANGLE, {
       x: boxX + 0.06, y: boxY + 0.06, w: boxW, h: boxH,
@@ -1484,7 +1512,8 @@ const renderers = {
     // 可选右侧配图区
     if (data.imagePlaceholder) {
       const imgSize = 1.0;
-      const imgX = boxX + boxW - 1.6, imgY = boxY + (boxH - imgSize) / 2;
+      const imgX = boxX + boxW - 1.6;
+      const imgY = boxY + (boxH - imgSize) / 2;
       const imgIcon = await resolveIcon(data.imageIcon || "FaImage", "#" + p.accent);
       if (imgIcon) {
         slide.addImage({ data: imgIcon, x: imgX, y: imgY, w: imgSize, h: imgSize });
