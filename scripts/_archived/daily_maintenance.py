@@ -1595,8 +1595,8 @@ def _format_report(results: Dict, elapsed: float) -> str:
 
     # 技能库（results 顶层）
     sb = results.get("skill_bank", {})
-    if sb.get("status") == "ok":
-        ing = sb.get("ingested", 0)
+    ing = sb.get("ingested", -1)
+    if ing >= 0:
         disc = sb.get("discovered", 0)
         prom = sb.get("promoted", 0)
         lines.append(TR("🔧 技能库", f"ingested={ing} discovered={disc} promoted={prom}"))
@@ -1606,13 +1606,14 @@ def _format_report(results: Dict, elapsed: float) -> str:
 
     # 输出校验（results 顶层）
     sr = results.get("selfrag_validate", {})
-    if sr.get("status") == "ok":
-        val = sr.get("validated", 0)
+    sr_status = sr.get("status", "")
+    val = sr.get("validated", -1)
+    if val >= 0:
         issues = sr.get("issues_found", 0)
         rel = sr.get("reliability_rate", "?")
         lines.append(TR("📐 输出校验", f"validated={val} issues={issues} reliability={rel}%"))
-    elif sr.get("status") in ("skip", "error"):
-        txt = f"{'⏭️' if sr.get('status')=='skip' else '❌'} {sr.get('reason','') or sr.get('error','')}"
+    elif sr_status in ("skip", "error"):
+        txt = f"{'⏭️' if sr_status=='skip' else '❌'} {sr.get('reason','') or sr.get('error','')}"
         lines.append(TR("📐 输出校验", txt[:28]))
 
     # 会话归档

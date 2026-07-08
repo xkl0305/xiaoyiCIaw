@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=846bd2144fdd47e2 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=aea57b0d94c01fef -->
 # Memory Global Summary
 
 ## User Profile
@@ -50,6 +50,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户要求不要自行摘要或简化输出
 - 用户多次指出助手不应在回答中输出多余的回车空行，但助手再次出现该问题，用户对此表示不满
 - 用户发现AI助手的回复中又没有回车换行，用户不喜欢这种格式，希望助手的回复有正常的回车换行
 - 用户对“方案B：多模型后端”的评价是“最实用”
@@ -74,14 +75,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户确认有三条今天维修过程中的经验值得长期记忆
-- 用户要求安装 injection_scanner 模块
-- 用户要求修复技能库数据源，将 chunks 表改为 yaoyao_memories 表
-- 用户要求助手决定沙箱清理时保留或删除哪些对象
-- 用户希望将梦境固化流程（包括SQLite索引维护、冷热存储调整、LLM梦境固化、用户画像更新）的整个输出纳入每日维护报告表格中
+- 用户要求清理沙箱中的大文件或重要文件前，必须先询问用户意见
+- 用户需要执行一个任务，具体是在人格视角出图系统里生成衣柜图，且参考图不要被删除
+- 用户要求将脚本运行的全部输出内容（包括健康检查详情、系统资源、维护操作、技能概览）原样发送，不要做任何摘要或简化
+- 用户要求使用exec工具运行python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py脚本
+- 用户请求执行cron引擎初始化脚本，并要求完整返回运行结果，包括引擎分组柱状图、系统身份、状态汇总等信息
 ### Short-term Intent
+- 用户提议沙箱清理定时任务设置为每周日中午执行
 - 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
 - 用户想要了解已安装技能的基本介绍和快速开始的样例
-- 用户准备开始开发人格视角出图系统的二通道
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
