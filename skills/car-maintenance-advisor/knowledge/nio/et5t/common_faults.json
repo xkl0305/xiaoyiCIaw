@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "brand": "NIO",
+    "model": "ET5T",
+    "year_range": [
+      2023,
+      2026
+    ],
+    "platform": "纯电旅行车",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "nio_et5t_001",
+      "symptom": "换电排队时间长/可选电池少",
+      "root_cause": "换电站电池库存不足或高峰时段排队（换电模式固有痛点）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "brand",
+      "diagnosis_steps": [
+        "换电站是否有长队",
+        "App显示可换电池数量是否少于3块"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "提前在NIO App预约换电时段",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "最有效方案"
+        },
+        {
+          "type": "DIY",
+          "action": "选择非高峰时段换电",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "购车时考虑家充桩；非高峰换电",
+      "related_links": []
+    },
+    {
+      "id": "nio_et5t_002",
+      "symptom": "车机卡顿/死机（高通8295）",
+      "root_cause": "Banyan车机系统软件Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按两个侧键能否重启车机"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按左右滚轮10秒重启",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "升级Banyan系统",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "避免同时运行太多APP",
+      "related_links": []
+    },
+    {
+      "id": "nio_et5t_003",
+      "symptom": "空调有异味/蒸发器发霉",
+      "root_cause": "空调系统潮湿，蒸发器发霉（ET5/ET5T通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "开空调是否有酸臭味",
+        "更换空调滤芯后是否改善"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": "每6个月更换"
+        },
+        {
+          "type": "外面修",
+          "action": "蒸发器清洗+杀菌",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "检查空调排水管是否堵塞",
+          "cost_range": [
+            200,
+            600
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "停车前提前关AC吹风；定期更换空调滤芯",
+      "related_links": []
+    },
+    {
+      "id": "nio_et5t_004",
+      "symptom": "座椅偏硬/长途疲惫",
+      "root_cause": "ET5T座椅填充偏硬（设计特性）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "长途驾驶是否感觉座椅偏硬"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装座椅记忆棉坐垫",
+          "cost_range": [
+            200,
+            800
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "更换改进型座椅皮套（部分年份）",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "需申请"
+        }
+      ],
+      "prevention": "试驾时注意座椅舒适度",
+      "related_links": []
+    },
+    {
+      "id": "nio_et5t_005",
+      "symptom": "续航虚标/冬季衰减",
+      "root_cause": "锂电池低温特性",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冬季实际续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用预热功能；家充桩慢充补电",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季地下车库停放",
+      "related_links": []
+    },
+    {
+      "id": "nio_et5t_006",
+      "symptom": "门窗异响",
+      "root_cause": "门窗导轨干涩",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "喷导轨润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

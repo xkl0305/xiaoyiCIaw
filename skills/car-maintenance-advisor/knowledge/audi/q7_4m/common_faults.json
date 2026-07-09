@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "Q7",
+    "chassis_code": "4M",
+    "year_range": [2016, 2024],
+    "engine_options": ["2.0T EA888 Gen3B", "3.0T EA839"],
+    "transmission": "8速自动变速箱（ZF 8HP） / DL382（2.0T版本）",
+    "last_updated": "2026-05-09",
+    "contributor": "太平洋汽车论坛汇总"
+  },
+  "faults": [
+    {
+      "id": "q7_001",
+      "symptom": "ABS/ESP系统故障灯亮 / 提示ESP系统不可用",
+      "root_cause": "轮速传感器被泥沙/金属碎屑污染（Q7通病，尤其越野/雨天高发）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "检查四轮轮速传感器是否有泥沙/铁屑",
+        "检查传感器接线头是否松动或氧化",
+        "检查ABS系统保险丝是否熔断（通常15A-20A）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "用干净软布擦拭轮速传感器表面，重新插紧接线头", "cost_range": [0, 50], "notes": "80%情况可解决，无需换件"},
+        {"type": "4S店", "action": "更换轮速传感器 + 检查ABS泵", "cost_range": [800, 2000], "notes": "传感器不贵，但工时费高"}
+      ],
+      "prevention": "尽量避免泥泞路段行驶；洗车后检查轮速传感器位置是否干净",
+      "related_links": []
+    },
+    {
+      "id": "q7_002",
+      "symptom": "发动机故障灯亮 / 缺缸（3.0T车型）",
+      "root_cause": "3.0T EA839发动机点火线圈或火花塞故障；48V轻混系统故障也可能触发",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "OBD读取故障码：P0130/P0135（氧传感器）/ P0300-P0306（缺缸）",
+        "检查火花塞间隙（正常0.8-1.0mm）和积碳程度",
+        "3.0T车型检查48V电池状态"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "更换火花塞（2.0T每3万公里，3.0T每4万公里）", "cost_range": [300, 800], "notes": "NGK或博世火花塞，注意扭矩25NM"},
+        {"type": "4S店", "action": "更换点火线圈 + 火花塞", "cost_range": [1500, 4000], "notes": "点火线圈是EA839薄弱环节"}
+      ],
+      "prevention": "使用95号及以上高品质燃油；每3-4万公里更换火花塞",
+      "related_links": []
+    },
+    {
+      "id": "q7_003",
+      "symptom": "空调制冷不足 / 鼓风机异响 / 开启后无出风",
+      "root_cause": "空调制冷剂不足（泄漏）或鼓风机电阻故障（Q7通病）",
+      "confidence": 0.80,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "检查空调管路接口是否有油渍（制冷剂泄漏标志）",
+        "测量低压管路压力（正常2-3 bar）",
+        "检查鼓风机保险丝是否熔断"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "补充R134a制冷剂（注意添加量）", "cost_range": [100, 300], "notes": "过量加注会损坏压缩机"},
+        {"type": "4S店", "action": "查漏 + 补充制冷剂 / 更换鼓风机电阻", "cost_range": [500, 3000], "notes": "鼓风机电阻故障是Q7通病"}
+      ],
+      "prevention": "入夏前提前开启AC；定期清洗冷凝器",
+      "related_links": []
+    },
+    {
+      "id": "q7_004",
+      "symptom": "烧机油（每1000公里消耗超过0.5升）",
+      "root_cause": "EA888 Gen3B活塞环问题（2.0T）/ EA839气门油封老化（3.0T）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "通过MMI系统或机油尺定期检查机油液位",
+        "冷启动排气管是否有蓝烟",
+        "OBD读取长期燃油修正是否异常"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "DIY缓解", "action": "使用PEA燃油添加剂 + 高粘度机油", "cost_range": [50, 500], "notes": "只能缓解，无法根治"},
+        {"type": "4S店", "action": "发动机大修（更换活塞环/气门油封）", "cost_range": [15000, 35000], "notes": "EA839的烧机油问题比EA888 Gen3B轻"}
+      ],
+      "prevention": "使用正品机油并按时更换；避免长期低速短途行驶",
+      "related_links": []
+    },
+    {
+      "id": "q7_005",
+      "symptom": "车辆无法启动 / 中控屏黑屏 / 仪表盘无反应 / 无线充电失效",
+      "root_cause": "蓄电池老化或发电机故障（Q7电器系统通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "用万用表测量蓄电池电压（正常12.6-13.2V）",
+        "检查对应功能保险丝是否熔断",
+        "启动后测量蓄电池电压（应高于13V，确认发电机工作）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "更换蓄电池（位于后备箱右侧）", "cost_range": [800, 2000], "notes": "AGM蓄电池，注意断电顺序"},
+        {"type": "4S店", "action": "更换蓄电池 + 检查发电机", "cost_range": [1500, 5000], "notes": "发电机故障会导致蓄电池反复亏电"}
+      ],
+      "prevention": "避免熄火后长时间使用电器；蓄电池3-5年主动更换",
+      "related_links": []
+    },
+    {
+      "id": "q7_006",
+      "symptom": "48V轻混系统报警（3.0T车型）",
+      "root_cause": "48V电池或BEM电机控制器故障（EA839 48V系统通病）",
+      "confidence": 0.80,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "仪表显示48V车载电网故障或启停系统不可用",
+        "OBD读取故障码：P0A80、P1B00等高压相关码",
+        "检查48V电池健康状况（需专业设备）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换48V电池 / BEM电机", "cost_range": [8000, 20000], "notes": "质保期内可申请索赔"},
+        {"type": "外面修", "action": "48V电池维修 / 拆车件替换", "cost_range": [3000, 8000], "notes": "风险较高，建议找专业新能源维修店"}
+      ],
+      "prevention": "避免长时间亏电停放；熄火后尽量减少用电设备使用",
+      "related_links": []
+    }
+  ]
+}

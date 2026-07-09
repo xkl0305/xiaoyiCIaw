@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "brand": "Volkswagen",
+    "model": "速腾 Sagitar",
+    "year_range": [2019, 2025],
+    "engine_options": ["1.2T EA211", "1.4T EA211", "1.5T EA211 EVO"],
+    "transmission": "7速干式双离合 DQ200 / 7速湿式 DQ381",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "sagitar_001",
+      "symptom": "DQ200变速箱低速顿挫/异响",
+      "root_cause": "DQ200机电单元故障或离合器片磨损（里程3万+高发）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "1挡升2挡是否有明显顿挫",
+        "OBD读码：P177B00",
+        "检查变速箱油是否变黑"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换机电单元", "cost_range": [6000, 12000], "notes": "质保期内索赔"},
+        {"type": "外面修", "action": "维修机电单元", "cost_range": [2500, 5000], "notes": "专业双离合维修店"}
+      ],
+      "prevention": "每6万公里换变速箱油；避免长期市区蠕行",
+      "related_links": []
+    },
+    {
+      "id": "sagitar_002",
+      "symptom": "EA211发动机正时皮带掉毛（1.2T/1.4T）",
+      "root_cause": "正时皮带橡胶老化掉毛，堵塞机油泵滤网导致机油压力低",
+      "confidence": 0.91,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "里程是否超过9万公里",
+        "机油压力报警灯是否亮起",
+        "拆检正时皮带是否掉毛"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换正时皮带+张紧轮+机油泵滤网", "cost_range": [2000, 3500], "notes": "必须换机油泵滤网"},
+        {"type": "4S店", "action": "正时系统全套更换", "cost_range": [3500, 6000], "notes": ""}
+      ],
+      "prevention": "每9万公里更换正时皮带；定期检查机油压力",
+      "related_links": []
+    },
+    {
+      "id": "sagitar_003",
+      "symptom": "天窗漏水",
+      "root_cause": "天窗排水管堵塞或脱落（大众通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "A柱附近是否有水渍",
+        "打开天窗检查排水孔是否堵塞",
+        "用高压气枪吹通排水管"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "用细铁丝或高压气枪疏通排水管", "cost_range": [0, 50], "notes": "每6个月疏通一次"},
+        {"type": "外面修", "action": "重新固定排水管", "cost_range": [200, 500], "notes": "排水管脱落需拆内饰板"}
+      ],
+      "prevention": "定期清理天窗导轨杂物；每6个月疏通排水管",
+      "related_links": []
+    },
+    {
+      "id": "sagitar_004",
+      "symptom": "发动机怠速抖动/积碳严重",
+      "root_cause": "EA211直喷发动机进气道积碳（里程5万+高发）",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动是否怠速抖动",
+        "拆进气歧管检查气门背部积碳",
+        "OBD读码：P0171/P0174"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "核桃砂清洗进气道", "cost_range": [800, 1500], "notes": "每5万公里做一次"},
+        {"type": "DIY", "action": "使用PEA燃油添加剂", "cost_range": [100, 200], "notes": "预防为主，已形成的积碳效果有限"}
+      ],
+      "prevention": "每5000公里使用PEA燃油添加剂；避免长期低速短途行驶",
+      "related_links": []
+    },
+    {
+      "id": "sagitar_005",
+      "symptom": "底盘胶套老化/过减速带异响",
+      "root_cause": "下摆臂胶套开裂（里程8万+高发）",
+      "confidence": 0.80,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "过减速带是否有咕噜声",
+        "举升车辆撬动下摆臂胶套是否开裂"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换下摆臂总成或单独换胶套", "cost_range": [600, 1500], "notes": "单独换胶套更划算"},
+        {"type": "4S店", "action": "更换下摆臂总成", "cost_range": [1500, 3000], "notes": ""}
+      ],
+      "prevention": "无法有效预防，属正常老化",
+      "related_links": []
+    }
+  ]
+}

@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "brand": "AITO",
+    "model": "问界M9",
+    "year_range": [
+      2023,
+      2026
+    ],
+    "platform": "增程式SUV/纯电",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "aito_m9_001",
+      "symptom": "华为智驾ADS误判/突然刹车",
+      "root_cause": "ADS传感器误判（M9作为旗舰，传感器最多但仍有误判）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "ADS开启时是否突然刹车"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ADS固件+标定",
+          "cost_range": [
+            0,
+            2000
+          ],
+          "notes": "OTA+到店标定"
+        }
+      ],
+      "prevention": "手不离方向盘；定期清洁传感器",
+      "related_links": []
+    },
+    {
+      "id": "aito_m9_002",
+      "symptom": "空气悬挂故障",
+      "root_cause": "M9空气悬挂负载大，空气弹簧易漏气",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆停放一夜后是否歪斜"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            12000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免超载；停车于平坦地面",
+      "related_links": []
+    },
+    {
+      "id": "aito_m9_003",
+      "symptom": "车机死机/黑屏（HarmonyOS）",
+      "root_cause": "车机芯片过热或软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按电源键能否重启"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m9_004",
+      "symptom": "投影大灯故障/不清晰（智慧投影大灯）",
+      "root_cause": "投影模组故障或标定偏移",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "投影大灯是否不亮或图像模糊"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "标定投影大灯",
+          "cost_range": [
+            1000,
+            3000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换投影大灯总成",
+          "cost_range": [
+            8000,
+            20000
+          ],
+          "notes": "出保后极贵"
+        }
+      ],
+      "prevention": "避免撞击大灯；定期检查标定",
+      "related_links": []
+    },
+    {
+      "id": "aito_m9_005",
+      "symptom": "后排娱乐屏故障",
+      "root_cause": "后排智慧屏过热或软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "后排屏幕是否黑屏"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启后排屏",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "更换后排屏模组",
+          "cost_range": [
+            3000,
+            8000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m9_006",
+      "symptom": "续航虚标/冬季衰减",
+      "root_cause": "M9车身大且重，能耗高",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "实际续航是否低于标称"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用混动模式；预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季地下车库停放",
+      "related_links": []
+    }
+  ]
+}

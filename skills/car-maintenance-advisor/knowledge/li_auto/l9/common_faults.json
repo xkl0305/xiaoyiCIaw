@@ -1,0 +1,176 @@
+{
+  "meta": {
+    "brand": "Li Auto",
+    "model": "理想L9",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "增程式全尺寸SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "li_l9_001",
+      "symptom": "空气悬挂故障/塌缩",
+      "root_cause": "L9空气悬挂负载大（车身重），空气弹簧容易漏气",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆停放一夜后是否歪斜",
+        "中控是否有悬挂系统报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧总成",
+          "cost_range": [
+            5000,
+            12000
+          ],
+          "notes": "保修期内免费；出保后费用高"
+        }
+      ],
+      "prevention": "避免超载；停车时尽量平坦地面",
+      "related_links": []
+    },
+    {
+      "id": "li_l9_002",
+      "symptom": "增程器震动/噪音",
+      "root_cause": "1.5T增程器介入震动",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU程序",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l9_003",
+      "symptom": "后排娱乐屏故障/卡顿",
+      "root_cause": "后排娱乐系统独立芯片过热或软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "后排屏幕是否黑屏或卡顿",
+        "重启后排屏是否恢复"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按后排屏电源键重启",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "更换后排屏模组",
+          "cost_range": [
+            3000,
+            6000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免后排屏长时间运行高负载APP",
+      "related_links": []
+    },
+    {
+      "id": "li_l9_004",
+      "symptom": "智能驾驶误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级AD固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l9_005",
+      "symptom": "冰箱不制冷/噪音大（车载冰箱）",
+      "root_cause": "车载冰箱压缩机故障或散热不良",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冰箱是否不制冷或有异常噪音"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换车载冰箱总成",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期清洁冰箱散热口；不要放太多物品",
+      "related_links": []
+    },
+    {
+      "id": "li_l9_006",
+      "symptom": "续航虚标",
+      "root_cause": "L9车身大且重，风阻大，能耗高",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "实际纯电续航是否低于标称"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用混合模式；预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季尽量地下车库停放",
+      "related_links": []
+    }
+  ]
+}

@@ -2,26 +2,30 @@
 """
 Xiaoyi Image Generator - Helper Script
 
-This is a helper script for batch generation or CLI usage.
-The main skill workflow is defined in SKILL.md and executed by Claude.
+This is a script for batch generation or CLI usage.
+The main skill workflow is defined in SKILL.md.
 
 Usage:
     python generate_seedream.py "prompt" --image https://example.com/photo.png --max-images 3
 """
 
-import requests
+import argparse
+import base64
+import hashlib
 import json
 import os
-import sys
-import uuid
-import hashlib
 import random
 import string
-import base64
-from pathlib import Path
+import sys
+import uuid
 from datetime import datetime
+from pathlib import Path
 from urllib.parse import urlparse
-import argparse
+
+import requests
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # MIME类型映射
 _MIME_TYPE_MAP = {
@@ -82,21 +86,6 @@ def validate_image_input(value):
             f"Image must be a remote HTTP/HTTPS URL or a local file path, not: {value}"
         )
     return value
-
-
-def _image_to_base64(image_path):
-    """将本地图片文件转为base64字符串（带data URI前缀）。"""
-    try:
-        with open(image_path, "rb") as f:
-            image_data = f.read()
-            b64_string = base64.b64encode(image_data).decode('utf-8')
-            
-            # 根据文件扩展名确定MIME类型
-            ext = Path(image_path).suffix.lower()
-            mime_type = _MIME_TYPE_MAP.get(ext, 'image/png')
-            return f"data:{mime_type};base64,{b64_string}"
-    except Exception as e:
-        raise ValueError(f"Failed to convert image to base64: {e}")
 
 
 def calculate_sha256(file_path):
@@ -256,17 +245,20 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
 
 
 def _process_image_input(image):
-    """处理图片输入：验证并转换本地文件为base64，远程URL保持不变。"""
+    """处理图片输入：验证并转换本地文件为URL，远程URL保持不变。"""
     def _validate_and_convert(item):
         """验证单个图片项并返回处理后的结果。"""
         if _is_remote_url(item):
             return item
         elif _is_local_file(item):
-            return upload_file(item)
+            result = upload_file(item)
+            if result is None:
+                raise ValueError(f"Failed to upload local file: {item}")
+            return result
         raise ValueError(f"Invalid image input: {item}")
 
     if isinstance(image, str):
-        return _validate_and_convert(image)
+        return [_validate_and_convert(image)]
     elif isinstance(image, list):
         if not image:
             raise ValueError("Image list cannot be empty.")
@@ -358,18 +350,18 @@ def generate_image(
     }
     
     # Call API
-    print(f"📡 Generating image...")
-    print(f"   Prompt: {prompt[:80]}{'...' if len(prompt) > 80 else ''}")
+    print(f"Generating image...")
+    print(f"Prompt: {prompt[:30]}{'...' if len(prompt) > 30 else ''}")
     
     try:
         # Use stream to handle multiple responses (heartbeat packets)
-        response = requests.post(api_url, headers=headers, json=payload, timeout=120, verify=False, stream=True)
+        response = requests.post(api_url, headers=headers, json=payload, timeout=120, stream=True)
         response.raise_for_status()
         
         # Read streaming responses until we get the final result
         image_urls = None
         
-        print(f"⏳ Waiting for image generation to complete...")
+        print(f"⏳ Waiting for image generation API to complete...")
         
         for line in response.iter_lines():
             if line:
@@ -388,7 +380,15 @@ def generate_image(
                         # Skip empty or other non-data lines
                         continue
                     
-                    # Extract image URL from new JSON structure
+                    # Check for top-level business error (e.g. InputImageSensitiveContentDetected)
+                    # Numeric codes like 200 are HTTP-style status codes from heartbeat, skip them
+                    top_level_code = result.get('code', '')
+                    if top_level_code and str(top_level_code) not in ('0', '200'):
+                        error_msg = result.get('desc', 'Unknown error')
+                        print(f"❌ API Error: [{top_level_code}] {error_msg}")
+                        continue
+
+                    # Extract image URL from nested structure
                     ability_infos = result.get('abilityInfos', [])
                     if not ability_infos:
                         continue
@@ -400,6 +400,17 @@ def generate_image(
                         continue
                     
                     reply = action_executor_result.get('reply', {})
+                    
+                    # Check for error inside reply (e.g. InputImageSensitiveContentDetected)
+                    reply_code = reply.get('code', '')
+                    if reply_code and str(reply_code) != '0':
+                        if str(reply_code) == 'InputImageSensitiveContentDetected':
+                            print("❌ API检测到输入的参考图包含敏感信息，请提示用户更换上传新的参考图后重试，禁止任何无参考图的替代生成。")
+                        else:
+                            reply_desc = reply.get('desc', 'Unknown error')
+                            print(f"❌ API Error: [{reply_code}] {reply_desc}")
+                        continue
+                    
                     stream_info = reply.get('streamInfo', {})
                     stream_type = stream_info.get('streamType', '')
                     
@@ -409,7 +420,7 @@ def generate_image(
                         items = reply.get('items', [])
                         if items:
                             image_urls = items
-                            print(f"✅ Final response received, {len(image_urls)} image(s) generated")
+                            print(f"✅ {len(image_urls)} image(s) generated")
                             break
                 
                 except json.JSONDecodeError:
@@ -433,10 +444,8 @@ def generate_image(
 def download_image(url, output_dir):
     """Download image and save to file."""
     
-    print(f"⬇️  Downloading...")
-    
     try:
-        response = requests.get(url, timeout=60, verify=False)
+        response = requests.get(url, timeout=60)
         response.raise_for_status()
         
         # Determine extension
@@ -466,7 +475,7 @@ def download_image(url, output_dir):
         with open(output_path, 'wb') as f:
             f.write(response.content)
         
-        print(f"💾 Saved to: {output_path}")
+        print(f"💾 Images Saved to: {output_path}")
         return output_path
         
     except Exception as e:
@@ -508,9 +517,9 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Download all images
+    print(f"\nDownloading {len(image_urls)} image(s)...")
     saved_paths = []
     for i, url in enumerate(image_urls, 1):
-        print(f"\n[{i}/{len(image_urls)}] Processing image...")
         saved_path = download_image(url, output_dir)
         if saved_path:
             saved_paths.append(saved_path)
@@ -520,16 +529,6 @@ def main():
         print(f"\n⚠️  Warning: Only {len(saved_paths)} out of {len(image_urls)} images were successfully downloaded")
         sys.exit(1)
     
-    # Print summary
-    print(f"\n📊 Summary:")
-    print(f"   Prompt: {args.prompt}")
-    print(f"   Size: {args.size}")
-    print(f"   Images Generated: {len(image_urls)}")
-    print(f"   Output Directory: {output_dir}")
-    print(f"   Files Saved:")
-    for path in saved_paths:
-        print(f"      - {path}")
-
 
 if __name__ == "__main__":
     main()

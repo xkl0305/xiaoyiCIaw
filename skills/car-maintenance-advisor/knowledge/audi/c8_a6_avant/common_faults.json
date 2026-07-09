@@ -1,0 +1,802 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "A6 Avant",
+    "chassis_code": "C8",
+    "year_range": [
+      2020,
+      2024
+    ],
+    "engine_options": [
+      "2.0T EA888 Gen3B",
+      "3.0T EA839"
+    ],
+    "transmission": "7速双离合 DL382",
+    "last_updated": "2026-05-09",
+    "contributor": "老莫"
+  },
+  "faults": [
+    {
+      "id": "c8_001",
+      "symptom": "SOS报警灯亮起 / Telematics报警",
+      "root_cause": "后备箱右侧Telematics天线模块进水失效（C8通病）",
+      "confidence": 0.92,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "用OBD读取故障码，常见：B1053、B1054",
+        "检查后备箱右侧内衬（天线模块安装位置）是否有水渍",
+        "检查天线模块插头是否氧化/进水"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换Telematics天线模块",
+          "cost_range": [
+            800,
+            1500
+          ],
+          "notes": "原厂件，带编程匹配"
+        },
+        {
+          "type": "外面修",
+          "action": "更换拆车件模块 / 维修原模块",
+          "cost_range": [
+            300,
+            600
+          ],
+          "notes": "拆车件性价高，注意找信誉店家"
+        }
+      ],
+      "prevention": "洗车时避免高压水枪直冲后备箱密封条位置；定期检查后备箱防水条是否老化",
+      "related_links": []
+    },
+    {
+      "id": "c8_002",
+      "symptom": "油箱报故障 / 燃油系统报警 / 加不满油",
+      "root_cause": "马鞍式油箱设计缺陷：副油箱油位传感器与油箱壳体集成一体，无法单独更换（C8通病，属于设计缺陷）",
+      "confidence": 0.93,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "油箱油量剩余1/3甚至1/2时，仪表突然提示油箱故障",
+        "OBD读取故障码：P0463（燃油液位传感器电路高电压）",
+        "加油后仪表仍不能即时显示油箱余量",
+        "发动机故障灯可能同时亮起"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "召回升级（仅软件，不能根治）/ 更换整个油箱总成",
+          "cost_range": [
+            0,
+            15000
+          ],
+          "notes": "2022年曾召回两次（软件升级），但问题依然存在；硬件更换费用极高，且属设计缺陷，换油箱也可能再出问题"
+        },
+        {
+          "type": "外面修",
+          "action": "拆车件油箱总成 / 传感器外接改装",
+          "cost_range": [
+            2000,
+            6000
+          ],
+          "notes": "拆车件性价比更高；有车主通过外接传感器方案规避设计缺陷"
+        }
+      ],
+      "prevention": "无法预防，属设计缺陷；油量低于1/2时留意故障提示，有召回未做的话先去4S升级（虽不能根治但免费）",
+      "related_links": [
+        "车质网投诉编号",
+        "2022年召回公告"
+      ]
+    },
+    {
+      "id": "c8_003",
+      "symptom": "48V轻混系统报警 / BEM（皮带驱动启动电机）报警",
+      "root_cause": "48V轻混电池或BEM电机控制器故障（C8 48V系统通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "仪表显示48V车载电网故障或启停系统不可用",
+        "OBD读取故障码：P0A80、P1B00等高压相关码",
+        "检查48V电池健康状况（需专业设备）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换48V电池 / BEM电机",
+          "cost_range": [
+            8000,
+            20000
+          ],
+          "notes": "质保期内可申请索赔，务必先查保修状态"
+        },
+        {
+          "type": "外面修",
+          "action": "48V电池维修 / 拆车件替换",
+          "cost_range": [
+            3000,
+            8000
+          ],
+          "notes": "风险较高，建议找专业新能源维修店"
+        }
+      ],
+      "prevention": "避免长时间亏电停放；熄火后尽量减少用电设备使用",
+      "related_links": []
+    },
+    {
+      "id": "c8_004",
+      "symptom": "MMI屏幕黑屏 / 重启 / 卡死",
+      "root_cause": "MIB3主机软件Bug或散热不良",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "尝试长按音量键10秒强制重启MMI",
+        "检查是否为软件版本问题（可去4S升级固件）",
+        "黑屏伴随音响无声，可能是MIB主机硬件故障"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按音量键重启；断开电瓶负极5分钟",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "先尝试软重启，80%情况可解决"
+        },
+        {
+          "type": "4S店",
+          "action": "升级MMI固件 / 更换MIB3主机",
+          "cost_range": [
+            0,
+            5000
+          ],
+          "notes": "固件升级可能免费；主机更换较贵"
+        }
+      ],
+      "prevention": "避免长时间暴晒；定期清理MMI缓存（恢复出厂设置）",
+      "related_links": []
+    },
+    {
+      "id": "c8_005",
+      "symptom": "车门把手感应失灵 / 无钥匙进入失效",
+      "root_cause": "门把手感应模块进水（C8通病，尤其前左门）",
+      "confidence": 0.87,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "用钥匙物理开锁后，检查门把手内侧是否有水渍",
+        "OBD读取门把手相关故障码",
+        "测试其他门是否能正常无钥匙进入（判断是单门还是全部）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换门把手总成",
+          "cost_range": [
+            1200,
+            2000
+          ],
+          "notes": "单个门把手价格，全部更换更贵"
+        },
+        {
+          "type": "外面修",
+          "action": "更换拆车件门把手 / 维修感应模块",
+          "cost_range": [
+            400,
+            800
+          ],
+          "notes": "拆车件性价比高"
+        }
+      ],
+      "prevention": "洗车后及时擦干门把手缝隙；冬季注意除冰",
+      "related_links": []
+    },
+    {
+      "id": "c8_006",
+      "symptom": "发动机舱异响 / 正时链条张紧器异响（冷启动）",
+      "root_cause": "EA888 Gen3B正时链条张紧器衰减（里程6万+高发）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动后怠速仔细听发动机前部是否有哒哒声",
+        "用听诊器确认正时盖位置",
+        "读取凸轮轴相位数据（专业设备）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换正时链条套装（含张紧器、导轨）",
+          "cost_range": [
+            5000,
+            9000
+          ],
+          "notes": "建议同时更换机油泵链条"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌件正时套装",
+          "cost_range": [
+            2500,
+            5000
+          ],
+          "notes": "找专业奥迪维修店，正时校对要求高"
+        }
+      ],
+      "prevention": "定期更换优质机油（建议5000-7500公里）；避免长时间低转速行驶",
+      "related_links": []
+    },
+    {
+      "id": "c8_007",
+      "symptom": "刹车异响 / 刹车片报警灯亮",
+      "root_cause": "刹车片磨损到限位（正常损耗）；或刹车盘锈蚀（少开）",
+      "confidence": 0.9,
+      "source": "general",
+      "layer": "general",
+      "diagnosis_steps": [
+        "听异响出现时机（刹车时=刹车片；行驶时=刹车盘锈蚀）",
+        "检查刹车片厚度（目测或拆轮检查）",
+        "仪表刹车报警灯是否亮起"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "自行购买刹车片更换（需基本机械技能）",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "C8前轮刹车片型号：ATE或Textar，建议一起换刹车感应线"
+        },
+        {
+          "type": "外面修",
+          "action": "更换刹车片+刹车盘（如需要）",
+          "cost_range": [
+            600,
+            2000
+          ],
+          "notes": "前后轮分开计价；刹车盘一般2-3套片换一次"
+        }
+      ],
+      "prevention": "避免长期短途低速行驶；定期高速行驶去除刹车盘锈蚀",
+      "related_links": []
+    },
+    {
+      "id": "c8_008",
+      "symptom": "空调不制冷 / 制冷效果差",
+      "root_cause": "制冷剂泄漏 / 压缩机故障 / 冷凝器堵塞",
+      "confidence": 0.82,
+      "source": "general",
+      "layer": "general",
+      "diagnosis_steps": [
+        "打开AC，观察压缩机是否吸合（电子扇是否高速转）",
+        "检查冷凝器表面是否被柳絮/泥土堵塞",
+        "用空调压力表测高低压（专业）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "清洗冷凝器表面；检查AC压缩机保险丝",
+          "cost_range": [
+            0,
+            100
+          ],
+          "notes": "冷凝器堵塞是常见原因，高压水枪冲洗即可"
+        },
+        {
+          "type": "外面修",
+          "action": "查漏 + 补充制冷剂 / 更换压缩机",
+          "cost_range": [
+            200,
+            3000
+          ],
+          "notes": "单纯补制冷剂200左右；换压缩机较贵"
+        }
+      ],
+      "prevention": "入夏前提前开启AC运行10分钟；定期清洗冷凝器",
+      "related_links": []
+    },
+    {
+      "id": "c8_009",
+      "symptom": "冷却液频繁减少 / 水温偶尔偏高",
+      "root_cause": "EA888 Gen3B 水泵总成泄漏（通病，里程5万+高发）",
+      "confidence": 0.9,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷车状态检查膨胀壶液位是否低于MIN",
+        "检查水泵附近是否有粉红色结晶（冷却液痕迹）",
+        "检查地面是否有粉红色液体残留"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换水泵总成（含节温器）",
+          "cost_range": [
+            3000,
+            5000
+          ],
+          "notes": "EA888水泵是塑料壳体，老化必漏"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌水泵总成",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "建议用原厂或Gates/INA等一线品牌"
+        }
+      ],
+      "prevention": "定期检查冷却液液位；发现减少立即排查，不要只补不查",
+      "related_links": []
+    },
+    {
+      "id": "c8_010",
+      "symptom": "机油消耗过快 / 每5000公里需补1升以上",
+      "root_cause": "EA888 Gen3B 活塞环设计问题导致烧机油（通病，但比Gen2大幅改善）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动排气管是否有蓝烟",
+        "定期检查机油尺（每2000公里）",
+        "检查涡轮增压器是否有油渍"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换活塞环 + 大修发动机",
+          "cost_range": [
+            15000,
+            30000
+          ],
+          "notes": "Gen3B已大幅改善，先确认是否真的烧机油再决定"
+        },
+        {
+          "type": "外面修",
+          "action": "使用高粘度机油缓解 + 定期检查",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "5W-40或0W-40可能缓解；严重时只能大修"
+        }
+      ],
+      "prevention": "使用符合VW50800/50900标准的正品机油；避免长期低速行驶",
+      "related_links": []
+    },
+    {
+      "id": "c8_011",
+      "symptom": "换挡顿挫 / 2-3挡或5-6挡有明显冲击感 / 4升5瞬间异响",
+      "root_cause": "DL382七速双离合变速箱离合器磨损（里程6万+高发，C8/Q5L/B9通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "低速换挡时是否有明显顿挫或咔声",
+        "4升5挡瞬间是否有咔一声异响（典型离合器磨损）",
+        "4降3挡是否抖动",
+        "OBD读取变速箱故障码",
+        "检查变速箱油是否发黑或有焦味"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换离合器总成（0DN.141.029.* 或 0CK.141.030.*）",
+          "cost_range": [
+            8000,
+            15000
+          ],
+          "notes": "出保前务必检查，可索赔；备件号以备件部最新为准"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌离合器 + 变速箱油",
+          "cost_range": [
+            4000,
+            8000
+          ],
+          "notes": "找DL382专业维修店；6万公里建议先换油，可能缓解"
+        }
+      ],
+      "prevention": "每6万公里更换一次变速箱油（DL382可以换油，和干式不同）；避免长时间半联动蠕行",
+      "related_links": []
+    },
+    {
+      "id": "c8_014",
+      "symptom": "平路倒车时连续卡啦异响",
+      "root_cause": "DL382双质量飞轮螺栓扭矩不当（C8/Q5L/B9通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "平路倒车入位时是否有连续卡啦异响",
+        "前进挡无此异响（可排除变速箱内部问题）",
+        "检查飞轮螺栓是否按标准扭矩拧紧"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "按奥迪SOST标准调整飞轮螺栓扭矩（无需换件）",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "这是调整工艺问题，不是零件问题；出保前免费处理"
+        },
+        {
+          "type": "外面修",
+          "action": "调整飞轮螺栓扭矩（需专用工具）",
+          "cost_range": [
+            200,
+            600
+          ],
+          "notes": "不是所有修理厂都会这个操作，需找懂DL382的店"
+        }
+      ],
+      "prevention": "无法预防，属装配工艺问题；出保前主动要求检查",
+      "related_links": []
+    },
+    {
+      "id": "c8_015",
+      "symptom": "D档或R档起步瞬间卡啦一声，偶尔伴有一次耸车",
+      "root_cause": "DL382变速箱换挡程序设定问题或飞轮间隙过大",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "确认是否车辆未完全停止时D→R切换（操作问题）",
+        "排除操作问题后，检查飞轮和离合器状态",
+        "与c8_014区别：本故障是起步瞬间单次异响，c8_014是倒车过程中连续异响"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级变速箱软件 + 检查飞轮",
+          "cost_range": [
+            0,
+            1000
+          ],
+          "notes": "软件升级可能免费；如确认飞轮问题按c8_014处理"
+        }
+      ],
+      "prevention": "等车完全停稳后再切换D/R挡",
+      "related_links": []
+    },
+    {
+      "id": "c8_016",
+      "symptom": "EA888发动机废气阀（油气分离器）故障 / 怠速抖动 / 口哨声",
+      "root_cause": "EA888 Gen3B 曲轴箱通风阀膜片破裂（里程8万+高发）",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "打开机油盖是否有浓烈汽油味（高压油泵漏油也会这样）",
+        "怠速时听发动机顶部是否有口哨声",
+        "OBD读取故障码：P0171/P0174（混合气过稀）",
+        "拆下废气阀检查膜片是否破裂"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换废气阀总成（与气门室盖一体）",
+          "cost_range": [
+            2000,
+            3500
+          ],
+          "notes": "EA888的废气阀和气门室盖是一体的，不能单独换"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌废气阀/气门室盖总成",
+          "cost_range": [
+            800,
+            1800
+          ],
+          "notes": "副厂件质量参差不齐，建议用INA或原厂件"
+        }
+      ],
+      "prevention": "定期检查机油盖是否有汽油味；使用正品机油和空滤",
+      "related_links": []
+    },
+    {
+      "id": "c8_017",
+      "symptom": "高压油泵异响 / 机油盖有浓烈汽油味 / 混合气过浓故障码P2188",
+      "root_cause": "EA888 Gen3B 高压燃油泵泄漏（里程6万+高发）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "打开机油盖闻是否有浓烈汽油味（汽油渗入机油）",
+        "OBD读取故障码：P2188（怠速时混合气过浓）",
+        "冷启动是否困难",
+        "检查高压油泵是否有明显异响"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换高压燃油泵",
+          "cost_range": [
+            3000,
+            5000
+          ],
+          "notes": "高压油泵价格较贵，但属于精密件，建议用原厂"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌高压油泵",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "副厂件寿命可能不如原厂，但价格便宜一半"
+        }
+      ],
+      "prevention": "使用正品燃油；定期更换燃油滤清器（如有）",
+      "related_links": []
+    },
+    {
+      "id": "c8_018",
+      "symptom": "加速时发动机剧烈震动 / 耸车（尤其2019年型前驱车）",
+      "root_cause": "DL382变速箱飞轮质量问题（特定批次0CK.105.317.AH可解决）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "加速时是否有剧烈振动耸车",
+        "发动机怠速运转是否不平稳",
+        "确认车辆生产日期和驱动形式（2019-2020年型前驱车高发）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换改进型飞轮（零件号0CK.105.317.AH）",
+          "cost_range": [
+            5000,
+            9000
+          ],
+          "notes": "必须用改进型零件号，否则可能复发"
+        }
+      ],
+      "prevention": "购买二手车时重点检查此问题（2019-2020年型）",
+      "related_links": []
+    },
+    {
+      "id": "c8_012",
+      "symptom": "进气道积碳 / 怠速抖动 / 加速无力",
+      "root_cause": "直喷发动机（EA888）进气门背部积碳，里程5万+常见",
+      "confidence": 0.85,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        "拆进气歧管直视进气门背部是否有黑色积碳",
+        "OBD读取长期燃油修正是否异常",
+        "冷车启动是否怠速抖动"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "核桃砂清洗进气道积碳",
+          "cost_range": [
+            800,
+            1500
+          ],
+          "notes": "EA888直喷必做项目，5-8万公里做一次"
+        },
+        {
+          "type": "DIY预防",
+          "action": "使用PEA（聚醚胺）燃油添加剂",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "每5000公里用一次，可延缓积碳生成"
+        }
+      ],
+      "prevention": "定期使用正规PEA燃油添加剂；避免长期短途低速行驶",
+      "related_links": []
+    },
+    {
+      "id": "c8_013",
+      "symptom": "虚拟座舱（Virtual Cockpit）屏幕闪烁 / 黑屏 / 像素化",
+      "root_cause": "仪表主板焊接问题或液晶屏老化（C8通病）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "观察黑屏是否在冷车/热车特定条件下出现",
+        "尝试恢复出厂设置（方向盘菜单）",
+        "OBD读取仪表相关故障码"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换虚拟座舱总成",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "质保期内可索赔，优先检查保修状态"
+        },
+        {
+          "type": "外面修",
+          "action": "维修仪表主板 / 更换拆车件总成",
+          "cost_range": [
+            1500,
+            4000
+          ],
+          "notes": "专业仪表维修店可做，比换总成便宜很多"
+        }
+      ],
+      "prevention": "避免长时间暴晒；启动后等系统完全加载再操作",
+      "related_links": []
+    },
+    {
+      "id": "c8_019",
+      "symptom": "塑料油底壳漏油 / 底盘有油渍",
+      "root_cause": "EA888 Gen3B 塑料油底壳高温老化开裂（里程6万+常见）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "举升车辆检查油底壳接缝是否有油渍",
+        "检查是否伴随正时盖漏油（EA888常同时发生）",
+        "机油液位是否持续下降"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换塑料油底壳（原厂）",
+          "cost_range": [
+            800,
+            1500
+          ],
+          "notes": "可升级铝合金油底壳，更耐用"
+        },
+        {
+          "type": "外面修",
+          "action": "更换铝合金油底壳（改进方案）",
+          "cost_range": [
+            600,
+            1200
+          ],
+          "notes": "铝合金比塑料更耐老化，推荐改进"
+        }
+      ],
+      "prevention": "无法有效预防，属材料老化问题；升级铝合金可根治",
+      "related_links": []
+    },
+    {
+      "id": "c8_020",
+      "symptom": "正时上盖漏油 / 发动机前部有油渍 / 混合气过稀故障码",
+      "root_cause": "EA888 Gen3B 正时链条上盖密封垫老化（里程5万+常见）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "检查发动机前部正时盖位置是否有油渍",
+        "OBD读取是否有P0171/P0174（混合气过稀，真空泄漏导致）",
+        "检查机油液位是否持续下降"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换正时盖密封垫 + 上盖",
+          "cost_range": [
+            2000,
+            4000
+          ],
+          "notes": "建议同时检查正时链条张紧器状态"
+        },
+        {
+          "type": "外面修",
+          "action": "更换改进型密封垫",
+          "cost_range": [
+            1000,
+            2500
+          ],
+          "notes": "用改进型密封垫，普通橡胶垫容易再次漏"
+        }
+      ],
+      "prevention": "定期检查发动机前部是否有油渍；发现渗油尽早处理",
+      "related_links": []
+    },
+    {
+      "id": "c8_021",
+      "symptom": "涡轮增压器异响 / 加速无力 / 增压压力不足故障码P0299",
+      "root_cause": "EA888 Gen3B 涡轮增压器轴承磨损或旁通阀卡滞（里程10万+）",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "急加速时听发动机前部是否有啸叫声",
+        "OBD读取故障码：P0299（增压压力不足）",
+        "检查涡轮进/出气管是否有油渍"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换涡轮增压器总成",
+          "cost_range": [
+            8000,
+            15000
+          ],
+          "notes": "涡轮是精密件，副厂件寿命差异大"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌涡轮增压器（如IHI、霍尼韦尔）",
+          "cost_range": [
+            4000,
+            9000
+          ],
+          "notes": "EA888的涡轮是IHI代工的，找对型号很重要"
+        }
+      ],
+      "prevention": "使用正品机油并按时更换；避免冷启动后立刻猛踩油门",
+      "related_links": []
+    },
+    {
+      "id": "c8_022",
+      "symptom": "三元催化器堵塞 / 动力明显下降 / 油耗增加",
+      "root_cause": "EA888 燃烧不充分导致三元催化器通道堵塞（里程10万+高发）",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "OBD读取故障码：P0420（催化器效率低于阈值）",
+        "加速是否明显无力",
+        "排气管口是否有黑色粉末堆积"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换三元催化器总成",
+          "cost_range": [
+            5000,
+            12000
+          ],
+          "notes": "原厂催化器价格极高，且寿命有限"
+        },
+        {
+          "type": "外面修",
+          "action": "清洗三元催化器（轻度堵塞）/ 更换副厂催化器",
+          "cost_range": [
+            500,
+            3000
+          ],
+          "notes": "轻度堵塞可尝试清洗；重度只能更换"
+        }
+      ],
+      "prevention": "使用正品燃油和机油；避免长期低速短途行驶；定期跑高速",
+      "related_links": []
+    }
+  ]
+}

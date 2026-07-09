@@ -1,0 +1,193 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "海豚",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "纯电/e平台3.0",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_ht_001",
+      "symptom": "后悬架过硬/舒适性极差",
+      "root_cause": "海豚后悬架为扭力梁，调校极硬（车主投诉高发）",
+      "confidence": 0.92,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带后排是否有明显抛跳和震动"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "接受现实",
+          "action": "降低胎压；适应悬架",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "2023款后已改进后悬架"
+        },
+        {
+          "type": "外面修",
+          "action": "更换独立后悬架（改装）",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "影响保修，谨慎"
+        }
+      ],
+      "prevention": "购买2023款及以后批次（后悬架已改进）",
+      "related_links": []
+    },
+    {
+      "id": "byd_ht_002",
+      "symptom": "空调不制冷/制冷效果差",
+      "root_cause": "空调压缩机故障或冷媒泄漏（海豚通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "开AC后出风口是否有冷风",
+        "检查压缩机是否工作"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空调压缩机总成",
+          "cost_range": [
+            2000,
+            4000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "补充冷媒",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "如果泄漏需查漏点"
+        }
+      ],
+      "prevention": "定期检查空调系统；避免长时间最大风量",
+      "related_links": []
+    },
+    {
+      "id": "byd_ht_003",
+      "symptom": "车机卡顿/死机",
+      "root_cause": "车机芯片性能不足",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "byd_ht_004",
+      "symptom": "门窗升降异响",
+      "root_cause": "门窗导轨干涩或升降电机故障",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "升降门窗是否有吱嘎声"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "喷导轨润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "更换升降电机",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期润滑导轨",
+      "related_links": []
+    },
+    {
+      "id": "byd_ht_005",
+      "symptom": "续航虚标/冬季衰减",
+      "root_cause": "小车风阻大+低温电池特性",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冬季实际续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用节能模式；预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季地下车库停放",
+      "related_links": []
+    },
+    {
+      "id": "byd_ht_006",
+      "symptom": "方向盘卡滞/不回正",
+      "root_cause": "同秦PLUS，转向柱问题",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换转向柱",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

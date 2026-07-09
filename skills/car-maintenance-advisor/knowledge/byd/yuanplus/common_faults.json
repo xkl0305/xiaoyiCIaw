@@ -1,0 +1,176 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "元PLUS",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "纯电/e平台3.0",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_yp_001",
+      "symptom": "后悬架过硬/过减速带抛跳",
+      "root_cause": "元PLUS后悬架为扭力梁，调校偏硬",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带后排是否有明显抛跳"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "接受现实",
+          "action": "降低胎压至2.3bar",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "改善有限"
+        }
+      ],
+      "prevention": "非故障，试驾时注意",
+      "related_links": []
+    },
+    {
+      "id": "byd_yp_002",
+      "symptom": "车机死机/黑屏/重启",
+      "root_cause": "车机芯片过热或系统Bug",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按电源键能否重启"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "byd_yp_003",
+      "symptom": "空调出风口异响/风噪大",
+      "root_cause": "空调鼓风机叶片变形或风道设计问题",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "开空调是否有咔哒或风噪",
+        "调整出风口方向是否变化"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空调鼓风机",
+          "cost_range": [
+            500,
+            1200
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "清理空调风道异物",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "定期更换空调滤芯；避免在出风口放置物品",
+      "related_links": []
+    },
+    {
+      "id": "byd_yp_004",
+      "symptom": "续航虚标/冬季衰减严重",
+      "root_cause": "CLTC续航测试工况偏乐观；低温电池活性下降",
+      "confidence": 0.9,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        "实际续航是否低于标称的70%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "调整预期；使用节能模式",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季预热电池；选择地下车库停放",
+      "related_links": []
+    },
+    {
+      "id": "byd_yp_005",
+      "symptom": "车门把手故障（隐藏式门把手不弹出）",
+      "root_cause": "门把手电机或拉线故障",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "解锁后门把手是否不弹出",
+        "手动撬出是否能恢复"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换门把手总成",
+          "cost_range": [
+            800,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免洗车后门把手冻住",
+      "related_links": []
+    },
+    {
+      "id": "byd_yp_006",
+      "symptom": "刹车偏软",
+      "root_cause": "刹车助力调校偏舒适",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换高性能刹车片",
+          "cost_range": [
+            400,
+            1000
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "每2年更换刹车油",
+      "related_links": []
+    }
+  ]
+}

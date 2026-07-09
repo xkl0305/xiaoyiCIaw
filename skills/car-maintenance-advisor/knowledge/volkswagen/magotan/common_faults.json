@@ -1,0 +1,132 @@
+{
+  "meta": {
+    "brand": "Volkswagen",
+    "model": "迈腾 Magotan",
+    "year_range": [2019, 2025],
+    "engine_options": ["1.4T EA211", "2.0T EA888 Gen3B"],
+    "transmission": "7速湿式双离合 DQ381",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "magotan_001",
+      "symptom": "EA888发动机烧机油（Gen3B仍有机率）",
+      "root_cause": "活塞环设计缺陷或气门油封老化（里程6万+高发）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "每5000公里是否需添加1L以上机油",
+        "排气管口是否有明显油泥",
+        "冷启动是否冒蓝烟"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换活塞环+气门油封（大修）", "cost_range": [15000, 30000], "notes": "出保后费用高"},
+        {"type": "外面修", "action": "使用高粘度机油缓解", "cost_range": [400, 800], "notes": "治标不治本"}
+      ],
+      "prevention": "使用VW50800认证0W-20机油；避免长期高转速行驶",
+      "related_links": []
+    },
+    {
+      "id": "magotan_002",
+      "symptom": "DQ381变速箱低速顿挫",
+      "root_cause": "湿式双离合变速箱油变质或离合器磨损",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "低速换挡是否有顿挫感",
+        "OBD读码：P187C00",
+        "检查变速箱油是否发黑"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换变速箱油+滤芯", "cost_range": [1000, 1800], "notes": "每6万公里必换"},
+        {"type": "4S店", "action": "更换离合器片", "cost_range": [8000, 15000], "notes": "严重打滑时"}
+      ],
+      "prevention": "每6万公里更换变速箱油；避免弹射起步",
+      "related_links": []
+    },
+    {
+      "id": "magotan_003",
+      "symptom": "冷却液减少/水泵泄漏（EA888通病）",
+      "root_cause": "EA888水泵塑料壳体老化开裂",
+      "confidence": 0.89,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷车检查膨胀壶液位",
+        "检查水泵附近是否有粉红色结晶",
+        "地面是否有粉红色液体"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换水泵总成（含节温器）", "cost_range": [1500, 3000], "notes": "用INA/Gates品牌"},
+        {"type": "4S店", "action": "更换原厂水泵总成", "cost_range": [3000, 5000], "notes": "质保期内可索赔"}
+      ],
+      "prevention": "每2年检查冷却液液位；发现减少立即排查",
+      "related_links": []
+    },
+    {
+      "id": "magotan_004",
+      "symptom": "车内异味（迈腾B8通病）",
+      "root_cause": "空调蒸发器或隔音棉发霉/老化",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "开空调是否有酸臭味",
+        "更换空调滤芯后是否改善"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "更换活性炭空调滤芯+清洗蒸发器", "cost_range": [100, 300], "notes": "用3M空调清洗剂"},
+        {"type": "外面修", "action": "更换隔音棉（严重）", "cost_range": [2000, 5000], "notes": "需拆全车内饰"}
+      ],
+      "prevention": "停车前提前关闭AC，大风量吹干蒸发器；定期更换空调滤芯",
+      "related_links": []
+    },
+    {
+      "id": "magotan_005",
+      "symptom": "天窗漏水（迈腾B8通病）",
+      "root_cause": "天窗排水管堵塞或脱落",
+      "confidence": 0.86,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "A柱是否有水渍",
+        "打开天窗检查排水孔",
+        "用高压气枪吹通排水管"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "疏通排水管", "cost_range": [0, 50], "notes": "每6个月一次"},
+        {"type": "外面修", "action": "重新固定排水管", "cost_range": [200, 500], "notes": "排水管脱落需拆顶棚"}
+      ],
+      "prevention": "定期清理天窗导轨杂物；每6个月疏通排水管",
+      "related_links": []
+    },
+    {
+      "id": "magotan_006",
+      "symptom": "正时链条拉长（EA888 Gen3B，里程15万+）",
+      "root_cause": "正时链条拉伸，跳齿风险",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动是否有金属 rattling 声（正时盖处）",
+        "OBD读取凸轮轴相位数据",
+        "里程是否超过15万公里"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换正时链条套装（含导轨、张紧器）", "cost_range": [3000, 6000], "notes": "用INA/盖茨品牌"},
+        {"type": "4S店", "action": "原厂正时链条套装更换", "cost_range": [6000, 10000], "notes": ""}
+      ],
+      "prevention": "每10万公里检查正时链条拉伸量；使用优质机油",
+      "related_links": []
+    }
+  ]
+}

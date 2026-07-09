@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "brand": "AITO",
+    "model": "问界M8",
+    "year_range": [
+      2024,
+      2026
+    ],
+    "platform": "增程式SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "aito_m8_001",
+      "symptom": "华为智驾ADS误判",
+      "root_cause": "ADS传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ADS固件+标定传感器",
+          "cost_range": [
+            0,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m8_002",
+      "symptom": "空气悬挂故障（高配）",
+      "root_cause": "空气弹簧漏气",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆是否歪斜"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m8_003",
+      "symptom": "车机卡顿/死机",
+      "root_cause": "HarmonyOS车机软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m8_004",
+      "symptom": "增程器噪音大",
+      "root_cause": "增程器介入噪音",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU程序",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "aito_m8_005",
+      "symptom": "第三排空间小/座椅硬",
+      "root_cause": "M8车身尺寸限制，第三排舒适性一般",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "第三排乘坐是否舒适性极差"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装第三排软垫",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": "改善有限"
+        }
+      ],
+      "prevention": "非故障，试驾时注意",
+      "related_links": []
+    },
+    {
+      "id": "aito_m8_006",
+      "symptom": "续航虚标",
+      "root_cause": "电池容量+冬季衰减",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

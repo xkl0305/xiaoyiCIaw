@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "brand": "Xiaomi EV",
+    "model": "小米SU7 Ultra",
+    "year_range": [
+      2025,
+      2026
+    ],
+    "platform": "纯电高性能轿车",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xm_su7u_001",
+      "symptom": "超高速下压力不足/稳定性问题",
+      "root_cause": "Ultra为赛道取向，但部分车主反映极速下压力不够（设计争议）",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "极速状态下是否感觉不稳定"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "检查并调整尾翼角度",
+          "cost_range": [
+            0,
+            2000
+          ],
+          "notes": "保修期内免费调整"
+        },
+        {
+          "type": "外面修",
+          "action": "加装第三方前铲/尾翼",
+          "cost_range": [
+            5000,
+            20000
+          ],
+          "notes": "影响保修"
+        }
+      ],
+      "prevention": "避免在公共道路极速驾驶",
+      "related_links": []
+    },
+    {
+      "id": "xm_su7u_002",
+      "symptom": "碳陶瓷刹车保养成本高",
+      "root_cause": "Ultra标配碳陶瓷刹车盘，刹车片磨损后更换成本极高",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "检查碳陶瓷刹车片厚度是否低于3mm"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换碳陶瓷刹车片",
+          "cost_range": [
+            8000,
+            20000
+          ],
+          "notes": "一套刹车片极贵"
+        },
+        {
+          "type": "4S店",
+          "action": "更换碳陶瓷刹车盘（严重时）",
+          "cost_range": [
+            30000,
+            60000
+          ],
+          "notes": "极其昂贵"
+        }
+      ],
+      "prevention": "避免频繁急刹车；赛道使用后及时检查刹车",
+      "related_links": []
+    },
+    {
+      "id": "xm_su7u_003",
+      "symptom": "车机死机/黑屏（高通8295）",
+      "root_cause": "Xiaomi Pilot车机软件Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按电源键能否重启"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "升级Xiaomi Pilot固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xm_su7u_004",
+      "symptom": "Xiaomi Pilot智驾误判",
+      "root_cause": "智驾传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "智驾时是否突然刹车"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级Xiaomi Pilot固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "智驾时手不离方向盘",
+      "related_links": []
+    },
+    {
+      "id": "xm_su7u_005",
+      "symptom": "续航虚标/高性能电机耗电快",
+      "root_cause": "Ultra为三电机高性能版，能耗极高",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "激烈驾驶后续航是否急剧下降"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用舒适/节能模式；预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "长途提前规划充电；赛道驾驶后续航骤降",
+      "related_links": []
+    },
+    {
+      "id": "xm_su7u_006",
+      "symptom": "轮胎磨损快（倍耐力P0）",
+      "root_cause": "Ultra扭矩极大，起步打滑导致轮胎磨损快",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "轮胎是否出现异常磨损或鼓包"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换高性能轮胎（倍耐力P0/米其林PS4）",
+          "cost_range": [
+            2000,
+            4000
+          ],
+          "notes": "每条轮胎价格极高"
+        }
+      ],
+      "prevention": "避免频繁弹射起步；定期检查轮胎",
+      "related_links": []
+    }
+  ]
+}

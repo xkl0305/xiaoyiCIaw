@@ -1131,17 +1131,26 @@ def InstallNpmDeps(installRoot: Path, args, logPath: Path) -> None:
         Emit("[WARN] skipped npm install by request", logPath)
         return
     pluginDir = installRoot / "memory-plugin"
-    if not (pluginDir / "package.json").exists():
+    packagePath = pluginDir / "package.json"
+    if not packagePath.exists():
+        return
+    packageData = json.loads(packagePath.read_text(encoding="utf-8"))
+    runtimeDeps = {}
+    for key in ("dependencies", "optionalDependencies"):
+        runtimeDeps.update(packageData.get(key) or {})
+    if not runtimeDeps:
+        Emit("[INFO] memory-plugin has no runtime npm dependencies; "
+             "skipping dependency install", logPath)
         return
     if shutil.which("npm") is None:
         Die(EXIT_INSTALL, "[ERROR] npm not found; cannot install runtime deps",
             logPath)
     registry = os.environ.get("CELIA_NPM_REGISTRY", "https://registry.npmmirror.com")
     RunCommand(
-        ["npm", "install", "--omit=dev", "--no-audit", "--no-fund",
-         "--registry", registry],
+        ["npm", "install", "--omit=dev", "--ignore-scripts", "--no-audit",
+         "--no-fund", "--registry", registry],
         EXIT_INSTALL,
-        "npm install",
+        "npm install runtime deps",
         logPath,
         pluginDir,
     )

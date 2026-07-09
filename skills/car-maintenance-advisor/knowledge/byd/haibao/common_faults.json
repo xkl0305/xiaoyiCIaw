@@ -1,0 +1,204 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "海豹",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "纯电/e平台3.0",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_hb_001",
+      "symptom": "后悬架偏硬/过减速带颠簸",
+      "root_cause": "海豹后悬架调校偏运动（设计特性）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带时后排是否颠簸明显"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换舒适型避震弹簧",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "影响保修，谨慎"
+        },
+        {
+          "type": "4S店",
+          "action": "申请更换改进型避震",
+          "cost_range": [
+            0,
+            3000
+          ],
+          "notes": "部分批次有改进件"
+        }
+      ],
+      "prevention": "非故障，属调校特性",
+      "related_links": []
+    },
+    {
+      "id": "byd_hb_002",
+      "symptom": "车机卡顿/DiLink死机",
+      "root_cause": "同汉，车机芯片性能不足",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "byd_hb_003",
+      "symptom": "电池底盘偏低/容易磕底",
+      "root_cause": "海豹电池包铺设于底盘，离地间隙较小",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带或上坡是否听到底盘撞击声",
+        "检查电池包护板是否有刮痕"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装电池包铝合金护板",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "强烈建议新车就装"
+        },
+        {
+          "type": "4S店",
+          "action": "检查电池包是否受损",
+          "cost_range": [
+            0,
+            20000
+          ],
+          "notes": "电池包受损保修期内可索赔"
+        }
+      ],
+      "prevention": "避免走烂路；上地库坡道注意不要磕底",
+      "related_links": []
+    },
+    {
+      "id": "byd_hb_004",
+      "symptom": "前大灯亮度不足（近光灯）",
+      "root_cause": "海豹原厂LED大灯调校偏暗（设计问题）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "夜间近光灯是否明显偏暗",
+        "检查大灯高度是否调至最高"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换LED大灯总成（副厂）",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "注意不影响保修"
+        },
+        {
+          "type": "4S店",
+          "action": "调整大灯高度和切线",
+          "cost_range": [
+            0,
+            200
+          ],
+          "notes": "免费调整"
+        }
+      ],
+      "prevention": "非故障",
+      "related_links": []
+    },
+    {
+      "id": "byd_hb_005",
+      "symptom": "刹车点头/ABS介入过早",
+      "root_cause": "海豹刹车调校偏敏感，或刹车盘不平",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "轻踩刹车是否点头",
+        "紧急刹车ABS是否过早介入"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "刷新刹车控制程序",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "部分版本有改进固件"
+        },
+        {
+          "type": "外面修",
+          "action": "更换高性能刹车片",
+          "cost_range": [
+            600,
+            1500
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "适应刹车脚感；定期检查刹车盘平整度",
+      "related_links": []
+    },
+    {
+      "id": "byd_hb_006",
+      "symptom": "冬季续航衰减（纯电版）",
+      "root_cause": "锂电池低温特性",
+      "confidence": 0.9,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        "零下气温续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用预热功能；选择地下车库停放",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季提前预热电池",
+      "related_links": []
+    }
+  ]
+}

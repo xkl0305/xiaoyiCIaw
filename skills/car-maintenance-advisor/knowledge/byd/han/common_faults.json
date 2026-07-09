@@ -1,0 +1,235 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "汉",
+    "year_range": [
+      2020,
+      2026
+    ],
+    "platform": "DM-i/纯电",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_han_001",
+      "symptom": "车机卡顿/死机/黑屏",
+      "root_cause": "DiLink车机芯片过热或系统优化差（老款6155芯片多发）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动车机是否超过30秒才有反应",
+        "导航时是否频繁卡顿",
+        "重启车机后是否恢复正常"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按电源键重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "解决临时卡顿"
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机系统固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换车机模组（严重）",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "需申请保修"
+        }
+      ],
+      "prevention": "避免高温下长时间使用车机；定期清理车机存储",
+      "related_links": []
+    },
+    {
+      "id": "byd_han_002",
+      "symptom": "雨刮异响/刮不干净",
+      "root_cause": "雨刮胶条老化（BYD雨刮质量一般，1年+高发）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "刮水时是否有吱吱声",
+        "是否留下水痕"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换雨刮胶条",
+          "cost_range": [
+            30,
+            80
+          ],
+          "notes": "买博世/电装等品牌"
+        },
+        {
+          "type": "4S店",
+          "action": "更换原厂雨刮总成",
+          "cost_range": [
+            200,
+            400
+          ],
+          "notes": "性价比较低"
+        }
+      ],
+      "prevention": "每半年更换一次雨刮胶条",
+      "related_links": []
+    },
+    {
+      "id": "byd_han_003",
+      "symptom": "刹车偏软/刹车距离长",
+      "root_cause": "刹车助力调校偏舒适，或刹车油吸水（2年+未换）",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "紧急制动是否感觉刹车偏软",
+        "检查刹车油是否变黑"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换DOT4刹车油",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": "每2年必须更换"
+        },
+        {
+          "type": "外面修",
+          "action": "更换高性能刹车片",
+          "cost_range": [
+            600,
+            1500
+          ],
+          "notes": "改善刹车脚感"
+        }
+      ],
+      "prevention": "每2年更换刹车油；定期检查刹车片厚度",
+      "related_links": []
+    },
+    {
+      "id": "byd_han_004",
+      "symptom": "后悬偏软/过弯侧倾大",
+      "root_cause": "汉后悬架调校偏舒适（设计特性，非故障）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "快速过弯时侧倾是否过大",
+        "后轮是否失去抓地力"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换高性能后防倾杆",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "改善侧倾"
+        },
+        {
+          "type": "外面修",
+          "action": "更换绞牙避震（极致）",
+          "cost_range": [
+            5000,
+            15000
+          ],
+          "notes": "影响保修"
+        }
+      ],
+      "prevention": "非故障，属调校特性",
+      "related_links": []
+    },
+    {
+      "id": "byd_han_005",
+      "symptom": "车门密封条异响（走烂路吱嘎声）",
+      "root_cause": "密封条与车身摩擦异响",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "走烂路时车门是否有吱嘎声",
+        "在密封条上涂抹滑石粉后是否消失"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在密封条涂抹滑石粉或硅脂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "解决90%异响"
+        },
+        {
+          "type": "4S店",
+          "action": "调整车门锁扣位置",
+          "cost_range": [
+            0,
+            300
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "新车就处理密封条；定期保养密封条",
+      "related_links": []
+    },
+    {
+      "id": "byd_han_006",
+      "symptom": "快充功率达不到标称/充电慢",
+      "root_cause": "电池温度偏高触发降频，或充电桩电流限制",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "快充时中控显示充电功率是否低于60kW",
+        "电池温度是否超过45℃"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "选择阴凉充电桩；预热电池后再充",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "检查电池冷却系统",
+          "cost_range": [
+            500,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "夏季避免电池高温时快充；选择功率足够充电桩",
+      "related_links": []
+    }
+  ]
+}

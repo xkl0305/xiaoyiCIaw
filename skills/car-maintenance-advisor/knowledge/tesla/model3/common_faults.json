@@ -1,0 +1,239 @@
+{
+  "meta": {
+    "brand": "Tesla",
+    "model": "Model 3",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "纯电",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "tm3_001",
+      "symptom": "悬挂异响（过减速带/烂路咕噜声）",
+      "root_cause": "前悬挂摆臂胶套老化开裂（里程3万+高发）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带时听前轮拱是否有咕噜/咯吱声",
+        "举升车辆撬动摆臂检查胶套是否开裂",
+        "检查减震器是否漏油"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换前摆臂总成",
+          "cost_range": [
+            2000,
+            4000
+          ],
+          "notes": "出保前可尝试索赔"
+        },
+        {
+          "type": "外面修",
+          "action": "更换摆臂胶套或品牌摆臂",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "用Lemförder或TRW等一线品牌"
+        }
+      ],
+      "prevention": "避免长期走烂路；过减速带减速",
+      "related_links": []
+    },
+    {
+      "id": "tm3_002",
+      "symptom": "车窗升降器故障（一键升降失效、异响）",
+      "root_cause": "车窗升降电机或导轨干涩（Model 3通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "测试四门一键升降功能",
+        "听升降时是否有吱嘎声",
+        "检查门窗密封条是否老化"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "喷硅基润滑剂到导轨",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "临时方案"
+        },
+        {
+          "type": "4S店",
+          "action": "更换升降器电机总成",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "保修期内免费更换"
+        },
+        {
+          "type": "外面修",
+          "action": "更换副厂升降器总成",
+          "cost_range": [
+            500,
+            1200
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "定期喷导轨润滑剂；冬天洗车后及时升降车窗除冰",
+      "related_links": []
+    },
+    {
+      "id": "tm3_003",
+      "symptom": "充电口盖无法自动开启/关闭",
+      "root_cause": "充电口盖电机失效或微动开关故障",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "中控屏点击充电口盖是否响应",
+        "手动轻按充电口盖是否有电机声音",
+        "检查充电口是否有异物"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换充电口盖电机总成",
+          "cost_range": [
+            1200,
+            2500
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "外面修",
+          "action": "拆车件更换",
+          "cost_range": [
+            400,
+            800
+          ],
+          "notes": "功能件建议用新件"
+        }
+      ],
+      "prevention": "充电后确认盖好再走；避免用力按压",
+      "related_links": []
+    },
+    {
+      "id": "tm3_004",
+      "symptom": "中控大屏死机/黑屏/重启",
+      "root_cause": "MCU过热或系统软件Bug（AMD版较少，Intel版多发）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "死机时是否伴随空调/灯光异常",
+        "重启后是否正常（两个滚轮同时按住10秒）",
+        "检查是否在高温下长时间使用"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "同时按住两个滚轮10秒强制重启",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "解决90%的死机问题"
+        },
+        {
+          "type": "4S店",
+          "action": "更换MCU模组（严重时）",
+          "cost_range": [
+            0,
+            8000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免阳光直射下长时间看视频；定期清理USB设备",
+      "related_links": []
+    },
+    {
+      "id": "tm3_005",
+      "symptom": "热泵空调噪音大/制热效果差（冬季）",
+      "root_cause": "热泵系统冷媒不足或八通阀故障（2021+车型）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冬季开暖风是否有高频噪音",
+        "制热速度是否明显变慢",
+        "中控是否有热管理相关报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "检查冷媒压力并补充",
+          "cost_range": [
+            500,
+            1500
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换八通阀总成（严重）",
+          "cost_range": [
+            3000,
+            6000
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "入冬前检查热管理系统；避免长时间-20℃以下露天停放",
+      "related_links": []
+    },
+    {
+      "id": "tm3_006",
+      "symptom": "车漆薄/容易出划痕",
+      "root_cause": "特斯拉车漆厚度偏薄（通病，非故障）",
+      "confidence": 0.9,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "洗车后是否容易出现太阳纹",
+        "轻微剐蹭是否见底漆"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "镀晶或贴透明车衣",
+          "cost_range": [
+            2000,
+            8000
+          ],
+          "notes": "最有效保护方案"
+        },
+        {
+          "type": "外面修",
+          "action": "局部补漆",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "按面收费"
+        }
+      ],
+      "prevention": "新车尽快镀晶；不建议自动洗车机",
+      "related_links": []
+    }
+  ]
+}

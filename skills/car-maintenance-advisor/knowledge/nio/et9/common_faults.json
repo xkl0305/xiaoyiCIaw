@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "brand": "NIO",
+    "model": "ET9",
+    "year_range": [
+      2025,
+      2026
+    ],
+    "platform": "纯电旗舰轿车",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "nio_et9_001",
+      "symptom": "线控转向系统故障/报警",
+      "root_cause": "ET9为NIO首款搭载线控转向的量产车，新技术早期可靠性待验证",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "仪表是否显示转向系统报警",
+        "转向手感是否异常"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "标定线控转向系统",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换线控转向执行机构",
+          "cost_range": [
+            10000,
+            30000
+          ],
+          "notes": "新技术，维修极贵"
+        }
+      ],
+      "prevention": "避免激烈驾驶；定期检查转向系统",
+      "related_links": []
+    },
+    {
+      "id": "nio_et9_002",
+      "symptom": "天行底盘主动悬架故障",
+      "root_cause": "ET9搭载主动悬架，传感器或执行机构故障",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "中控是否有悬架系统报警",
+        "行驶是否明显变颠簸"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "标定悬架系统",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免撞击坑洼；定期检查悬架",
+      "related_links": []
+    },
+    {
+      "id": "nio_et9_003",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "高通8295车机Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et9_004",
+      "symptom": "NAD智驾误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级NAD固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et9_005",
+      "symptom": "续航虚标",
+      "root_cause": "ET9为旗舰轿车，电池大但车身重，能耗不低",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "预热电池；使用换电",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et9_006",
+      "symptom": "新车装配质量问题（早期批次）",
+      "root_cause": "ET9为全新一代平台，早期批次装配工艺待成熟",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "内饰是否有异响",
+        "车门缝隙是否均匀"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "调整内饰板+车门缝隙",
+          "cost_range": [
+            0,
+            1000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "购买2025年中后期批次（早期批次问题已修复）",
+      "related_links": []
+    }
+  ]
+}

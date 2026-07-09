@@ -1,0 +1,177 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "唐",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "DM-i/DM-p",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_tang_001",
+      "symptom": "第三排座椅异响/震动",
+      "root_cause": "第三排座椅锁扣松动或座椅骨架共振（7座版通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时第三排是否有异响",
+        "按压第三排座椅是否松动"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在锁扣处缠绕电工胶带",
+          "cost_range": [
+            10,
+            30
+          ],
+          "notes": "临时方案"
+        },
+        {
+          "type": "4S店",
+          "action": "调整第三排锁扣位置",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "第三排不常用时放倒；定期检查锁扣",
+      "related_links": []
+    },
+    {
+      "id": "byd_tang_002",
+      "symptom": "低速发动机介入震动大（DM-i）",
+      "root_cause": "唐车身较重，发动机介入时震动更明显",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "电量低时发动机是否突然启动并有明显震动"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU程序",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "将SOC设高减少介入",
+      "related_links": []
+    },
+    {
+      "id": "byd_tang_003",
+      "symptom": "车机卡顿/死机",
+      "root_cause": "同汉，车机芯片性能不足",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "byd_tang_004",
+      "symptom": "尾门电动故障（关不到位/自动弹开）",
+      "root_cause": "电动尾门电机或控制模块故障",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "按尾门按钮是否无反应",
+        "手动关闭是否能到位"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换尾门控制模块",
+          "cost_range": [
+            1000,
+            2500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "关闭尾门时避免用力摔",
+      "related_links": []
+    },
+    {
+      "id": "byd_tang_005",
+      "symptom": "四驱系统故障灯亮（DM-p）",
+      "root_cause": "后桥电机或传动系统故障",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "仪表是否显示四驱系统故障",
+        "OBD读取后桥电机故障码"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "检查后桥电机及传动轴",
+          "cost_range": [
+            0,
+            5000
+          ],
+          "notes": "保修期内免费检查"
+        }
+      ],
+      "prevention": "避免激烈驾驶；定期检查后桥",
+      "related_links": []
+    },
+    {
+      "id": "byd_tang_006",
+      "symptom": "刹车偏软/刹车距离长",
+      "root_cause": "唐车身重（2吨+），原厂刹车调校偏舒适",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换高性能刹车片+刹车油",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "每2年更换刹车油",
+      "related_links": []
+    }
+  ]
+}

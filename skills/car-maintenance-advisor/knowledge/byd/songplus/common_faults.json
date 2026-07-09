@@ -1,0 +1,225 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "宋PLUS DM-i",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "DM-i超级混动",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_sp_001",
+      "symptom": "EV模式切换HEV模式时顿挫/震动",
+      "root_cause": "DM-i系统发电机介入时发动机启动震动（正常物理现象，部分车主敏感）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "电量低于SOC设定值时发动机是否突然启动",
+        "震动是否伴随异响"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU/HCU控制程序",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "新版本程序优化介入平顺性"
+        },
+        {
+          "type": "DIY",
+          "action": "将SOC设定值调高（如70%），减少发动机启动频率",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "定期保养发动机；使用合格汽油",
+      "related_links": []
+    },
+    {
+      "id": "byd_sp_002",
+      "symptom": "中控异响（塑料件热胀冷缩）",
+      "root_cause": "宋PLUS内饰塑料件较多，热胀冷缩异响",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冷车启动过减速带是否有塑料咔哒声",
+        "按压中控面板是否复现异响"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在中控缝隙填入海绵胶带",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "需要拆卸部分内饰板"
+        },
+        {
+          "type": "4S店",
+          "action": "重新固定中控内饰板",
+          "cost_range": [
+            200,
+            800
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "无法完全避免，属内饰工艺问题",
+      "related_links": []
+    },
+    {
+      "id": "byd_sp_003",
+      "symptom": "轮胎偏磨/吃胎",
+      "root_cause": "后轮束角调校不准（宋PLUS通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "检查后轮胎内侧是否磨损严重",
+        "做四轮定位是否显示后轮束角超标"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "调整后轮束角+四轮定位",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": "保修期内可免费调整"
+        },
+        {
+          "type": "外面修",
+          "action": "更换偏磨轮胎+四轮定位",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "每2万公里检查轮胎"
+        }
+      ],
+      "prevention": "每1万公里做轮胎换位；新车就做四轮定位",
+      "related_links": []
+    },
+    {
+      "id": "byd_sp_004",
+      "symptom": "油箱盖无法开启",
+      "root_cause": "油箱盖电机或拉线故障",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "解锁车辆后按油箱盖是否弹开",
+        "手动撬开是否有阻力"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在油箱盖缝隙喷润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "临时方案"
+        },
+        {
+          "type": "4S店",
+          "action": "更换油箱盖电机",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "加油后确认油箱盖关好；定期润滑锁扣",
+      "related_links": []
+    },
+    {
+      "id": "byd_sp_005",
+      "symptom": "DM-i系统故障灯亮",
+      "root_cause": "HCU（混合动力控制器）软件Bug或高压互锁",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "仪表是否显示'请检查动力系统'",
+        "OBD读取HCU相关故障码"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "刷新HCU控制程序",
+          "cost_range": [
+            0,
+            1000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "检查高压线束是否松动",
+          "cost_range": [
+            500,
+            2000
+          ],
+          "notes": "高压作业需专业技师"
+        }
+      ],
+      "prevention": "避免涉水行驶；定期检查高压线束接头",
+      "related_links": []
+    },
+    {
+      "id": "byd_sp_006",
+      "symptom": "空调制冷效果差/有异味",
+      "root_cause": "空调滤芯堵塞或蒸发器发霉",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "出风口温度是否高于10℃",
+        "是否有酸臭味"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "每1万公里更换"
+        },
+        {
+          "type": "外面修",
+          "action": "蒸发器清洗+杀菌",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": "每年做一次"
+        }
+      ],
+      "prevention": "每年更换空调滤芯；停车前提前关AC吹风",
+      "related_links": []
+    }
+  ]
+}

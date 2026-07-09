@@ -1,0 +1,183 @@
+{
+  "meta": {
+    "brand": "Li Auto",
+    "model": "理想MEGA",
+    "year_range": [
+      2024,
+      2026
+    ],
+    "platform": "纯电MPV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "li_mega_001",
+      "symptom": "续航虚标/高速续航短",
+      "root_cause": "MEGA为MPV造型，风阻大（虽然已优化），高速能耗高",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "高速120km/h续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "控制车速在100km/h以内",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "最有效的方法"
+        },
+        {
+          "type": "DIY",
+          "action": "使用理想超充网络",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "5C超充10-80%约12分钟"
+        }
+      ],
+      "prevention": "长途规划好超充站；避免满载高速行驶",
+      "related_links": []
+    },
+    {
+      "id": "li_mega_002",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "高通8295车机软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按电源键能否重启"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_mega_003",
+      "symptom": "智能驾驶误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级AD固件+标定",
+          "cost_range": [
+            0,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_mega_004",
+      "symptom": "后排座椅异响",
+      "root_cause": "MPV座椅滑轨松动",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时后排座椅是否有异响"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "紧固座椅滑轨螺丝",
+          "cost_range": [
+            0,
+            50
+          ],
+          "notes": "需要内饰工具"
+        },
+        {
+          "type": "4S店",
+          "action": "调整座椅滑轨",
+          "cost_range": [
+            200,
+            800
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期检查座椅滑轨",
+      "related_links": []
+    },
+    {
+      "id": "li_mega_005",
+      "symptom": "充电口盖故障",
+      "root_cause": "充电口盖电机故障",
+      "confidence": 0.7,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "充电口盖是否无法自动开启"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换充电口盖电机",
+          "cost_range": [
+            1000,
+            2500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免用力按压充电口盖",
+      "related_links": []
+    },
+    {
+      "id": "li_mega_006",
+      "symptom": "车门密封条异响",
+      "root_cause": "MPV车门大，密封条摩擦异响",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时车门是否有吱嘎声"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "涂抹滑石粉",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "新车处理密封条",
+      "related_links": []
+    }
+  ]
+}

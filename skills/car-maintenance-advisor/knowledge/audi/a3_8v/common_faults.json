@@ -1,0 +1,267 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "A3",
+    "chassis_code": "8V",
+    "year_range": [
+      2013,
+      2020
+    ],
+    "engine_options": [
+      "1.4T EA211",
+      "2.0T EA888 Gen3"
+    ],
+    "transmission": "7速干式双离合 DQ200（1.4T）/ DL382（2.0T）",
+    "last_updated": "2026-05-09",
+    "contributor": "汽车之家论坛、什么值得买、百度贴吧车主汇总"
+  },
+  "faults": [
+    {
+      "id": "a3_8v_001",
+      "symptom": "DQ200变速箱顿挫、异响（1.4T车型）",
+      "root_cause": "DQ200干式双离合变速箱离合器片磨损或机电单元故障（A3 1.4T通病，2-3年后高发）",
+      "confidence": 0.9,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "低速（1-3挡）换挡时是否有明显顿挫或金属撞击声",
+        "冷车起步时是否尤其明显",
+        "OBD读取变速箱故障码（P17xx系列）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换离合器总成或机电单元（出保可索赔）",
+          "cost_range": [
+            8000,
+            18000
+          ],
+          "notes": "出保前务必检查，可索赔"
+        },
+        {
+          "type": "外面修",
+          "action": "找双离合专业维修店更换离合器片",
+          "cost_range": [
+            3000,
+            6000
+          ],
+          "notes": "比换总成便宜，用改进型离合器片"
+        },
+        {
+          "type": "预防",
+          "action": "拥堵路段用手动模式，减少半联动",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "延缓磨损但无法根治"
+        }
+      ],
+      "prevention": "定期更换变速箱油（每6万公里）；拥堵路段用手动模式；出保前主动要求检查",
+      "related_links": [
+        "https://club.autohome.com.cn/bbs/thread/931af6846741d380/111355231-1.html"
+      ]
+    },
+    {
+      "id": "a3_8v_002",
+      "symptom": "发动机电脑故障（线束窜机油）",
+      "root_cause": "发动机线束内机油沿导线毛细现象窜入ECU插头，导致接触不良或短路（A3通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "发动机故障灯亮，读码为传感器通讯故障",
+        "检查ECU插头是否有油迹",
+        "晃动线束后故障是否时好时坏"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换机油感应塞+机油调压阀+清洗ECU插头",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "根源是机油压力开关密封不良"
+        },
+        {
+          "type": "外面修",
+          "action": "同4S方案，但价格更便宜",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "需找有奥迪经验的店"
+        }
+      ],
+      "prevention": "定期检查机油压力开关处是否有渗油；发现问题尽早处理，避免机油窜入ECU",
+      "related_links": []
+    },
+    {
+      "id": "a3_8v_003",
+      "symptom": "轮速传感器故障（ABS灯亮）",
+      "root_cause": "轮速传感器磁头吸附金属铁屑，导致信号异常（A3通病，尤其雨后或走烂路后）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "ABS灯亮，OBD读取故障码指向某车轮速传感器",
+        "举升车辆检查传感器头部是否有铁屑",
+        "清除铁屑后故障是否暂时消失"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "拆下轮速传感器，清理磁头铁屑后装回",
+          "cost_range": [
+            0,
+            50
+          ],
+          "notes": "临时解决，铁屑会重新吸附"
+        },
+        {
+          "type": "4S店",
+          "action": "更换轮速传感器",
+          "cost_range": [
+            400,
+            800
+          ],
+          "notes": "根治但费用较高"
+        },
+        {
+          "type": "外面修",
+          "action": "更换副厂轮速传感器",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": "性价比高，推荐品牌件"
+        }
+      ],
+      "prevention": "定期清理传感器磁头铁屑；避免在泥水路长时间行驶",
+      "related_links": []
+    },
+    {
+      "id": "a3_8v_004",
+      "symptom": "节温器漏水 / 水温高",
+      "root_cause": "EA888/EA211发动机节温器集成水泵塑料壳体开裂或轴承渗漏（大众奥迪通病）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "地面是否有粉红色冷却液",
+        "水温表是否偏高或水温报警灯亮",
+        "打开机舱检查节温器外壳是否有冷却液结晶"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换节温器总成（含水泵）",
+          "cost_range": [
+            2500,
+            4500
+          ],
+          "notes": "原厂件质保1年"
+        },
+        {
+          "type": "外面修",
+          "action": "更换改进型节温器总成",
+          "cost_range": [
+            1200,
+            2500
+          ],
+          "notes": "用改进型塑料壳或铝合金壳体更耐用"
+        }
+      ],
+      "prevention": "每2年更换冷却液；定期检查冷却液液位；发现液位下降尽早检查",
+      "related_links": [
+        "https://www.yoojia.com/dongtai/1392162002"
+      ]
+    },
+    {
+      "id": "a3_8v_005",
+      "symptom": "空调异味 / 蒸发箱发霉",
+      "root_cause": "空调蒸发箱长期潮湿，霉菌滋生（所有车型通病，A3尤甚）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "开AC后是否有酸臭味",
+        "更换空调滤芯后异味是否消除（若否，则是蒸发箱发霉）",
+        "检查空调排水管是否堵塞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯 + 空调管路清洗剂",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": "临时改善，无法彻底清除蒸发箱霉菌"
+        },
+        {
+          "type": "4S店",
+          "action": "蒸发箱可视化清洗（内窥镜）",
+          "cost_range": [
+            500,
+            1200
+          ],
+          "notes": "较彻底，但需拆解部分风管"
+        },
+        {
+          "type": "预防",
+          "action": "每次熄火前提前关AC，吹干蒸发箱",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "最有效的预防方法"
+        }
+      ],
+      "prevention": "每次熄火前2分钟关AC，保持外循环吹风；定期更换空调滤芯",
+      "related_links": []
+    },
+    {
+      "id": "a3_8v_006",
+      "symptom": "电瓶亏电 / 启停故障（配备启停的车型）",
+      "root_cause": "AGM启停电瓶寿命短（2-3年），或发电机充电电压设置不当",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "启停功能是否频繁不可用（提示「系统不可用」）",
+        "电瓶电压是否低于12.4V（熄火状态）",
+        "电瓶是否超过3年未更换"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换AGM启停电瓶（需专用工具注册电瓶）",
+          "cost_range": [
+            800,
+            1500
+          ],
+          "notes": "必须用AGM电瓶，普通电瓶不支持启停"
+        },
+        {
+          "type": "4S店",
+          "action": "更换原厂AGM电瓶 + 电脑注册",
+          "cost_range": [
+            1500,
+            2500
+          ],
+          "notes": "含注册，避免充电系统不识别新电瓶"
+        }
+      ],
+      "prevention": "避免短途频繁启动；每3年主动更换电瓶；冬季注意电瓶状态",
+      "related_links": []
+    }
+  ]
+}

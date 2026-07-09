@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "brand": "Volkswagen",
+    "model": "朗逸 Lavida",
+    "year_range": [2018, 2025],
+    "engine_options": ["1.5L EA211", "1.2T EA211", "1.4T EA211"],
+    "transmission": "6AT/7速干式双离合 DQ200",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "lavida_001",
+      "symptom": "低速顿挫/换挡闯动（DQ200变速箱）",
+      "root_cause": "DQ200七速干式双离合变速箱机电单元故障（里程3万+高发）",
+      "confidence": 0.87,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "1挡升2挡/2挡升3挡是否有明显顿挫",
+        "OBD读取故障码：P177B00、P176F00",
+        "检查变速箱油是否变黑（干式需定期更换）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换机电单元总成", "cost_range": [6000, 12000], "notes": "质保期内可索赔"},
+        {"type": "外面修", "action": "维修机电单元（拆车件或翻新）", "cost_range": [2500, 5000], "notes": "找专业双离合维修店"}
+      ],
+      "prevention": "每6万公里更换变速箱油；避免长期市区蠕行",
+      "related_links": []
+    },
+    {
+      "id": "lavida_002",
+      "symptom": "发动机怠速抖动/缺火",
+      "root_cause": "火花塞老化或点火线圈故障（EA211通病，里程4万+高发）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动是否怠速抖动",
+        "OBD读取故障码：P0300-P0304（缺火）",
+        "拆下火花塞检查电极是否烧蚀"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "更换NGK/博世火花塞", "cost_range": [200, 400], "notes": "EA211用NGK PFR7S8EG"},
+        {"type": "外面修", "action": "更换火花塞+点火线圈", "cost_range": [600, 1200], "notes": "点火线圈单换约200/个"}
+      ],
+      "prevention": "每4万公里更换火花塞；使用95号汽油减少积碳",
+      "related_links": []
+    },
+    {
+      "id": "lavida_003",
+      "symptom": "空调不制冷/制冷效果差",
+      "root_cause": "空调压缩机电磁阀故障或制冷剂泄漏（里程5万+高发）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "开启AC后压缩机是否吸合",
+        "检查高低压管压力",
+        "用荧光剂检查是否有泄漏点"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "补充制冷剂+查漏", "cost_range": [200, 500], "notes": "简单泄漏可补氟"},
+        {"type": "外面修", "action": "更换压缩机电磁阀或压缩机", "cost_range": [1500, 4000], "notes": "原厂压缩机较贵"}
+      ],
+      "prevention": "每年入夏前检查制冷剂压力；避免长时间怠速开空调",
+      "related_links": []
+    },
+    {
+      "id": "lavida_004",
+      "symptom": "车门异响/门锁卡滞",
+      "root_cause": "车门锁块缺油或密封条老化",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "走烂路时车门是否有吱嘎声",
+        "门锁开启是否卡滞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "在锁块涂抹润滑脂+密封条涂硅脂", "cost_range": [20, 50], "notes": "解决90%异响"},
+        {"type": "4S店", "action": "更换车门锁块", "cost_range": [300, 800], "notes": "质保期内免费"}
+      ],
+      "prevention": "定期在门锁处喷涂WD-40；新车就处理密封条",
+      "related_links": []
+    },
+    {
+      "id": "lavida_005",
+      "symptom": "正时皮带掉毛/断裂风险（1.5L/1.4T EA211）",
+      "root_cause": "EA211正时皮带设计缺陷，橡胶老化掉毛堵塞机油泵滤网",
+      "confidence": 0.90,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "里程是否超过9万公里（设计寿命约9万）",
+        "机油压力报警灯是否偶发点亮",
+        "拆正时盖检查皮带是否掉毛"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换正时皮带+张紧轮+机油泵滤网", "cost_range": [2000, 3500], "notes": "必须同时换机油泵滤网！"},
+        {"type": "4S店", "action": "正时系统全套更换", "cost_range": [3500, 6000], "notes": "原厂件质量更可靠"}
+      ],
+      "prevention": "每9万公里强制更换正时皮带；不要用副厂皮带",
+      "related_links": []
+    }
+  ]
+}

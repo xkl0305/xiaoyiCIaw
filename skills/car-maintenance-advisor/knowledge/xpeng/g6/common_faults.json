@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "brand": "XPeng",
+    "model": "小鹏G6",
+    "year_range": [
+      2023,
+      2026
+    ],
+    "platform": "纯电/800V快充",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xp_g6_001",
+      "symptom": "车机黑屏/死机",
+      "root_cause": "高通8295/8155车机芯片软件Bug（G6通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "长按电源键10秒能否重启",
+        "重启后是否再次出现"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按电源键强制重启",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "解决大部分死机"
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA或到店升级"
+        },
+        {
+          "type": "4S店",
+          "action": "更换车机模组（严重）",
+          "cost_range": [
+            3000,
+            8000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免高温下长时间使用车机；定期清理存储",
+      "related_links": []
+    },
+    {
+      "id": "xp_g6_002",
+      "symptom": "门窗异响/升降卡滞",
+      "root_cause": "门窗导轨干涩或升降电机故障（G6通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "升降门窗是否有吱嘎声",
+        "是否伴随卡滞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "喷硅基润滑剂到导轨",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "临时缓解"
+        },
+        {
+          "type": "4S店",
+          "action": "更换门窗升降电机",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期润滑导轨；冬天洗车后及时升降门窗",
+      "related_links": []
+    },
+    {
+      "id": "xp_g6_003",
+      "symptom": "充电口盖无法开启/关闭",
+      "root_cause": "充电口盖电机故障",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "中控点击充电口盖是否无反应"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换充电口盖电机",
+          "cost_range": [
+            1000,
+            2500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免用力按压",
+      "related_links": []
+    },
+    {
+      "id": "xp_g6_004",
+      "symptom": "XPILOT智驾误判/突然刹车",
+      "root_cause": "XPILOT传感器（摄像头/毫米波）误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "XPILOT开启时是否突然刹车",
+        "中控是否有智驾报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级XPILOT固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        },
+        {
+          "type": "4S店",
+          "action": "标定摄像头和毫米波雷达",
+          "cost_range": [
+            500,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "智驾时手不离方向盘；定期清洁传感器",
+      "related_links": []
+    },
+    {
+      "id": "xp_g6_005",
+      "symptom": "续航虚标/冬季衰减严重",
+      "root_cause": "CLTC续航偏乐观+低温电池特性",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "实际续航是否低于标称70%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用预热功能；SOC保持在20%以上",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季地下车库停放；长途提前规划充电",
+      "related_links": []
+    },
+    {
+      "id": "xp_g6_006",
+      "symptom": "刹车偏软",
+      "root_cause": "G6刹车调校偏舒适",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "制动距离是否明显偏长"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换高性能刹车片",
+          "cost_range": [
+            600,
+            1500
+          ],
+          "notes": ""
+        },
+        {
+          "type": "DIY",
+          "action": "更换DOT4刹车油",
+          "cost_range": [
+            200,
+            500
+          ],
+          "notes": "每2年更换"
+        }
+      ],
+      "prevention": "每2年更换刹车油",
+      "related_links": []
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "meta": {
+    "brand": "XPeng",
+    "model": "小鹏X9",
+    "year_range": [
+      2024,
+      2026
+    ],
+    "platform": "纯电MPV/800V快充",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xp_x9_001",
+      "symptom": "第三排座椅折叠故障/异响",
+      "root_cause": "X9第三排电动折叠机构故障（MPV特有）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "电动折叠第三排是否卡滞或有异响",
+        "中控点击折叠是否无反应"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "检修第三排折叠电机",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换折叠机构总成",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "严重时"
+        }
+      ],
+      "prevention": "避免频繁折叠第三排；定期检查折叠机构",
+      "related_links": []
+    },
+    {
+      "id": "xp_x9_002",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "车机软件Bug",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_x9_003",
+      "symptom": "后轮转向故障灯亮",
+      "root_cause": "X9标配后轮转向，控制模块或传感器故障",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "仪表是否显示后轮转向系统故障",
+        "低速转弯是否明显变重"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "标定后轮转向系统",
+          "cost_range": [
+            1000,
+            3000
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "4S店",
+          "action": "更换后轮转向执行机构",
+          "cost_range": [
+            5000,
+            15000
+          ],
+          "notes": "出保后极贵"
+        }
+      ],
+      "prevention": "避免激烈驾驶；定期检查转向系统",
+      "related_links": []
+    },
+    {
+      "id": "xp_x9_004",
+      "symptom": "XPILOT智驾误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级XPILOT固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_x9_005",
+      "symptom": "续航虚标/MPV风阻大能耗高",
+      "root_cause": "MPV造型风阻大，高速能耗高",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "高速120km/h续航是否明显低于标称"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "控制车速在100km/h以内",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "长途规划好充电站",
+      "related_links": []
+    },
+    {
+      "id": "xp_x9_006",
+      "symptom": "车门密封条异响",
+      "root_cause": "MPV车门大，密封条摩擦",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "涂抹滑石粉",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

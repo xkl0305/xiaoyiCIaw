@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "brand": "NIO",
+    "model": "ES8",
+    "year_range": [
+      2023,
+      2026
+    ],
+    "platform": "纯电全尺寸SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "nio_es8_001",
+      "symptom": "空气悬挂故障/塌缩",
+      "root_cause": "ES8车身最重，空气悬挂负载最大，漏气风险最高",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "停放一夜后车辆是否歪斜"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            15000
+          ],
+          "notes": "保修期内免费；出保后费用极高"
+        }
+      ],
+      "prevention": "避免超载；停车平坦地面",
+      "related_links": []
+    },
+    {
+      "id": "nio_es8_002",
+      "symptom": "NAD智驾误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级NAD固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es8_003",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "Banyan系统Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es8_004",
+      "symptom": "第二排座椅按摩功能故障",
+      "root_cause": "座椅按摩气泵故障",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "第二排座椅按摩是否无反应"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换座椅按摩气泵",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免频繁使用座椅按摩",
+      "related_links": []
+    },
+    {
+      "id": "nio_es8_005",
+      "symptom": "续航虚标/全尺寸SUV能耗极高",
+      "root_cause": "ES8车身大且重，风阻大，能耗全系最高",
+      "confidence": 0.9,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "实际续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用换电模式补能；规划好换电站",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "ES8适合换电模式"
+        }
+      ],
+      "prevention": "长途多利用换电站；避免满载高速",
+      "related_links": []
+    },
+    {
+      "id": "nio_es8_006",
+      "symptom": "空调异味",
+      "root_cause": "蒸发器发霉",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

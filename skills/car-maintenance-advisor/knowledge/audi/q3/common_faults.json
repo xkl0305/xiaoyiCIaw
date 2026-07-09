@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "Q3",
+    "chassis_code": "8U (2013-2019) / F3 (2019-)",
+    "year_range": [2013, 2025],
+    "engine_options": ["1.4T EA211", "1.5T EA211 EVO", "2.0T EA888 Gen3"],
+    "transmission": "7速干式双离合 DQ200（1.4T/1.5T）/ DL382（2.0T）",
+    "last_updated": "2026-05-09",
+    "contributor": "汽车之家论坛Q3车主汇总"
+  },
+  "faults": [
+    {
+      "id": "q3_001",
+      "symptom": "刹车异响（冷启动/潮湿天气尖锐啸叫）",
+      "root_cause": "刹车片材质偏硬或刹车盘表面生锈（Q3通病，尤其雨后或洗车后）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冷车第一次刹车是否有尖锐金属啸叫",
+        "雨后或洗车后是否尤其明显",
+        "多踩几脚刹车后异响是否消失（确认是表面锈迹）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "打磨刹车片边缘倒角 + 清理刹车盘锈迹", "cost_range": [50, 200], "notes": "临时改善，无法根治"},
+        {"type": "4S店", "action": "更换软质刹车片（静音型）", "cost_range": [800, 1500], "notes": "原厂刹车片偏硬，静音片更贵"},
+        {"type": "外面修", "action": "更换品牌静音刹车片（如菲罗多/博世）", "cost_range": [400, 1000], "notes": "性价比高"}
+      ],
+      "prevention": "避免长时间停放；雨后多踩几脚刹车清除盘面锈迹；定期清理刹车粉尘",
+      "related_links": [
+        "https://club.autohome.com.cn/bbs/thread/8cf73f500aa606c8/85022551-1.html"
+      ]
+    },
+    {
+      "id": "q3_002",
+      "symptom": "天窗异响（走烂路时咔哒声）",
+      "root_cause": "天窗框架螺丝松动或导轨缺润滑（Q3通病，与A4L B9类似）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时车顶是否有咔哒异响",
+        "打开天窗检查导轨是否有黑色磨损粉末",
+        "检查天窗排水孔是否堵塞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "天窗导轨涂抹专用润滑脂", "cost_range": [50, 150], "notes": "每1-2年润滑一次"},
+        {"type": "4S店", "action": "紧固天窗框架螺丝 + 润滑导轨", "cost_range": [300, 800], "notes": "严重需更换天窗框架（费用高）"}
+      ],
+      "prevention": "定期润滑天窗导轨；避免频繁全开天窗",
+      "related_links": []
+    },
+    {
+      "id": "q3_003",
+      "symptom": "变速箱1升2挡顿挫（DQ200干式双离合）",
+      "root_cause": "DQ200干式双离合低速换挡特性（1.4T/1.5T车型，属设计特性，非故障）",
+      "confidence": 0.80,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "低速1升2挡是否有顿挫感",
+        "冷车尤其明显，热车后减轻",
+        "OBD无故障码（确认是特性而非故障）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "升级变速箱软件（若有新版本）", "cost_range": [0, 500], "notes": "软件升级可能改善，但无法消除"},
+        {"type": "应对", "action": "勤换S挡或手动模式起步", "cost_range": [0, 0], "notes": "最简单有效的应对方法"}
+      ],
+      "prevention": "拥堵路段用手动模式；定期更换变速箱油（每6万公里）",
+      "related_links": [],
+      "note": "属变速箱特性，非质量问题，严重顿挫需检查离合器片磨损"
+    },
+    {
+      "id": "q3_004",
+      "symptom": "排气管根部孔洞（老鼠进入排气管）",
+      "root_cause": "排气管根部设计有孔洞（散热用），但秋季/冬季老鼠可从此进入排气管（Q3设计缺陷）",
+      "confidence": 0.70,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "举升车辆检查排气管根部是否有孔洞",
+        "启动时是否有异物撞击声（老鼠筑巢）",
+        "排气管是否有异味"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "用钢丝球或专用网罩封堵排气管根部孔洞", "cost_range": [20, 100], "notes": "简易有效，需定期检查"},
+        {"type": "4S店", "action": "加装排气管防鼠网", "cost_range": [200, 500], "notes": "原厂可能有配件"}
+      ],
+      "prevention": "停车时避免停在垃圾堆附近；定期检查排气管",
+      "related_links": [],
+      "note": "此问题在秋季/冬季高发，尤其户外停车的车辆"
+    },
+    {
+      "id": "q3_005",
+      "symptom": "冷天转向摩擦感 / 轻微异响",
+      "root_cause": "转向助力系统低温特性或转向柱防尘套摩擦（北方冬季高发）",
+      "confidence": 0.65,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冷车启动时转动方向盘是否有摩擦感",
+        "异响是否随方向柱位置变化",
+        "热车后是否消失"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "在转向柱防尘套处喷涂硅基润滑剂", "cost_range": [30, 100], "notes": "临时改善"},
+        {"type": "4S店", "action": "检查转向助力系统 + 必要时更换防尘套", "cost_range": [300, 1000], "notes": "严重需检查助力电机"}
+      ],
+      "prevention": "北方冬季停车尽量停地下车库；冷车启动后稍等片刻再行驶",
+      "related_links": [],
+      "note": "属低温特性，非故障；热车后消失则无需处理"
+    },
+    {
+      "id": "q3_006",
+      "symptom": "发动机舱共振 / 高压油泵异响（EA888车型）",
+      "root_cause": "高压油泵工作噪音（EA888发动机特性）或机脚胶老化",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "怠速时发动机舱是否有规律性的嗒嗒声",
+        "声音是否随转速升高而加快",
+        "检查机脚胶是否老化塌陷"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "检查高压油泵 + 必要时更换", "cost_range": [2000, 4000], "notes": "EA888高压油泵寿命约8-10万公里"},
+        {"type": "外面修", "action": "更换品牌高压油泵或改进型机脚胶", "cost_range": [1000, 2500], "notes": "性价比高"}
+      ],
+      "prevention": "定期检查机脚胶状态；避免长时间怠速",
+      "related_links": [],
+      "note": "高压油泵嗒嗒声在EA888上较常见，属特性；若伴随加速无力则需检查"
+    }
+  ]
+}

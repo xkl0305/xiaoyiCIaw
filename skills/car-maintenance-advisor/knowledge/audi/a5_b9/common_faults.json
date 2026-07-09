@@ -1,0 +1,141 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "A5",
+    "chassis_code": "B9 (2016-2023) / F5 (Sportback)",
+    "year_range": [2016, 2025],
+    "engine_options": ["2.0T EA888 Gen3B"],
+    "transmission": "7速湿式双离合 DL382",
+    "last_updated": "2026-05-09",
+    "contributor": "汽车之家论坛、懂车帝车主汇总"
+  },
+  "faults": [
+    {
+      "id": "a5_b9_001",
+      "symptom": "节温器+水泵漏水 / 水温高",
+      "root_cause": "EA888 Gen3B 电子节温器集成水泵塑料壳体开裂（A4L/A5/A6同款发动机通病）",
+      "confidence": 0.92,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "地面是否有粉红色冷却液",
+        "冷却液液位是否持续下降（需频繁添加）",
+        "打开机舱检查节温器外壳是否有冷却液结晶或湿润痕迹",
+        "水温表是否偏高或水温报警灯亮"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换节温器总成（含水泵）", "cost_range": [3000, 5000], "notes": "原厂件质保1年，建议出保前检查索赔"},
+        {"type": "外面修", "action": "更换改进型节温器总成（铝合金壳体）", "cost_range": [1500, 2800], "notes": "改进型更耐用，推荐铝合金壳体版本"}
+      ],
+      "prevention": "每2年更换冷却液；定期检查冷却液液位；发现液位下降尽早检查（不要等亮灯）",
+      "related_links": [
+        "https://www.yoojia.com/dongtai/1392162002"
+      ]
+    },
+    {
+      "id": "a5_b9_002",
+      "symptom": "DL382变速箱顿挫 / 3降2冲击",
+      "root_cause": "DL382湿式双离合变速箱离合器磨损或变速箱油变质（A5 B9通病，与A4L B9同款变速箱）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "3降2挡是否有明显冲击感",
+        "停车挂P挡是否卡滞",
+        "滑行接油门时是否有闯动",
+        "OBD读取变速箱故障码"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "升级变速箱软件 + 必要时更换离合器", "cost_range": [0, 12000], "notes": "出保前检查可索赔离合器"},
+        {"type": "外面修", "action": "更换DL382离合器套装 + 变速箱油", "cost_range": [4000, 8000], "notes": "找DL382专业维修店，比4S便宜很多"}
+      ],
+      "prevention": "每6万公里更换变速箱油（重力更换即可，无需循环机）；出保前主动要求检查变速箱",
+      "related_links": [
+        "https://club.autohome.com.cn/bbs/thread/0cc0b84555879c05/100193719-1.html"
+      ]
+    },
+    {
+      "id": "a5_b9_003",
+      "symptom": "空调偶尔吹热风 / 翻板故障",
+      "root_cause": "空调系统翻板电机故障或软件Bug（B9平台通病，与A4L B9相同）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "AC设定为外循环，但吹出的风有尾气味（说明实际在内循环）",
+        "OBD读取空调系统故障码",
+        "观察是否伴随空调哨声"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换翻板电机或升级空调控制单元软件", "cost_range": [500, 2000], "notes": "软件问题可能免费升级"},
+        {"type": "外面修", "action": "检查翻板电机并更换", "cost_range": [300, 1000], "notes": "副厂电机质量参差不齐"}
+      ],
+      "prevention": "无法有效预防，属装配/设计问题",
+      "related_links": []
+    },
+    {
+      "id": "a5_b9_004",
+      "symptom": "发动机舱两侧油渍（EA888气门室盖/正时上盖渗油）",
+      "root_cause": "EA888 Gen3B 气门室盖或正时上盖密封垫老化（A5 B9通病，公里数大了基本都有）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "打开发动机舱，检查气门室盖两侧是否有油渍",
+        "检查正时上盖是否有油渍渗出",
+        "观察地面是否有滴落的机油"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换气门室盖垫/正时上盖垫", "cost_range": [1000, 2500], "notes": "EA888塑料件老化渗油，无法根治"},
+        {"type": "外面修", "action": "更换改进型密封垫", "cost_range": [500, 1500], "notes": "用改进型橡胶垫，普通垫容易再次漏"}
+      ],
+      "prevention": "定期检查发动机舱；发现渗油尽早处理，避免越漏越多",
+      "related_links": []
+    },
+    {
+      "id": "a5_b9_005",
+      "symptom": "水箱漏水（部分批次）",
+      "root_cause": "散热器塑料水室开裂或密封圈老化（A5部分批次质量缺陷）",
+      "confidence": 0.70,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "地面是否有冷却液（粉红色）",
+        "水箱表面是否有湿润痕迹或冷却液结晶",
+        "冷却液液位是否持续下降"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换水箱总成", "cost_range": [2000, 4000], "notes": "原厂水箱质量较好"},
+        {"type": "外面修", "action": "更换品牌水箱（如贝洱/法雷奥）", "cost_range": [1000, 2500], "notes": "性价比高"}
+      ],
+      "prevention": "定期检查冷却液液位；避免磕碰水箱",
+      "related_links": [],
+      "note": "此问题在部分批次高发，非全车系通病；出保前可检查索赔"
+    },
+    {
+      "id": "a5_b9_006",
+      "symptom": "悬挂偏硬（舒适性一般）",
+      "root_cause": "A5定位运动轿跑，悬挂调校偏硬（设计特性，非故障）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带或坑洼路面时是否有明显颠簸感",
+        "长途驾驶后是否感到腰酸（悬挂吸震不充分）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "应对", "action": "更换舒适型减震器（如倍适登B4）", "cost_range": [2000, 4000], "notes": "可改善舒适性，但牺牲部分运动性"},
+        {"type": "接受", "action": "适应悬挂特性，或调整胎压至舒适范围", "cost_range": [0, 0], "notes": "最经济的应对方法"}
+      ],
+      "prevention": "购车时需试驾确认接受悬挂硬度；胎压不要打太高（2.3-2.4bar即可）",
+      "related_links": [],
+      "note": "属设计特性，非质量问题；介意舒适性建议试驾后再购买"
+    }
+  ]
+}

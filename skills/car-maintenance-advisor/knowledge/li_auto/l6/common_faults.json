@@ -1,0 +1,212 @@
+{
+  "meta": {
+    "brand": "Li Auto",
+    "model": "理想L6",
+    "year_range": [
+      2024,
+      2026
+    ],
+    "platform": "增程式SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "li_l6_001",
+      "symptom": "增程器启动时震动/噪音大",
+      "root_cause": "L6增程器为1.5T，介入时震动比L7/L8更明显（车身更轻）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "电量低时增程器是否突然启动并有明显震动",
+        "噪音是否比L7更大"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级增程器控制程序",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "保修期内免费"
+        },
+        {
+          "type": "DIY",
+          "action": "将SOC设高减少增程器启动",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "定期保养增程器；使用95号汽油",
+      "related_links": []
+    },
+    {
+      "id": "li_l6_002",
+      "symptom": "空气悬挂故障/无法升降",
+      "root_cause": "空气弹簧漏气或气泵故障（L6 Max版带空气悬挂）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆是否歪斜（一侧低）",
+        "中控是否有空气悬挂报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧总成",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "保修期内免费更换"
+        },
+        {
+          "type": "4S店",
+          "action": "检查气泵及管路",
+          "cost_range": [
+            1000,
+            3000
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "避免长期在极端温度下停放；定期检查悬挂"
+    },
+    {
+      "id": "li_l6_003",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "高通8295芯片车机偶发软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "长按电源键能否重启车机"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "长按电源键15秒强制重启",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机系统",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免同时运行太多APP",
+      "related_links": []
+    },
+    {
+      "id": "li_l6_004",
+      "symptom": "智能驾驶误判/突然刹车",
+      "root_cause": "AD Max系统传感器误判（摄像头/毫米波雷达）",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "智能驾驶时是否突然无故刹车",
+        "中控是否有智驾报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级AD系统固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA远程升级"
+        },
+        {
+          "type": "4S店",
+          "action": "标定摄像头和雷达",
+          "cost_range": [
+            500,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "智驾时手不离方向盘；定期清洁摄像头",
+      "related_links": []
+    },
+    {
+      "id": "li_l6_005",
+      "symptom": "续航虚标/冬季纯电续航短",
+      "root_cause": "L6电池容量较小（42.6kWh），冬季衰减更明显",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冬季纯电续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用预热功能；保持SOC在50%以上",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季预热电池；长途用油电混合模式",
+      "related_links": []
+    },
+    {
+      "id": "li_l6_006",
+      "symptom": "后排座椅异响",
+      "root_cause": "后排座椅锁扣松动",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时后排是否有异响"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在锁扣缠绕电工胶带",
+          "cost_range": [
+            10,
+            30
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "调整锁扣位置",
+          "cost_range": [
+            0,
+            300
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

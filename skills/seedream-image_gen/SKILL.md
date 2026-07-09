@@ -1,55 +1,62 @@
 ---
 name: seedream-image-gen
-description: 小艺图像创作，基于Seedream5的AI图像生成能力，支持文本、单图、多图多种输入方式，可实现主体一致性多图融合、图像编辑、系列组图生成等创作功能。触发词：生成图片、画图、图像创作、小艺图像、照片修复、文生图、编辑图片等。
+description: 小艺图像创作，基于Seedream5的AI图片生成，支持文本、单图、多图多种输入方式，可实现多图融合、图像编辑、系列组图生成等创作功能。触发词：生成图片、画图、创作图像、小艺图像、照片修复、文生图、编辑图片等。
 ---
 
 ## 核心能力
-这个技能有以下功能:
+此技能用于完成以下图像创作任务:
 - 根据文本提示词生成图像
-- 接收一张或多张图像输入
-- 生成多张图像时保存编号的输出文件和URL
+- 基于一张或多张参考图生成新图
+- 对现有图像进行编辑、修复、替换、风格迁移等操作
+- 生成多张图片、或一组风格统一、角色连贯的系列图片
+
+
+## 命令行参数
+| 参数名 | 类型 | 默认值 | 必填 | 说明 |
+|-------|------|--------|------|------|
+| `--prompt` | string | - | ✅ | 用于生成图像的提示词，越详细效果越好 |
+| `--image` | string | - | ❌ | 参考图片，支持远程URL或本地文件路径，可多次传入（最多14张） |
+| `--max-images` | integer | `15` | ❌ | 本次最多生成的图片数量，取值范围为 `1~15`。适用于组图或多图输出场景。实际可生成的图片数量，除受到 max_images 影响外，还受到输入的参考图数量影响。输入的参考图数量+最终生成的图片数量≤15张。 |
+
 
 ## 使用示例
 
 ```bash
-# Text-to-image
-python3 scripts/generate_seedream.py --prompt "生成一张爵士音乐节海报，风格复古，色彩鲜艳"
+# 文生图
+python3 scripts/generate_seedream.py --prompt '一个凌乱的办公桌桌面。桌面上有一台开着的笔记本电脑，屏幕显示绿色代码；旁边一个马克杯，杯上写着“Developer”，杯口冒出热气；一本摊开的书，页面是维恩图，展示三个圆的嵌套关系，三个圆分别为灰色、蓝色和浅绿色；一个便签贴，上面画着一个思维导图，思维导图是上下结构，分为3层结构；一支钢笔，笔帽掉在旁边；钢笔旁边是一个手机，屏幕显示一条新消息通知，桌子角落是一小盆多肉植物。背景是模糊的书架。阳光从右侧照射，在桌上形成光影。'
 
-# Image-to-image with remote URL
-python3 scripts/generate_seedream.py --prompt "图像风格转换" --image https://example.com/a.png
+# 单图参考生成
+python3 scripts/generate_seedream.py --prompt '去掉女生的帽子' --image /path/to/local/image.png
 
-# Image-to-image with local file path
-python3 scripts/generate_seedream.py --prompt "图像风格转换" --image /path/to/local/image.png
+# 多图参考生成
+python3 scripts/generate_seedream.py --prompt '让图一人物穿上图二的服装' --image https://a.png --image /path/to/b.png
 
-# Multi-image reference (mix of URLs and local paths)
-python3 scripts/generate_seedream.py --prompt "参考多张图片风格" --image https://a.png --image /path/to/b.png --max-images 3
+# 多图输出（组图生成） - 注意：当用户要求生成**一组连贯图片**（`--max-images > 1`）时，`prompt` 中**必须**明确包含组图语义指令，否则 API 可能只生成单张图片
+python3 scripts/generate_seedream.py --prompt '请生成3张不同风格的猫咪图片：第一张写实风格，第二张卡通风格，第三张油画风格' --max-images 3
 
-# Generate multiple images (3 images) - IMPORTANT: specify count in prompt
-python3 scripts/generate_seedream.py --prompt "请生成3张不同风格的猫咪图片：第一张写实风格，第二张卡通风格，第三张油画风格" --max-images 3
+# 单图生成多图（图生多图）
+python3 scripts/generate_seedream.py --prompt '参考这个LOGO，做一套户外运动品牌视觉设计，品牌名称为“GREEN”，包括包装袋、帽子、卡片、手环、纸盒、挂绳等。绿色视觉主色调，简约现代风格。' --image /path/to/local/image.png --max-images 6
 
-# Image-to-multiple images (图生多图) - generate 3 variations based on one reference
-python3 scripts/generate_seedream.py --prompt "请基于这张参考图生成3张不同光影效果的照片" --image https://example.com/photo.png --max-images 3
-
-# Multiple-images-to-multiple images (多图生多图) - generate using multiple references
-python3 scripts/generate_seedream.py --prompt "请基于提供的两张参考图，生成3张融合两种风格的艺术作品" --image https://example.com/a.png --image /path/to/b.png --max-images 3
+# 多图生成多图（多图融合后输出组图）
+python3 scripts/generate_seedream.py --prompt '请基于两张参考图生成3张系列艺术作品：保留第一张图的人物设定，融合第二张图的水彩风格，三张图分别表现春、夏、秋三个场景，角色保持一致、配色统一' --image /path/to/a.png --image /path/to/b.png --max-images 3
 ```
 
 ## 输出
 
-图像将保存至：`workspace/generated-images/`
+图像将保存至：`~/.openclaw/workspace/generated-images/`
 
 默认文件命名：`YYYYMMDD_HHMMSS_SSS_2位随机字符_generated.jpg`
 
-图像生成后将图像文件发送给用户
+图像生成后，将图像文件发送给用户
 
 # Prompt通用规则
 
-Seedream 支持文生图、图片编辑、参考图生图、组图生成等多样化任务。为了获得更理想的图像效果，编写提示词时注意：
+为了获得更理想的图像效果，编写提示词时注意：
 
-- 建议用**简洁连贯**的语言写明 **主体 + 行为 + 环境**，若对画面美学有要求，可用自然语言补充 **风格**、**色彩**、**光影**、**构图** 等美学元素。提示词不超过300个汉字。
+- 建议用**简洁连贯**的语言写明 **主体 + 行为 + 环境**，若对画面美学有要求，可用自然语言补充 **风格**、**色彩**、**光影**、**构图** 等美学元素。
 - 当有明确的应用场景时，在文本提示中写明图像用途和类型。  
 - 如果有明确的风格需求，使用精准的 **风格词** 或提供 **参考图像**，能获得更理想的效果。
-- 当画面中包含文字时，将文字内容放入**双引号**，提高文本渲染准确度。
+- 当画面中包含文字时，将文字内容放入**双引号**，提高文本渲染准确度。若要显示的文字比较复杂（比如同时包含单双引号、多行代码等），使用Here String变量把完整prompt存入变量，再传参。
 - 使用 **简洁明确的指令**，说明需要修改或参考的对象及具体操作，避免使用指代模糊的代词；如果希望除了修改的内容都保持不变，可在 prompt 中强调。  
 
 # 提示词秘籍

@@ -1,0 +1,259 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "A7",
+    "chassis_code": "C7 (2010-2017) / C8 (2017-2025)",
+    "year_range": [
+      2010,
+      2025
+    ],
+    "engine_options": [
+      "2.0T EA888 Gen2/3",
+      "3.0T V6 Supercharged"
+    ],
+    "transmission": "7速湿式双离合 DL382（2.0T）/ 8速手自一体（3.0T）",
+    "last_updated": "2026-05-09",
+    "contributor": "汽车之家论坛A7车主汇总"
+  },
+  "faults": [
+    {
+      "id": "a7_c7_001",
+      "symptom": "天窗漏水（天窗排水孔堵塞）",
+      "root_cause": "天窗排水孔被灰尘/树叶堵塞，雨水倒灌入车内（A7通病，所有奥迪车型均存在此问题）",
+      "confidence": 0.92,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "雨天或洗车后，车内顶棚是否有水渍",
+        "A柱或C柱是否有潮湿痕迹",
+        "打开天窗检查排水孔是否堵塞（用细铁丝可疏通）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "用细铁丝或高压气枪疏通天窗排水孔",
+          "cost_range": [
+            0,
+            50
+          ],
+          "notes": "每6个月清理一次可预防"
+        },
+        {
+          "type": "4S店",
+          "action": "专业疏通排水孔 + 烘干车内积水",
+          "cost_range": [
+            300,
+            1000
+          ],
+          "notes": "若积水侵蚀电子设备，费用极高"
+        },
+        {
+          "type": "严重漏水",
+          "action": "更换天窗排水管（需拆顶棚）",
+          "cost_range": [
+            2000,
+            5000
+          ],
+          "notes": "排水管脱落或破裂才需要"
+        }
+      ],
+      "prevention": "每6个月清理天窗排水孔；避免将车停在树下；雨季前主动检查",
+      "related_links": [
+        "https://club.autohome.com.cn/bbs/thread/8c002f35c65bdf7c/115051193-1.html"
+      ],
+      "note": "拖延不治会导致积水侵蚀天窗电机、车内照明、甚至BCM车身控制模块，维修成本极高"
+    },
+    {
+      "id": "a7_c7_002",
+      "symptom": "车门漏水（无框车门密封性问题）",
+      "root_cause": "车门密封胶条老化或安装不当（A7无框车门通病，使用年限增加后密封性下降）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "降雨或洗车时，车门内侧是否有水渗入",
+        "密封胶条是否有裂纹或变形",
+        "用手拉动胶条是否有松弛感"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换车门密封胶条（原厂）",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "必须用原厂胶条，副厂密封性差"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌密封胶条",
+          "cost_range": [
+            400,
+            1200
+          ],
+          "notes": "需确保胶条规格与车型匹配"
+        }
+      ],
+      "prevention": "定期检查密封胶条状态；避免用力摔车门；停地下车库可减少胶条老化",
+      "related_links": [],
+      "note": "A7无框车门设计导致密封性天生不如有框车门，属设计特性叠加老化问题"
+    },
+    {
+      "id": "a7_c7_003",
+      "symptom": "发动机油底壳漏油（EA888发动机）",
+      "root_cause": "发动机油底壳密封垫老化（EA888通病，所有搭载EA888的奥迪车型均存在）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "车底是否有黑色油渍（机油）",
+        "举升车辆检查油底壳与发动机结合处是否有油渍",
+        "机油液位是否持续下降"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换油底壳密封垫",
+          "cost_range": [
+            1200,
+            2500
+          ],
+          "notes": "需抬下发动机或更换油底壳（视设计而定）"
+        },
+        {
+          "type": "外面修",
+          "action": "更换改进型油底壳垫",
+          "cost_range": [
+            600,
+            1500
+          ],
+          "notes": "性价比高"
+        }
+      ],
+      "prevention": "定期检查机油液位；发现渗油尽早处理，避免越漏越多",
+      "related_links": []
+    },
+    {
+      "id": "a7_c7_004",
+      "symptom": "气门室盖漏油（EA888发动机）",
+      "root_cause": "气门室盖垫密封不严，发动机高温导致垫子老化（EA888通病）",
+      "confidence": 0.9,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "打开发动机舱，检查气门室盖周围是否有油渍",
+        "机油是否过度损耗（需频繁添加）",
+        "火花塞孔是否有机油渗入"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换气门室盖垫或气门室盖总成",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "EA888塑料气门室盖易老化，建议换总成"
+        },
+        {
+          "type": "外面修",
+          "action": "更换改进型气门室盖垫",
+          "cost_range": [
+            800,
+            1800
+          ],
+          "notes": "用改进型橡胶垫，比原厂塑料垫耐用"
+        }
+      ],
+      "prevention": "定期检查发动机舱；发现渗油尽早处理",
+      "related_links": []
+    },
+    {
+      "id": "a7_c7_005",
+      "symptom": "发动机故障灯亮（传感器或火花塞）",
+      "root_cause": "氧传感器/空气流量传感器故障，或火花塞老化（里程数达到8-10万公里后高发）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "发动机故障灯是否常亮",
+        "OBD读取故障码（如P0130氧传感器/P0300点火缺失）",
+        "检查火花塞电极是否磨损严重"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换火花塞（NGK/博世）",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "EA888建议每6万公里更换火花塞"
+        },
+        {
+          "type": "4S店",
+          "action": "更换故障传感器 + 清除故障码",
+          "cost_range": [
+            800,
+            2500
+          ],
+          "notes": "传感器价格较高，副厂件性价比更高"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌传感器",
+          "cost_range": [
+            400,
+            1500
+          ],
+          "notes": "推荐博世/西门子原厂配套品牌"
+        }
+      ],
+      "prevention": "每6万公里更换火花塞；定期使用燃油添加剂清洁喷油嘴；加注正规加油站汽油",
+      "related_links": []
+    },
+    {
+      "id": "a7_c7_006",
+      "symptom": "空气悬挂报警（高配车型配备空气悬挂时）",
+      "root_cause": "空气悬挂气泵故障或气囊漏气（A7高配选装空气悬挂的通病，8年以上车龄高发）",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "仪表盘是否有「空气悬挂故障」报警",
+        "车辆是否一侧高一侧低（气囊漏气）",
+        "启动时气泵是否工作异常（噪音大或无动作）"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气悬挂气囊或气泵",
+          "cost_range": [
+            5000,
+            15000
+          ],
+          "notes": "空气悬挂维修极贵，建议买延保"
+        },
+        {
+          "type": "外面修",
+          "action": "更换品牌空气悬挂气囊",
+          "cost_range": [
+            3000,
+            8000
+          ],
+          "notes": "找专业悬挂维修店，比4S便宜很多"
+        }
+      ],
+      "prevention": "避免频繁调节悬挂高度；定期检查气囊是否有裂纹；冬季注意冷车启动时的悬挂状态",
+      "related_links": [],
+      "note": "仅限选装空气悬挂的高配车型；标准悬挂车型无此问题"
+    }
+  ]
+}

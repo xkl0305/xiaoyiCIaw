@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "brand": "NIO",
+    "model": "ES6",
+    "year_range": [
+      2023,
+      2026
+    ],
+    "platform": "纯电SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "nio_es6_001",
+      "symptom": "空气悬挂故障",
+      "root_cause": "ES6标配空气悬挂，空气弹簧漏气",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆是否歪斜"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            12000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es6_002",
+      "symptom": "车机卡顿/死机",
+      "root_cause": "Banyan系统Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es6_003",
+      "symptom": "NAD智驾误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级NAD固件+标定",
+          "cost_range": [
+            0,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es6_004",
+      "symptom": "空调异味",
+      "root_cause": "蒸发器发霉",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es6_005",
+      "symptom": "续航虚标/冬季衰减",
+      "root_cause": "SUV风阻大+低温",
+      "confidence": 0.85,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "预热电池；节能驾驶",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_es6_006",
+      "symptom": "门窗异响",
+      "root_cause": "门窗导轨干涩",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "喷润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

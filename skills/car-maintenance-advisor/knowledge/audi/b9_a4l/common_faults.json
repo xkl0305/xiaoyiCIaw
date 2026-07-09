@@ -1,0 +1,214 @@
+{
+  "meta": {
+    "brand": "Audi",
+    "model": "A4L",
+    "chassis_code": "B9",
+    "year_range": [2016, 2023],
+    "engine_options": ["2.0T EA888 Gen3B"],
+    "transmission": "7速双离合 DL382",
+    "last_updated": "2026-05-09",
+    "contributor": "汽车之家论坛车主汇总"
+  },
+  "faults": [
+    {
+      "id": "b9_001",
+      "symptom": "空调偶尔吹热风 / 外循环失效",
+      "root_cause": "空调系统翻板电机故障或软件Bug（B9通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "AC设定为外循环，但吹出的风有尾气味（说明实际在内循环）",
+        "OBD读取空调系统故障码",
+        "观察是否伴随空调哨声"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换翻板电机或升级空调控制单元软件", "cost_range": [500, 2000], "notes": "软件问题可能免费升级"},
+        {"type": "外面修", "action": "检查翻板电机并更换", "cost_range": [300, 1000], "notes": "副厂电机质量参差不齐"}
+      ],
+      "prevention": "无法有效预防，属装配/设计问题",
+      "related_links": []
+    },
+    {
+      "id": "b9_002",
+      "symptom": "天窗异响（走烂路时咔哒声）",
+      "root_cause": "天窗框架螺丝松动或天窗导轨缺少润滑（B9通病，走烂路基本全中）",
+      "confidence": 0.90,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时仔细听车顶是否有咔哒异响",
+        "打开天窗检查导轨是否有黑色粉末（磨损标志）",
+        "检查天窗排水孔是否堵塞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "天窗导轨涂抹专用润滑脂（如虎头HOTOLUBE）", "cost_range": [50, 150], "notes": "每1-2年润滑一次可大幅改善"},
+        {"type": "4S店", "action": "紧固天窗框架螺丝 + 润滑导轨", "cost_range": [300, 800], "notes": "严重异响可能需要更换天窗框架"}
+      ],
+      "prevention": "定期润滑天窗导轨；走烂路时尽量减少天窗操作",
+      "related_links": []
+    },
+    {
+      "id": "b9_003",
+      "symptom": "左前轮80km/h以上嗡嗡声",
+      "root_cause": "左前轮轴承或轮胎偏磨（B9通病，车主反馈几乎全中招）",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "80km/h以上时出现左前轮位置嗡嗡声",
+        "声音随车速升高而变大",
+        "举升车辆手动转动左前轮，听是否有轴承异响"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换左前轮轴承单元", "cost_range": [800, 1500], "notes": "轴承和轮毂一体，需专用工具压装"},
+        {"type": "外面修", "action": "更换品牌轮毂轴承", "cost_range": [400, 1000], "notes": "SKF或INA品牌较可靠"}
+      ],
+      "prevention": "无法有效预防，属零件批次质量问题",
+      "related_links": []
+    },
+    {
+      "id": "b9_004",
+      "symptom": "低音炮轰头（低音失真/共振）",
+      "root_cause": "B&O音响系统低音炮安装位置或箱体共振（B9通病，几乎所有车主中招）",
+      "confidence": 0.87,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "播放重低音音乐时，后备箱低音炮位置是否有明显共振",
+        "音量超过60%时是否出现轰头感",
+        "检查低音炮固定螺丝是否松动"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "在低音炮与车身接触面贴阻尼胶条", "cost_range": [50, 200], "notes": "简单有效，多数车主反馈改善明显"},
+        {"type": "4S店", "action": "重新固定低音炮 + 加装隔音垫", "cost_range": [300, 800], "notes": "严重情况可能需要更换低音炮"}
+      ],
+      "prevention": "无法预防，属音响系统设计问题",
+      "related_links": []
+    },
+    {
+      "id": "b9_005",
+      "symptom": "发动机舱两侧有油渍（EA888通病）",
+      "root_cause": "EA888 Gen3B 气门室盖或正时上盖渗油（B9/A4L高发，保养后几乎都有）",
+      "confidence": 0.90,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "打开发动机舱，检查气门室盖两侧是否有油渍",
+        "检查正时上盖是否有油渍渗出",
+        "观察地面是否有滴落的机油"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换气门室盖垫/正时上盖垫", "cost_range": [1000, 2500], "notes": "EA888塑料件老化渗油，无法根治"},
+        {"type": "外面修", "action": "更换改进型密封垫", "cost_range": [500, 1500], "notes": "用改进型橡胶垫，普通垫容易再次漏"}
+      ],
+      "prevention": "定期检查发动机舱；发现渗油尽早处理，避免越漏越多",
+      "related_links": []
+    },
+    {
+      "id": "b9_006",
+      "symptom": "停车挂P挡卡滞 / 3降2挡卡挡",
+      "root_cause": "DL382变速箱离合器磨损或变速箱软件问题（B9通病，几乎所有车主中招）",
+      "confidence": 0.86,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "停车挂P挡时是否有卡滞感或异响",
+        "3降2挡是否有明显冲击感",
+        "OBD读取变速箱故障码"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "升级变速箱软件 + 必要时更换离合器", "cost_range": [0, 12000], "notes": "出保前检查可索赔离合器"},
+        {"type": "外面修", "action": "更换DL382离合器套装", "cost_range": [4000, 8000], "notes": "找DL382专业维修店"}
+      ],
+      "prevention": "每6万公里更换变速箱油；出保前主动要求检查变速箱",
+      "related_links": []
+    },
+    {
+      "id": "b9_007",
+      "symptom": "油门衔接顿挫（滑行接油门时闯动）",
+      "root_cause": "DL382双离合变速箱特性 + 离合器片磨损（B9通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "松开油门滑行后再踩油门，是否有明显闯动",
+        "低速（20-40km/h）滑行接油门时是否尤其明显",
+        "检查离合器是否伴随其他顿挫症状"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "升级变速箱软件", "cost_range": [0, 500], "notes": "软件升级可能改善，但无法完全消除"},
+        {"type": "外面修", "action": "更换变速箱油（先尝试）", "cost_range": [800, 1500], "notes": "换油可能改善，严重需更换离合器"}
+      ],
+      "prevention": "每6万公里更换变速箱油；避免频繁半联动蠕行",
+      "related_links": []
+    },
+    {
+      "id": "b9_008",
+      "symptom": "空调哨声（高速安静路面时出现）",
+      "root_cause": "空调系统翻板或风道漏风（B9通病，很多人误认为是中控电流声）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "高速安静路面行驶时是否有哨声",
+        "关闭空调后哨声是否消失（确认是空调系统发出）",
+        "检查空调翻板电机是否工作正常"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "检查空调翻板密封性并更换损坏部件", "cost_range": [500, 2000], "notes": "可能需要拆解中控仪表台，工时费高"},
+        {"type": "外面修", "action": "检查并更换空调翻板", "cost_range": [300, 1200], "notes": "副厂翻板质量不如原厂"}
+      ],
+      "prevention": "无法有效预防，属装配工艺问题",
+      "related_links": []
+    },
+    {
+      "id": "b9_009",
+      "symptom": "后备箱关闭故障（有时关不上，需多次尝试）",
+      "root_cause": "后备箱锁扣位置偏移或电动尾门电机无力（B9通病）",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "关闭后备箱时是否需多次尝试才能锁上",
+        "按遥控或车内按钮关闭时是否中途弹开",
+        "检查锁扣位置是否有偏差"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "调整后备箱锁扣位置（六角螺丝微调）", "cost_range": [0, 50], "notes": "先尝试调整锁扣位置，多数可解决"},
+        {"type": "4S店", "action": "更换后备箱锁块或电动撑杆", "cost_range": [800, 2500], "notes": "电动尾门车型可能需更换撑杆"}
+      ],
+      "prevention": "关闭后备箱时不要用力摔；定期检查锁扣位置",
+      "related_links": []
+    },
+    {
+      "id": "b9_010",
+      "symptom": "低速爬坡拖挡（变速箱不积极降挡）",
+      "root_cause": "DL382变速箱换挡逻辑偏经济取向（软件设定问题，非故障）",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "低速爬坡时变速箱是否不积极降挡",
+        "切换至S挡后是否改善",
+        "OBD读取变速箱数据时是否有故障码（无故障码说明是正常逻辑）"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "爬坡时切换至S挡或手动模式", "cost_range": [0, 0], "notes": "最简单有效的应对方法"},
+        {"type": "4S店", "action": "升级变速箱软件（优化换挡逻辑）", "cost_range": [0, 500], "notes": "软件升级可能改善换挡逻辑"}
+      ],
+      "prevention": "爬坡时提前切换至S挡或手动降挡",
+      "related_links": []
+    }
+  ]
+}

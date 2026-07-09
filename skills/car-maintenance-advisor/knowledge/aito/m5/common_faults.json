@@ -1,0 +1,186 @@
+{
+  "meta": {
+    "brand": "AITO",
+    "model": "问界M5",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "增程式SUV/纯电",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "aito_m5_001",
+      "symptom": "华为HiCar/车机互联不稳定（断连）",
+      "root_cause": "华为HiCar无线连接稳定性问题（M5通病）",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "无线HiCar是否频繁断连",
+        "换USB有线连接是否稳定"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用有线HiCar连接",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "最稳定方案"
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机系统",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA或到店升级"
+        }
+      ],
+      "prevention": "优先使用有线连接；定期清理车机蓝牙缓存",
+      "related_links": []
+    },
+    {
+      "id": "aito_m5_002",
+      "symptom": "增程器噪音大/震动",
+      "root_cause": "M5增程器为1.5T，介入时噪音明显",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "电量低时增程器是否突然启动且有明显噪音"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级增程器控制程序",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "将SOC设高；使用95号汽油",
+      "related_links": []
+    },
+    {
+      "id": "aito_m5_003",
+      "symptom": "座椅通风效果差/几乎感觉不到",
+      "root_cause": "M5座椅通风风量偏小（设计问题）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "最大档座椅通风是否仍然感觉不到风"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "接受现实",
+          "action": "适应或加通风坐垫",
+          "cost_range": [
+            200,
+            800
+          ],
+          "notes": "非故障，属设计问题"
+        }
+      ],
+      "prevention": "试驾时注意",
+      "related_links": []
+    },
+    {
+      "id": "aito_m5_004",
+      "symptom": "音响底噪/电流声",
+      "root_cause": "HUAWEI SOUND音响系统接地不良或功放问题",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "低音量时是否有电流声",
+        "关闭音响是否还有噪音"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "检查音响接地；升级功放固件",
+          "cost_range": [
+            0,
+            2000
+          ],
+          "notes": "保修期内免费检查"
+        }
+      ],
+      "prevention": "避免私自改装音响线路",
+      "related_links": []
+    },
+    {
+      "id": "aito_m5_005",
+      "symptom": "华为智驾ADS误判/突然刹车",
+      "root_cause": "ADS传感器（摄像头/毫米波/激光雷达）误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "ADS开启时是否突然无故刹车",
+        "中控是否有ADS报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ADS固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA远程升级"
+        },
+        {
+          "type": "4S店",
+          "action": "标定激光雷达和摄像头",
+          "cost_range": [
+            500,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "智驾时手不离方向盘；定期清洁传感器",
+      "related_links": []
+    },
+    {
+      "id": "aito_m5_006",
+      "symptom": "续航虚标/纯电续航短",
+      "root_cause": "M5电池容量偏小，冬季衰减明显",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "冬季纯电续航是否低于标称50%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "预热电池；使用混动模式",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季地下车库停放",
+      "related_links": []
+    }
+  ]
+}

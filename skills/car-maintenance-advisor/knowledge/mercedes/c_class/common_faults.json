@@ -1,0 +1,131 @@
+{
+  "meta": {
+    "brand": "Mercedes-Benz",
+    "model": "C级 C-Class (W206)",
+    "year_range": [2021, 2025],
+    "engine_options": ["1.5T M264", "2.0T M264"],
+    "transmission": "9速自动 9G-TRONIC",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "mbc_001",
+      "symptom": "M264发动机正时链条拉长/正时盖漏油",
+      "root_cause": "M264正时链条张紧器缺陷或正时盖密封垫老化",
+      "confidence": 0.81,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "冷启动是否有金属rattling声（正时侧）",
+        "检查正时盖是否有油渍",
+        "OBD读取凸轮轴相位数据"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换正时链条张紧器+密封垫", "cost_range": [5000, 10000], "notes": "质保期内可索赔"},
+        {"type": "外面修", "action": "更换正时链条套装", "cost_range": [4000, 8000], "notes": "用INA/盖茨品牌"}
+      ],
+      "prevention": "每8万公里检查正时链条；使用奔驰认证机油",
+      "related_links": []
+    },
+    {
+      "id": "mbc_002",
+      "symptom": "48V轻混系统故障（电机故障灯亮）",
+      "root_cause": "48V BSG电机或电池故障（M264轻混通病）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "仪表是否显示'48V车载电气系统故障'",
+        "OBD读取故障码：P0A7A00等",
+        "检查48V电池电压是否正常"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换48V BSG电机或电池", "cost_range": [8000, 25000], "notes": "质保期内免费更换"},
+        {"type": "外面修", "action": "维修48V电机", "cost_range": [4000, 10000], "notes": "出保后选择"}
+      ],
+      "prevention": "避免在电量低时频繁启停；质保期内尽早检查",
+      "related_links": []
+    },
+    {
+      "id": "mbc_003",
+      "symptom": "9G-TRONIC变速箱顿挫",
+      "root_cause": "变速箱油变质或阀体故障（里程6万+高发）",
+      "confidence": 0.80,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "低速换挡是否有顿挫",
+        "OBD读取变速箱故障码",
+        "检查变速箱油是否发黑"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "更换奔驰原厂变速箱油+滤芯", "cost_range": [1500, 2500], "notes": "每6万公里必换"},
+        {"type": "4S店", "action": "变速箱软件升级+换油", "cost_range": [2000, 3000], "notes": "轻度顿挫可先升级软件"}
+      ],
+      "prevention": "每6万公里更换变速箱油；避免弹射起步",
+      "related_links": []
+    },
+    {
+      "id": "mbc_004",
+      "symptom": "贯穿式尾灯开裂/进水（W206通病）",
+      "root_cause": "尾灯密封不良或外壳材质问题",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "尾灯内部是否有水雾",
+        "检查尾灯外壳是否有裂纹"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "4S店", "action": "更换尾灯总成", "cost_range": [3000, 8000], "notes": "质保期内免费索赔"},
+        {"type": "外面修", "action": "拆车件尾灯", "cost_range": [1500, 3000], "notes": "出保后选择"}
+      ],
+      "prevention": "洗车时避免高压水枪直冲尾灯缝隙",
+      "related_links": []
+    },
+    {
+      "id": "mbc_005",
+      "symptom": "空调不制冷/压缩机故障",
+      "root_cause": "空调压缩机电磁阀故障或制冷剂泄漏",
+      "confidence": 0.77,
+      "source": "owner_reported",
+      "layer": "general",
+      "diagnosis_steps": [
+        "开启AC后压缩机是否吸合",
+        "检查高低压管压力",
+        "检查是否有制冷剂泄漏点"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {"type": "外面修", "action": "补充制冷剂+查漏", "cost_range": [300, 600], "notes": "简单泄漏可补氟"},
+        {"type": "4S店", "action": "更换压缩机总成", "cost_range": [5000, 12000], "notes": "质保期内免费"}
+      ],
+      "prevention": "每年入夏前检查制冷剂压力；避免长时间怠速开空调",
+      "related_links": []
+    },
+    {
+      "id": "mbc_006",
+      "symptom": "智能语音助手误触发/不识别",
+      "root_cause": "MBUX系统软件bug",
+      "confidence": 0.73,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "语音助手是否随机误唤醒",
+        "重启MBUX后是否恢复"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {"type": "DIY", "action": "长按静音键重启MBUX", "cost_range": [0, 0], "notes": "临时解决"},
+        {"type": "4S店", "action": "升级MBUX系统", "cost_range": [0, 500], "notes": "保修期内免费"}
+      ],
+      "prevention": "定期升级MBUX系统",
+      "related_links": []
+    }
+  ]
+}

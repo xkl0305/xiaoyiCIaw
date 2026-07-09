@@ -114,13 +114,15 @@ MSG = {
         "en": "  run platform install hook: {p}/scripts/install.sh",
     },
     "plan_hook_actions": {
-        "zh": ("    hook 内部依次:复制插件 → npm install → 合并 openclaw.json"
-               "(注册记忆插件) → 保持预置 AGENTS.md 不变 → "
+        "zh": ("    hook 内部依次:复制插件 → 校验运行时 JS / npm 依赖"
+               "为空 → 合并 openclaw.json(注册记忆插件) → "
+               "保持预置 AGENTS.md 不变 → "
                "改 supervisord.conf → 同步 chat 凭据 → "
                "按配置重启 openclaw-gateway"),
-        "en": ("    hook will: copy plugin → npm install → merge openclaw.json "
-               "(register memory plugin) → leave pre-placed AGENTS.md untouched"
-               " → patch supervisord.conf → sync chat creds → "
+        "en": ("    hook will: copy plugin → verify runtime JS and empty npm "
+               "runtime deps → merge openclaw.json (register memory plugin) "
+               "→ leave pre-placed AGENTS.md untouched → patch "
+               "supervisord.conf → sync chat creds → "
                "restart openclaw-gateway if configured"),
     },
     "plan_disk_required": {

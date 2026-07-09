@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "brand": "XPeng",
+    "model": "小鹏MONA M03",
+    "year_range": [
+      2024,
+      2026
+    ],
+    "platform": "纯电轿车",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xp_mona_001",
+      "symptom": "车机卡顿/死机（高通6155芯片）",
+      "root_cause": "MONA M03为走量车型，车机芯片性能偏弱，多任务时卡顿",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "同时运行导航+音乐是否卡顿",
+        "冷启动是否超过30秒"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "避免同时开太多APP；定期清理车机存储",
+      "related_links": []
+    },
+    {
+      "id": "xp_mona_002",
+      "symptom": "续航虚标严重/CLTC续航偏差大",
+      "root_cause": "MONA M03定价低，电池成本控制，实际能效一般",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "实际续航是否低于标称60%"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "调整驾驶习惯；使用节能模式",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "购车前试驾评估续航；冬季预热电池",
+      "related_links": []
+    },
+    {
+      "id": "xp_mona_003",
+      "symptom": "后悬架偏硬/扭力梁舒适性差",
+      "root_cause": "MONA M03后悬为扭力梁，成本控制",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带后排是否颠簸明显"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "接受现实",
+          "action": "降低胎压；适应悬架",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "非故障"
+        }
+      ],
+      "prevention": "试驾时注意悬架感受",
+      "related_links": []
+    },
+    {
+      "id": "xp_mona_004",
+      "symptom": "车门异响",
+      "root_cause": "MONA为走量车型，内饰装配工艺一般",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "走烂路时车门是否有吱嘎声"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在密封条涂滑石粉",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "调整车门锁扣",
+          "cost_range": [
+            0,
+            300
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "新车就处理密封条",
+      "related_links": []
+    },
+    {
+      "id": "xp_mona_005",
+      "symptom": "智驾功能缺失/只有基础LCC",
+      "root_cause": "MONA M03为入门车型，不支持XPILOT高阶智驾（设计特性，非故障）",
+      "confidence": 0.9,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "是否没有NGP/城市智驾功能"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "接受现实",
+          "action": "适应基础LCC功能",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "购车前需了解配置"
+        }
+      ],
+      "prevention": "购车前确认智驾配置",
+      "related_links": []
+    },
+    {
+      "id": "xp_mona_006",
+      "symptom": "刹车偏软",
+      "root_cause": "刹车调校偏舒适",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换刹车油+高性能刹车片",
+          "cost_range": [
+            400,
+            1200
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "每2年更换刹车油",
+      "related_links": []
+    }
+  ]
+}

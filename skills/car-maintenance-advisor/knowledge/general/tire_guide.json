@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "category": "轮胎选配指南",
+    "layer": "general",
+    "last_updated": "2026-05-09"
+  },
+  "tire_markings": {
+    "example": "225/55 R17 97V",
+    "fields": {
+      "225": "胎宽（mm），越宽抓地力越好但油耗越高",
+      "55": "扁平比（胎壁高度/胎宽%），越小操控越好但舒适性下降",
+      "R": "子午线轮胎（家用车基本都是R）",
+      "17": "轮毂直径（英寸）",
+      "97": "载重指数（97=730kg）",
+      "V": "速度级别（V=240km/h）"
+    }
+  },
+  "brand_recommendations": {
+    "comfort": [
+      { "brand": "米其林 Primacy 4", "features": "静音舒适，湿地抓地好", "price_range": [600, 1000] },
+      { "brand": "马牌 UC7", "features": "舒适均衡，性价比高", "price_range": [500, 900] }
+    ],
+    "sport": [
+      { "brand": "倍耐力 P Zero", "features": "运动操控，抓地力强", "price_range": [800, 1500] },
+      { "brand": "米其林 Pilot Sport 5", "features": "街胎之王，干湿地均衡", "price_range": [900, 1600] }
+    ],
+    "economy": [
+      { "brand": "韩泰 Ventus S1 evo", "features": "性价比高，性能不差", "price_range": [400, 700] },
+      { "brand": "锦湖 PS71", "features": "经济实惠，日常够用", "price_range": [300, 600] }
+    ],
+    "winter": [
+      { "brand": "诺记 Hakkapeliitta", "features": "北欧冰雪胎王者", "price_range": [800, 1500] },
+      { "brand": "米其林 X-Ice", "features": "雪地胎主流选择", "price_range": [600, 1200] }
+    ]
+  },
+  "replacement_rules": {
+    "timing": "一般5-8万公里或5-6年（以先到者为准）",
+    "depth_limit": "胎纹深度<1.6mm必须更换（法定极限）",
+    "replace_policy": "至少同轴两条一起换；建议四条同时换",
+    "spare_tire": "备胎（含非全尺寸）橡胶也会老化，5年需检查更换"
+  },
+  "common_qa": [
+    {
+      "q": "可以换比原厂更宽的轮胎吗？",
+      "a": "可以，但需确保新胎直径变化不超过±3%（影响码表和ABS）。建议咨询专业轮胎店。加宽会增加油耗和胎噪。"
+    },
+    {
+      "q": "防爆胎（缺气保用胎）和普通胎怎么选？",
+      "a": "防爆胎失压后仍能以80km/h行驶80km，但舒适性较差、价格贵30-50%。有备胎的车没必要强行上防爆胎。"
+    },
+    {
+      "q": "什么时候该做动平衡和四轮定位？",
+      "a": "换胎/补胎后必须做动平衡；车辆跑偏、轮胎单侧磨损异常才需要做四轮定位，不是每次换胎都必须做。"
+    }
+  ]
+}

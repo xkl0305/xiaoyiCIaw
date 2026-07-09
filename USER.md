@@ -41,16 +41,20 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=aea57b0d94c01fef -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=99df75e8872a283c -->
 # Memory Global Summary
 
 ## User Profile
+- 用户拥有三个Git仓库
+- 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
+- 该维护任务通过 cron 机制触发，cron 标识为 crusheart-daily-maintenance
+- 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 - 用户已安装名为‘xiaoyi-xlsx’的技能，并希望了解该技能的基本介绍和快速开始的样例
 - 助手对用户的称呼是'俞哥'
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
-- 用户要求不要自行摘要或简化输出
+- 用户在询问助手觉得哪个好
 - 用户多次指出助手不应在回答中输出多余的回车空行，但助手再次出现该问题，用户对此表示不满
 - 用户发现AI助手的回复中又没有回车换行，用户不喜欢这种格式，希望助手的回复有正常的回车换行
 - 用户对“方案B：多模型后端”的评价是“最实用”
@@ -75,13 +79,13 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求清理沙箱中的大文件或重要文件前，必须先询问用户意见
-- 用户需要执行一个任务，具体是在人格视角出图系统里生成衣柜图，且参考图不要被删除
-- 用户要求将脚本运行的全部输出内容（包括健康检查详情、系统资源、维护操作、技能概览）原样发送，不要做任何摘要或简化
-- 用户要求使用exec工具运行python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py脚本
-- 用户请求执行cron引擎初始化脚本，并要求完整返回运行结果，包括引擎分组柱状图、系统身份、状态汇总等信息
+- 用户指示助手执行‘搞一下’操作
+- 用户希望研究 tokui____.zip 文件，并能安装它
+- 用户当前有三个Git仓库有96次已提交但未推送的变更，以及24次未提交的变更，需要推送
+- 用户询问助手是否已经记住了相关事情，以及是否需要执行'固化进化'处理
+- 用户要求清理与记忆系统相关的某个东西（依据上文语境的'清理掉'）
 ### Short-term Intent
-- 用户提议沙箱清理定时任务设置为每周日中午执行
+- 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
 - 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
 - 用户想要了解已安装技能的基本介绍和快速开始的样例
 *2 more items not shown, use memory_record_search to view*

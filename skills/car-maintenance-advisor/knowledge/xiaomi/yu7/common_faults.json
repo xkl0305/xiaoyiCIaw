@@ -1,0 +1,184 @@
+{
+  "meta": {
+    "brand": "Xiaomi EV",
+    "model": "小米YU7",
+    "year_range": [
+      2025,
+      2026
+    ],
+    "platform": "纯电SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xm_yu7_001",
+      "symptom": "非小米手机互联功能差/断连",
+      "root_cause": "YU7车机对小鹏/华为/苹果手机兼容性不如小米手机",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "非小米手机连接车机是否频繁断连",
+        "CarPlay/CarLife是否稳定"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用有线连接替代无线",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "最稳定方案"
+        },
+        {
+          "type": "4S店",
+          "action": "升级车机互联固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "购车前确认手机兼容性；优先使用有线连接",
+      "related_links": []
+    },
+    {
+      "id": "xm_yu7_002",
+      "symptom": "Xiaomi Pilot智驾误判",
+      "root_cause": "智驾传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级Xiaomi Pilot固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xm_yu7_003",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "车机软件Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xm_yu7_004",
+      "symptom": "续航虚标/SUV风阻大能耗高",
+      "root_cause": "YU7为SUV，风阻大于轿车，高速能耗高",
+      "confidence": 0.85,
+      "source": "general",
+      "layer": "model",
+      "diagnosis_steps": [
+        "高速120km/h续航是否低于标称"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "控制车速；预热电池",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "长途提前规划充电",
+      "related_links": []
+    },
+    {
+      "id": "xm_yu7_005",
+      "symptom": "刹车偏软",
+      "root_cause": "刹车调校偏舒适",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换高性能刹车片",
+          "cost_range": [
+            600,
+            1500
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "每2年更换刹车油",
+      "related_links": []
+    },
+    {
+      "id": "xm_yu7_006",
+      "symptom": "风噪大（高速）",
+      "root_cause": "SUV造型风噪大于轿车；YU7密封待优化",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "100km/h以上是否有明显风噪"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装A柱/车门密封条",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": "网购DIY"
+        },
+        {
+          "type": "4S店",
+          "action": "检查门窗密封条",
+          "cost_range": [
+            500,
+            1500
+          ],
+          "notes": "保修期内免费调整"
+        }
+      ],
+      "prevention": "非故障，试驾时注意",
+      "related_links": []
+    }
+  ]
+}

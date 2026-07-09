@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "brand": "XPeng",
+    "model": "小鹏G9",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "纯电/800V快充",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "xp_g9_001",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "车机软件Bug",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_g9_002",
+      "symptom": "空气悬挂故障（高配）",
+      "root_cause": "空气弹簧漏气",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆是否歪斜"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_g9_003",
+      "symptom": "XPILOT智驾误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级XPILOT固件+标定",
+          "cost_range": [
+            0,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_g9_004",
+      "symptom": "充电速度达不到标称（800V）",
+      "root_cause": "充电桩不支持800V高压；电池温度偏低",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "使用小鹏S4超充桩是否仍达不到标称功率",
+        "电池温度是否低于25℃"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "先预热电池再充电；选择S4超充桩",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        },
+        {
+          "type": "4S店",
+          "action": "检查电池冷却系统",
+          "cost_range": [
+            500,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "使用小鹏自营超充网络；预热电池",
+      "related_links": []
+    },
+    {
+      "id": "xp_g9_005",
+      "symptom": "续航虚标",
+      "root_cause": "CLTC续航偏乐观",
+      "confidence": 0.88,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "调整预期；使用节能模式",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "xp_g9_006",
+      "symptom": "车门密封条异响",
+      "root_cause": "密封条摩擦",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "涂抹滑石粉",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}

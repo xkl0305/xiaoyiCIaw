@@ -1,0 +1,205 @@
+{
+  "meta": {
+    "brand": "BYD",
+    "model": "秦PLUS DM-i",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "DM-i超级混动",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "byd_qp_001",
+      "symptom": "低速EV模式异响（电机啸叫）",
+      "root_cause": "驱动电机控制器（MC/DC转换器）低速啸叫（秦PLUS通病，2021-2023款多发）",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "低速EV模式是否有高频啸叫声",
+        "加速到40km/h以上是否消失"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换改进型驱动电机总成",
+          "cost_range": [
+            0,
+            15000
+          ],
+          "notes": "保修期内可索赔"
+        },
+        {
+          "type": "4S店",
+          "action": "刷新电机控制程序（部分缓解）",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "新版本程序降低啸叫"
+        }
+      ],
+      "prevention": "购买2024款后批次（电机已改进）",
+      "related_links": []
+    },
+    {
+      "id": "byd_qp_002",
+      "symptom": "后悬架抛跳严重（过减速带余震）",
+      "root_cause": "秦PLUS后悬架为扭力梁非独立悬架，调校偏硬",
+      "confidence": 0.88,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过减速带后轮是否有明显抛跳",
+        "后排乘坐是否舒适性差"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "外面修",
+          "action": "更换舒适型后悬架弹簧",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "影响保修"
+        },
+        {
+          "type": "接受现实",
+          "action": "适应悬架特性；降低胎压",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "非故障，属成本控制"
+        }
+      ],
+      "prevention": "非故障",
+      "related_links": []
+    },
+    {
+      "id": "byd_qp_003",
+      "symptom": "方向盘卡滞/不回正",
+      "root_cause": "转向柱万向节干涩或转向助力调校问题",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "低速打方向是否有卡滞感",
+        "松手后方向盘是否不自动回正"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在转向柱万向节喷润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "临时缓解"
+        },
+        {
+          "type": "4S店",
+          "action": "更换转向柱总成",
+          "cost_range": [
+            1500,
+            3000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免原地打方向；定期检查转向柱",
+      "related_links": []
+    },
+    {
+      "id": "byd_qp_004",
+      "symptom": "DM-i模式切换顿挫",
+      "root_cause": "同宋PLUS，发动机介入震动",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU程序",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "byd_qp_005",
+      "symptom": "油漆薄/容易划伤",
+      "root_cause": "比亚迪油漆厚度偏薄（成本控制）",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "洗车后是否有太阳纹"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "新车镀晶或贴透明膜",
+          "cost_range": [
+            1000,
+            5000
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "新车尽快做漆面保护",
+      "related_links": []
+    },
+    {
+      "id": "byd_qp_006",
+      "symptom": "USB充电口供电不足/充电慢",
+      "root_cause": "原厂USB口输出电流偏小（设计问题）",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "手机充电是否极慢或不充电",
+        "换个USB口是否正常"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用点烟器快充转接",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "最方便方案"
+        },
+        {
+          "type": "外面修",
+          "action": "改装USB充电模块",
+          "cost_range": [
+            300,
+            800
+          ],
+          "notes": "影响保修"
+        }
+      ],
+      "prevention": "购车时确认USB规格；自带车充",
+      "related_links": []
+    }
+  ]
+}

@@ -1,0 +1,175 @@
+{
+  "meta": {
+    "brand": "NIO",
+    "model": "ET7",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "纯电轿车",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "nio_et7_001",
+      "symptom": "空气悬挂故障/无法升降",
+      "root_cause": "ET7标配空气悬挂，空气弹簧漏气（通病）",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "车辆是否歪斜",
+        "中控是否有悬挂报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            12000
+          ],
+          "notes": "保修期内免费；出保后费用极高"
+        }
+      ],
+      "prevention": "避免超载；停车于平坦地面",
+      "related_links": []
+    },
+    {
+      "id": "nio_et7_002",
+      "symptom": "车机卡顿/死机",
+      "root_cause": "Banyan系统Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et7_003",
+      "symptom": "NAD智驾误判/突然刹车",
+      "root_cause": "NAD传感器（激光雷达+摄像头）误判",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "NAD开启时是否突然刹车"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级NAD固件",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "OTA升级"
+        },
+        {
+          "type": "4S店",
+          "action": "标定激光雷达和摄像头",
+          "cost_range": [
+            500,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "智驾时手不离方向盘",
+      "related_links": []
+    },
+    {
+      "id": "nio_et7_004",
+      "symptom": "空调异味",
+      "root_cause": "蒸发器发霉",
+      "confidence": 0.82,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "更换空调滤芯",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et7_005",
+      "symptom": "续航虚标",
+      "root_cause": "ET7为轿车但风阻极低，实际续航相对准确，冬季仍有衰减",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "使用预热；节能驾驶",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "nio_et7_006",
+      "symptom": "座椅偏硬",
+      "root_cause": "NIO全系座椅偏运动调校",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "brand",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装座椅垫",
+          "cost_range": [
+            200,
+            800
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "试驾时注意",
+      "related_links": []
+    }
+  ]
+}

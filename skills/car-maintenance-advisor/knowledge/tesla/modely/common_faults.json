@@ -1,0 +1,207 @@
+{
+  "meta": {
+    "brand": "Tesla",
+    "model": "Model Y",
+    "year_range": [
+      2021,
+      2026
+    ],
+    "platform": "纯电SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "tmy_001",
+      "symptom": "全景天窗异响（过颠簸路咔哒声）",
+      "root_cause": "天窗框架固定螺丝松动或密封胶条老化",
+      "confidence": 0.83,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "过颠簸路时听车顶是否有咔哒声",
+        "按压天窗玻璃是否松动",
+        "检查天窗排水口是否堵塞"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "在天窗导轨喷硅基润滑剂",
+          "cost_range": [
+            20,
+            50
+          ],
+          "notes": "临时缓解"
+        },
+        {
+          "type": "4S店",
+          "action": "紧固天窗框架螺丝+更换密封条",
+          "cost_range": [
+            800,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期清理天窗导轨；避免高压水枪直冲天窗",
+      "related_links": []
+    },
+    {
+      "id": "tmy_002",
+      "symptom": "尾门缝隙大/关门声音单薄",
+      "root_cause": "尾门密封条压缩量不足或尾门铰链调整不当（Model Y通病）",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "关闭尾门时是否有明显风噪",
+        "检查尾门与车身缝隙是否左右不均"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装尾门密封条",
+          "cost_range": [
+            50,
+            150
+          ],
+          "notes": "网购粘贴式密封条"
+        },
+        {
+          "type": "4S店",
+          "action": "调整尾门铰链位置",
+          "cost_range": [
+            0,
+            500
+          ],
+          "notes": "保修期内免费调整"
+        }
+      ],
+      "prevention": "关闭尾门时避免用力摔",
+      "related_links": []
+    },
+    {
+      "id": "tmy_003",
+      "symptom": "高速风噪大（A柱/后视镜区域）",
+      "root_cause": "A柱密封条或后视镜造型风噪（Model Y通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "100km/h以上听A柱是否有风噪",
+        "更换原厂密封条后是否改善"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "加装A柱密封条",
+          "cost_range": [
+            100,
+            300
+          ],
+          "notes": "网购专用密封条"
+        },
+        {
+          "type": "4S店",
+          "action": "更换改进型A柱密封条",
+          "cost_range": [
+            500,
+            1500
+          ],
+          "notes": "部分批次有改进件"
+        }
+      ],
+      "prevention": "无法有效预防，属设计问题",
+      "related_links": []
+    },
+    {
+      "id": "tmy_004",
+      "symptom": "中控大屏死机/黑屏",
+      "root_cause": "同Model 3，MCU软件Bug",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "两个滚轮同时按住10秒能否重启"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "强制重启MCU",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "解决90%问题"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "tmy_005",
+      "symptom": "前备箱无法开启/关闭不严",
+      "root_cause": "前备箱锁扣电机或拉线断裂",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        "中控点击前备箱开启是否有反应",
+        "手动提拉锁扣是否卡滞"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换前备箱锁总成",
+          "cost_range": [
+            1000,
+            2000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "避免频繁开关前备箱",
+      "related_links": []
+    },
+    {
+      "id": "tmy_006",
+      "symptom": "冬季续航衰减严重（零下气温）",
+      "root_cause": "锂电池低温特性+热泵效率下降",
+      "confidence": 0.92,
+      "source": "general",
+      "layer": "series",
+      "diagnosis_steps": [
+        "零下气温续航是否低于标称50%",
+        "预热电池后是否改善"
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "出发前插电预热电池和座舱",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": "最有效的方法"
+        },
+        {
+          "type": "DIY",
+          "action": "使用 range mode 节能驾驶",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "冬季尽量地下车库停放；长途出行提前规划充电",
+      "related_links": []
+    }
+  ]
+}

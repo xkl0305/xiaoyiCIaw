@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "brand": "Li Auto",
+    "model": "理想L8",
+    "year_range": [
+      2022,
+      2026
+    ],
+    "platform": "增程式SUV",
+    "last_updated": "2026-05-09",
+    "contributor": "车主反馈汇总"
+  },
+  "faults": [
+    {
+      "id": "li_l8_001",
+      "symptom": "增程器震动/噪音（1.5T）",
+      "root_cause": "增程器介入时震动（L8通病）",
+      "confidence": 0.8,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级ECU程序",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l8_002",
+      "symptom": "空气悬挂故障",
+      "root_cause": "同L7/L6，空气弹簧漏气",
+      "confidence": 0.78,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        "车辆是否歪斜",
+        "中控是否有悬挂报警"
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "更换空气弹簧",
+          "cost_range": [
+            5000,
+            10000
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l8_003",
+      "symptom": "车机死机/黑屏",
+      "root_cause": "车机软件Bug",
+      "confidence": 0.75,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "重启车机",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l8_004",
+      "symptom": "智能驾驶误判",
+      "root_cause": "传感器误判",
+      "confidence": 0.72,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": false,
+      "repair_options": [
+        {
+          "type": "4S店",
+          "action": "升级AD固件+标定传感器",
+          "cost_range": [
+            0,
+            1500
+          ],
+          "notes": "保修期内免费"
+        }
+      ],
+      "prevention": "定期清洁摄像头；手不离方向盘",
+      "related_links": []
+    },
+    {
+      "id": "li_l8_005",
+      "symptom": "第三排座椅异响",
+      "root_cause": "第三排锁扣松动",
+      "confidence": 0.76,
+      "source": "owner_reported",
+      "layer": "model",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "处理锁扣",
+          "cost_range": [
+            10,
+            30
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    },
+    {
+      "id": "li_l8_006",
+      "symptom": "续航虚标",
+      "root_cause": "电池容量+冬季衰减",
+      "confidence": 0.85,
+      "source": "owner_reported",
+      "layer": "series",
+      "diagnosis_steps": [
+        ""
+      ],
+      "diy_possible": true,
+      "repair_options": [
+        {
+          "type": "DIY",
+          "action": "预热电池；混合模式行驶",
+          "cost_range": [
+            0,
+            0
+          ],
+          "notes": ""
+        }
+      ],
+      "prevention": "",
+      "related_links": []
+    }
+  ]
+}
