@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=99df75e8872a283c -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=84a5627bad712f6a -->
 # Memory Global Summary
 
 ## User Profile
@@ -82,8 +82,8 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户指示助手执行‘搞一下’操作
 - 用户希望研究 tokui____.zip 文件，并能安装它
 - 用户当前有三个Git仓库有96次已提交但未推送的变更，以及24次未提交的变更，需要推送
-- 用户询问助手是否已经记住了相关事情，以及是否需要执行'固化进化'处理
 - 用户要求清理与记忆系统相关的某个东西（依据上文语境的'清理掉'）
+- 用户表示不要删除memory-tencentdb相关的东西
 ### Short-term Intent
 - 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
 - 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
