@@ -1,0 +1,5 @@
+[source.crates-io]
+replace-with = "official"
+
+[source.official]
+registry = "https://index.crates.io/"
