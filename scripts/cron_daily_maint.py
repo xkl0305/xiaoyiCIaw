@@ -13,5 +13,8 @@ r = subprocess.run(
 )
 print(r.stdout.strip())
 if r.stderr.strip():
-    print("--- stderr ---")
-    print(r.stderr.strip())
+    # 只保留非 jieba 预留给输出
+    filtered = [l for l in r.stderr.split("\n") if "jieba" not in l and "DEBUG:" not in l]
+    if filtered:
+        print("--- stderr ---")
+        print("\n".join(filtered).strip())
