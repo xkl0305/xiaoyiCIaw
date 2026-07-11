@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=5aa026830f532b96 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=6d0c523e6b4bb71d -->
 # Memory Global Summary
 
 ## User Profile
@@ -79,14 +79,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户指出MEMORY.md中的章节没有图标，要求添加
-- 用户要求继续执行之前的操作
-- 用户要求查看并安装GalaxyOS项目，项目地址为https://cnb.cool/llm-memory-integrat/GalaxyOS。当前步骤状态：第一步'补齐 extensions/galaxyos 目录结构'为completed，第二步'安装 PyG 生态包（ARM64 编译超时，跳过了）'为skipped，项目地址是 https://cnb.cool/llm-memory-integrat/GalaxyOS
-- 用户要求继续执行之前的操作
-- 用户要求查看并安装GalaxyOS项目，项目地址是 https://cnb.cool/llm-memory-integrat/GalaxyOS
+- 用户尝试通过'创建技能'的方式来固化检查清单，但技能创建工具因'缺少审批路由'而报错
+- 用户要求固化一个'自进化的检查清单'，作为每次回复前强制执行的规则，并认为这项任务之前交给助手了但还没完成
+- 用户要求助手开始执行修复和检查操作
+- 用户已决定推仓库（命令"推一下"），但随后继续追问助手到底应该修复哪里（用户对修复方向不满意）
+- 用户要求对仓库中 jieba 库启动时输出过长问题进行检查和修复，并确认下次不再出现这些输出（stderr 警告和日志）
 ### Short-term Intent
+- 用户询问知识图谱是否需要设置定时任务
+- 用户询问是否需要推送仓库
 - 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
-- 用户希望助手将处理规则或排错经验等以长期记忆（自进化规则）的形式固化记住，避免再次踩坑
-- 用户想要了解已安装技能的基本介绍和快速开始的样例
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
