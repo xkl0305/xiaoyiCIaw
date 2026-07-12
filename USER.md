@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=8ef0ba49d4f7afde -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ac1ac9587d06b8b5 -->
 # Memory Global Summary
 
 ## User Profile
@@ -54,6 +54,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户对沙箱清理脚本的输出格式有要求，认为应该以表格形式呈现
 - 用户在询问助手觉得哪个好
 - 用户多次指出助手不应在回答中输出多余的回车空行，但助手再次出现该问题，用户对此表示不满
 - 用户发现AI助手的回复中又没有回车换行，用户不喜欢这种格式，希望助手的回复有正常的回车换行
@@ -79,14 +80,14 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求执行cron_sandbox_cleanup.py脚本，并返回完整的运行输出（包括大文件待确认列表），不允许摘要或简化
 - 用户确认需要执行梦境固化操作
 - 用户询问是否能为项目（小云雀）创建或配置通道
 - 用户正在催促助手执行之前安排的任务（推仓库），并询问GalaxyOS是否需要设置定时任务
 - 用户要求推送（push）GalaxyOS仓库
-- 用户可以修复FMA_ACCELERATOR_AVAILABLE属性名不匹配的问题
 ### Short-term Intent
+- 用户询问是否需要推仓库，即是否要执行代码/配置的推送操作
 - 用户询问知识图谱是否需要设置定时任务
 - 用户询问是否需要推送仓库
-- 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

@@ -139,22 +139,40 @@ def report():
     
     if cleaned:
         print(f"\n✅ 自动清理完成 — 释放 {freed/1024:.1f}KB")
+        print()
+        print(f"| {'清理项':<50} | {'状态':<20} |")
+        print(f"|{'-'*52}|{'-'*22}|")
         for item in cleaned:
-            print(f"  {item}")
+            # 提取路径和操作描述
+            parts = item.split(" — ")
+            if len(parts) == 2:
+                path_part = parts[0].replace("🧹 ", "")
+                desc = parts[1]
+                print(f"| {path_part:<50} | {desc:<20} |")
     else:
         print("\n✅ 无需清理")
     
     pending = list_large_pending()
     if pending:
         print(f"\n📋 待确认大文件 ({len(pending)}项)：")
+        print()
+        print(f"| {'目录/文件':<45} | {'大小':<10} | {'文件数':<8} | {'说明':<20} |")
+        print(f"|{'-'*47}|{'-'*12}|{'-'*10}|{'-'*22}|")
         for p in pending:
-            print(f"  📄 {p['path']} — {p['size']} ({p['note']})")
-        print("\n💡 如需清理请告知，我会先询问确认")
+            print(f"| {p['path']:<45} | {p['size']:<10} | {str(p['files']):<8} | {p['note']:<20} |")
+        print()
+        print("💡 如需清理请告知，我会先询问确认")
     
     # 磁盘使用
     disk = shutil.disk_usage("/")
     used_pct = disk.used / disk.total * 100
-    print(f"\n💾 磁盘: {disk.used/1024**2:.0f}MB/{disk.total/1024**2:.0f}MB ({used_pct:.1f}%)")
+    free_mb = (disk.total - disk.used) / 1024**2
+    total_mb = disk.total / 1024**2
+    status = "✅ 充裕" if used_pct < 50 else ("⚠️ 紧张" if used_pct < 80 else "🚨 告警")
+    print(f"\n💾 磁盘使用：")
+    print(f"| {'总量':<12} | {'已用':<12} | {'剩余':<12} | {'使用率':<8} | {'状态':<10} |")
+    print(f"|{'-'*14}|{'-'*14}|{'-'*14}|{'-'*10}|{'-'*12}|")
+    print(f"| {total_mb:<10.0f}MB | {disk.used/1024**2:<10.0f}MB | {free_mb:<10.0f}MB | {used_pct:<6.1f}% | {status:<10} |")
     
     print("=" * 50)
 
