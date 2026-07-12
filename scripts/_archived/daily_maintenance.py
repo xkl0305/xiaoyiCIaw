@@ -1065,12 +1065,12 @@ def dream_consolidation() -> Dict:
                 
                 if recent_count > 3:
                     result["steps"]["llm_dream"] = {
-                        "status": "done",
+                        "status": "pending",
                         "recent": recent_count,
                         "preview": recent_conversations[:3],
-                        "note": f"扫描到{recent_count}条新记忆，可梦境固化"
+                        "note": f"扫描到{recent_count}条新记忆，待触发梦境固化"
                     }
-                    log(f"      ✅ 新增 {recent_count} 条记忆待梦境固化")
+                    log(f"      ✅ 新增 {recent_count} 条记忆，待触发梦境固化")
                 else:
                     result["steps"]["llm_dream"] = {
                         "status": "skipped",
