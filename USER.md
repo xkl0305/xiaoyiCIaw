@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=cd368eee0d50cc6e -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=9460804a39fc77d8 -->
 # Memory Global Summary
 
 ## User Profile
@@ -83,16 +83,16 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户需要将代码提交推送到仓库
+- 用户需要检查并调整定时任务，使执行结果出现在对话框中
 - 用户决定暂时搁置为技能 'pippit-xyq' 配置 Access Key 的任务，原因是找不到 Access Key
 - 用户决定重新进行某项操作（涉及'重新搞'，上下文指向环境变量配置或技能使用）
 - 用户需要为技能 'pippit-xyq' 设置 XYQ_ACCESS_KEY 环境变量
-- 技能 'pippit-xyq' 缺少 SKILL.md 文件，需要检查
-- 用户有一个系统维护任务，包含两步：1) 运行脚本 `python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py` 并返回完整输出；2) 检查输出中是否有“待触发梦境固化”，若有则调用 `dream_trigger_now()` 工具执行梦境固化
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
-- 用户询问是否需要推仓库，即是否要执行代码/配置的推送操作
 - 用户询问知识图谱是否需要设置定时任务
 - 用户询问是否需要推送仓库
+- 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
