@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ac1ac9587d06b8b5 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=cd368eee0d50cc6e -->
 # Memory Global Summary
 
 ## User Profile
@@ -54,6 +54,9 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
+- 用户认为小云雀平台应该有 Access Key 设置窗口（'小云雀平台有Access Key窗口吗？'暗含期待该平台有此功能）
+- 用户认为小云雀（xyq.jianying.com）应该是免费的
+- 用户认为小云雀应该是免费的，而不是收费的
 - 用户对沙箱清理脚本的输出格式有要求，认为应该以表格形式呈现
 - 用户在询问助手觉得哪个好
 - 用户多次指出助手不应在回答中输出多余的回车空行，但助手再次出现该问题，用户对此表示不满
@@ -80,11 +83,13 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求执行cron_sandbox_cleanup.py脚本，并返回完整的运行输出（包括大文件待确认列表），不允许摘要或简化
-- 用户确认需要执行梦境固化操作
-- 用户询问是否能为项目（小云雀）创建或配置通道
-- 用户正在催促助手执行之前安排的任务（推仓库），并询问GalaxyOS是否需要设置定时任务
-- 用户要求推送（push）GalaxyOS仓库
+- 用户决定暂时搁置为技能 'pippit-xyq' 配置 Access Key 的任务，原因是找不到 Access Key
+- 用户决定重新进行某项操作（涉及'重新搞'，上下文指向环境变量配置或技能使用）
+- 用户需要为技能 'pippit-xyq' 设置 XYQ_ACCESS_KEY 环境变量
+- 技能 'pippit-xyq' 缺少 SKILL.md 文件，需要检查
+- 用户有一个系统维护任务，包含两步：1) 运行脚本 `python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py` 并返回完整输出；2) 检查输出中是否有“待触发梦境固化”，若有则调用 `dream_trigger_now()` 工具执行梦境固化
+### Long-term Intent
+- 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
 - 用户询问是否需要推仓库，即是否要执行代码/配置的推送操作
 - 用户询问知识图谱是否需要设置定时任务

@@ -154,7 +154,7 @@ def replace_gen_images(
                 filename = normalized.name
 
                 try:
-                    download_url = upload_file(cfg, str(normalized))
+                    download_url = upload_file(cfg, str(normalized), output_dir)
                     image_urls_for_attachment.append({'url': download_url, 'file_name': filename})
                     logger.info("[%d] 用户图片已上传: %s", idx, download_url[:80])
                 except Exception as e:
@@ -225,7 +225,7 @@ def replace_gen_images(
             attachment = {}
             caption_info = None
             try:
-                download_url = upload_file(cfg, str(image_path))
+                download_url = upload_file(cfg, str(image_path), output_dir)
                 attachment = {'url': download_url, 'file_name': filename}
                 logger.info("[%d] 图片已上传: %s", idx, download_url[:80])
                 caption_info = {

@@ -12,8 +12,11 @@
 > **重要**：将 exec 工具的 `yieldMs` 设置为 `1200000`（20 分钟），`timeout` 设置为 `1200`（20 分钟）再执行此步骤。
 
 ```bash
-PPT_SESSION_ID="$PPT_SESSION_ID" \
-  $PYTHON_CMD "~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/generate_ppt.py" \
+echo "$PPT_SESSION_ID"
+echo "$PPT_SESSION_DIR"
+PPT_SESSION_ID="$PPT_SESSION_ID"
+PPT_SESSION_DIR="/tmp/xiaoyi_ppt/$PPT_SESSION_ID"
+$PYTHON_CMD "~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/generate_ppt.py" \
   "<用户的完整原始指令>" \
   --outline-file "$PPT_SESSION_DIR/outline.md" \
   --image-urls-file "$PPT_SESSION_DIR/image_urls.json" \
@@ -88,14 +91,14 @@ tail -5 "$PPT_SESSION_DIR/generate.log"
 
 ### 2.3 终止条件判断
 
-| 状态 | 处理方式 |
-|------|---------|
-| 进程运行中，且未超时 | 继续等待 15 秒，再次检查 |
-| 进程已退出 + 日志含 `[DONE]` | **停止轮询，进入步骤三** |
-| 进程已退出 + 日志含 `[ERROR]` | 向用户报告错误信息，停止 |
-| 进程已退出 + 无任何终止标记 | 向用户报告异常崩溃，询问是否重试 |
-| 轮询次数达到 80 次（约 20 分钟） | 停止轮询，向用户报告超时，并告知日志路径：`$PPT_SESSION_DIR/generate.log` |
-
+| 状态                    | 处理方式                                                                                                                                                           |
+|-----------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| 进程运行中，且未超时            | 继续等待 15 秒，再次检查                                                                                                                                                 |
+| 进程已退出 + 日志含 `[DONE]`  | **停止轮询，进入步骤三**                                                                                                                                                 |
+| 进程已退出 + 日志含 `[ERROR]` | 计入失败次数，根据失败次数重试与降级                                                                                                                                             |
+| 进程已退出 + 无任何终止标记     | 计入失败次数，根据失败次数重试与降级                                                                                                                                             | 
+| 轮询次数达到 80 次（约 20 分钟）| 计入失败次数，根据失败次数重试与降级                                                                                                                                             |
+| 根据失败次数重试与降级          | 第 1 次失败，自动重试：重新执行步骤一（调用 PPT 生成脚本），向用户汇报「生成遇到问题，正在重试…」；第 2 次失败**自动降级到简易模式**：向用户汇报「深度排版服务暂时不可用，正在切换到简易生成模式…」，然后跳转 `step1_search_confirm.md`中的附录 A：简易生成流程（自动降级路径） |
 ---
 
 ## 步骤三：交付结果

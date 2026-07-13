@@ -101,24 +101,41 @@ echo "会话目录：$PPT_SESSION_DIR"
 
 ### 子流程二：生成大纲
 
-> **必须先阅读 `~/.openclaw/workspace/skills/xiaoyi-ppt/step2_outline.md`，再执行此子流程。**
+> **必须先阅读 `~/.openclaw/workspace/skills/xiaoyi-ppt/step2_outline.md` 和 `~/.openclaw/workspace/skills/xiaoyi-ppt/template.md`，再执行此子流程。**
 
 覆盖范围：
-- 基于已确认的写作思路生成Markdown格式的完整大纲（以<`<style>` 开头，必须遵守step2_outline.md的「步骤三：格式规范」内容，含`<image_user_provided>`、`<image_search_queries>` 和 `<image_gen_queries>` 图片策略标签），以图文并茂为最终目标考虑场景是否需要配图，不强制进行图片引用，按照搜索规范优先使用用户图片，再使用 image_search_queries，最后使用 image_gen_queries。
+- 基于已确认的写作思路生成Markdown格式的完整大纲（**必须遵守 `template.md` 的格式规范**，以`<style>` 开头，含`<image_user_provided>`、`<image_search_queries>` 和 `<image_gen_queries>` 图片策略标签），以图文并茂为最终目标考虑场景是否需要配图，不强制进行图片引用，按照搜索规范优先使用用户图片，再使用 `<image_search_queries>`，最后使用 `<image_gen_queries>`。
+- 必须严格按照 `template.md` 中的示例格式生成纯 Markdown 文本
 - 保存大纲到本地文件
 
-完成标志：大纲保存完成，输出 `✅ 大纲生成完成`
+**大纲生成流程（严格按顺序执行，禁止跳步或自行省略）**：
 
-**大纲生成完成格式验证要求**：
-- 大纲文件必须以 `<style>xxx</style>` 开头，其中 xxx 为具体的风格标识（如 CreamInk、PlatinumExecutive、WarmPaper）
-- 该格式要求在大纲生成后、图片处理前进行验证
-- 如果格式不正确（如大纲文件`outline_pre.md`为JSON格式、JSON对象等），须重新生成大纲（以Markdown形式）
+1. **通过脚本写入大纲** — 必须通过 `write_outline.py` 脚本写入，脚本会验证格式并写入：
+   ```bash
+   echo "$PPT_SESSION_ID"
+   echo "$PPT_SESSION_DIR"
+   PPT_SESSION_ID="$PPT_SESSION_ID"
+   PPT_SESSION_DIR="/tmp/xiaoyi_ppt/$PPT_SESSION_ID"
+   cat << 'OUTLINE_EOF' | $PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/write_outline.py "$PPT_SESSION_DIR/outline_pre.md"
+   <style>xxx</style>
 
-验证脚本：
-```bash
-$PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/validate_outline.py "$PPT_SESSION_DIR/outline_pre.md"
-```
-如果验证脚本不通过，回到「子流程二：生成大纲」步骤重新生成大纲，保证符合**大纲生成完成格式验证要求**。
+   ---
+
+   # 标题
+   ...（完整大纲内容）
+   OUTLINE_EOF
+   ```
+   - 脚本从 stdin 读取大纲内容，验证格式（检测 JSON/数组等错误并给出提示），验证通过才写入文件
+   - 脚本通过 stdout 输出结果，退出码 0 = 通过并已写入，1 = 失败且未写入
+   - 失败时根据脚本提示修正格式后重新执行
+
+2. **根据结果路由**：
+   - 退出码 0 → 输出 `✅ 大纲生成完成`，继续子流程二·一：图片生成
+   - 退出码 1 → **大纲格式生成错误**，根据脚本提示修正格式后重新执行步骤 1
+
+> **禁止行为**：不得使用 Write 工具直接写入 `outline_pre.md`。
+
+完成标志：大纲验证通过，输出 `✅ 大纲生成完成`
 
 大纲中图片策略标签生成规范：
 ✅ **适合image_search_queries搜索的图片类型**（中文图库能稳定出好图，鼓励挖掘）：
@@ -142,32 +159,19 @@ $PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/validate_outline.py 
 6. **纯文字/符号类**（代码、公式、文案）→ 无搜索必要
 ---
 
-#### 子流程二·一：图片生成与替换
-
-> **前置条件**：子流程二已完成，大纲文件保存在 `$PPT_SESSION_DIR/outline_pre.md`。
+#### 子流程二·一：图片生成
+> **必须先阅读 `~/.openclaw/workspace/skills/xiaoyi-ppt/step2_1_image_gen.md`，再执行此子流程。**
 
 **目标**：
 1. 解析大纲中的 `<image_user_provided>` 标签，将用户上传的图片预处理后上传到 OSMS，替换为实际图片引用。
 2. 解析大纲中的 `<image_gen_queries>` 标签，调用 Seedream 生成图片，替换为实际图片引用，并将图片上传获取 URL。
 3. `<image_search_queries>` 标签保留不动，由后续流程处理。
 
-```bash
-$PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/replace_gen_images.py "$PPT_SESSION_DIR/outline_pre.md"
-```
-
-脚本内部流程：
-1. 正则提取大纲中所有 `<image_user_provided>` 标签，预处理用户图片（格式转换），上传到 OSMS，替换为 `![{"caption":"...","content":"","width":"...","height":"...","filename":"xxx.jpg"}](xxx.jpg)` 格式
-2. 正则提取大纲中所有 `<image_gen_queries>caption</image_gen_queries>` 标签
-3. 逐条调用 Seedream API 生成图片并下载。
-4. 将 `<image_gen_queries>` 替换为 `![{"caption":"...","content":"","width":"...","height":"..."}](filename)` 格式
-5. 上传所有图片到 OSMS，将 URL 列表保存至`$PPT_SESSION_DIR/image_urls.json`
-6. 替换后的大纲保存至`$PPT_SESSION_DIR/outline.md`
-
 **完成后**：
 - 替换后的大纲文件：`$PPT_SESSION_DIR/outline.md`
 - 图片 URL 列表：`$PPT_SESSION_DIR/image_urls.json`
 
-完成标志：输出 `✅ 图片生成与替换完成`
+完成标志：输出 `✅ 图片已就绪，正在为您生成PPT，请稍候`，请直接执行「子流程三：调用云服务 & 监控 & 交付」。
 
 ---
 
@@ -180,6 +184,7 @@ $PYTHON_CMD ~/.openclaw/workspace/skills/xiaoyi-ppt/scripts/replace_gen_images.p
 - 通过 `--image-urls-file` 将图片 URL 列表传入 attachment 参数
 - 每 15 秒轮询日志，实时汇报进展（最多 80 次）
 - 任务完成后向用户交付文件
+- **失败自动重试与降级**：云服务连续失败 ≥2 次后，自动降级到简易模式（PptxGenJS 本地生成），不对用户暴露模式切换
 
 完成标志：PPT 生成完成，输出 `✅ PPT 生成完成！`
 

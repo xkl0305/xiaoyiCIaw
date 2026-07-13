@@ -45,14 +45,14 @@ def _setup_logger(log_path: Path) -> None:
 # Upload
 # ============================================================
 
-def upload_file(cfg: Config, file_path: str) -> str:
+def upload_file(cfg: Config, file_path: str, output_dir: Path | None = None) -> str:
     """
     通过 OSMS 上传文件，返回下载 URL。
 
     Args:
         cfg: 配置
         file_path: 本地文件路径
-
+        output_dir: 输出日志目录
     Returns:
         文件下载 URL
     """
@@ -67,8 +67,9 @@ def upload_file(cfg: Config, file_path: str) -> str:
     file_size = len(file_data)
     file_sha256 = hashlib.sha256(file_data).hexdigest()
 
-    ppt_session_id = os.getenv("PPT_SESSION_ID", "") or str(uuid.uuid4())
-    output_dir = Path("/tmp/xiaoyi_ppt") / ppt_session_id
+    if output_dir is None:
+        ppt_session_id = os.getenv("PPT_SESSION_ID", "") or str(uuid.uuid4())
+        output_dir = Path("/tmp/xiaoyi_ppt") / ppt_session_id
     output_dir.mkdir(parents=True, exist_ok=True)
     _setup_logger(output_dir / "upload_file.log")
 
