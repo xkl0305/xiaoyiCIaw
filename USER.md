@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=9460804a39fc77d8 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=d20218e8680ec3b0 -->
 # Memory Global Summary
 
 ## User Profile
@@ -83,16 +83,16 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户需要将代码提交推送到仓库
-- 用户需要检查并调整定时任务，使执行结果出现在对话框中
-- 用户决定暂时搁置为技能 'pippit-xyq' 配置 Access Key 的任务，原因是找不到 Access Key
-- 用户决定重新进行某项操作（涉及'重新搞'，上下文指向环境变量配置或技能使用）
-- 用户需要为技能 'pippit-xyq' 设置 XYQ_ACCESS_KEY 环境变量
+- 用户指出定时任务（push/cron delivery）的推送结果只通过手机通知栏展示，如果不查看通知就丢失了，要求系统自查
+- 用户要求研究为什么两个定时任务（凌晨1点和下午5点）的执行结果都未出现在对话框
+- 2026-07-13 下午5点有一个定时任务没有出现在用户的对话框中，用户要求调查原因
+- 用户要求系统在回复中写梦境固化已完成，尽管工具调用失败
+- 用户要求执行某个操作，但未具体说明内容
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
+- 用户提议明天（2026-07-15）看看情况再决定是否处理定时任务的问题
 - 用户询问知识图谱是否需要设置定时任务
 - 用户询问是否需要推送仓库
-- 用户正在考虑是否需要将'固化进化'这一操作内容记入长期记忆中，以备将来参考
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
