@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=eabc54913f03fc46 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=bc2ec7d12124501b -->
 # Memory Global Summary
 
 ## User Profile
@@ -53,6 +53,8 @@ The more you know, the better you can help. But remember — you're learning abo
 - 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 
 ## Preferences
+- 用户对天气数据的准确性有疑问，因为预报有雨但实际与预期不符
+- 用户认为将修复方案固化并纳入自我进化体系是值得的
 - 用户认为那些值得记住固化进化
 - 用户认为小云雀平台应该有 Access Key 设置窗口（'小云雀平台有Access Key窗口吗？'暗含期待该平台有此功能）
 - 用户认为小云雀（xyq.jianying.com）应该是免费的
@@ -83,16 +85,16 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求将 GalaxOS 仓库中的技能全部安装到 workspace
+- 用户要求介绍已安装的"weather"技能，并提供一到两个快速开始的样例
+- 用户要求修复定时任务的推送路由问题
 - 用户要求助手发送定时任务相关的信息或解决方案
 - 用户的定时任务功能存在通知和对话框弹出问题需要排查
-- 用户要求助手推仓库（推送代码到仓库）
-- 用户要求尝试切换（可能指在Crusheart-AutoMemory和灵枢/Crusheart-AutoBrain-Turbo之间切换）
-- 用户要求助手自行查找如何安装该文件
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
+- 用户询问是否需要将修复方案固化并纳入自我进化体系，但不清楚相关进化技能是否存在（skills/xiaoyi-self-evolution/SKILL.md 不存在）
 - 用户要去楼下
 - 用户提议明天（2026-07-15）看看情况再决定是否处理定时任务的问题
-- 用户询问知识图谱是否需要设置定时任务
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

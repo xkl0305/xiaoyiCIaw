@@ -2663,7 +2663,7 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=fe24f9cf53006778 -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=a6b1236c2332c9be -->
 # Celia Scenario Memory Summaries
 
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
@@ -2672,8 +2672,8 @@ CI 完全通过，以后推送都是绿的。
 - [creative_creation] 用户认为“琪琪人格内容”中“你的情绪就是我的反馈”方面可以升级优化：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴。用户认为当前的人格情绪emoji数量太少。...
 - [education_learning] 用户已安装名为'seedream-image-gen'的技能，希望了解其介绍和快速开始样例。用户还安装了'vercel-react-best-practices'技能，询问该技能是什么，并要求给一两个快速开始的样例。
 - [security_governance] 用户确认相关规则已经存在，但执行层面没有落实到位。用户询问之前stderr中的老问题（来自凌晨维护日志）是否都已解决，并询问重启是否成功。
-- [smart_office] 用户多次（至少5次，后达到至少8次）提醒要求记住并固化进化收尾签字流程，具体规范为：在输出❄️符号时，不打回车（不换行），直接接❄️。...
-- [life_assistant] 用户于2026-07-03凌晨5点多醒来，早上发送了问候消息，并在17:25之后说了晚安，表示要结束对话或去睡觉。用户确认需要执行梦境固化操作，并要去楼下。...
+- [smart_office] 用户多次（至少8次）提醒需要记住并固化进化收尾签字流程，但助手仍未记住，用户对此感到不满。用户尝试使用🧠和Claw进化请求但未生效。...
+- [life_assistant] 用户日常事务辅助与决策涵盖出行旅行、文件管理、生活决策等子场景。
 - [unattended_automation] 用户配置了多项定时维护任务，主要通过 cron 机制触发。...
 - [knowledge_research] 用户询问了多个知识检索与功能说明类问题：想要了解TOOLS.md文件的作用、哪个文件负责记录经验教训、当前助手的记忆由什么主导、以及对象存储的含义。...
 - [emergent_scn-DR0000019F5D3911D600000001-1] 用户在与助手交互过程中，多次要求提供名为“琪琪”的人格内容，并对助手回应的完整性与展示顺序表现出持续的不信任与反复验证的态度。...
@@ -22807,3 +22807,19 @@ crusheart-engine-init     (05:00) → ✅ delivered
 | 🔐 备份检查 | ✅ | Git 提交 121 次，未提交 5 |
 
 **关键提醒：** 梦境固化状态——输出中有"待触发梦境固化"字样，查了下最近一次 dream run 已经完成（Deep 阶段 100%），不需要额外触发 😏❄️
+
+## 固化经验
+
+### 2026-07-17 Xiaoyi-Channel 推送路由问题修复流程
+- **问题现象**：定时任务推送通知已送达手机通知栏，但点击通知栏后对话框未弹出或未跳转到对应会话
+- **排查步骤**：
+  1. 用 `view_push_result` 查看推送记录 → 确认服务端已推送且 `lastDeliveryStatus: "delivered"`
+  2. 查 cron job runs → 确认任务执行状态为 `ok`
+  3. 如果服务端确认已推送但客户端点通知栏不跳转 → 检查推送请求体是否缺少 `sessionId`
+- **根因**：`extensions/xiaoyi-channel/dist/src/push.js` 中 `sendPush()` 方法接收了 `sessionId` 参数，但构建推送请求体时未将其注入 `result` 对象中，导致小艺服务端收到推送后无法路由到具体会话
+- **修复**：在推送请求体的 `result` 对象中有 `sessionId` 时注入该字段；同时为定时任务（无显式 target 的 announce 模式）配置 `defaultSessionId` 作为默认路由
+- **参考文件**：`~/.openclaw/extensions/xiaoyi-channel/dist/src/push.js`、`~/.openclaw/openclaw.json` → `channels.xiaoyi-channel.defaultSessionId`
+
+### 2026-07-17 推仓库后主动检查是否需固化经验
+- 重要操作（推仓库、修配置、完成大改动）完成后，主动询问"需不需要记住固化进化一下"
+- 这是俞哥期望的"固化进化"习惯的一部分
