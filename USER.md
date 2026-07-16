@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=6c07ab2ab18443a0 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=eabc54913f03fc46 -->
 # Memory Global Summary
 
 ## User Profile
@@ -53,6 +53,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 
 ## Preferences
+- 用户认为那些值得记住固化进化
 - 用户认为小云雀平台应该有 Access Key 设置窗口（'小云雀平台有Access Key窗口吗？'暗含期待该平台有此功能）
 - 用户认为小云雀（xyq.jianying.com）应该是免费的
 - 用户认为小云雀应该是免费的，而不是收费的
@@ -82,11 +83,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户询问是否能进行切换操作（可能指在Crusheart-AutoMemory和灵枢/Crusheart-AutoBrain-Turbo之间切换）
+- 用户要求助手发送定时任务相关的信息或解决方案
+- 用户的定时任务功能存在通知和对话框弹出问题需要排查
+- 用户要求助手推仓库（推送代码到仓库）
+- 用户要求尝试切换（可能指在Crusheart-AutoMemory和灵枢/Crusheart-AutoBrain-Turbo之间切换）
 - 用户要求助手自行查找如何安装该文件
-- 用户要求安装Crusheart-AutoMemory插件
-- 用户要求助手将脚本运行结果整理成表格，用 ✅/⚠️/❌ 标记关键状态，直接回复，不生成 HTML 卡片
-- 用户设定了一个定时任务（cron），每【每周】执行一次沙箱清理检查，任务ID为1caf4049-42eb-422d-9aec-475bc9e02f99
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
