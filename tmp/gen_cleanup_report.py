@@ -1,0 +1,272 @@
+#!/usr/bin/env python3
+"""Generate a beautiful dark-themed HTML report from sandbox cleanup output."""
+import json
+import os
+
+output_path = "/home/sandbox/.openclaw/workspace/tmp/cron_sandbox_cleanup_report.html"
+
+html = r"""<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沙箱清理报告</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0d1117;
+    color: #e6edf3;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 24px;
+    line-height: 1.6;
+  }
+  .container { max-width: 960px; margin: 0 auto; }
+  .header {
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #58a6ff, #3fb950);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header .time {
+    color: #8b949e;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .header .cleared {
+    display: inline-block;
+    margin-top: 12px;
+    background: rgba(63, 185, 80, 0.15);
+    border: 1px solid rgba(63, 185, 80, 0.3);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: #3fb950;
+  }
+  .card {
+    background: #161b22;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #c9d1d9;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .badge {
+    background: #30363d;
+    color: #8b949e;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  thead th {
+    text-align: left;
+    padding: 10px 12px;
+    font-weight: 600;
+    color: #8b949e;
+    border-bottom: 1px solid #21262d;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  tbody td {
+    padding: 8px 12px;
+    border-bottom: 1px solid #21262d;
+    vertical-align: middle;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(88, 166, 255, 0.05); }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .tag-ok { background: rgba(63, 185, 80, 0.15); color: #3fb950; }
+  .tag-pending { background: rgba(210, 153, 34, 0.15); color: #d29922; }
+  .tag-fail { background: rgba(248, 81, 73, 0.15); color: #f85149; }
+  .path-text {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    color: #c9d1d9;
+    word-break: break-all;
+  }
+  .size-text {
+    font-family: 'SF Mono', monospace;
+    font-size: 12px;
+    color: #8b949e;
+  }
+  .disk-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    text-align: center;
+  }
+  .disk-stat {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 8px;
+    padding: 16px 8px;
+  }
+  .disk-stat .label { font-size: 11px; color: #8b949e; margin-bottom: 4px; }
+  .disk-stat .value { font-size: 18px; font-weight: 700; color: #c9d1d9; }
+  .disk-stat .status-ok { color: #3fb950; }
+  @media (max-width: 640px) {
+    .disk-stats { grid-template-columns: repeat(3, 1fr); }
+    body { padding: 12px; }
+    .header { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+  <h1>🦞 沙箱清理报告</h1>
+  <div class="time">⏱ 2026-07-15 04:21 (Asia/Shanghai)</div>
+  <div class="cleared">✅ 自动清理完成 — 释放 35,413.5 KB</div>
+</div>
+
+<div class="card">
+  <h2>📋 待确认大文件 <span class="badge">4 项</span></h2>
+  <table>
+    <thead>
+      <tr><th>目录 / 文件</th><th>大小</th><th>文件数</th><th>说明</th><th>状态</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code class="path-text">generated-images/</code></td>
+        <td class="size-text">4.0 KB</td>
+        <td class="size-text">28</td>
+        <td>AI 出图缓存</td>
+        <td><span class="tag tag-pending">⚠️ 待确认</span></td>
+      </tr>
+      <tr>
+        <td><code class="path-text">assets/</code></td>
+        <td class="size-text">4.0 KB</td>
+        <td class="size-text">?</td>
+        <td>资产文件</td>
+        <td><span class="tag tag-pending">⚠️ 待确认</span></td>
+      </tr>
+      <tr>
+        <td><code class="path-text">~/openclaw.json.bak.* (10 个)</code></td>
+        <td class="size-text">56.8 KB</td>
+        <td class="size-text">10</td>
+        <td>配置备份</td>
+        <td><span class="tag tag-pending">⚠️ 待确认</span></td>
+      </tr>
+      <tr>
+        <td><code class="path-text">input_ref.jpg</code></td>
+        <td class="size-text">995.4 KB</td>
+        <td class="size-text">1</td>
+        <td>参考输入图</td>
+        <td><span class="tag tag-pending">⚠️ 待确认</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>✅ 已清理项 <span class="badge">173 项</span></h2>
+  <div style="max-height: 480px; overflow-y: auto;">
+  <table>
+    <thead>
+      <tr><th>路径</th><th>类型</th><th>状态</th></tr>
+    </thead>
+    <tbody>
+"""
+cleaned_items = [
+    ("/tmp/openclaw-compile-cache", "编译缓存", "ok"),
+    ("/tmp/openclaw/skills-20260712.log", "旧日志", "ok"),
+    ("/tmp/openclaw/xiaoyi-channel-20260712.log", "旧日志", "ok"),
+    ("/tmp/openclaw/skills-20260713.log", "旧日志", "ok"),
+    ("/tmp/openclaw/xiaoyi-channel-20260713.log", "旧日志", "ok"),
+    ("/tmp/openclaw/skills-20260714.log", "旧日志", "ok"),
+    ("/tmp/openclaw/xiaoyi-channel-20260714.log", "旧日志", "ok"),
+    ("/tmp/openclaw/openclaw-2026-07-14.log", "旧日志", "ok"),
+    ("/tmp/openclaw/skills-20260715.log", "旧日志", "ok"),
+    ("/tmp/logs", "临时日志", "ok"),
+    ("__pycache__ (workspace)", "Python 缓存", "ok"),
+    ("__pycache__ (infrastructure)", "Python 缓存", "ok"),
+    ("__pycache__ (core)", "Python 缓存", "ok"),
+    ("__pycache__ (repo: volcenginesdk x162)", "Python 缓存", "ok"),
+    ("__pycache__ (repo: zmq/jieba/faiss/sniffio/attr)", "Python 缓存", "ok"),
+    ("__pycache__ (xiaoyi_persona_visual)", "Python 缓存", "ok"),
+    ("__pycache__ (GalaxyOS)", "Python 缓存", "ok"),
+    ("__pycache__ (scripts)", "Python 缓存", "ok"),
+]
+
+for path, ptype, status in cleaned_items:
+    tag = '<span class="tag tag-ok">✅ 已清理</span>'
+    html += f'      <tr><td><code class="path-text">{path}</code></td><td>{ptype}</td><td>{tag}</td></tr>\n'
+
+html += r"""    </tbody>
+  </table>
+  </div>
+</div>
+
+<div class="card">
+  <h2>💾 磁盘使用情况</h2>
+  <div class="disk-stats">
+    <div class="disk-stat">
+      <div class="label">总量</div>
+      <div class="value">10,240 MB</div>
+    </div>
+    <div class="disk-stat">
+      <div class="label">已用</div>
+      <div class="value">279 MB</div>
+    </div>
+    <div class="disk-stat">
+      <div class="label">剩余</div>
+      <div class="value">9,961 MB</div>
+    </div>
+    <div class="disk-stat">
+      <div class="label">使用率</div>
+      <div class="value">2.7%</div>
+    </div>
+    <div class="disk-stat">
+      <div class="label">状态</div>
+      <div class="value status-ok">✅ 充裕</div>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="text-align: center; color: #8b949e; font-size: 13px; padding: 16px;">
+  🕐 下次清理: 2026-07-22
+</div>
+
+</div>
+</body>
+</html>
+"""
+
+with open(output_path, "w", encoding="utf-8") as f:
+    f.write(html)
+
+print(f"Report generated: {output_path}")
+print(f"Size: {os.path.getsize(output_path)} bytes")

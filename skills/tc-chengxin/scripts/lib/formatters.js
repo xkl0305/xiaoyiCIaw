@@ -7,7 +7,7 @@
  *    打包时会覆盖基础产物。仅对 xiaoyiclaw 渠道生效，不影响其他渠道。
  *
  * 与基础版的差异（共 5 处，其余保持一致）：
- *   1. extract_booking_links：mobile_link 改读 redirectAppUrl（app 原生跳转）
+ *   1. extract_booking_links：mobile_link 优先读 superlinkRedirectUrl，兜底 redirectAppUrl
  *   2. render_booking_buttons：去掉 PC 链接，仅渲染 app 链接
  *   3. format_hotel_card：卡片顶部增加 image 图片
  *   4. format_scenery_card：卡片顶部增加 image 图片
@@ -30,15 +30,15 @@ function is_valid_booking_url(url) {
 /**
  * 提取预订链接（xiaoyiclaw：仅 app 原生跳转）
  *
- * 与基础版不同：移动端链接取 redirectAppUrl（如 tctclient://...），
+ * 与基础版不同：移动端链接优先取 superlinkRedirectUrl，兜底 redirectAppUrl（如 tctclient://...），
  * 不再使用 clawRedirectUrl / redirectUrl。pc_link 保留提取但渲染时被忽略。
- * @param {object} item - 含 pcRedirectUrl / redirectAppUrl 的数据对象
+ * @param {object} item - 含 pcRedirectUrl / superlinkRedirectUrl / redirectAppUrl 的数据对象
  * @returns {{ pc_link: string, mobile_link: string }}
  */
 function extract_booking_links(item) {
   return {
     pc_link: item.pcRedirectUrl || '',
-    mobile_link: item.redirectAppUrl || '',
+    mobile_link: item.superlinkRedirectUrl || item.redirectAppUrl || '',
   };
 }
 

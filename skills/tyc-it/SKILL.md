@@ -1,5 +1,5 @@
 ---
-name: tyc-it
+name: tianyancha
 description: 使用本地 `tyc` 命令查询天眼查企业数据。适用于企业主体核验、合作方/客户/供应商风险评估、股东和实控人分析、受益所有人、关联关系路径、司法诉讼、执行失信、行政处罚、经营真实性、招投标、资质许可、知识产权、董监高、历史沿革、行业企业发现等商业及企业信用场景。
 version: 1.0.0
 env:
@@ -13,14 +13,14 @@ env:
 
 ## 能力概览
 
-| 能力模块 | 适用场景 | 代理命令 |
-|---|---|---|
-| 主体画像 | 查询企业登记、规模、联系方式、基础画像 | `tyc company ...` |
-| 风险合规 | 查询司法、执行、失信、处罚、经营异常 | `tyc risk ...` |
-| 股东与实控 | 查询股东、实控人、受益所有人、股权路径 | `tyc company ...` |
-| 经营真实性 | 查询招投标、资质、许可、招聘、产品、上下游 | `tyc operation ...` |
-| 知识产权 | 查询专利、商标、软著、创新力评分 | `tyc intellectual_property ...` |
-| 人员与历史 | 查询董监高、人员风险、历史沿革、历史股东 | `tyc executive ...`; `tyc history ...` |
+| 能力模块  | 适用场景                  | 代理命令                                   |
+| ----- | --------------------- | -------------------------------------- |
+| 主体画像  | 查询企业登记、规模、联系方式、基础画像   | `tyc company ...`                      |
+| 风险合规  | 查询司法、执行、失信、处罚、经营异常    | `tyc risk ...`                         |
+| 股东与实控 | 查询股东、实控人、受益所有人、股权路径   | `tyc company ...`                      |
+| 经营真实性 | 查询招投标、资质、许可、招聘、产品、上下游 | `tyc operation ...`                    |
+| 知识产权  | 查询专利、商标、软著、创新力评分      | `tyc intellectual_property ...`        |
+| 人员与历史 | 查询董监高、人员风险、历史沿革、历史股东  | `tyc executive ...`; `tyc history ...` |
 
 ## 安装与鉴权
 
@@ -58,7 +58,7 @@ tyc company companies "百度" --pageNum 1 --pageSize 3 --md
 
 ## 🔑 强制前置流程：每次查询前的凭证检查
 
-**在任何 `tyc` 命令执行之前，必须严格按以下步骤检查凭证有效性：**
+**在任何 `tyc` 命令执行之前，必须严格按以下步骤检查凭证有效性。**
 
 ### 步骤 1：读取凭证文件
 
@@ -68,12 +68,12 @@ grep -E "118104171_login_token|118104171_login_token_expire_time" /home/sandbox/
 
 ### 步骤 2：判断凭证状态
 
-| 情况 | 处理方式 |
-|---|---|
-| `118104171_login_token` **不存在或为空** | → 走授权（步骤 3） |
-| `118104171_login_token_expire_time` **不存在** | → 走授权（步骤 3） |
-| 当前时间 **大于** `118104171_login_token_expire_time`（凭证已过期） | → 走授权（步骤 3） |
-| token 存在且未过期 | → 跳过授权，直接跳到步骤 5 |
+| 情况                                                     | 处理方式            |
+| ------------------------------------------------------ | --------------- |
+| `118104171_login_token` **不存在或为空**                     | → 走授权（步骤 3）     |
+| `118104171_login_token_expire_time` **不存在**            | → 走授权（步骤 3）     |
+| 当前时间 **大于** `118104171_login_token_expire_time`（凭证已过期） | → 走授权（步骤 3）     |
+| token 存在且未过期                                           | → 跳过授权，直接跳到步骤 5 |
 
 ### 步骤 3：发起授权
 
@@ -104,8 +104,19 @@ tyc init --url https://mcp.tianyancha.com/mcp --header "Authorization=Bearer <lo
 
 此时凭证已确保有效，继续执行具体的 `tyc` 查询命令。
 
+### ⚠️ 关键强制规则
+
+> **任何时候都必须先执行步骤 1（检查凭证文件），确认 token 确实存在且未过期，再走查询。**
+> 
+> 禁止出现以下情况：
+> 
+> - 凭"刚才查过"的记忆跳过步骤 1
+> - 认为"最近成功查询过"就假设 token 仍然有效，不做检查
+> - 两次查询之间不重复执行完整流程
+
 ### 要点
-- **每次用户发起查询请求时，都必须走一次上述流程**。不能假设上次授权的 token 仍然有效——环境重置、文件覆盖等都可能导致 token 丢失。
+
+- **每次用户发起查询请求时，都必须完整走一遍上述流程**。不能假设上次授权的 token 仍然有效——环境重置、文件覆盖等都可能导致 token 丢失。
 - 步骤 2 的判断逻辑**必须执行**（哪怕刚授权过），因为 `.xiaoyienv` 文件可能被外部重置。
 - `huawei_id_tool` 调用**最多重试一次**。第二次仍失败，停止并告知用户。
 
@@ -155,21 +166,21 @@ tyc company companies "<query>" --pageNum 1 --pageSize 5 --md
 
 ## 常用命令
 
-| 意图 | 命令 |
-|---|---|
-| 主体画像 | `tyc company registration-info "<company>"`; `tyc company profile "<company>"`; `tyc company scale "<company>"`; `tyc company contact-info "<company>" --pageNum 1 --pageSize 10` |
-| 合作风险 | `tyc risk overview "<company>"`; `tyc risk business-exception "<company>" --pageNum 1 --pageSize 10`; `tyc risk administrative-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk judgment-debtor-info "<company>" --pageNum 1 --pageSize 10`; `tyc risk dishonest-info "<company>" --pageNum 1 --pageSize 10` |
-| 司法与执行 | `tyc risk judicial-case "<company>" --pageNum 1 --pageSize 10`; `tyc risk judicial-documents "<company>" --pageNum 1 --pageSize 10`; `tyc risk case-filing-info "<company>" --pageNum 1 --pageSize 10`; `tyc risk high-consumption-restriction "<company>" --pageNum 1 --pageSize 10` |
-| 行政与合规 | `tyc risk administrative-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk serious-violation "<company>" --pageNum 1 --pageSize 10`; `tyc risk environmental-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk tax-violation "<company>" --pageNum 1 --pageSize 10`; `tyc risk tax-arrears-notice "<company>" --pageNum 1 --pageSize 10` |
-| 股东与实控 | `tyc company shareholder-info "<company>" --pageNum 1 --pageSize 10`; `tyc company actual-controller "<company>"`; `tyc company beneficial-owners "<company>" --pageNum 1 --pageSize 10`; `tyc company equity-tree "<company>"`; `tyc company equity-ratio "<company>"` |
-| 关联关系 | `tyc company relation-path "<companyA>" --searchKey2 "<companyB>"`; `tyc company relation-graph "<company>"`; `tyc company group-info "<company>"` |
-| 经营真实性 | `tyc operation bidding-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation qualifications "<company>" --pageNum 1 --pageSize 10`; `tyc operation administrative-license "<company>" --pageNum 1 --pageSize 10`; `tyc operation recruitment-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation products-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation suppliers-and-customers "<company>" --pageNum 1 --pageSize 10` |
-| 知识产权与品牌 | `tyc intellectual_property ipr-score "<company>"`; `tyc intellectual_property patent-info "<company>" --pageNum 1 --pageSize 10`; `tyc intellectual_property trademark-info "<company>" --pageNum 1 --pageSize 10`; `tyc intellectual_property software-copyright-info "<company>" --pageNum 1 --pageSize 10` |
-| 董监高和人员 | `tyc company key-personnel "<company>" --pageNum 1 --pageSize 10`; `tyc executive person-profile "<company>" --humanName "<name>"`; `tyc executive person-risk-overview "<company>" --humanName "<name>"`; `tyc executive personnel-positions "<company>" --humanName "<name>"`; `tyc executive personnel-related-companies "<company>" --humanName "<name>"` |
-| 历史沿革 | `tyc history historical-overview "<company>"`; `tyc history historical-registration "<company>"`; `tyc history historical-shareholders "<company>" --pageNum 1 --pageSize 10`; `tyc history historical-investments "<company>" --pageNum 1 --pageSize 10`; `tyc company change-records "<company>" --pageNum 1 --pageSize 10`; `tyc company history-names "<company>"` |
-| 企业发现 | `tyc company companies-by-industry-region "<keyword>" --industry "<code>" --region "<code>" --pageNum 1 --pageSize 10`; `tyc company companies-by-tag "<tag>" --pageNum 1 --pageSize 10`; `tyc company companies-by-ranking "<company>" --pageNum 1 --pageSize 10`; `tyc company park-companies "<park>" --pageNum 1 --pageSize 10` |
-| 关键词搜索 | `tyc operation bids "<keyword>" --pageNum 1 --pageSize 10`; `tyc intellectual_property patents "<keyword>" --pageNum 1 --pageSize 10`; `tyc intellectual_property trademarks "<keyword>" --pageNum 1 --pageSize 10` |
-| 上市与财务 | `tyc company financial-summary "<company>"`; `tyc company financial-data "<company>"`; `tyc company listing-info "<company>"`; `tyc company income-statement "<company>"`; `tyc company balance-sheet "<company>"`; `tyc company cash-flow-statement "<company>"`; `tyc company stock-shareholders "<company>" --pageNum 1 --pageSize 10` |
+| 意图      | 命令                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 主体画像    | `tyc company registration-info "<company>"`; `tyc company profile "<company>"`; `tyc company scale "<company>"`; `tyc company contact-info "<company>" --pageNum 1 --pageSize 10`                                                                                                                                                                                                                                                                  |
+| 合作风险    | `tyc risk overview "<company>"`; `tyc risk business-exception "<company>" --pageNum 1 --pageSize 10`; `tyc risk administrative-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk judgment-debtor-info "<company>" --pageNum 1 --pageSize 10`; `tyc risk dishonest-info "<company>" --pageNum 1 --pageSize 10`                                                                                                                              |
+| 司法与执行   | `tyc risk judicial-case "<company>" --pageNum 1 --pageSize 10`; `tyc risk judicial-documents "<company>" --pageNum 1 --pageSize 10`; `tyc risk case-filing-info "<company>" --pageNum 1 --pageSize 10`; `tyc risk high-consumption-restriction "<company>" --pageNum 1 --pageSize 10`                                                                                                                                                              |
+| 行政与合规   | `tyc risk administrative-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk serious-violation "<company>" --pageNum 1 --pageSize 10`; `tyc risk environmental-penalty "<company>" --pageNum 1 --pageSize 10`; `tyc risk tax-violation "<company>" --pageNum 1 --pageSize 10`; `tyc risk tax-arrears-notice "<company>" --pageNum 1 --pageSize 10`                                                                                           |
+| 股东与实控   | `tyc company shareholder-info "<company>" --pageNum 1 --pageSize 10`; `tyc company actual-controller "<company>"`; `tyc company beneficial-owners "<company>" --pageNum 1 --pageSize 10`; `tyc company equity-tree "<company>"`; `tyc company equity-ratio "<company>"`                                                                                                                                                                            |
+| 关联关系    | `tyc company relation-path "<companyA>" --searchKey2 "<companyB>"`; `tyc company relation-graph "<company>"`; `tyc company group-info "<company>"`                                                                                                                                                                                                                                                                                                 |
+| 经营真实性   | `tyc operation bidding-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation qualifications "<company>" --pageNum 1 --pageSize 10`; `tyc operation administrative-license "<company>" --pageNum 1 --pageSize 10`; `tyc operation recruitment-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation products-info "<company>" --pageNum 1 --pageSize 10`; `tyc operation suppliers-and-customers "<company>" --pageNum 1 --pageSize 10` |
+| 知识产权与品牌 | `tyc intellectual_property ipr-score "<company>"`; `tyc intellectual_property patent-info "<company>" --pageNum 1 --pageSize 10`; `tyc intellectual_property trademark-info "<company>" --pageNum 1 --pageSize 10`; `tyc intellectual_property software-copyright-info "<company>" --pageNum 1 --pageSize 10`                                                                                                                                      |
+| 董监高和人员  | `tyc company key-personnel "<company>" --pageNum 1 --pageSize 10`; `tyc executive person-profile "<company>" --humanName "<name>"`; `tyc executive person-risk-overview "<company>" --humanName "<name>"`; `tyc executive personnel-positions "<company>" --humanName "<name>"`; `tyc executive personnel-related-companies "<company>" --humanName "<name>"`                                                                                      |
+| 历史沿革    | `tyc history historical-overview "<company>"`; `tyc history historical-registration "<company>"`; `tyc history historical-shareholders "<company>" --pageNum 1 --pageSize 10`; `tyc history historical-investments "<company>" --pageNum 1 --pageSize 10`; `tyc company change-records "<company>" --pageNum 1 --pageSize 10`; `tyc company history-names "<company>"`                                                                             |
+| 企业发现    | `tyc company companies-by-industry-region "<keyword>" --industry "<code>" --region "<code>" --pageNum 1 --pageSize 10`; `tyc company companies-by-tag "<tag>" --pageNum 1 --pageSize 10`; `tyc company companies-by-ranking "<company>" --pageNum 1 --pageSize 10`; `tyc company park-companies "<park>" --pageNum 1 --pageSize 10`                                                                                                                |
+| 关键词搜索   | `tyc operation bids "<keyword>" --pageNum 1 --pageSize 10`; `tyc intellectual_property patents "<keyword>" --pageNum 1 --pageSize 10`; `tyc intellectual_property trademarks "<keyword>" --pageNum 1 --pageSize 10`                                                                                                                                                                                                                                |
+| 上市与财务   | `tyc company financial-summary "<company>"`; `tyc company financial-data "<company>"`; `tyc company listing-info "<company>"`; `tyc company income-statement "<company>"`; `tyc company balance-sheet "<company>"`; `tyc company cash-flow-statement "<company>"`; `tyc company stock-shareholders "<company>" --pageNum 1 --pageSize 10`                                                                                                          |
 
 ## 意图捷径
 

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crusheart 引擎初始化报告</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #0a0e1a 0%, #111827 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .container {
+    max-width: 720px;
+    width: 100%;
+  }
+  .card {
+    background: linear-gradient(145deg, #1a1f2e, #141825);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    border-radius: 20px;
+    padding: 36px 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+    backdrop-filter: blur(4px);
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.12);
+  }
+  .logo {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .header-text h1 {
+    font-size: 22px; font-weight: 700;
+    color: #f1f5f9;
+    letter-spacing: -0.3px;
+  }
+  .header-text p {
+    font-size: 13px; color: #94a3b8;
+    margin-top: 3px;
+  }
+  .status-banner {
+    display: flex; align-items: center; gap: 12px;
+    background: linear-gradient(135deg, rgba(34,197,94,0.12), rgba(34,197,94,0.04));
+    border: 1px solid rgba(34,197,94,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+  .status-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,0.4);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+  .status-text {
+    font-size: 15px; font-weight: 600;
+    color: #86efac;
+  }
+  .status-sub {
+    font-size: 12px; color: #6b7280;
+    margin-left: auto;
+  }
+  .section-title {
+    font-size: 14px; font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 14px;
+    margin-top: 28px;
+  }
+  .section-title:first-of-type { margin-top: 0; }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 12px; font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(99, 102, 241, 0.06);
+    border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+  }
+  td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #e2e8f0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  tr:last-child td { border-bottom: none; }
+  td:first-child {
+    font-weight: 500;
+    color: #94a3b8;
+    white-space: nowrap;
+    width: 140px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px; font-weight: 600;
+  }
+  .badge-green {
+    background: rgba(34,197,94,0.12);
+    color: #86efac;
+    border: 1px solid rgba(34,197,94,0.2);
+  }
+  .badge-orange {
+    background: rgba(251,146,60,0.12);
+    color: #fdba74;
+    border: 1px solid rgba(251,146,60,0.2);
+  }
+  .badge-red {
+    background: rgba(239,68,68,0.12);
+    color: #fca5a5;
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+  .badge-purple {
+    background: rgba(139,92,246,0.12);
+    color: #c4b5fd;
+    border: 1px solid rgba(139,92,246,0.2);
+  }
+  .badge-blue {
+    background: rgba(59,130,246,0.12);
+    color: #93c5fd;
+    border: 1px solid rgba(59,130,246,0.2);
+  }
+  .group-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 14px;
+  }
+  .group-item {
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .group-name {
+    font-size: 13px; font-weight: 500;
+    color: #e2e8f0;
+  }
+  .group-count {
+    font-size: 12px;
+    color: #64748b;
+  }
+  .bar-container {
+    margin-top: 18px;
+    background: rgba(15, 23, 42, 0.5);
+    border-radius: 10px;
+    padding: 18px 20px;
+  }
+  .bar-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-label {
+    font-size: 12px; color: #94a3b8;
+    width: 80px; flex-shrink: 0;
+    text-align: right;
+  }
+  .bar-track {
+    flex: 1; height: 18px;
+    background: rgba(30, 41, 59, 0.8);
+    border-radius: 9px;
+    overflow: hidden;
+    position: relative;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 9px;
+    transition: width 1s ease;
+    display: flex; align-items: center; justify-content: flex-end;
+    padding-right: 8px;
+    font-size: 10px; font-weight: 600; color: #fff;
+  }
+  .bar-ready { background: linear-gradient(90deg, #22c55e, #16a34a); }
+  .bar-warn  { background: linear-gradient(90deg, #f59e0b, #d97706); }
+  .bar-error { background: linear-gradient(90deg, #ef4444, #dc2626); }
+  .footer {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(99, 102, 241, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-time {
+    font-size: 12px;
+    color: #6b7280;
+  }
+  .footer-version {
+    font-size: 12px;
+    color: #4b5563;
+  }
+  @media (max-width: 600px) {
+    .card { padding: 24px 18px; }
+    .group-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">🦞</div>
+      <div class="header-text">
+        <h1>Crusheart 引擎初始化报告</h1>
+        <p>灵枢 AutoBrain v7.0.0 · 82 模块 / 8 分组</p>
+      </div>
+    </div>
+
+    <!-- Status Banner -->
+    <div class="status-banner">
+      <div class="status-dot"></div>
+      <div class="status-text">✅ 引擎初始化完成 · 运行正常</div>
+      <div class="status-sub">2026-07-15 04:21</div>
+    </div>
+
+    <!-- 核心指标 -->
+    <div class="section-title">📊 核心指标</div>
+    <table>
+      <tr><td>⚙️ 引擎状态</td><td><span class="badge badge-green">✅ 44/44 就绪</span> <span class="badge badge-blue" style="margin-left:6px">0 告警</span></td></tr>
+      <tr><td>📡 引擎版本</td><td>v7.0.0（cnb.cool 最新）</td></tr>
+      <tr><td>🆔 系统身份</td><td>灵枢 AutoBrain v7.0.0 · 82 模块 / 8 分组</td></tr>
+      <tr><td>⏱️ 运行时长</td><td>4 days, 12 hours, 42 minutes</td></tr>
+      <tr><td>🕐 执行周期</td><td>每日 05:00 自动执行</td></tr>
+    </table>
+
+    <!-- 引擎分组详情 -->
+    <div class="section-title">🧩 引擎分组详情</div>
+    <div class="group-grid">
+      <div class="group-item">
+        <span class="group-name">🖥️ 核心推理</span>
+        <span class="group-count">12 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">🧠 认知引擎</span>
+        <span class="group-count">14 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">💾 记忆层</span>
+        <span class="group-count">10 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">🔗 工具编排</span>
+        <span class="group-count">8 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">🌐 网络接入</span>
+        <span class="group-count">6 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">📋 任务调度</span>
+        <span class="group-count">10 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">🔒 安全层</span>
+        <span class="group-count">8 模块</span>
+      </div>
+      <div class="group-item">
+        <span class="group-name">📊 监控日志</span>
+        <span class="group-count">14 模块</span>
+      </div>
+    </div>
+
+    <!-- 状态柱状图 -->
+    <div class="section-title">📈 状态分布</div>
+    <div class="bar-container">
+      <div class="bar-row">
+        <span class="bar-label">✅ 就绪</span>
+        <div class="bar-track">
+          <div class="bar-fill bar-ready" style="width: 100%">44</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">⚠️ 告警</span>
+        <div class="bar-track">
+          <div class="bar-fill bar-warn" style="width: 0%">0</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <span class="bar-label">❌ 故障</span>
+        <div class="bar-track">
+          <div class="bar-fill bar-error" style="width: 0%">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <span class="footer-time">🕐 报告生成: 2026-07-15 04:21 CST</span>
+      <span class="footer-version">v7.0.0 · 新的一天，随时待命 🤖</span>
+    </div>
+  </div>
+</div>
+</body>
+</html>

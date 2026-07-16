@@ -30,7 +30,7 @@ import sys
 import importlib.util
 from pathlib import Path
 
-
+from security import validate_safe_path
 
 
 def ensure_deps():
@@ -55,7 +55,7 @@ def parse_markdown(text: str) -> list:
     | tables |, plain paragraphs.
     """
     blocks = []
-    lines  = text.splitlines()
+    lines = text.splitlines()
     i = 0
 
     def flush_para(buf: list):
@@ -93,7 +93,6 @@ def parse_markdown(text: str) -> list:
             para_buf = []
             inline_expr = stripped[2:].rstrip("$").strip()
             if inline_expr:
-                # Single-line: $$E = mc^2$$
                 blocks.append({"type": "math", "text": inline_expr})
                 i += 1
             else:
@@ -166,9 +165,9 @@ def parse_markdown(text: str) -> list:
                 parsed.append(cells)
             if len(parsed) >= 2:
                 blocks.append({
-                    "type":    "table",
+                    "type": "table",
                     "headers": parsed[0],
-                    "rows":    parsed[1:],
+                    "rows": parsed[1:],
                 })
             elif len(parsed) == 1:
                 # Single row — treat as paragraph
@@ -195,10 +194,10 @@ def _md_inline(text: str) -> str:
     """Convert inline Markdown to ReportLab XML markup."""
     # Bold: **text** or __text__
     text = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', text)
-    text = re.sub(r'__(.+?)__',     r'<b>\1</b>', text)
+    text = re.sub(r'__(.+?)__', r'<b>\1</b>', text)
     # Italic: *text* or _text_
     text = re.sub(r'\*(.+?)\*', r'<i>\1</i>', text)
-    text = re.sub(r'_(.+?)_',   r'<i>\1</i>', text)
+    text = re.sub(r'_(.+?)_', r'<i>\1</i>', text)
     # Inline code: `code`
     text = re.sub(r'`(.+?)`', r'<font name="Courier">\1</font>', text)
     # Strip markdown links, keep text
@@ -267,8 +266,9 @@ def parse_plain(text: str) -> list:
 
 
 # ── Pass-through validator ─────────────────────────────────────────────────────
-VALID_TYPES = {"h1","h2","h3","body","bullet","numbered","callout","table",
-               "image","code","math","divider","caption","pagebreak","spacer"}
+VALID_TYPES = {"h1", "h2", "h3", "body", "bullet", "numbered", "callout", "table",
+               "image", "code", "math", "divider", "caption", "pagebreak", "spacer"}
+
 
 def validate_content_json(data: list) -> tuple[list, list]:
     """Return (valid_blocks, warnings)."""
@@ -316,8 +316,11 @@ def parse_file(input_path: str) -> tuple[list, list]:
 def main():
     parser = argparse.ArgumentParser(description="Parse a document into content.json")
     parser.add_argument("--input", required=True, help="Input file (.md, .txt, .pdf, .json)")
-    parser.add_argument("--out",   default="content.json", help="Output content.json path")
+    parser.add_argument("--out", default="content.json", help="Output content.json path")
     args = parser.parse_args()
+
+    validate_safe_path(args.input, allowed_extensions={".md", ".txt", ".pdf", ".json"},
+)
 
     if not os.path.exists(args.input):
         print(json.dumps({"status": "error", "error": f"File not found: {args.input}"}),
@@ -334,8 +337,8 @@ def main():
 
     if not blocks:
         print(json.dumps({
-            "status":   "error",
-            "error":    "No content blocks extracted",
+            "status": "error",
+            "error": "No content blocks extracted",
             "warnings": warnings,
         }), file=sys.stderr)
         sys.exit(3)
@@ -344,10 +347,10 @@ def main():
         json.dump(blocks, f, indent=2, ensure_ascii=False)
 
     result = {
-        "status":      "ok",
-        "out":         args.out,
+        "status": "ok",
+        "out": args.out,
         "block_count": len(blocks),
-        "warnings":    warnings,
+        "warnings": warnings,
     }
     print(json.dumps(result, indent=2))
 
@@ -357,7 +360,7 @@ def main():
 
     type_counts: dict = {}
     for b in blocks:
-        type_counts[b.get("type","?")] = type_counts.get(b.get("type","?"), 0) + 1
+        type_counts[b.get("type", "?")] = type_counts.get(b.get("type", "?"), 0) + 1
     for t, n in sorted(type_counts.items()):
         print(f"    {t:12} × {n}", file=sys.stderr)
 

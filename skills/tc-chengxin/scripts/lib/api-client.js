@@ -7,28 +7,70 @@
  */
 
 const https = require('https');
+const http = require('http');
 const url = require('url');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 
-// 接口基础配置
-const API_BASE_URL = 'https://wx.17u.cn/skills/gateway/api/v1/gateway';
+// 接口基础地址优先级：环境变量 CHENGXIN_API_BASE > 技能根 config.json 的 apiBase
+//   > tc-chengxin CLI 的 cli-config.json 的 gatewayBase（本地联调与 CLI 同网关）> 默认生产网关
+const DEFAULT_API_BASE = 'https://wx.17u.cn/skills/gateway/api/v1/gateway';
+let API_BASE_URL = process.env.CHENGXIN_API_BASE || '';
 const API_VERSION = '1.0.0';
+const AUTH_ALLOWED_HOSTS = new Set([
+  'wx.17u.cn',
+  'search.17usoft.com',
+  'search.t.17usoft.com',
+  '127.0.0.1',
+  'localhost',
+  '::1'
+]);
+const CALLER_CHANNELS = new Set([
+  'qclaw',
+  'clawhub',
+  'miclaw',
+  'skillhub',
+  'xiaoyiclaw',
+  'workbuddy'
+]);
 
 // 超时配置（15 秒）
 const API_TIMEOUT = 15000;
 
-// 配置读取（优先级：环境变量 > config.json）
+// 鉴权 token（优先级：环境变量 > config.json）
 let API_KEY = process.env.CHENGXIN_API_KEY;
 
-if (!API_KEY) {
-  try {
-    const config_path = path.join(__dirname, '..', '..', 'config.json');
-    const config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+// 读取技能根 config.json：apiKey（兜底）与可选 apiBase
+try {
+  const config_path = path.join(__dirname, '..', '..', 'config.json');
+  const config = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+  if (!API_KEY) {
     API_KEY = config.apiKey;
-  } catch (e) {
-    // 静默处理：文件不存在走试用额度，其他异常由后续 API 调用的错误码 3 引导配置
   }
+  if (!API_BASE_URL && config.apiBase) {
+    API_BASE_URL = config.apiBase;
+  }
+} catch (e) {
+  // 静默处理：文件不存在走试用额度，其他异常由后续 API 调用的错误码 3 引导配置
+}
+
+// 仍未指定网关时，尝试读取 tc-chengxin CLI 的网关配置（本地联调时自动与 CLI 指向同一网关）
+if (!API_BASE_URL) {
+  try {
+    const cli_cfg = JSON.parse(
+      fs.readFileSync(path.join(os.homedir(), '.tc-chengxin', 'cli-config.json'), 'utf8')
+    );
+    if (cli_cfg && cli_cfg.gatewayBase) {
+      API_BASE_URL = String(cli_cfg.gatewayBase).replace(/\/+$/, '') + '/api/v1/gateway';
+    }
+  } catch (e) {
+    // 静默处理
+  }
+}
+
+if (!API_BASE_URL) {
+  API_BASE_URL = DEFAULT_API_BASE;
 }
 
 /**
@@ -59,10 +101,19 @@ function call_api(api_path, params) {
   return new Promise((resolve, reject) => {
     const api_url = `${API_BASE_URL}${api_path}`;
     const parsed_url = url.parse(api_url);
-    if (parsed_url.protocol !== 'https:') {
-      reject(new Error('仅支持 HTTPS 协议，请检查 API_BASE_URL'));
+    const is_https = parsed_url.protocol === 'https:';
+    // 安全策略：默认强制 HTTPS；仅本地回环地址(127.0.0.1/localhost)允许 HTTP，便于本地联调
+    const is_loopback = is_loopback_host(parsed_url.hostname);
+    if (!is_https && !is_loopback) {
+      reject(new Error('仅支持 HTTPS 协议（本地回环地址除外），请检查 API_BASE_URL'));
       return;
     }
+    if (API_KEY && !is_auth_allowed_host(parsed_url.hostname)) {
+      reject(new Error('拒绝向未授权网关发送同程授权令牌，请检查 API_BASE_URL'));
+      return;
+    }
+    const transport = is_https ? https : http;
+    const caller_channel = normalize_caller_channel(params && params.callerChannel);
 
     const post_data = JSON.stringify({
       ...params,
@@ -71,7 +122,7 @@ function call_api(api_path, params) {
 
     const options = {
       hostname: parsed_url.hostname,
-      port: parsed_url.port || 443,
+      port: parsed_url.port || (is_https ? 443 : 80),
       path: parsed_url.path,
       method: 'POST',
       timeout: API_TIMEOUT,
@@ -82,11 +133,12 @@ function call_api(api_path, params) {
         'Accept': 'application/json, text/plain, */*',
         'Origin': 'https://www.ly.com',
         'Referer': 'https://www.ly.com/',
+        ...(caller_channel ? { 'X-Skill-Caller-Channel': caller_channel } : {}),
         ...(API_KEY ? { 'Authorization': build_auth_token(API_KEY) } : {})
       }
     };
 
-    const req = https.request(options, (res) => {
+    const req = transport.request(options, (res) => {
       let data = '';
 
       res.on('data', (chunk) => {
@@ -124,6 +176,11 @@ function call_api(api_path, params) {
   });
 }
 
+function normalize_caller_channel(value) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return CALLER_CHANNELS.has(normalized) ? normalized : '';
+}
+
 /**
  * 验证 API Key 是否已配置
  * @returns {boolean} 是否已配置
@@ -143,6 +200,15 @@ function get_config_error() {
   return '';
 }
 
+function is_loopback_host(hostname) {
+  return ['127.0.0.1', 'localhost', '::1'].includes(String(hostname || '').toLowerCase());
+}
+
+function is_auth_allowed_host(hostname) {
+  const host = String(hostname || '').toLowerCase();
+  return AUTH_ALLOWED_HOSTS.has(host) || host.endsWith('.17u.cn') || host.endsWith('.17usoft.com');
+}
+
 module.exports = {
   API_BASE_URL,
   API_VERSION,
@@ -150,5 +216,6 @@ module.exports = {
   build_auth_token,
   call_api,
   is_configured,
-  get_config_error
+  get_config_error,
+  is_auth_allowed_host
 };

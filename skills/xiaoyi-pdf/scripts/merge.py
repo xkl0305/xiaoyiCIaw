@@ -15,6 +15,9 @@ import json
 import os
 import sys
 
+from security import validate_safe_path
+
+
 def ensure_deps():
     if importlib.util.find_spec("pypdf") is None:
         import subprocess
@@ -54,7 +57,7 @@ def merge(cover_path: str, body_path: str, out_path: str, title: str = "") -> di
 
     # Page count sanity
     cover_pages = len(PdfReader(cover_path).pages)
-    body_pages  = len(PdfReader(body_path).pages)
+    body_pages = len(PdfReader(body_path).pages)
     if cover_pages != 1:
         warnings.append(f"Cover PDF has {cover_pages} pages (expected 1)")
 
@@ -65,12 +68,12 @@ def merge(cover_path: str, body_path: str, out_path: str, title: str = "") -> di
         warnings.append(f"Output is very large ({size_kb} KB) — consider compressing images")
 
     report = {
-        "status":       "ok",
-        "out":          out_path,
-        "total_pages":  total_pages,
-        "cover_pages":  cover_pages,
-        "body_pages":   body_pages,
-        "size_kb":      size_kb,
+        "status": "ok",
+        "out": out_path,
+        "total_pages": total_pages,
+        "cover_pages": cover_pages,
+        "body_pages": body_pages,
+        "size_kb": size_kb,
     }
     if warnings:
         report["warnings"] = warnings
@@ -81,11 +84,13 @@ def merge(cover_path: str, body_path: str, out_path: str, title: str = "") -> di
 def main():
     parser = argparse.ArgumentParser(description="Merge cover + body PDFs")
     parser.add_argument("--cover", required=True)
-    parser.add_argument("--body",  required=True)
-    parser.add_argument("--out",   required=True)
+    parser.add_argument("--body", required=True)
+    parser.add_argument("--out", required=True)
     parser.add_argument("--title", default="")
     args = parser.parse_args()
 
+    validate_safe_path(args.cover, allowed_extensions={".pdf"})
+    validate_safe_path(args.body, allowed_extensions={".pdf"})
     result = merge(args.cover, args.body, args.out, args.title)
 
     if result["status"] == "error":

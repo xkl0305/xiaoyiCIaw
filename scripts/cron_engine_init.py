@@ -88,4 +88,53 @@ if fails:
 lines.append("")
 lines.append("新的一天，随时待命 🤖")
 
+# 5. 引擎分组明细
+ENGINE_GROUPS = {
+    "🧠 核心引擎": ["system_identity", "hook_engine", "mutex_engine", "lazy_load", "anti_fake", "closed_loop"],
+    "🔧 工具与执行": ["unified_executor", "tool_gateway", "background_executor", "decision_core", "dag_context"],
+    "💾 存储与状态": ["memory_layer", "crusheart_db", "state_manager", "session_manager"],
+    "🛡️ 安全与守卫": ["iron_rules", "context_warning", "anomaly_detector", "circuit_breaker", "failover", "identity_drift_guard"],
+    "🔄 自进化与反馈": ["self_evolution", "auto_tuning", "enhancement_engine", "self_evolution_engine"],
+    "🧬 记忆系统": ["hierarchical_memory", "hallucination_guard", "rccam_classifier", "lfm_skill_bank", "selfrag_crag"],
+    "📊 质量与监控": ["quality_dashboard", "unified_judge", "dual_mode", "trace_timeline", "insights_engine"],
+    "🎨 视觉与体验": ["persona_visual", "goal_compiler"],
+    "🤖 智能化引擎": ["plugin_sdk", "user_dynamic_portrait", "rule_engine", "autonomy_cycle", "task_template", "success_path_store"],
+}
+
+engine_map = {}
+for gname, names in ENGINE_GROUPS.items():
+    for n in names:
+        engine_map[n] = gname
+
+engines = state.get("engines", [])
+group_counts = {}
+group_oks = {}
+for group in ENGINE_GROUPS:
+    group_counts[group] = 0
+    group_oks[group] = 0
+
+for eng in engines:
+    ename = eng.get("name", "")
+    estatus = eng.get("status", "")
+    group = engine_map.get(ename, "🤖 智能化引擎")
+    group_counts[group] = group_counts.get(group, 0) + 1
+    if estatus == "ready":
+        group_oks[group] = group_oks.get(group, 0) + 1
+
+lines.append("")
+lines.append("**引擎分组详情：**")
+lines.append("")
+lines.append("| 分组 | 就绪 | 总数 | 状态 |")
+lines.append("|:----|:---:|:---:|:----:|")
+for group in ENGINE_GROUPS:
+    total_g = group_counts.get(group, 0)
+    ok_g = group_oks.get(group, 0)
+    if total_g == 0:
+        continue
+    icon = "✅" if ok_g == total_g else ("⚠️" if ok_g > 0 else "❌")
+    lines.append(f"| {group} | {ok_g} | {total_g} | {icon} |")
+
+lines.append("")
+lines.append("新的一天，随时待命 🤖")
+
 print("\n".join(lines))

@@ -3,7 +3,7 @@
 _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`（xiaoyiclaw 定制副本）行为一致。_
 
 > 🔸 **本渠道与基础版的两点差异**
-> 1. **预订/跳转链接仅含 app 链接**：统一渲染为 `🔗 [app 预订](tctclient://…)`，链接取自 API 的 `redirectAppUrl`；**不输出 PC 链接、不输出移动端 H5 链接**。
+> 1. **预订/跳转链接仅含 app 链接**：统一渲染为 `🔗 [app 预订](...)`，链接优先取 API 的 `superlinkRedirectUrl`，没有时取 `redirectAppUrl`；**不输出 PC 链接、不输出移动端 H5 链接**。
 > 2. **酒店、景区强制卡片 + 图片**：即便 `channel=webchat`（默认走表格）也强制以卡片展示，每条结果顶部含 Markdown 图片 `![名称](image)`，`image` 取自对应资源对象的 `image` 字段。
 
 ---
@@ -14,8 +14,8 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 
 | 资源 | 展示形态 | 链接形式 |
 |------|---------|---------|
-| **酒店 / 景区** | **始终卡片 + 顶部图片**（忽略 `use_table`） | `🔗 [app 预订](tctclient://…)` |
-| 火车 / 机票 / 汽车 / 度假 / 行程规划 | 按 `resolve_output_mode` 决定表格或卡片 | `🔗 [app 预订](tctclient://…)` |
+| **酒店 / 景区** | **始终卡片 + 顶部图片**（忽略 `use_table`） | `🔗 [app 预订](...)` |
+| 火车 / 机票 / 汽车 / 度假 / 行程规划 | 按 `resolve_output_mode` 决定表格或卡片 | `🔗 [app 预订](...)` |
 
 > 说明：酒店/景区的「表格」入口（`format_hotel_table` / `format_scenery_table`）在本渠道已改为委托卡片渲染，故无论 `surface` 取值如何，最终都是带图卡片。
 
@@ -25,11 +25,11 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 
 | 模式 | 输出 |
 |------|------|
-| Markdown | `🔗 [app 预订](url)`（url 取自 `redirectAppUrl`） |
+| Markdown | `🔗 [app 预订](url)`（url 优先取 `superlinkRedirectUrl`，没有时取 `redirectAppUrl`） |
 | 纯文本（`use_plain_link`） | `🔗 app：url` |
-| `redirectAppUrl` 为空/无效 | 空字符串（该条不展示预订链接） |
+| `superlinkRedirectUrl` 与 `redirectAppUrl` 均为空/无效 | 空字符串（该条不展示预订链接） |
 
-> ⚠️ `tctclient://` 为同程 app 原生唤起协议，仅在小艺端可正确打开，PC/H5 浏览器无法直接访问 —— 这是本渠道按需定制的预期行为。
+> ⚠️ 链接 URL 以脚本输出为准，不要根据示例重写。小艺 RobotId 场景下优先使用网关短链化后的 `superlinkRedirectUrl`；只有下游未返回 `superlinkRedirectUrl` 时，才兜底使用 `redirectAppUrl`，该兜底值可能是 `tctclient://` app 原生唤起协议。
 
 ---
 
@@ -42,7 +42,7 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 **品牌** 锦江都城
 **设施** 停车场;免费wifi
 **地址** 黄浦区 · 山西南路200号
-🔗 [app 预订](tctclient://hotel/details?hotelId=10201021)
+🔗 [app 预订](https://wx.17u.cn/short/abc123)
 
 ---
 ```
@@ -60,7 +60,7 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 **城市** 杭州 | **星级** 4A | **评分** ⭐4.8（14186条）
 **门票** ¥260 | **开放时间** 未公布
 **特点** 世界三大名秀之一
-🔗 [app 预订](tctclient://scenery/detail?id=123)
+🔗 [app 预订](https://wx.17u.cn/short/def456)
 
 ---
 ```
@@ -77,10 +77,10 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 ```markdown
 | 车次 | 出发站 | 到达站 | 出发时间 | 到达时间 | 运行时长 | 价格 | 预订 |
 |------|--------|--------|---------|---------|---------|------|------|
-| 🚅 G7209 | 苏州 | 上海 | 07:25 | 08:06 | 41 分 | 二等座¥42.0, 一等座¥69.0 | 🔗 [app 预订](tctclient://train/…) |
+| 🚅 G7209 | 苏州 | 上海 | 07:25 | 08:06 | 41 分 | 二等座¥42.0, 一等座¥69.0 | 🔗 [app 预订](https://wx.17u.cn/short/ghi789) |
 ```
 
-其余品类（机票/特价机票/汽车/度假/行程规划/中转联程/补偿交通）的字段与列规则参见基础技能说明，链接形式统一替换为 `🔗 [app 预订](tctclient://…)`。
+其余品类（机票/特价机票/汽车/度假/行程规划/中转联程/补偿交通）的字段与列规则参见基础技能说明，链接形式统一替换为 `🔗 [app 预订](脚本输出的 app URL)`。该 URL 通常是 `superlinkRedirectUrl` 短链；若下游未返回该字段，则为 `redirectAppUrl` 兜底值。
 
 ---
 
@@ -91,7 +91,8 @@ _本文件为 xiaoyiclaw 渠道专属覆盖版，与 `scripts/lib/formatters.js`
 1. **酒店/景区图片**（`![...](...)`）必须保留，不得删除或改写图片 URL。
 2. **每个资源的 app 预订链接**必须输出，不得省略、替换或伪造。
 3. **不要自行补充 PC / 移动端链接** —— 本渠道按设计仅提供 app 链接。
-4. 底部引导语原样保留。
+4. **不要把示例 URL 当作固定格式**。短链、`https://` 链接或 `tctclient://` 兜底协议都必须按脚本输出原样保留。
+5. 底部引导语原样保留。
 
 ---
 

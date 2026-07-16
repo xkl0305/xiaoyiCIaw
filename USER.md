@@ -41,17 +41,16 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=d20218e8680ec3b0 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=6c07ab2ab18443a0 -->
 # Memory Global Summary
 
 ## User Profile
+- 用户当前时间（中国标准时间）为2026年7月15日（周三）凌晨05:00
+- 用户系统中有一个实体被称作'鸽子王'，该实体是人或人格
 - 用户拥有三个Git仓库
 - 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
 - 该维护任务通过 cron 机制触发，cron 标识为 crusheart-daily-maintenance
 - 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
-- 用户已安装名为‘xiaoyi-xlsx’的技能，并希望了解该技能的基本介绍和快速开始的样例
-- 助手对用户的称呼是'俞哥'
-- 用户已安装名为'seedream-image-gen'的技能，并希望了解其介绍和快速开始样例
 
 ## Preferences
 - 用户认为小云雀平台应该有 Access Key 设置窗口（'小云雀平台有Access Key窗口吗？'暗含期待该平台有此功能）
@@ -83,16 +82,16 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户指出定时任务（push/cron delivery）的推送结果只通过手机通知栏展示，如果不查看通知就丢失了，要求系统自查
-- 用户要求研究为什么两个定时任务（凌晨1点和下午5点）的执行结果都未出现在对话框
-- 2026-07-13 下午5点有一个定时任务没有出现在用户的对话框中，用户要求调查原因
-- 用户要求系统在回复中写梦境固化已完成，尽管工具调用失败
-- 用户要求执行某个操作，但未具体说明内容
+- 用户询问是否能进行切换操作（可能指在Crusheart-AutoMemory和灵枢/Crusheart-AutoBrain-Turbo之间切换）
+- 用户要求助手自行查找如何安装该文件
+- 用户要求安装Crusheart-AutoMemory插件
+- 用户要求助手将脚本运行结果整理成表格，用 ✅/⚠️/❌ 标记关键状态，直接回复，不生成 HTML 卡片
+- 用户设定了一个定时任务（cron），每【每周】执行一次沙箱清理检查，任务ID为1caf4049-42eb-422d-9aec-475bc9e02f99
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
+- 用户要去楼下
 - 用户提议明天（2026-07-15）看看情况再决定是否处理定时任务的问题
 - 用户询问知识图谱是否需要设置定时任务
-- 用户询问是否需要推送仓库
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

@@ -23,13 +23,46 @@
 const { call_api } = require('./api-client');
 const { resolve_output_mode } = require('./output-mode');
 const { extract_response_data } = require('./data-utils');
+const fs = require('fs');
+const path = require('path');
 const {
   NO_MATCH_DETAIL,
   create_success_banner_once,
   handle_api_result,
   print_no_match_lines,
-  print_request_exception
+  print_request_exception,
+  print_verbatim_close_banner
 } = require('./query-response');
+const {
+  is_display_contract_guard,
+  build_workbuddy_visual_response,
+  print_workbuddy_visual_response
+} = require('./workbuddy-visual');
+
+let channel_config_cache;
+
+function load_channel_config() {
+  if (channel_config_cache !== undefined) {
+    return channel_config_cache;
+  }
+  channel_config_cache = {};
+  try {
+    const config_path = path.join(__dirname, '..', '..', 'channel.json');
+    if (fs.existsSync(config_path)) {
+      channel_config_cache = JSON.parse(fs.readFileSync(config_path, 'utf8'));
+    }
+  } catch (e) {
+    channel_config_cache = {};
+  }
+  return channel_config_cache;
+}
+
+function get_default_caller_channel() {
+  return process.env.CHENGXIN_CALLER_CHANNEL
+    || process.env.CALLER_CHANNEL
+    || load_channel_config().callerChannel
+    || '';
+}
 
 /**
  * 清洗字符串参数：移除控制字符，超长截断
@@ -126,6 +159,18 @@ function build_request_params(params) {
       request_params[camel_key] = final_value;
     }
   }
+
+  if (is_display_contract_guard()) {
+    request_params.channel = request_params.channel || 'workbuddy';
+    request_params.surface = request_params.surface || 'desktop';
+    request_params.outputProfile = 'workbuddy_visual';
+    request_params.renderMode = 'visual_json';
+  }
+
+  const caller_channel = get_default_caller_channel();
+  if (!request_params.callerChannel && caller_channel) {
+    request_params.callerChannel = sanitize_string_arg(String(caller_channel), 100);
+  }
   
   return request_params;
 }
@@ -211,7 +256,11 @@ function create_query_runner(config) {
     const request_params = build_request_params(params);
     
     // 4. 检测输出格式
-    const { use_table, use_plain_link } = resolve_output_mode(params);
+    let { use_table, use_plain_link } = resolve_output_mode(params);
+    if (is_display_contract_guard()) {
+      use_table = false;
+      use_plain_link = false;
+    }
     const format_options = { use_table, use_plain_link };
     
     // 5. 调用 API
@@ -219,9 +268,9 @@ function create_query_runner(config) {
       const result = await call_api(api_path, request_params);
       
       // 6. 处理结果
-      handle_api_result(result, {
+      await handle_api_result(result, {
         no_match_detail: no_match_detail,
-        on_success: (res) => {
+        on_success: async (res) => {
           const print_success_once = create_success_banner_once();
           // 解包业务数据：防御性双层解包
           // 部分 API 响应为双层嵌套 { code, data: { code, data: {...} } }，
@@ -232,6 +281,35 @@ function create_query_runner(config) {
             response_data = response_data.data;
           }
           
+          if (is_display_contract_guard()) {
+            const captured = [];
+            const original_log = console.log;
+            console.log = (...args) => {
+              captured.push(args.map((arg) => typeof arg === 'string' ? arg : JSON.stringify(arg)).join(' '));
+            };
+            try {
+              handle_result(response_data, {
+                print_success_once,
+                format_options,
+                print_no_match: () => print_no_match_lines(no_match_detail),
+                request_params
+              });
+            } finally {
+              console.log = original_log;
+            }
+
+            const fallback_markdown = captured.join('\n').trim();
+            if (print_success_once.was_printed()) {
+              print_workbuddy_visual_response(await build_workbuddy_visual_response(response_data, {
+                request_params,
+                fallback_markdown
+              }));
+            } else if (fallback_markdown) {
+              console.log(fallback_markdown);
+            }
+            return;
+          }
+
           // 调用自定义结果处理函数
           handle_result(response_data, {
             print_success_once,
@@ -239,6 +317,12 @@ function create_query_runner(config) {
             print_no_match: () => print_no_match_lines(no_match_detail),
             request_params
           });
+
+          // verbatim 模式：仅当本次确有结果输出（成功横幅已打印）时补上结束标记，
+          // 与起始标记成对包裹整段最终答复。非 verbatim 模式为 no-op。
+          if (print_success_once.was_printed()) {
+            print_verbatim_close_banner();
+          }
         }
       });
     } catch (error) {
@@ -255,5 +339,6 @@ function create_query_runner(config) {
 module.exports = {
   create_query_runner,
   parse_args,
-  build_request_params
+  build_request_params,
+  get_default_caller_channel
 };

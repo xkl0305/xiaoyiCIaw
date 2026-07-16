@@ -6,10 +6,13 @@ from PIL import Image
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
+from security import validate_safe_path
+
 SUPPORTED_IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".webp", ".svg"}
 
 
 def _prepare_watermark_image(image_path: str, target_width: float, opacity: float) -> str:
+    validate_safe_path(image_path, allowed_extensions=SUPPORTED_IMAGE_EXTS)
     ext = os.path.splitext(image_path)[1].lower()
     if ext not in SUPPORTED_IMAGE_EXTS:
         raise ValueError(
