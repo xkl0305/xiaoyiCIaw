@@ -41,16 +41,16 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=4358a82212efc00b -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1497d2ef5b4efbf0 -->
 # Memory Global Summary
 
 ## User Profile
+- 用户所在地是嘉兴，用于查询天气
 - 用户当前时间（中国标准时间）为2026年7月15日（周三）凌晨05:00
 - 用户系统中有一个实体被称作'鸽子王'，该实体是人或人格
 - 用户拥有三个Git仓库
 - 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
 - 该维护任务通过 cron 机制触发，cron 标识为 crusheart-daily-maintenance
-- 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 
 ## Preferences
 - 中国天气（wttr.in）的封装技能是用户关注的天气技能之一，用户询问为什么不用它
@@ -88,11 +88,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户打算将天气技能的默认设置改为🌤️ weather
 - 用户告知助手已注册好（彩云天气服务），询问注册后下一步该做什么
 - 用户请求使用 wttr.in 查询嘉兴天气
 - 用户要求助手切回之前的状态或话题，上下文不明
 - 用户不清楚 uwvwko-current-weather 技能如何使用，但认为该技能值得推送到仓库。
-- 助手建议用户运行 openclaw doctor --non-interactive 命令进行诊断
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
