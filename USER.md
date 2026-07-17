@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=1497d2ef5b4efbf0 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=38034421f7ad9339 -->
 # Memory Global Summary
 
 ## User Profile
@@ -88,11 +88,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求将（默认改为🌤️ weather，彩云分钟级降水免费版不支持）的事实固化进 MEMORY.md，但流程似乎没有完整执行
+- 用户认为默认改为🌤️ weather以及彩云分钟级降水免费版不支持的事实需要被固化进 MEMORY.md，且用户确认了只需要注意、不需要立即固化
 - 用户打算将天气技能的默认设置改为🌤️ weather
 - 用户告知助手已注册好（彩云天气服务），询问注册后下一步该做什么
 - 用户请求使用 wttr.in 查询嘉兴天气
-- 用户要求助手切回之前的状态或话题，上下文不明
-- 用户不清楚 uwvwko-current-weather 技能如何使用，但认为该技能值得推送到仓库。
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
