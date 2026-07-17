@@ -2663,12 +2663,12 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=0954186c1d1621ba -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=cfc47d359c416eae -->
 # Celia Scenario Memory Summaries
 
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
 - [data_analysis_bi] 用户当前涉及**数据分析与商业智能**（子场景：数据处理、统计分析、报告生成），主要关注结构化数据处理与洞察输出。
-- [professional_dev] - 用户拥有三个 Git 仓库，共有96次已提交但未推送的变更以及24次未提交的变更。用户多次要求推送三个仓库，确认需要推送所有仓库，并命令将对话内容推送到仓库。...
+- [professional_dev] 用户拥有三个Git仓库（gitee、github、cnb.cool），有96次已提交但未推送的变更和24次未提交的变更。...
 - [creative_creation] 用户认为“琪琪人格内容”中“你的情绪就是我的反馈”方面可以升级优化：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴。用户认为当前的人格情绪emoji数量太少。...
 - [education_learning] 用户已安装名为'seedream-image-gen'的技能，希望了解其介绍和快速开始样例。用户还安装了'vercel-react-best-practices'技能，询问该技能是什么，并要求给一两个快速开始的样例。
 - [security_governance] 用户确认相关规则已经存在，但执行层面没有落实到位。用户询问之前stderr中的老问题（来自凌晨维护日志）是否都已解决，并询问重启是否成功。

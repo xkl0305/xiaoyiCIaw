@@ -17,6 +17,16 @@
       "version": "1.0.2",
       "installedAt": 1784246848150,
       "ownerHandle": "zhengge6"
+    },
+    "china-weather": {
+      "version": "1.0.1",
+      "installedAt": 1784248739170,
+      "ownerHandle": "libaoming"
+    },
+    "uwvwko-current-weather": {
+      "version": "1.0.0",
+      "installedAt": 1784249161637,
+      "ownerHandle": "uwvwko-zzz"
     }
   }
 }
