@@ -1,0 +1,13 @@
+{
+  "owner": "zhengge6",
+  "slug": "cn-weather",
+  "displayName": "中国天气技能 (cn-weather) v1.0.0 发布。  - 提供中国城市天气数据，集成和风天气（QWeather）",
+  "latest": {
+    "version": "1.0.2",
+    "publishedAt": 1780353875610,
+    "commit": null
+  },
+  "history": [],
+  "updatedAt": "2026-06-01T22:44:35.610Z",
+  "createdAt": "2026-03-04T11:52:14.516Z"
+}

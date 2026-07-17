@@ -12,6 +12,11 @@
     "cost-tracker": {
       "version": "1.0.0",
       "installedAt": 1777361560944
+    },
+    "cn-weather": {
+      "version": "1.0.2",
+      "installedAt": 1784246848150,
+      "ownerHandle": "zhengge6"
     }
   }
 }

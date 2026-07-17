@@ -184,3 +184,8 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - 查看 main.sqlite 的 yaoyao_memories 视图：yaoyao 系统的写入目标
 - 两个表的查询列不同：memories 用 content, yaoyao_memories 用 user_text/asst_text
 - created_at 格式也不同：memories 是 ISO 字符串, yaoyao_memories 也是字符串
+
+
+### Weather API (和风天气)
+- **API Key**: `38ace7adf3fc4a9fb2ea6b90a900271f`
+- **凭据 ID**: `mc63yyde97`

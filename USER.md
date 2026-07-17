@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=bc2ec7d12124501b -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=911676510957d010 -->
 # Memory Global Summary
 
 ## User Profile
@@ -85,11 +85,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 助手建议用户运行 openclaw doctor --non-interactive 命令进行诊断
+- 用户要求助手推送 GalaxOS 仓库链接
 - 用户要求将 GalaxOS 仓库中的技能全部安装到 workspace
 - 用户要求介绍已安装的"weather"技能，并提供一到两个快速开始的样例
 - 用户要求修复定时任务的推送路由问题
-- 用户要求助手发送定时任务相关的信息或解决方案
-- 用户的定时任务功能存在通知和对话框弹出问题需要排查
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
