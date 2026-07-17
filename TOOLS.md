@@ -189,3 +189,6 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 ### Weather API (和风天气)
 - **API Key**: `38ace7adf3fc4a9fb2ea6b90a900271f`
 - **凭据 ID**: `mc63yyde97`
+
+### 彩云天气 API
+- **API Token**: `rCQkDczyWpkDeOf3`

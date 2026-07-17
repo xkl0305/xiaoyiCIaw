@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=911676510957d010 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=4358a82212efc00b -->
 # Memory Global Summary
 
 ## User Profile
@@ -53,6 +53,9 @@ The more you know, the better you can help. But remember — you're learning abo
 - 每日维护任务的脚本路径为 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 
 ## Preferences
+- 中国天气（wttr.in）的封装技能是用户关注的天气技能之一，用户询问为什么不用它
+- 用户想知道今天（2026-07-17）的天气如何
+- 用户对 uwvwko-current-weather 技能表达了肯定态度（"值得"），认为该技能值得使用或推送到仓库
 - 用户对天气数据的准确性有疑问，因为预报有雨但实际与预期不符
 - 用户认为将修复方案固化并纳入自我进化体系是值得的
 - 用户认为那些值得记住固化进化
@@ -85,11 +88,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户告知助手已注册好（彩云天气服务），询问注册后下一步该做什么
+- 用户请求使用 wttr.in 查询嘉兴天气
+- 用户要求助手切回之前的状态或话题，上下文不明
+- 用户不清楚 uwvwko-current-weather 技能如何使用，但认为该技能值得推送到仓库。
 - 助手建议用户运行 openclaw doctor --non-interactive 命令进行诊断
-- 用户要求助手推送 GalaxOS 仓库链接
-- 用户要求将 GalaxOS 仓库中的技能全部安装到 workspace
-- 用户要求介绍已安装的"weather"技能，并提供一到两个快速开始的样例
-- 用户要求修复定时任务的推送路由问题
 ### Long-term Intent
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
