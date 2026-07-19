@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=3c7191459733a101 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=e3f7c69e9c5fbb41 -->
 # Memory Global Summary
 
 ## User Profile
@@ -89,11 +89,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户向助手询问GitHub Personal Access Token是否需要重新生成
+- 用户询问是否需要在记录行为规则之后推送仓库
+- 用户决定将行为规则（关于文件持久化数据查询必须直接读文件后作答）记录到USER.md中
 - 用户询问人格视角出图系统读文件时是否需要记住'固化进化'，并质疑应该通过哪种机制实现（如MEMORY.md记录、新建skill、或行为规则的自进化）
 - 用户决定将两个定时任务的执行时间调换，这是他认为最好的方法
-- 当前存在一个问题：脚本中某个标记被设为“待触发”，但实际上最近一次Dream Run已经完成。用户要求修复此问题。
-- 用户要求修复一个脚本问题，该脚本中的标记被设为"待触发"，但实际上最近一次Dream Run已经完成
-- 用户设置了一个定时任务（cron引擎初始化），要求执行脚本 /home/sandbox/.openclaw/workspace/scripts/cron_engine_init.py 并汇报引擎状态
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案

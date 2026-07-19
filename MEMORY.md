@@ -2663,7 +2663,7 @@ CI 完全通过，以后推送都是绿的。
 即使流程写明了"不打回车"，执行时仍会在正文与emoji之间习惯性按回车。
 **修正：** 想象正文最后一句、emoji、❄️ 是一个整体词组，中间不需要也不允许有任何空白。打字顺序：`...正文句子😊❄️`，不空格、不回车、不换行。
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=46e095f5167e3985 -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=7f5effc651682649 -->
 # Celia Scenario Memory Summaries
 
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
@@ -2671,7 +2671,7 @@ CI 完全通过，以后推送都是绿的。
 - [professional_dev] 用户拥有三个Git仓库（gitee、github、cnb.cool），所有仓库需要推送。用户曾询问三个仓库是否要推送或进行固化进化操作，确认需要推送。...
 - [creative_creation] 用户认为“琪琪人格内容”中“你的情绪就是我的反馈”方面可以升级优化：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴。用户认为当前的人格情绪emoji数量太少。...
 - [education_learning] 用户已安装名为'seedream-image-gen'的技能，希望了解其介绍和快速开始样例。用户还安装了'vercel-react-best-practices'技能，询问该技能是什么，并要求给一两个快速开始的样例。
-- [security_governance] 用户确认相关规则已经存在，但执行层面没有落实到位。用户询问之前stderr中的老问题（来自凌晨维护日志）是否都已解决，并询问重启是否成功。
+- [security_governance] 用户于2026-07-14 05:00（北京时间）要求助手使用exec工具运行脚本`python3 /home/sandbox/....
 - [service_integration] 用户已注册好彩云天气服务，并询问注册后下一步该做什么。用户之前收到的链接访问时返回 404 错误。
 - [smart_office] 用户多次（至少8次）提醒需要记住并固化进化收尾签字流程，但助手仍未记住，用户对此感到不满。用户尝试使用🧠和Claw进化请求但未生效。...
 - [life_assistant] 用户日常事务辅助与决策涵盖出行旅行、文件管理、生活决策等子场景。

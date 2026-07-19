@@ -79,7 +79,7 @@ table = f"""| 指标 | 值 |
 | 📡 版本 | {ver_note} |
 | 🆔 系统 | {sys_id} |
 | ⏱️ 运行时长 | {uptime_str} |
-| 🕐 执行周期 | 每日 05:00 自动执行 |"""
+| 🕐 执行周期 | 每日 01:00 自动执行 |"""
 
 lines.append(table)
 if fails:
