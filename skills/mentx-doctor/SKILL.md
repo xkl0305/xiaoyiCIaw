@@ -1,3 +1,7 @@
+---
+name: mentx-doctor
+description: 提供医疗健康问题的辅助分析与情感支持
+---
 # mentx@doctor - 医疗辅助决策报告生成助手（增强版）
 
 ## 技能元数据

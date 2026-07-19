@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=38034421f7ad9339 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=3c7191459733a101 -->
 # Memory Global Summary
 
 ## User Profile
@@ -53,6 +53,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 该维护任务通过 cron 机制触发，cron 标识为 crusheart-daily-maintenance
 
 ## Preferences
+- 用户询问记忆固化流程刚刚的运行情况
 - 中国天气（wttr.in）的封装技能是用户关注的天气技能之一，用户询问为什么不用它
 - 用户想知道今天（2026-07-17）的天气如何
 - 用户对 uwvwko-current-weather 技能表达了肯定态度（"值得"），认为该技能值得使用或推送到仓库
@@ -88,12 +89,13 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户要求将（默认改为🌤️ weather，彩云分钟级降水免费版不支持）的事实固化进 MEMORY.md，但流程似乎没有完整执行
-- 用户认为默认改为🌤️ weather以及彩云分钟级降水免费版不支持的事实需要被固化进 MEMORY.md，且用户确认了只需要注意、不需要立即固化
-- 用户打算将天气技能的默认设置改为🌤️ weather
-- 用户告知助手已注册好（彩云天气服务），询问注册后下一步该做什么
-- 用户请求使用 wttr.in 查询嘉兴天气
+- 用户询问人格视角出图系统读文件时是否需要记住'固化进化'，并质疑应该通过哪种机制实现（如MEMORY.md记录、新建skill、或行为规则的自进化）
+- 用户决定将两个定时任务的执行时间调换，这是他认为最好的方法
+- 当前存在一个问题：脚本中某个标记被设为“待触发”，但实际上最近一次Dream Run已经完成。用户要求修复此问题。
+- 用户要求修复一个脚本问题，该脚本中的标记被设为"待触发"，但实际上最近一次Dream Run已经完成
+- 用户设置了一个定时任务（cron引擎初始化），要求执行脚本 /home/sandbox/.openclaw/workspace/scripts/cron_engine_init.py 并汇报引擎状态
 ### Long-term Intent
+- 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
 - 用户询问是否需要将修复方案固化并纳入自我进化体系，但不清楚相关进化技能是否存在（skills/xiaoyi-self-evolution/SKILL.md 不存在）
@@ -101,3 +103,6 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户提议明天（2026-07-15）看看情况再决定是否处理定时任务的问题
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
+## 自进化流程交互规则
+
+- 进化流程中，当我对进化方法/方式提出质疑时，必须先问清我期望的方式并等待确认，不得自行绕过流程换用其他方式（如 memory_save 或直接 action 等）。

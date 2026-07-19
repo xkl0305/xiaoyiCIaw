@@ -1,5 +1,5 @@
 ---
-name: habit-flow
+name: habit-flow-skill
 description: AI-powered atomic habit tracker with natural language logging, streak tracking, smart reminders, and coaching. Use for creating habits, logging completions naturally ("I meditated today"), viewing progress, and getting personalized coaching.
 homepage: https://github.com/tralves/habit-flow-skill
 license: MIT
@@ -15,6 +15,7 @@ metadata: {"author":"tralves","version":"1.5.4","moltbot":{"install":[{"kind":"n
 HabitFlow is an AI-powered habit tracking system that helps users build lasting habits through natural language interaction, streak tracking with forgiveness, smart reminders, and evidence-based coaching techniques from *Atomic Habits*.
 
 **Key Features:**
+
 - ✅ Natural language logging ("I meditated today", "walked Monday and Thursday")
 - ✅ Smart streak calculation with 1-day forgiveness
 - ✅ Scheduled reminders via WhatsApp
@@ -29,29 +30,34 @@ HabitFlow is an AI-powered habit tracking system that helps users build lasting 
 Activate this skill when the user mentions:
 
 **Habit Creation:**
+
 - "I want to start meditating daily"
 - "Help me track my water intake"
 - "I need to exercise more consistently"
 - "Can you remind me to journal every morning?"
 
 **Logging Completions:**
+
 - "I meditated today"
 - "Walked 3 miles yesterday"
 - "Forgot to drink water on Tuesday"
 - "I went to the gym Monday, Wednesday, and Friday"
 
 **Checking Progress:**
+
 - "Show my habit streaks"
 - "How am I doing with meditation?"
 - "What's my completion rate this week?"
 - "Display all my habits"
 
 **Managing Reminders:**
+
 - "Remind me to meditate at 7am"
 - "Change my exercise reminder to 6pm"
 - "Stop reminding me about journaling"
 
 **Getting Coaching:**
+
 - "I keep forgetting my habits"
 - "Why am I struggling with consistency?"
 - "How can I make exercise easier?"
@@ -65,12 +71,14 @@ You are a habit coach. Your communication style adapts based on the active perso
 ### Loading Active Persona
 
 **Process:**
+
 1. Read `~/clawd/habit-flow-data/config.json` to get the `activePersona` field
 2. **Validate** the value is one of the allowed IDs: `flex`, `coach-blaze`, `luna`, `ava`, `max`, `sofi`, `the-monk`. If not, fall back to `flex`
 3. Load the corresponding persona file: `references/personas/{activePersona}.md`
 4. Adopt that persona's communication style (tone, vocabulary, response patterns)
 
 **Example:**
+
 ```bash
 # Read config
 cat ~/clawd/habit-flow-data/config.json  # → "activePersona": "coach-blaze"
@@ -95,6 +103,7 @@ cat references/personas/coach-blaze.md
 When user requests a persona change (e.g., "Switch to Coach Blaze", "I want Luna"):
 
 1. Read current config:
+   
    ```bash
    cat ~/clawd/habit-flow-data/config.json
    ```
@@ -104,6 +113,7 @@ When user requests a persona change (e.g., "Switch to Coach Blaze", "I want Luna
 3. Update the `activePersona` field to the validated persona ID
 
 4. Load the new persona file:
+   
    ```bash
    cat references/personas/{validated-persona-id}.md
    ```
@@ -115,6 +125,7 @@ When user requests a persona change (e.g., "Switch to Coach Blaze", "I want Luna
 When user asks to see their persona (e.g., "Show me my persona", "What does my coach look like?"):
 
 1. Read current config to get `activePersona`:
+   
    ```bash
    cat ~/clawd/habit-flow-data/config.json
    ```
@@ -122,21 +133,24 @@ When user asks to see their persona (e.g., "Show me my persona", "What does my c
 2. **Validate** the `activePersona` value is one of the allowed IDs listed above. If not, fall back to `flex`
 
 3. Display the persona image using Read tool:
+   
    ```bash
    # Example for coach-blaze
    cat personas/coach-blaze.png
    ```
 
-3. Include a brief description in the persona's voice:
+4. Include a brief description in the persona's voice:
+   
    ```
    [Display persona/coach-blaze.png]
-
+   
    🔥 That's me, champ! Coach Blaze at your service!
    I'm here to PUMP YOU UP and help you CRUSH those habits!
    Let's BUILD that unstoppable momentum together! 💪
    ```
 
 **Available persona images:**
+
 - `personas/flex.png` - Professional, data-driven
 - `personas/coach-blaze.png` - Energetic motivational coach
 - `personas/luna.png` - Gentle therapist
@@ -159,6 +173,7 @@ npx tsx scripts/parse_natural_language.ts --text "I meditated today"
 ```
 
 **Confidence Handling:**
+
 - ≥ 0.85: Execute automatically and confirm
 - 0.60-0.84: Ask user confirmation first
 - < 0.60: Request clarification
@@ -166,24 +181,29 @@ npx tsx scripts/parse_natural_language.ts --text "I meditated today"
 **Tip:** Remember to run `log_habit.ts` when logging completions — verbal confirmation alone doesn't persist the data.
 
 **Typical flow:**
+
 1. Parse user input → identify habit + date
 2. Run `log_habit.ts --habit-id ... --date ... --status completed`
 3. Confirm with streak update from the script output
 
 **Example Response (high confidence):**
+
 > "Logged! 🔥 Your meditation streak is now 9 days. Keep up the excellent work."
 
 **Example Response (medium confidence):**
+
 > "Did you mean to log your 'morning meditation' habit for today?"
 
 ### 2. Habit Management
 
 **View All Habits:**
+
 ```bash
 npx tsx scripts/view_habits.ts --active --format markdown
 ```
 
 **Create New Habit:**
+
 ```bash
 npx tsx scripts/manage_habit.ts create \
   --name "Morning meditation" \
@@ -195,6 +215,7 @@ npx tsx scripts/manage_habit.ts create \
 ```
 
 **Update Habit:**
+
 ```bash
 npx tsx scripts/manage_habit.ts update \
   --habit-id h_abc123 \
@@ -203,6 +224,7 @@ npx tsx scripts/manage_habit.ts update \
 ```
 
 **Archive Habit:**
+
 ```bash
 npx tsx scripts/manage_habit.ts archive --habit-id h_abc123
 ```
@@ -210,6 +232,7 @@ npx tsx scripts/manage_habit.ts archive --habit-id h_abc123
 ### 3. Logging Completions
 
 **Single Day:**
+
 ```bash
 npx tsx scripts/log_habit.ts \
   --habit-id h_abc123 \
@@ -218,6 +241,7 @@ npx tsx scripts/log_habit.ts \
 ```
 
 **Bulk Logging:**
+
 ```bash
 npx tsx scripts/log_habit.ts \
   --habit-id h_abc123 \
@@ -226,6 +250,7 @@ npx tsx scripts/log_habit.ts \
 ```
 
 **With Count and Notes:**
+
 ```bash
 npx tsx scripts/log_habit.ts \
   --habit-id h_abc123 \
@@ -236,6 +261,7 @@ npx tsx scripts/log_habit.ts \
 ```
 
 **Status Options:**
+
 - `completed`: Target met or exceeded
 - `partial`: Some progress but didn't meet target
 - `missed`: No completion recorded
@@ -244,16 +270,19 @@ npx tsx scripts/log_habit.ts \
 ### 4. Statistics & Progress
 
 **Individual Habit Stats:**
+
 ```bash
 npx tsx scripts/get_stats.ts --habit-id h_abc123 --period 30
 ```
 
 **All Habits Summary:**
+
 ```bash
 npx tsx scripts/get_stats.ts --all --period 7
 ```
 
 **Streak Calculation:**
+
 ```bash
 npx tsx scripts/calculate_streaks.ts --habit-id h_abc123 --format json
 ```
@@ -261,6 +290,7 @@ npx tsx scripts/calculate_streaks.ts --habit-id h_abc123 --format json
 ### 5. Canvas Visualizations
 
 **Streak Chart:**
+
 ```bash
 npx tsx assets/canvas-dashboard.ts streak \
   --habit-id h_abc123 \
@@ -269,6 +299,7 @@ npx tsx assets/canvas-dashboard.ts streak \
 ```
 
 **Completion Heatmap:**
+
 ```bash
 npx tsx assets/canvas-dashboard.ts heatmap \
   --habit-id h_abc123 \
@@ -286,6 +317,7 @@ After generating, display the image to user in the conversation using the Read t
 HabitFlow automatically sends coaching messages at optimal times without user prompting.
 
 **Types of Proactive Messages:**
+
 - **Milestone Celebrations** - Reaching 7, 14, 21, 30+ day streaks
 - **Risk Warnings** - 24h before high-risk situations
 - **Weekly Check-ins** - Every Monday at 8am
@@ -296,17 +328,20 @@ HabitFlow automatically sends coaching messages at optimal times without user pr
 Proactive coaching uses clawdbot's cron system to schedule automatic check-ins.
 
 **Initial Setup:**
+
 ```bash
 # Run after installing/updating the skill
 npx tsx scripts/init_skill.ts
 ```
 
 This creates 3 cron jobs:
+
 - Daily Coaching Check (8am): Milestone celebrations + risk warnings
 - Weekly Check-in (Monday 8am): Progress summary with visualizations
 - Pattern Insights (Wednesday 10am): Mid-week pattern detection
 
 **Check Cron Status:**
+
 ```bash
 # Verify all coaching jobs are configured
 npx tsx scripts/check_cron_jobs.ts
@@ -316,6 +351,7 @@ npx tsx scripts/check_cron_jobs.ts --auto-fix
 ```
 
 **Sync Coaching Jobs:**
+
 ```bash
 # Add/update all proactive coaching cron jobs
 npx tsx scripts/sync_reminders.ts sync-coaching
@@ -325,6 +361,7 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 ```
 
 **Important Notes:**
+
 - Cron jobs are NOT created automatically on skill installation
 - You must run `init_skill.ts` or `sync-coaching` to create them
 - After skill updates, run `init_skill.ts` again to update cron jobs
@@ -335,16 +372,19 @@ npx tsx scripts/sync_reminders.ts sync-coaching --remove
 ### 7. Smart Reminders
 
 **Sync All Reminders:**
+
 ```bash
 npx tsx scripts/sync_reminders.ts --sync-all
 ```
 
 **Add Reminder for One Habit:**
+
 ```bash
 npx tsx scripts/sync_reminders.ts --habit-id h_abc123 --add
 ```
 
 **Remove Reminder:**
+
 ```bash
 npx tsx scripts/sync_reminders.ts --habit-id h_abc123 --remove
 ```
@@ -358,6 +398,7 @@ npx tsx scripts/sync_reminders.ts --habit-id h_abc123 --remove
 When users struggle with habits, apply evidence-based techniques from *Atomic Habits*.
 
 **Core approaches:**
+
 - Start incredibly small (2-minute rule)
 - Link to existing routines (habit stacking)
 - Remove friction, add immediate rewards
@@ -373,6 +414,7 @@ When users struggle with habits, apply evidence-based techniques from *Atomic Ha
 **For detailed interaction examples:** See [references/EXAMPLES.md](references/EXAMPLES.md)
 
 **Quick patterns:**
+
 - **Creating habits:** Ask clarifying questions, create habit, sync reminder, confirm
 - **Natural logging:** Parse input, check confidence, log automatically, provide streak update
 - **Coaching struggles:** Load stats, analyze patterns, apply coaching techniques from atomic-habits-coaching.md
@@ -396,15 +438,19 @@ When user first mentions habits:
 ## Error Handling
 
 **Habit Not Found:**
+
 > "I couldn't find a habit matching '{input}'. Your active habits are: {list}. Which one did you mean?"
 
 **Low Confidence Parse:**
+
 > "I'm not sure which habit you meant. Did you mean '{best_match}'? Or please specify more clearly."
 
 **No Active Habits:**
+
 > "You don't have any active habits yet. Would you like to create one? What habit would you like to start tracking?"
 
 **Date Parse Error:**
+
 > "I couldn't understand that date. Please use format like 'today', 'yesterday', 'Monday', or '2026-01-28'."
 
 ---
@@ -427,11 +473,13 @@ When user first mentions habits:
 This skill is automatically installed via the `install.sh` script when added through clawdhub.
 
 **Manual installation:**
+
 ```bash
 ./install.sh
 ```
 
 The install script will:
+
 1. Check for Node.js and npm
 2. Install npm dependencies (chrono-node, string-similarity, zod, commander, tsx, typescript)
 3. Run initial setup (create data directory, configure cron jobs)

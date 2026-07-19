@@ -1063,14 +1063,37 @@ def dream_consolidation() -> Dict:
                     except Exception as db_err:
                         log(f"      ⚠️ SQLite 查询失败: {str(db_err)[:60]}")
                 
+                # 检查独立 Dream Run 系统是否已运行（通过 dream_log.jsonl 判断）
+                dream_log_path = os.path.join(MEMORY_DIR, "dreaming", "dream_log.jsonl")
+                dream_independent = False
+                if os.path.isfile(dream_log_path):
+                    try:
+                        with open(dream_log_path, encoding="utf-8") as _df:
+                            dream_lines = [l for l in _df if l.strip()]
+                        if len(dream_lines) > 0:
+                            dream_independent = True
+                            # 取最后一条看时间
+                            last_entry = json.loads(dream_lines[-1])
+                            last_dream_ts = last_entry.get("started_at", "")
+                    except Exception:
+                        pass
+
                 if recent_count > 3:
-                    result["steps"]["llm_dream"] = {
-                        "status": "pending",
-                        "recent": recent_count,
-                        "preview": recent_conversations[:3],
-                        "note": f"扫描到{recent_count}条新记忆，待触发梦境固化"
-                    }
-                    log(f"      ✅ 新增 {recent_count} 条记忆，待触发梦境固化")
+                    if dream_independent:
+                        result["steps"]["llm_dream"] = {
+                            "status": "done",
+                            "recent": recent_count,
+                            "note": f"扫描到{recent_count}条新记忆，独立 Dream Run 系统已处理"
+                        }
+                        log(f"      ✅ 新增 {recent_count} 条记忆（独立 Dream Run 系统自动处理）")
+                    else:
+                        result["steps"]["llm_dream"] = {
+                            "status": "pending",
+                            "recent": recent_count,
+                            "preview": recent_conversations[:3],
+                            "note": f"扫描到{recent_count}条新记忆，待触发梦境固化"
+                        }
+                        log(f"      ✅ 新增 {recent_count} 条记忆，待触发梦境固化")
                 else:
                     result["steps"]["llm_dream"] = {
                         "status": "skipped",

@@ -1,3 +1,8 @@
+---
+name: voice-synthesis
+discription: 支持文本转语音,多种中文语音,可转换为飞书原生 opus 格式
+---
+
 # Voice Synthesis Skill
 
 语音合成技能，使用 edge-tts 生成语音，支持转换为飞书原生格式。
