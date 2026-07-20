@@ -5,6 +5,9 @@ homepage: https://dev.qweather.com/docs/api/
 metadata: { "openclaw": { "emoji": "🌤️", "requires": { "config": ["QWEATHER_API_KEY"] } } }
 ---
 
+[!IMPORTANT]
+> **数据源说明**：本技能名称中的"cn"指中国城市，实际使用的是**和风天气（QWeather）API** + Open-Meteo 降级，**不是 wttr.in**。请勿与 `weather`（wttr.in）技能混淆。
+
 # 中国天气技能 (CN Weather)
 
 使用和風天气 (QWeather) API 获取中国城市的实时天气和预报数据。

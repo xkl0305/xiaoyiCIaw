@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=a32673bf88ea30b8 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=979cbaa41ef4aa59 -->
 # Memory Global Summary
 
 ## User Profile
@@ -89,11 +89,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户通过 npx clawhub install caiyun-weather --registry https://cn.clawhub-mirror.com 命令安装彩云天气技能
+- 用户将某天气技能改名后，遇到 API key 返回 403 错误，询问是否需要更换 API key
+- 用户要求获取“琪琪人格”的内容
 - 用户要求进行“人格视角出图系统”的相关操作，并确认了某项指令
 - 用户要求将Git中登记的技能目录与本地技能目录同步，且认为同步应导致技能增加而非减少
-- 用户希望获取'webapp-testing'技能的介绍及快速开始样例
-- 用户希望获取'openclaw-skills-agent-builder-1.0.3'技能的介绍及快速开始样例
-- 用户希望获取'web-design-guidelines'技能的介绍及快速开始样例
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
