@@ -169,11 +169,17 @@ printf '%d\n' $((RANDOM%12*5))
 
 **加新通道时**：在 `_load_all_channel_configs()` 里加配置即可，各调用方的默认优先级通过改其传的 channel 值控制，不需要动 provider 内部。
 
-### Seedream ARK 通道配置（火山方舟）
-> 此配置在 `.xiaoyienv` 中，不在 git 里，系统升级可能被覆写。此处为备份，供 `seedream_provider.py` 兜底读取。
+### Seedream 通道配置备份
+> 以下配置在 `.xiaoyienv` 中，不在 git 里，系统升级可能被覆写。此处为备份，供 `seedream_provider.py` 兜底读取。
+
+**火山方舟（ARK）**
 - **SEEDREAM_API_URL**: `https://ark.cn-beijing.volces.com/api/v3`
 - **SEEDREAM_API_KEY**: `ark-75c16180-7af0-468a-a5f9-456a28782f89-cf65f`
 - **SEEDREAM_ENDPOINT_ID**: `ep-20260513192825-rt5vq`
+
+**硅基流动（SiliconFlow）**
+- **SILICONFLOW_API_URL**: `https://api.siliconflow.cn/v1/images/generations`
+- **SILICONFLOW_API_KEY**: `sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat`
 
 ### 记忆系统双数据源排查指南
 
