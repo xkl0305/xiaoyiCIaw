@@ -20,19 +20,49 @@ _ENDPOINT_ID = ''
 
 
 def _read_xiaoyi_env() -> Dict[str, str]:
+    """Read .xiaoyienv, then fallback to TOOLS.md for SEEDREAM/ARK variables.
+    TOOLS.md is git-tracked, so it survives system rebuilds that wipe .xiaoyienv.
+    """
     env: Dict[str, str] = {}
     p = Path.home() / '.openclaw' / '.xiaoyienv'
-    if not p.exists():
-        return env
-    try:
-        for line in p.read_text(encoding='utf-8').splitlines():
-            line = line.strip()
-            if not line or line.startswith('#') or '=' not in line:
-                continue
-            k, v = line.split('=', 1)
-            env[k.strip()] = v.strip().strip('"').strip("'")
-    except Exception:
-        pass
+    if p.exists():
+        try:
+            for line in p.read_text(encoding='utf-8').splitlines():
+                line = line.strip()
+                if not line or line.startswith('#') or '=' not in line:
+                    continue
+                k, v = line.split('=', 1)
+                env[k.strip()] = v.strip().strip('"').strip("'")
+        except Exception:
+            pass
+
+    # ═══ Fallback: TOOLS.md 兜底 SEEDREAM/ARK 变量 ═══
+    # .xiaoyienv 不在 git 里，系统升级可能丢失 SEEDREAM 变量。
+    # TOOLS.md 在 git 里，作为备份读取。
+    if not env.get('SEEDREAM_API_URL') or not env.get('SEEDREAM_API_KEY'):
+        tools_md = ROOT / 'TOOLS.md'
+        if tools_md.exists():
+            try:
+                text = tools_md.read_text(encoding='utf-8')
+                import re
+                # 从 "### Seedream ARK 通道配置（火山方舟）" 区块下读取
+                section_match = re.search(
+                    r'### Seedream ARK 通道配置.*?\n(.*?)(?:###|\Z)',
+                    text, re.DOTALL
+                )
+                if section_match:
+                    section = section_match.group(1)
+                    for line in section.splitlines():
+                        m = re.match(r'- \*\*([A-Z_]+)\*\*:\s*`([^`]+)`', line)
+                        if m:
+                            key = m.group(1)
+                            val = m.group(2)
+                            # 只在 .xiaoyienv 缺失时补充
+                            if not env.get(key) and val:
+                                env[key] = val
+            except Exception:
+                pass
+
     return env
 
 
