@@ -357,64 +357,7 @@ doc.add_paragraph("New list item", style="List Number", restart=True)  # 1. New 
 
 ---
 
-## 10. Formulas (OMath)
-
-Word formulas use **Office Math Markup Language (OMML)**. The most common mistake is placing `w:r`/`w:t` directly under `m:oMath`; Word expects `m:r` (math run) with `m:t` (math text), and run properties must include `w:rPr` with font settings so formulas render correctly.
-
-### Correct OOXML Structure
-
-```xml
-<m:oMath>
-  <m:r>
-    <w:rPr>
-      <w:rFonts w:ascii="Cambria Math" w:hAnsi="Cambria Math" w:eastAsia="SimSun"/>
-    </w:rPr>
-    <m:t>...</m:t>
-  </m:r>
-</m:oMath>
-```
-
-### Helper Functions
-
-Import the helpers from `docx_utils`:
-
-```python
-from docx_utils import add_formula, create_math_run, create_math_fraction
-```
-
-**`add_formula(paragraph, text)`** — add a simple inline formula.
-
-```python
-p = doc.add_paragraph()
-p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-add_formula(p, 'E = mc²')
-```
-
-**`create_math_run(text)`** — create a single math run (`m:r`) with proper `w:rPr` font settings. Use it as a building block for complex formulas.
-
-```python
-from docx.oxml import OxmlElement
-
-math_elem = OxmlElement('m:oMath')
-math_elem.append(create_math_run('x = '))
-math_elem.append(create_math_fraction('-b ± √(b²-4ac)', '2a'))
-
-p = doc.add_paragraph()
-p.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
-p._p.append(math_elem)
-```
-
-**`create_math_fraction(numerator, denominator)`** — create an `m:f` fraction element with properly structured `m:num` and `m:den` children.
-
-### Important Notes
-
-- Always use `m:r`/`m:t` inside `m:oMath`, never `w:r`/`w:t`.
-- Always include `w:rPr` with `w:rFonts` so Word/WPS can render the formula.
-- For complex structures (roots, integrals, superscripts, etc.), build the OMML elements manually and use `create_math_run` for every text run.
-
----
-
-## 11. Charts
+## 10. Charts
 
 `xiaoyi-docx` 通过 `matplotlib` 生成静态图表图片并嵌入文档。
 
@@ -454,7 +397,7 @@ add_histogram(doc, data=[1.2, 2.3, 1.8, 3.0], bins=4, title="分布")
 
 ---
 
-## 12. Critical Rules Quick Reference
+## 11. Critical Rules Quick Reference
 
 | # | Rule                | ❌ Wrong                                          | ✅ Correct                                                      |
 |---|---------------------|--------------------------------------------------|----------------------------------------------------------------|
@@ -464,11 +407,10 @@ add_histogram(doc, data=[1.2, 2.3, 1.8, 3.0], bins=4, title="分布")
 | 4 | **Lists**           | `doc.add_paragraph('text', style='List Number')` | `doc.add_paragraph('text', style='List Number', restart=True)` |
 | 5 | **Chinese Font**    | `run.font.name = 'SimSun'`                       | `set_chinese_font(run.font, 'SimSun')`                         |
 | 6 | **TOC Generation**  | Expecting TOC to be ready                        | User must press **F9** in Word to update                       |
-| 7 | **OMML Formula**    | `m:oMath > w:r > w:t`                           | `m:oMath > m:r > w:rPr + m:t`                                  |
 
 ---
 
-## 13. AIGC 标识（必须）
+## 12. AIGC 标识（必须）
 
 **所有生成的 DOCX 文档必须添加 AIGC 标识。** 在文档生成/编辑完成后，**立即调用 `aigc_marker` skill**：
 

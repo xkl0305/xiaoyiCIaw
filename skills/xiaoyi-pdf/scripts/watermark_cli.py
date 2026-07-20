@@ -5,7 +5,6 @@ import tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from security import validate_safe_path
 from watermark_merge import merge_watermark
 from watermark_text import create_text_watermark
 from watermark_image import create_image_watermark
@@ -20,41 +19,22 @@ def parse_args(args=None):
     parser = argparse.ArgumentParser(description="Add watermark to a PDF document.")
     parser.add_argument("--input", required=True, help="Input PDF path")
     parser.add_argument("--output", help="Output PDF path (default: *_watermarked.pdf)")
-    parser.add_argument(
-        "--type", required=True, choices=["text", "image", "pdf"], help="Watermark type"
-    )
+    parser.add_argument("--type", required=True, choices=["text", "image", "pdf"], help="Watermark type")
     parser.add_argument("--text", help="Watermark text (required for text type)")
-    parser.add_argument(
-        "--font-size", type=int, default=48, help="Font size for text watermark"
-    )
-    parser.add_argument(
-        "--rotate", type=int, default=45, help="Rotation angle for text watermark"
-    )
-    parser.add_argument(
-        "--opacity", type=float, default=0.3, help="Opacity for watermark (0-1)"
-    )
-    parser.add_argument(
-        "--color", default="#888888", help="Color for text watermark (hex)"
-    )
-    parser.add_argument(
-        "--image", help="Image or PDF watermark file path (required for image/pdf type)"
-    )
+    parser.add_argument("--font-size", type=int, default=48, help="Font size for text watermark")
+    parser.add_argument("--rotate", type=int, default=45, help="Rotation angle for text watermark")
+    parser.add_argument("--opacity", type=float, default=0.3, help="Opacity for watermark (0-1)")
+    parser.add_argument("--color", default="#888888", help="Color for text watermark (hex)")
+    parser.add_argument("--image", help="Image or PDF watermark file path (required for image/pdf type)")
     parser.add_argument("--pages", help="Page ranges to apply watermark, e.g. 1,3,5-10")
     parser.add_argument("--font", help="Explicit font file path for text watermark")
-    parser.add_argument(
-        "--scale",
-        type=float,
-        default=0.3,
-        help="Scale for image watermark as ratio of page width (0-1]",
-    )
+    parser.add_argument("--scale", type=float, default=0.3, help="Scale for image watermark as ratio of page width (0-1]")
     return parser.parse_args(args)
 
 
 def main(args=None) -> int:
     try:
         parsed = parse_args(args)
-
-        validate_safe_path(parsed.input, allowed_extensions={".pdf"})
 
         if not os.path.exists(parsed.input):
             print(f"Error: Input file not found: {parsed.input}", file=sys.stderr)
@@ -71,8 +51,6 @@ def main(args=None) -> int:
             if not parsed.text:
                 print("Error: --text is required when --type is text", file=sys.stderr)
                 return 1
-            if parsed.font:
-                validate_safe_path(parsed.font, allowed_extensions={".ttf", ".otf"})
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
                 watermark_pdf_path = tmp.name
             create_text_watermark(
@@ -86,14 +64,8 @@ def main(args=None) -> int:
             )
         elif parsed.type == "image":
             if not parsed.image:
-                print(
-                    "Error: --image is required when --type is image", file=sys.stderr
-                )
+                print("Error: --image is required when --type is image", file=sys.stderr)
                 return 1
-            validate_safe_path(
-                parsed.image,
-                allowed_extensions={".png", ".jpg", ".jpeg", ".bmp", ".webp", ".svg"},
-            )
             with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
                 watermark_pdf_path = tmp.name
             create_image_watermark(
@@ -106,7 +78,6 @@ def main(args=None) -> int:
             if not parsed.image:
                 print("Error: --image is required when --type is pdf", file=sys.stderr)
                 return 1
-            validate_safe_path(parsed.image, allowed_extensions={".pdf"})
             watermark_pdf_path = parsed.image
         else:
             print(f"Error: Unknown watermark type: {parsed.type}", file=sys.stderr)

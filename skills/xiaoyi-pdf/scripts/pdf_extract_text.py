@@ -6,8 +6,6 @@ import json
 import os
 import sys
 
-from security import validate_safe_path
-
 
 def ensure_deps():
     if importlib.util.find_spec("pypdf") is None:
@@ -50,7 +48,6 @@ def main():
     parser.add_argument("--input", required=True)
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
-    validate_safe_path(args.input, allowed_extensions={".pdf"})
     result = extract_text(args.input, args.out)
     if result["status"] == "error":
         print(json.dumps(result), file=sys.stderr)

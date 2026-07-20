@@ -27,7 +27,7 @@ import os
 import sys
 import importlib.util
 
-from security import validate_safe_path
+
 
 
 def ensure_deps():
@@ -46,8 +46,7 @@ from pypdf.generic import NameObject, TextStringObject, BooleanObject
 # ── Field helpers ─────────────────────────────────────────────────────────────
 def _field_type(field) -> str:
     ft = str(field.get("/FT", ""))
-    if ft == "/Tx":
-        return "text"
+    if ft == "/Tx":  return "text"
     if ft == "/Btn":
         ff = int(field.get("/Ff", 0))
         return "radio" if ff & (1 << 15) else "checkbox"
@@ -101,12 +100,12 @@ def _walk_and_fill(fields, data: dict, filled: list, errors: list, parent: str =
         if full not in data:
             continue
 
-        value = data[full]
-        ftype = _field_type(field)
+        value   = data[full]
+        ftype   = _field_type(field)
 
         if ftype == "text":
             field.update({
-                NameObject("/V"): TextStringObject(str(value)),
+                NameObject("/V"):  TextStringObject(str(value)),
                 NameObject("/DV"): TextStringObject(str(value)),
             })
             filled.append(full)
@@ -116,7 +115,7 @@ def _walk_and_fill(fields, data: dict, filled: list, errors: list, parent: str =
             on_val = _get_checkbox_on_value(field)
             pdf_val = on_val if truthy else "/Off"
             field.update({
-                NameObject("/V"): NameObject(pdf_val),
+                NameObject("/V"):  NameObject(pdf_val),
                 NameObject("/AS"): NameObject(pdf_val),
             })
             filled.append(full)
@@ -136,7 +135,7 @@ def _walk_and_fill(fields, data: dict, filled: list, errors: list, parent: str =
             # Radio value must start with /
             pdf_val = str(value) if str(value).startswith("/") else f"/{value}"
             field.update({
-                NameObject("/V"): NameObject(pdf_val),
+                NameObject("/V"):  NameObject(pdf_val),
                 NameObject("/AS"): NameObject(pdf_val),
             })
             filled.append(full)
@@ -158,8 +157,8 @@ def fill(pdf_path: str, out_path: str, data: dict) -> dict:
     if acroform is None or "/Fields" not in acroform:
         return {
             "status": "error",
-            "error": "This PDF has no fillable form fields.",
-            "hint": "Run fill_inspect.py first to confirm the PDF has fields.",
+            "error":  "This PDF has no fillable form fields.",
+            "hint":   "Run fill_inspect.py first to confirm the PDF has fields.",
         }
 
     # Enable appearance regeneration so viewers show the new values
@@ -180,11 +179,11 @@ def fill(pdf_path: str, out_path: str, data: dict) -> dict:
         return {"status": "error", "error": f"Write failed: {e}"}
 
     result = {
-        "status": "ok",
-        "out": out_path,
-        "filled_count": len(filled),
+        "status":        "ok",
+        "out":           out_path,
+        "filled_count":  len(filled),
         "filled_fields": filled,
-        "size_kb": os.path.getsize(out_path) // 1024,
+        "size_kb":       os.path.getsize(out_path) // 1024,
     }
     if errors:
         result["validation_errors"] = errors
@@ -196,16 +195,12 @@ def fill(pdf_path: str, out_path: str, data: dict) -> dict:
 
 def main():
     parser = argparse.ArgumentParser(description="Fill PDF form fields")
-    parser.add_argument("--input", required=True, help="Input PDF with form fields")
-    parser.add_argument("--out", required=True, help="Output PDF path")
+    parser.add_argument("--input",  required=True, help="Input PDF with form fields")
+    parser.add_argument("--out",    required=True, help="Output PDF path")
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument("--data", help="Path to JSON file with field values")
+    group.add_argument("--data",   help="Path to JSON file with field values")
     group.add_argument("--values", help="Inline JSON string with field values")
     args = parser.parse_args()
-
-    validate_safe_path(args.input, allowed_extensions={".pdf"})
-    if args.data:
-        validate_safe_path(args.data, allowed_extensions={".json"})
 
     if not os.path.exists(args.input):
         print(json.dumps({"status": "error", "error": f"File not found: {args.input}"}),

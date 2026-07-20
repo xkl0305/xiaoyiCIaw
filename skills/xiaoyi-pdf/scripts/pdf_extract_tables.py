@@ -6,8 +6,6 @@ import json
 import os
 import sys
 
-from security import validate_safe_path
-
 
 def ensure_deps():
     missing = []
@@ -67,7 +65,6 @@ def main():
     parser.add_argument("--out", required=True)
     parser.add_argument("--format", choices=["csv", "xlsx"], default="xlsx")
     args = parser.parse_args()
-    validate_safe_path(args.input, allowed_extensions={".pdf"})
     result = extract_tables(args.input, args.out, args.format)
     if result["status"] == "error":
         print(json.dumps(result), file=sys.stderr)

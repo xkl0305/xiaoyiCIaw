@@ -4,7 +4,6 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 
 from font_resolver import resolve_reportlab_fonts
-from security import validate_safe_path
 
 
 def has_cjk(text: str) -> bool:
@@ -19,7 +18,6 @@ def has_cjk(text: str) -> bool:
 def resolve_font_path(explicit_font: Optional[str], text: str = "") -> Optional[str]:
     if not has_cjk(text):
         if explicit_font:
-            validate_safe_path(explicit_font, allowed_extensions={".ttf", ".otf"})
             if not os.path.isfile(explicit_font):
                 raise FileNotFoundError(f"Font file not found: {explicit_font}")
             return explicit_font
