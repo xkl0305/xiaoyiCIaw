@@ -41,7 +41,7 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=e3f7c69e9c5fbb41 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=a32673bf88ea30b8 -->
 # Memory Global Summary
 
 ## User Profile
@@ -89,20 +89,24 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户向助手询问GitHub Personal Access Token是否需要重新生成
-- 用户询问是否需要在记录行为规则之后推送仓库
-- 用户决定将行为规则（关于文件持久化数据查询必须直接读文件后作答）记录到USER.md中
-- 用户询问人格视角出图系统读文件时是否需要记住'固化进化'，并质疑应该通过哪种机制实现（如MEMORY.md记录、新建skill、或行为规则的自进化）
-- 用户决定将两个定时任务的执行时间调换，这是他认为最好的方法
+- 用户要求进行“人格视角出图系统”的相关操作，并确认了某项指令
+- 用户要求将Git中登记的技能目录与本地技能目录同步，且认为同步应导致技能增加而非减少
+- 用户希望获取'webapp-testing'技能的介绍及快速开始样例
+- 用户希望获取'openclaw-skills-agent-builder-1.0.3'技能的介绍及快速开始样例
+- 用户希望获取'web-design-guidelines'技能的介绍及快速开始样例
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
-- 用户询问是否需要将修复方案固化并纳入自我进化体系，但不清楚相关进化技能是否存在（skills/xiaoyi-self-evolution/SKILL.md 不存在）
-- 用户要去楼下
-- 用户提议明天（2026-07-15）看看情况再决定是否处理定时任务的问题
+- 用户询问当前已安装的技能数量是否有增减
+- 用户请求介绍已安装的"excel-analysis"并给出快速开始样例
+- 用户请求获取"电话"主题的相关信息
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
 ## 自进化流程交互规则
 
 - 进化流程中，当我对进化方法/方式提出质疑时，必须先问清我期望的方式并等待确认，不得自行绕过流程换用其他方式（如 memory_save 或直接 action 等）。
+
+## 人格文档同步规则
+
+- 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
