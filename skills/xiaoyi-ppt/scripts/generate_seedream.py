@@ -475,19 +475,32 @@ def download_image(url, output_dir):
         return None
 
 STYLE_PROMPT_MAP = {
-    "CreamInk": "页面背景色 #faf9f7",
-    "PlatinumExecutive": "页面背景色 #FFFFFF",
-    "WarmPaper": "页面背景色 #f5f3ee"
+    "CreamInk": "适配的页面背景色：#faf9f7，图片里无需包含页面背景",
+    "PlatinumExecutive": "适配的页面背景色：#FFFFFF，图片里无需包含页面背景",
+    "WarmPaper": "适配的页面背景色：#f5f3ee，图片里无需包含页面背景"
 }
 
 
-def call_seedream(prompt: str, style: str | None = None, output_dir: Path | None = None) -> list[str]:
+def call_seedream(
+    prompt: str,
+    theme: str = "",
+    style: str | None = None,
+    output_dir: Path | None = None,
+) -> list[str]:
     style_prefix = ""
     if style and style in STYLE_PROMPT_MAP:
-        style_prefix = STYLE_PROMPT_MAP[style] + "，"
-    # Generate images
+        style_prefix = STYLE_PROMPT_MAP[style]
+
+    # 构建主题语境片段
+    theme_clause = f"{theme}。" if theme else ""
+
     image_urls = generate_image(
-        prompt=f"生成一张 16:9 的图片，照片会通过蒙版显露，请生成适合蒙版信息的图片，图片里无需包含蒙版背景，蒙版信息：{style_prefix}，图片描述：{prompt}，必须遵守：生成图片不要包含任何文字！",
+        prompt=(
+            f"生成一张商业专业级的PPT背景图，16：9比例。"
+            f"画面包含必要的留白，背景极简干净，{style_prefix}。核心呼应主题：{theme_clause}。"
+            f"具体画面元素参考：{prompt}。"
+            f"绝对禁止：图片中绝不允许包含任何形式的文字、字母、单词或乱码！忽略具体画面描述中的颜色描述，页面背景色为第一优先级。"
+        ),
         size="2K",
         watermark=False
     )

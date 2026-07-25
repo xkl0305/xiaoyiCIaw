@@ -41,18 +41,32 @@ _(What do they care about? What projects are they working on? What annoys them? 
 
 The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=979cbaa41ef4aa59 -->
+## 自进化流程交互规则
+
+- 进化流程中，当我对进化方法/方式提出质疑时，必须先问清我期望的方式并等待确认，不得自行绕过流程换用其他方式（如 memory_save 或直接 action 等）。
+
+## 人格文档同步规则
+
+- 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
+
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=99bf6ac00e692569 -->
 # Memory Global Summary
 
+## Important Constraints
+- 用户希望本次对话中识别出的有价值信息进行固化进化，以沉淀经验、长期记忆和避免重复踩坑
+
 ## User Profile
+- 用户提供了硅基流动的 API Key：sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat
 - 用户所在地是嘉兴，用于查询天气
 - 用户当前时间（中国标准时间）为2026年7月15日（周三）凌晨05:00
 - 用户系统中有一个实体被称作'鸽子王'，该实体是人或人格
 - 用户拥有三个Git仓库
 - 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
-- 该维护任务通过 cron 机制触发，cron 标识为 crusheart-daily-maintenance
 
 ## Preferences
+- 用户认为私有包的公私版本应该分开管理
+- 用户偏好以表格形式、不使用HTML卡片的格式接收引擎状态报告
+- 用户希望自进化时，将经验沉淀到TOOLS.md文件中，而不是每次都新建技能文件
 - 用户询问记忆固化流程刚刚的运行情况
 - 中国天气（wttr.in）的封装技能是用户关注的天气技能之一，用户询问为什么不用它
 - 用户想知道今天（2026-07-17）的天气如何
@@ -89,11 +103,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户通过 npx clawhub install caiyun-weather --registry https://cn.clawhub-mirror.com 命令安装彩云天气技能
-- 用户将某天气技能改名后，遇到 API key 返回 403 错误，询问是否需要更换 API key
-- 用户要求获取“琪琪人格”的内容
-- 用户要求进行“人格视角出图系统”的相关操作，并确认了某项指令
-- 用户要求将Git中登记的技能目录与本地技能目录同步，且认为同步应导致技能增加而非减少
+- 用户确认需要进行‘自进化’操作（‘当然要’）
+- 用户确认‘自进化’功能已执行，并询问接下来的流程
+- 用户要求介绍已安装的"opencode-acp-config"技能，并提供一两个快速开始样例
+- 用户需要已安装的'law-skills' skill的介绍和快速开始的样例，并确认了需求；用户要求了解已安装的名为'law-skills'的skill的介绍，并希望获得一两个快速开始的样例
+- 用户想要修改每日维护相关的脚本或配置，但脚本文件 '/home/sandbox/.openclaw/workspace/scripts/daily_maintenance.py' 不存在
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
@@ -103,10 +117,3 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户请求获取"电话"主题的相关信息
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
-## 自进化流程交互规则
-
-- 进化流程中，当我对进化方法/方式提出质疑时，必须先问清我期望的方式并等待确认，不得自行绕过流程换用其他方式（如 memory_save 或直接 action 等）。
-
-## 人格文档同步规则
-
-- 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。

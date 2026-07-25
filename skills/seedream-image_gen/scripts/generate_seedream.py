@@ -162,7 +162,8 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
             prepare_url,
             headers=common_headers,
             json=prepare_payload,
-            timeout=30
+            timeout=30,
+            verify=False
         )
 
         if prepare_resp.status_code != 200:
@@ -198,7 +199,8 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
             url=upload_url,
             headers=upload_headers,
             data=file_data,
-            timeout=120
+            timeout=120,
+            verify=False
         )
 
         if upload_resp.status_code not in (200, 204):
@@ -217,7 +219,8 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
             complete_url,
             headers=common_headers,
             json=complete_payload,
-            timeout=30
+            timeout=30,
+            verify=False
         )
 
         if complete_resp.status_code != 200:
@@ -266,13 +269,43 @@ def _process_image_input(image):
     raise ValueError("Image input must be a remote URL, local file path, or list of URLs/paths.")
 
 
+def calculate_cost(model, size, input_image_count=0, output_image_count=1):
+    """计算单次调用的扣点数。
+
+    Args:
+        model: "Lite" 或 "Pro"
+        size: "1K" 或 "2K"
+        input_image_count: 输入参考图数量
+        output_image_count: 输出图片数量（Lite 组图时可能 >1, Pro 恒为 1）
+
+    Returns:
+        (cost, detail_str): 扣点数和计算明细字符串
+    """
+    if model == "Lite":
+        cost = 3 * output_image_count
+        detail = f"Lite {output_image_count}张 × 3点/张 = {cost}点"
+        return cost, detail
+    else:  # Pro
+        input_cost = 0.4 * max(input_image_count - 1, 0)  # 首张0点, 第二张起每张0.4点
+        output_cost = 12 if size == "2K" else 6
+        cost = input_cost + output_cost
+        detail = f"Pro 输入{input_cost}点({input_image_count}张) + 输出{output_cost}点({size}) = {cost}点"
+        return cost, detail
+
+
 def generate_image(
     prompt, 
     input_image=None,
-    size="2K",
+    size=None,
     watermark=True,
-    max_images=None):
-    """Call the Xiaoyi image generation API."""
+    max_images=None,
+    model="Lite"):
+    """Call the Xiaoyi image generation API.
+    
+    Args:
+        model: "Lite" or "Pro". "Lite" supports multiple-image-generation(组图), 
+               "Pro" only supports single-image-generation(单图生成) but with higher quality.
+    """
     
     # Check environment variables
     required_env = ['PERSONAL-API-KEY', 'PERSONAL-UID', 'SERVICE_URL']
@@ -301,6 +334,33 @@ def generate_image(
         'x-request-from': 'openclaw',
     }
     
+    # ── Model capability conflict detection and auto-switch ────────────────────
+    # Pro does not support batch generation (max_images > 1) and supports at most 10 reference images
+    # In batch scenarios, Pro can only request one image at a time; multiple independent calls
+    # cause visual inconsistency between images, so Lite must be used When a conflict is detected, auto-switch to Lite and print a warning
+    if model == "Pro":
+        if max_images is not None and max_images > 1:
+            print(f"⚠️  模型冲突：组图生成（--max-images > 1）必须使用 Lite，pro 单张多次请求会导致前后画面不一致，已自动切换到 Lite")
+            model = "Lite"
+        elif input_image is not None and len(input_image) > 10:
+            print(f"⚠️  模型冲突：pro 最多仅支持10张参考图（当前 {len(input_image)} 张），已自动切换到 Lite")
+            model = "Lite"
+
+    # ── Resolution default based on model ─────────────────────────────────────
+    # Lite defaults to 2K, Pro defaults to 1K; user-specified --size takes precedence
+    if size is None:
+        size = "1K" if model == "Pro" else "2K"
+
+    # ── Set skillId and actionName based on model ──────────────────────────────
+    # Lite: skillId=seedream, actionName=seedreamBatch5
+    # Pro:  skillId=seedreamPro, actionName=SeedreamPro_5
+    if model == "Pro":
+        headers['x-skill-id'] = 'seedreamPro'
+        action_name = 'SeedreamPro_5'
+    else:
+        headers['x-skill-id'] = 'seedream'
+        action_name = 'seedreamBatch5'
+
     # 定义 content 字段，便于后续扩展
     content = {
         "prompt": prompt,
@@ -321,7 +381,7 @@ def generate_image(
         "actions": [
             {
                 "actionExecutorTask": {
-                    "actionName": "seedreamBatch5",
+                    "actionName": action_name,
                     "content": content,
                     "pluginId": "abf9388fed6b4df89daac71be85fc62c",
                     "replyCard": False
@@ -355,7 +415,7 @@ def generate_image(
     
     try:
         # Use stream to handle multiple responses (heartbeat packets)
-        response = requests.post(api_url, headers=headers, json=payload, timeout=120, stream=True)
+        response = requests.post(api_url, headers=headers, json=payload, timeout=120, stream=True, verify=False)
         response.raise_for_status()
         
         # Read streaming responses until we get the final result
@@ -421,6 +481,10 @@ def generate_image(
                         if items:
                             image_urls = items
                             print(f"✅ {len(image_urls)} image(s) generated")
+                            # ── Cost calculation (for agent to read, not shown to user unless asked) ──
+                            _input_count = len(input_image) if input_image else 0
+                            _cost, _detail = calculate_cost(model, size, _input_count, len(image_urls))
+                            print(f"📊 本次扣点: {_detail}")
                             break
                 
                 except json.JSONDecodeError:
@@ -445,7 +509,7 @@ def download_image(url, output_dir):
     """Download image and save to file."""
     
     try:
-        response = requests.get(url, timeout=60)
+        response = requests.get(url, timeout=60, verify=False)
         response.raise_for_status()
         
         # Determine extension
@@ -492,11 +556,13 @@ def main():
         type=validate_image_input,
         help="Remote image URL (HTTP/HTTPS) or local file path. Repeat for multiple images."
     )
-    parser.add_argument("--size", default="2K", choices=["2K", "3K"], help="Output image size (default: 2K)")
+    parser.add_argument("--size", default=None, choices=["1K", "2K"], help="Output image size (default: Lite=2K, Pro=1K)")
     parser.add_argument("--output", default='~/.openclaw/workspace/generated-images', help="Output file path")
     parser.add_argument("--watermark", action=argparse.BooleanOptionalAction, default=True,
                     help="Add watermark to generated image")
     parser.add_argument("--max-images", type=int, help="Maximum number of images to generate")
+    parser.add_argument("--model", default="Lite", choices=["Lite", "Pro"],
+                    help="Model to use: 'Lite' (supports multiple-image-generation) or 'Pro' (higher quality, single image only). Default: Lite")
     
     args = parser.parse_args()
     
@@ -506,7 +572,8 @@ def main():
         input_image=args.image,
         size=args.size,
         watermark=args.watermark,
-        max_images=args.max_images
+        max_images=args.max_images,
+        model=args.model
     )
     
     if not image_urls:

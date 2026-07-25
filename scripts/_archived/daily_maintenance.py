@@ -202,7 +202,7 @@ def health_check() -> Dict:
 
 # ── 2. 垃圾扫描与清理 ────────────────────────────
 # 跳过的大型目录（避免递归遍历 node_modules、.git 等）
-_SKIP_DIRS = {'.git', 'node_modules', '.archive', 'venv', '.venv', '__pycache__', 'dist', 'build', '.next'}
+_SKIP_DIRS = {'.git', 'node_modules', '.archive', 'venv', '.venv', '__pycache__', 'dist', 'build', '.next', 'repo'}
 
 
 def garbage_scan(clean: bool = False) -> Dict:
@@ -229,7 +229,7 @@ def garbage_scan(clean: bool = False) -> Dict:
                     else:
                         found.append({"path": full, "size_bytes": size, "type": "__pycache__"})
                 except Exception as e:
-                    _log_error("garbage_scan", str(e)[:80])
+                    _log_error("garbage_scan", str(e)[:240])
 
     # .pyc 文件
     for fp in glob.glob(os.path.join(WORKSPACE, "**/*.pyc"), recursive=True):
@@ -242,7 +242,7 @@ def garbage_scan(clean: bool = False) -> Dict:
             else:
                 found.append({"path": fp, "size_bytes": size, "type": "pyc"})
         except Exception as e:
-            _log_error("garbage_scan", str(e)[:80])
+            _log_error("garbage_scan", str(e)[:240])
 
     # memory/ 目录中超过 90 天的归档
     now = datetime.now(BEIJING_TZ)
@@ -267,7 +267,7 @@ def garbage_scan(clean: bool = False) -> Dict:
                     else:
                         found.append({"path": fp, "size_bytes": size, "type": "old_memory_log"})
             except Exception as e:
-                _log_error("garbage_scan", str(e)[:80])
+                _log_error("garbage_scan", str(e)[:240])
 
     # /tmp 下本进程遗留文件
     if clean:
@@ -278,7 +278,7 @@ def garbage_scan(clean: bool = False) -> Dict:
                 else:
                     os.remove(f)
             except Exception as e:
-                _log_error("garbage_scan", str(e)[:80])
+                _log_error("garbage_scan", str(e)[:240])
 
     # v6.5.11: 清理超过7天的健康巡检报告
     if clean:
@@ -301,7 +301,7 @@ def garbage_scan(clean: bool = False) -> Dict:
                     cleaned += 1
                     freed_bytes += 1024  # approximate
             except Exception as e:
-                _log_error("garbage_scan", str(e)[:80])
+                _log_error("garbage_scan", str(e)[:240])
 
     # v6.5.11: 清理过期的健康评分历史（只保留7天）
     if clean:
@@ -329,7 +329,7 @@ def garbage_scan(clean: bool = False) -> Dict:
                         f.writelines(valid_lines)
                     cleaned += 1
             except Exception as e:
-                _log_error("garbage_scan", str(e)[:80])
+                _log_error("garbage_scan", str(e)[:240])
 
     return {"found": len(found), "cleaned": cleaned, "freed_bytes": freed_bytes, "items": found[:20]}
 
@@ -1571,21 +1571,22 @@ def _format_report(results: Dict, elapsed: float) -> str:
                 txt += f" (降级链失败 {degrade_fail} 次)"
             lines.append(TR("📈 统一评分", txt))
 
-    # 梦境步骤（results.dreaming.steps）
+    # 梦境步骤（results.dreaming.steps）— 合并为一行，无数据则显示 —
     dream = results.get("dreaming", {}).get("steps", {})
+    dream_parts = []
     for step_key, step_label in [
-        ("index_merge", "💤 索引合并"),
-        ("cold_hot", "💤 冷热调整"),
-        ("llm_dream", "💤 梦境固化"),
-        ("profile_update", "💤 画像更新"),
+        ("index_merge", "索引合并"),
+        ("cold_hot", "冷热调整"),
+        ("llm_dream", "梦境固化"),
+        ("profile_update", "画像更新"),
     ]:
         st = dream.get(step_key, {})
         if not st:
             continue
         status = st.get("status", "?")
-        if status == "error":
+        if status in ("error", "failed"):
             icon = "❌"
-        elif status == "ok" or status == "done":
+        elif status in ("ok", "done"):
             icon = "✅"
         elif status == "skipped":
             icon = "ℹ️"
@@ -1597,26 +1598,33 @@ def _format_report(results: Dict, elapsed: float) -> str:
             w = st.get("warm", 0)
             c = st.get("cold", 0)
             if h > 0 or w > 0 or c > 0:
-                detail = f"hot={h} warm={w} cold={c}"
+                detail = f"hot={h} w={w} c={c}"
             elif st.get("recent", 0) > 0:
-                detail = f"{st['recent']} 条新记忆"
-        txt = f"{icon}"
+                detail = f"{st['recent']}条"
+        txt = icon
         if detail:
-            txt += f" {detail[:40]}"
-        lines.append(TR(step_label, txt))
+            txt += f" {detail}"
+        dream_parts.append(f"{step_label} {txt}")
+    if dream_parts:
+        lines.append(TR("💤 梦境步骤", " | ".join(dream_parts)[:80]))
+    else:
+        lines.append(TR("💤 梦境步骤", "—"))
 
-    # 情绪分析（results 顶层）
+    # 情绪分析（results 顶层）— 始终输出
     ea = results.get("emotion_analysis", {})
-    if ea.get("status") == "ok":
+    ea_status = ea.get("status", "")
+    if ea_status == "ok":
         dom = ea.get("dominant_emotion", "?")
         total = ea.get("total_lines", 0)
         lines.append(TR("💬 情绪分析", f"主导={dom}, {total} 条"))
-    elif ea.get("status") == "skip":
+    elif ea_status == "skip":
         lines.append(TR("💬 情绪分析", f"⏭️ {ea.get('reason','')[:28]}"))
-    elif ea.get("status") == "error":
+    elif ea_status == "error":
         lines.append(TR("💬 情绪分析", f"❌ {ea.get('error','')[:28]}"))
+    else:
+        lines.append(TR("💬 情绪分析", "—"))
 
-    # 技能库（results 顶层）
+    # 技能库（results 顶层）— 始终输出
     sb = results.get("skill_bank", {})
     ing = sb.get("ingested", -1)
     if ing >= 0:
@@ -1626,8 +1634,10 @@ def _format_report(results: Dict, elapsed: float) -> str:
     elif sb.get("status") in ("skip", "error"):
         txt = f"{'⏭️' if sb.get('status')=='skip' else '❌'} {sb.get('reason','') or sb.get('error','')}"
         lines.append(TR("🔧 技能库", txt[:28]))
+    else:
+        lines.append(TR("🔧 技能库", "—"))
 
-    # 输出校验（results 顶层）
+    # 输出校验（results 顶层）— 始终输出
     sr = results.get("selfrag_validate", {})
     sr_status = sr.get("status", "")
     val = sr.get("validated", -1)
@@ -1638,6 +1648,8 @@ def _format_report(results: Dict, elapsed: float) -> str:
     elif sr_status in ("skip", "error"):
         txt = f"{'⏭️' if sr_status=='skip' else '❌'} {sr.get('reason','') or sr.get('error','')}"
         lines.append(TR("📐 输出校验", txt[:28]))
+    else:
+        lines.append(TR("📐 输出校验", "—"))
 
     # 会话归档
     sa = results.get("session_archive", {})

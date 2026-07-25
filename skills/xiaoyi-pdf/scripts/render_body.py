@@ -30,12 +30,16 @@ Exit codes: 0 success, 1 bad args/missing file, 2 missing dep, 3 render error
 """
 
 import argparse
+import importlib.util
 import io
+import ipaddress
 import json
 import os
+import re
 import sys
-import platform
-import importlib.util
+from urllib.parse import urlparse
+
+from security import validate_safe_path
 
 
 # ── Dependency bootstrap ───────────────────────────────────────────────────────
@@ -392,7 +396,6 @@ def _escape_cjk_for_mathtext(expr: str) -> str:
     CJK already inside an existing \\text{...} block is left untouched to avoid
     double-nesting which mathtext cannot parse.
     """
-    import re
     cjk_re = re.compile(
         r"[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff"
         r"\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af"
@@ -882,16 +885,75 @@ def _add_table(story: list, item: dict, ctx: dict):
     story.append(Spacer(1, 12))
 
 
+# Whitelisted image extensions for local file loading
+_ALLOWED_IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp", ".svg"}
+
+
+def _validate_image_url(url: str) -> None:
+    """Validate an image URL: scheme must be http/https, hostname must be a
+    domain name (not a raw IP address).  Raises ``ValueError`` on rejection."""
+    try:
+        parsed = urlparse(url)
+    except Exception as e:
+        raise ValueError(f"Invalid image URL: {url}") from e
+
+    # 1. Scheme must be http or https
+    if parsed.scheme not in ("http", "https"):
+        raise ValueError(
+            f"Blocked image URL scheme '{parsed.scheme}': only http/https allowed"
+        )
+
+    host = parsed.hostname
+    if not host:
+        raise ValueError(f"Blocked image URL: missing hostname in {url}")
+
+    # 2. Reject raw IP-address hostnames (IPv4 + IPv6)
+    try:
+        ipaddress.ip_address(host)
+    except ValueError:
+        pass  # not an IP address — fine, it's a domain name
+    else:
+        raise ValueError(
+            f"Blocked image URL: IP-address hostname not allowed ({host})"
+        )
+
+    # 3. Block common SSRF bypass tricks (e.g. "0", "0.0.0.0", "127.0.0.1")
+    if re.match(r'^0+$', host):
+        raise ValueError(f"Blocked image URL: degenerate hostname '{host}'")
+
+    # 4. Reject username / password in URL (rarely legitimate for images)
+    if parsed.username is not None or parsed.password is not None:
+        raise ValueError(
+            "Blocked image URL: credentials in URL are not allowed"
+        )
+
+
 def _add_image(story: list, item: dict, ctx: dict):
     path = str(item.get("path", item.get("src", "")))
 
     # 支持网络图片链接
     is_url = path.startswith("http://") or path.startswith("https://")
-    if not is_url and not os.path.exists(path):
-        story.append(Paragraph(
-            f"[Image not found: {path}]", ctx["styles"]["caption"]
-        ))
-        return
+    if is_url:
+        try:
+            _validate_image_url(path)
+        except ValueError as e:
+            story.append(Paragraph(
+                f"[Image blocked: {e}]", ctx["styles"]["caption"]
+            ))
+            return
+    else:
+        try:
+            validate_safe_path(path, allowed_extensions=_ALLOWED_IMAGE_EXTS)
+        except ValueError as e:
+            story.append(Paragraph(
+                f"[Image blocked: {e}]", ctx["styles"]["caption"]
+            ))
+            return
+        if not os.path.exists(path):
+            story.append(Paragraph(
+                f"[Image not found: {path}]", ctx["styles"]["caption"]
+            ))
+            return
 
     try:
         if is_url:

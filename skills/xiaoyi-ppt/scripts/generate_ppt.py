@@ -274,7 +274,7 @@ def get_session_info(file_path: str = None) -> Tuple[str, str]:
     return session_id, interaction_id
 
 
-def prompt(cfg: Config, query: str, ppt_session_id:str, attachments: list[dict] = None) -> str:
+def prompt(cfg: Config, query: str, ppt_session_id: str, attachments: list[dict] = None) -> str:
     """
     发送 prompt 到 OSMS skill/execute SSE 接口，返回完整的响应文本。
 
@@ -389,7 +389,7 @@ def parse_image_urls_to_attachments(image_urls_json_path: str) -> list[dict]:
     if not isinstance(urls, list):
         return []
     attachments = []
-    for i, info in enumerate(urls):
+    for info in urls:
         if not info or 'url' not in info or 'file_name' not in info:
             continue
         file_name = info['file_name']
@@ -445,7 +445,7 @@ def main():
             logger.error("--image-urls-file 解析失败: %s", e)
 
     try:
-        prompt(cfg, args.query,ppt_session_id, attachments if attachments else None)
+        prompt(cfg, args.query, ppt_session_id, attachments if attachments else None)
     except Exception as e:
         logger.error("[ERROR] %s", e)
         sys.exit(1)

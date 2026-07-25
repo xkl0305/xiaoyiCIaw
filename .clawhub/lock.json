@@ -32,6 +32,11 @@
       "version": "1.1.0",
       "installedAt": 1784543296354,
       "ownerHandle": "tjefferson"
+    },
+    "llm-memory-integration": {
+      "version": "9.0.1",
+      "installedAt": 1784607569119,
+      "ownerHandle": "xkzs2007"
     }
   }
 }

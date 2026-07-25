@@ -1,5 +1,5 @@
 ---
-name: Excel Analysis
+name: excel-analysis
 description: Analyze Excel spreadsheets, create pivot tables, generate charts, and perform data analysis. Use when analyzing Excel files, spreadsheets, tabular data, or .xlsx files.
 post_process: aigc_marker
 ---
@@ -249,6 +249,7 @@ wb.save("formatted.xlsx")
 ```
 
 **合规检查清单**：
+
 - [ ] Excel 文件已成功生成
 - [ ] 已调用 aigc_marker 添加 AIGC 标识
 - [ ] 确认标识已正确添加到文档属性中

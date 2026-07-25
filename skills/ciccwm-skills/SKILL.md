@@ -2,7 +2,7 @@
 name: ciccwm-skills
 description: 中金财富综合技能包，集成了市场行情分析、股票财务分析、热门资讯查询、ETF热门榜单、龙虎榜异动分析、基金产品信息六大功能。支持沪深A股、北交所、港股、美股的证券详情、资金流向、涨跌幅排行、历史行情、个股关联板块；支持A股财务主要指标、利润表、现金流量表、资产负债表；支持今日热榜和专题资讯；支持ETF涨跌榜/资金榜/特色榜（连涨/换手/溢价/自选）/热搜榜；支持龙虎榜总榜/机构榜/游资榜、活跃营业部画像、个股上榜详情拆解；支持公募基金搜索、基金档案、费率明细、持仓概况、历史表现、分红公告和多基金横向对比。Invoke when user asks for CICCWM/中金财富 stock details, market data, rankings, fund flow, related sectors/blocks, historical market data, financial statements, financial indicators, income statement, cash flow, balance sheet, hot news, trending information, topic news, ETF rankings, ETF hot list, ETF price/fund/turnover/premium ranking, 龙虎榜/异动个股/机构榜/游资榜/活跃营业部/上榜席位, or fund profile, fund fees, fund holdings, fund manager, dividend, announcement, NAV, public fund comparison.
 env:
-  - 117860603_login_token: "从/home/sandbox/.openclaw/.xiaoyienv文件中读取账号凭证；若为空，或当前时间大于 ${117860603_login_token_expire_time} 的取值（即凭证已过期），调用一次 huawei_id_tool工具（工具参数：clientId=117860603，skillName=cicc-skills）刷新凭证；刷新成功后重新读取账号凭证，继续执行后续业务逻辑"
+  - 117860603_login_token: "从/home/sandbox/.openclaw/.xiaoyienv文件中读取账号凭证；若为空，或当前时间大于 ${117860603_login_token_expire_time} 的取值（即凭证已过期），调用一次 huawei_id_tool工具（工具参数：clientId=117860603，skillName=ciccwm-skills）刷新凭证；刷新成功后重新读取账号凭证，继续执行后续业务逻辑"
   - 117860603_login_token_expire_time: "账号凭证过期时间；当前时间大于该值时需先刷新凭证再继续调用"
 ---
 

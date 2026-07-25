@@ -45,6 +45,8 @@ def _setup_logger(log_path: Path) -> None:
 GEN_IMAGE_RE = re.compile(r"<image_gen_queries>(.*?)</image_gen_queries>", re.DOTALL)
 USER_IMAGE_RE = re.compile(r"<image_user_provided>(.*?)</image_user_provided>", re.DOTALL)
 STYLE_RE = re.compile(r"<style>(.*?)</style>", re.DOTALL)
+# 封面页标题正则：匹配 `# 标题`
+COVER_TITLE_RE = re.compile(r"^#\s+(.+?)$", re.MULTILINE)
 
 
 def extract_style(outline_text: str) -> str | None:
@@ -52,11 +54,23 @@ def extract_style(outline_text: str) -> str | None:
     return m.group(1).strip() if m else None
 
 
-def extract_gen_images(outline_text: str) -> list[tuple[int, str]]:
+def extract_theme(outline_text: str) -> str:
+    """从大纲首个 `# 标题` 提取 PPT 主题文本。"""
+    m = COVER_TITLE_RE.search(outline_text)
+    if not m:
+        return ""
+    theme = m.group(1).strip()
+    # 去掉可能的副标题换行残留
+    theme = theme.split("\n")[0].strip()
+    return theme
+
+
+def extract_gen_images(outline_text: str) -> list[tuple[int, str, int]]:
+    """提取所有 <image_gen_queries> 标签，返回 (序号, caption, 标签起始位置) 三元组。"""
     matches = []
     for i, m in enumerate(GEN_IMAGE_RE.finditer(outline_text)):
         caption = m.group(1).strip()
-        matches.append((i, caption))
+        matches.append((i, caption, m.start()))
     return matches
 
 
@@ -121,8 +135,10 @@ def replace_gen_images(
     _setup_logger(output_dir / "replace_gen_images.log")
 
     outline_text = Path(outline_path).read_text(encoding="utf-8")
-    
+
     style_value = extract_style(outline_text)
+    theme_value = extract_theme(outline_text)
+    logger.info("PPT 主题: %s, 风格: %s", theme_value, style_value)
 
     try:
         cfg = Config.load()
@@ -197,10 +213,10 @@ def replace_gen_images(
     else:
         caption_map: dict[int, dict] = {}
 
-        def _generate_one(idx: int, caption: str) -> tuple[int, str, list[str] | None]:
-            logger.info("[%d] 生成图片 caption=%s", idx, caption[:80])
+        def _generate_one(idx: int, caption: str, theme: str) -> tuple[int, str, list[str] | None]:
+            logger.info("[%d] 生成图片 caption=%s, theme=%s", idx, caption[:80], theme[:40])
             try:
-                image_urls = call_seedream(caption, style=style_value, output_dir=images_dir)
+                image_urls = call_seedream(caption, theme=theme, style=style_value, output_dir=images_dir)
                 if image_urls:
                     return (idx, caption, image_urls)
             except Exception as e:
@@ -209,8 +225,8 @@ def replace_gen_images(
 
         with ThreadPoolExecutor(max_workers=min(len(gen_images), 25)) as executor:
             futures = {
-                executor.submit(_generate_one, idx, caption): idx
-                for idx, caption in gen_images
+                executor.submit(_generate_one, idx, caption, theme_value): idx
+                for idx, caption, start_pos in gen_images
             }
             results: dict[int, tuple[str, list[str] | None]] = {}
             for future in as_completed(futures):
@@ -304,7 +320,6 @@ def main():
     args = parser.parse_args()
 
     ppt_session_id = args.outline_file.split("/")[-2]
-    # todo 规避模型风险
     if ppt_session_id == ".":
         output_dir = os.getcwd()
     else:
