@@ -17,6 +17,7 @@ import os
 import random
 import string
 import sys
+import time
 import uuid
 from datetime import datetime
 from pathlib import Path
@@ -299,12 +300,14 @@ def generate_image(
     size=None,
     watermark=True,
     max_images=None,
-    model="Lite"):
+    model="Lite",
+    optimize_prompt_mode="fast"):
     """Call the Xiaoyi image generation API.
     
     Args:
         model: "Lite" or "Pro". "Lite" supports multiple-image-generation(组图), 
                "Pro" only supports single-image-generation(单图生成) but with higher quality.
+        optimize_prompt_mode: Prompt optimization mode, "fast" (default, Lite auto-maps to "disabled" internally), or "standard".
     """
     
     # Check environment variables
@@ -348,8 +351,16 @@ def generate_image(
 
     # ── Resolution default based on model ─────────────────────────────────────
     # Lite defaults to 2K, Pro defaults to 1K; user-specified --size takes precedence
-    if size is None:
+    # fast 模式下 size 参数无效，强制使用默认值
+    if optimize_prompt_mode == "fast":
         size = "1K" if model == "Pro" else "2K"
+        print(f"ℹ️  fast 模式下指定 size 无效，使用默认尺寸 {size}")
+    elif size is None:
+        size = "1K" if model == "Pro" else "2K"
+
+    # ── Lite 不支持 fast 模式，自动映射为 disabled ────────────────────────────
+    if model == "Lite" and optimize_prompt_mode == "fast":
+        print(f"ℹ️  Lite 不支持 fast 模式，已自动切换为 disabled")
 
     # ── Set skillId and actionName based on model ──────────────────────────────
     # Lite: skillId=seedream, actionName=seedreamBatch5
@@ -362,12 +373,21 @@ def generate_image(
         action_name = 'seedreamBatch5'
 
     # 定义 content 字段，便于后续扩展
+    # Lite 不支持 fast 模式，已映射为 disabled
+    _effective_mode = "disabled" if (model == "Lite" and optimize_prompt_mode == "fast") else optimize_prompt_mode
     content = {
         "prompt": prompt,
         "size": size,
         "watermark": watermark,
-        "response_format": "url"
+        "response_format": "url",
     }
+    if _effective_mode == "standard":
+        content["optimize_prompt_options"] = {"mode": "standard"}
+    else:
+        content["thinking"] = False
+        # {"mode":"fast","thinking":"disabled"} 和 {"mode":"fast"}, {"thinking":"disabled"}区别不大
+        # if _effective_mode == "fast":
+        #     content["optimize_prompt_options"] = {"mode": "fast"}
     
     # 处理图片输入并添加到 content 中
     if input_image is not None:
@@ -412,8 +432,11 @@ def generate_image(
     # Call API
     print(f"Generating image...")
     print(f"Prompt: {prompt[:30]}{'...' if len(prompt) > 30 else ''}")
+    if optimize_prompt_mode == "standard":
+        print(f"⚙️  提示词优化模式为 standard，生成时间可能较长，请耐心等待...")
     
     try:
+        start_time = time.time()
         # Use stream to handle multiple responses (heartbeat packets)
         response = requests.post(api_url, headers=headers, json=payload, timeout=120, stream=True, verify=False)
         response.raise_for_status()
@@ -480,7 +503,8 @@ def generate_image(
                         items = reply.get('items', [])
                         if items:
                             image_urls = items
-                            print(f"✅ {len(image_urls)} image(s) generated")
+                            elapsed = time.time() - start_time
+                            print(f"✅ {len(image_urls)} image(s) generated in {elapsed:.1f}s")
                             # ── Cost calculation (for agent to read, not shown to user unless asked) ──
                             _input_count = len(input_image) if input_image else 0
                             _cost, _detail = calculate_cost(model, size, _input_count, len(image_urls))
@@ -563,6 +587,8 @@ def main():
     parser.add_argument("--max-images", type=int, help="Maximum number of images to generate")
     parser.add_argument("--model", default="Lite", choices=["Lite", "Pro"],
                     help="Model to use: 'Lite' (supports multiple-image-generation) or 'Pro' (higher quality, single image only). Default: Lite")
+    parser.add_argument("--optimize-prompt-mode", default="fast", choices=["fast", "standard"],
+                    help="Prompt optimization mode: 'fast' (default, Lite auto-maps to 'disabled'), or 'standard' (higher quality)")
     
     args = parser.parse_args()
     
@@ -573,7 +599,8 @@ def main():
         size=args.size,
         watermark=args.watermark,
         max_images=args.max_images,
-        model=args.model
+        model=args.model,
+        optimize_prompt_mode=args.optimize_prompt_mode
     )
     
     if not image_urls:

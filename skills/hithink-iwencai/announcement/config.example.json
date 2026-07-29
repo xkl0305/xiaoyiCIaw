@@ -6,7 +6,7 @@
     "max_retries": 3
   },
   "auth": {
-    "api_key_env_var": "IWENCAI_API_KEY",
+    "api_key_env_var": "117862897_login_token",
     "api_key": "your_api_key_here"
   },
   "search": {

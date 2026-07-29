@@ -8,19 +8,19 @@
 - **Base URL**: `https://openapi.iwencai.com`
 - **接口路径**: `/v1/comprehensive/search`
 - **请求方式**: POST
-- **认证方式**: API Key (Bearer Token)
+- **认证方式**: Authorization Bearer Token
 
 ## 认证要求
-在请求头中需要携带API Key进行认证：
+在请求头中需要携带用户凭证进行认证：
 ```
-Authorization: Bearer {IWENCAI_API_KEY}
+Authorization: Bearer ${117862897_login_token}
 ```
-其中 `IWENCAI_API_KEY` 是用户申请的有效API密钥，需要设置为环境变量。
+其中 `117862897_login_token` 是系统通过环境变量传递的用户凭证，由系统自动管理和刷新。
 
 ## 请求头
 ```
 Content-Type: application/json
-Authorization: Bearer {IWENCAI_API_KEY}
+Authorization: Bearer ${117862897_login_token}
 ```
 
 ## 请求参数
@@ -95,8 +95,8 @@ Authorization: Bearer {IWENCAI_API_KEY}
 |--------|------|----------|
 | 200 | 请求成功 | - |
 | 400 | 请求参数错误 | 检查请求参数格式和必填项 |
-| 401 | 认证失败 | 检查API Key是否正确且有效 |
-| 403 | 权限不足 | 检查API Key是否有访问此接口的权限 |
+| 401 | 认证失败 | 检查用户凭证是否正确且有效 |
+| 403 | 权限不足 | 检查用户凭证是否有访问此接口的权限 |
 | 500 | 服务器内部错误 | 稍后重试或联系技术支持 |
 
 ## 使用限制
@@ -105,7 +105,7 @@ Authorization: Bearer {IWENCAI_API_KEY}
 - 数据时效性：返回的文章按发布时间倒序排列
 
 ## 注意事项
-1. API Key需要妥善保管，不要泄露
+1. 用户凭证由系统自动管理，无需手动配置
 2. 请求参数中的`channels`和`app_id`为固定值，不要修改
 3. `query`参数支持中文关键词搜索
 4. 返回的文章数据来源于同花顺问财，引用时请注明数据来源

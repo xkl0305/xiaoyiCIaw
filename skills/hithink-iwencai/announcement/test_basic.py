@@ -33,7 +33,7 @@ class TestConfig(unittest.TestCase):
         config = Config()
         
         # 测试环境变量中的API Key
-        with patch.dict(os.environ, {"IWENCAI_API_KEY": "test_key"}):
+        with patch.dict(os.environ, {"117862897_login_token": "test_key"}):
             config = Config()
             api_key = config.get_api_key()
             self.assertEqual(api_key, "test_key")
@@ -49,7 +49,7 @@ class TestConfig(unittest.TestCase):
         config = Config()
         
         # 测试有效配置
-        with patch.dict(os.environ, {"IWENCAI_API_KEY": "valid_key"}):
+        with patch.dict(os.environ, {"117862897_login_token": "valid_key"}):
             config = Config()
             self.assertTrue(config.validate())
         
@@ -330,7 +330,7 @@ def run_tests():
 
 if __name__ == "__main__":
     # 设置环境变量用于测试
-    os.environ["IWENCAI_API_KEY"] = "test_key_for_unit_tests"
+    os.environ["117862897_login_token"] = "test_key_for_unit_tests"
     os.environ["LOG_LEVEL"] = "ERROR"  # 测试时减少日志输出
     
     success = run_tests()

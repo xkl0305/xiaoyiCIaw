@@ -22,10 +22,10 @@ def setup_environment():
     print("=" * 60)
     
     # 检查API Key
-    api_key = os.getenv("IWENCAI_API_KEY")
+    api_key = os.getenv("117862897_login_token")
     if not api_key:
-        print("警告: IWENCAI_API_KEY 环境变量未设置")
-        print("请设置环境变量: export IWENCAI_API_KEY='your_api_key'")
+        print("警告: 117862897_login_token 环境变量未设置")
+        print("请设置环境变量: export 117862897_login_token='your_api_key'")
         return False
     
     print(f"✓ API Key 已设置")

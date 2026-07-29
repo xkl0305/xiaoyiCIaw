@@ -27,7 +27,7 @@
 
 ```bash
 # 设置环境变量
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_api_key_here"
 ```
 
 ### 2. 基本使用
@@ -94,7 +94,7 @@ optional arguments:
   -l LIMIT, --limit LIMIT
                         每查询返回的最大文章数量 (默认: 10)
   -d DAYS, --days DAYS  搜索最近多少天内的文章 (默认: 30)
-  --api-key API_KEY     API密钥，如果不提供则从环境变量 IWENCAI_API_KEY 获取
+  --api-key API_KEY     API密钥，如果不提供则从环境变量 117862897_login_token 获取
   --debug               启用调试模式
 ```
 
@@ -102,7 +102,7 @@ optional arguments:
 
 ### 环境变量
 
-- `IWENCAI_API_KEY`: API密钥（必需）
+- `117862897_login_token`: API密钥（必需）
 - `NEWS_SEARCH_DEFAULT_LIMIT`: 默认返回结果数量
 - `NEWS_SEARCH_DEFAULT_DAYS`: 默认搜索天数
 - `NEWS_SEARCH_LOG_LEVEL`: 日志级别（DEBUG, INFO, WARNING, ERROR, CRITICAL）
@@ -245,7 +245,7 @@ python news_search.py -i industries.txt -o industry_news/ -f json
 1. **API认证失败**
    ```
    错误: API认证失败，请检查API密钥
-   解决方案: 检查 IWENCAI_API_KEY 环境变量是否正确设置
+   解决方案: 检查 117862897_login_token 环境变量是否正确设置
    ```
 
 2. **网络连接问题**

@@ -15,14 +15,14 @@ description: 支持A股、港股、基金、ETF等金融标的公告的查询，
 ## API Key 获取与配置（首次使用必读）
 
 > 首次使用 - 获取 API Key  
-> 所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：  
+> 所有技能都需要 117862897_login_token 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：  
 >  
 > 步骤 1：获取 API Key  
 > 在浏览器内打同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub  
 >  
 > 步骤 2：登录  
 >  
-> 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制  
+> 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制  
 >  
 > 步骤 4：配置环境变量  
 > 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
@@ -31,17 +31,17 @@ description: 支持A股、港股、基金、ETF等金融标的公告的查询，
 
 **macOS / Linux (bash/zsh):**
 ```bash
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_login_token_here"
 ```
 
 **Windows (PowerShell):**
 ```powershell
-$env:IWENCAI_API_KEY="your_api_key_here"
+$env:117862897_login_token="your_login_token_here"
 ```
 
 **Windows (CMD):**
 ```cmd
-set IWENCAI_API_KEY=your_api_key_here
+set 117862897_login_token=your_login_token_here
 ```
 
 ## 技能功能
@@ -97,7 +97,7 @@ set IWENCAI_API_KEY=your_api_key_here
 - **Base URL**: `https://openapi.iwencai.com`
 - **接口路径**: `/v1/comprehensive/search`
 - **请求方式**: POST（优先使用POST，符合规范要求）
-- **认证方式**: API Key (Bearer Token)，从环境变量 `IWENCAI_API_KEY` 读取
+- **认证方式**: Authorization Bearer Token，从环境变量 `117862897_login_token` 读取
 
 #### 必需请求头（Claw Headers）
 所有发往问财OpenAPI网关的请求必须包含以下Header：
@@ -129,7 +129,7 @@ API返回的`data`字段包含以下信息：
 # 使用环境变量中的API Key
 curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "Authorization: Bearer  $117862897_login_token" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: announcement-search" \
   -H "X-Claw-Skill-Version: 1.0.0" \
@@ -146,7 +146,7 @@ curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
 **Windows (PowerShell):**
 ```powershell
 # 首先设置环境变量（如果尚未设置）
-$env:IWENCAI_API_KEY="your_api_key_here"
+$env:117862897_login_token="your_login_token_here"
 
 # 生成64字符Trace ID
 $traceId = -join ((48..57) + (97..102) | Get-Random -Count 64 | % { [char]$_ })
@@ -154,7 +154,7 @@ $traceId = -join ((48..57) + (97..102) | Get-Random -Count 64 | % { [char]$_ })
 # 发送请求
 $headers = @{
     "Content-Type" = "application/json"
-    "Authorization" = "Bearer $env:IWENCAI_API_KEY"
+    "Authorization" = "$env:117862897_login_token"
     "X-Claw-Call-Type" = "normal"
     "X-Claw-Skill-Id" = "announcement-search"
     "X-Claw-Skill-Version" = "1.0.0"
@@ -174,7 +174,7 @@ Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/comprehensive/search" -Me
 
 **通用说明：**
 - Trace ID必须是64字符十六进制字符串，每次请求新生成
-- API Key必须从环境变量 `IWENCAI_API_KEY` 读取，禁止硬编码
+- API Key必须从环境变量 `117862897_login_token` 读取，禁止硬编码
 - 所有Claw headers必须正确设置
 
 ### 数据来源声明

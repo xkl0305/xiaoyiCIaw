@@ -6,7 +6,7 @@
 
 本技能遵守问财OpenAPI网关规范：
 1. 所有请求必须包含X-Claw-* HTTP头
-2. 使用Bearer Token认证，从IWENCAI_API_KEY环境变量读取
+2. 使用Bearer Token认证，从117862897_login_token环境变量读取
 3. 每次请求生成64字符唯一Trace ID
 4. 支持跨平台使用
 """
@@ -44,10 +44,10 @@ class NewsSearchAPI:
         """
         self.base_url = "https://openapi.iwencai.com"
         self.endpoint = "/v1/comprehensive/search"
-        self.api_key = api_key or os.getenv("IWENCAI_API_KEY")
+        self.api_key = api_key or os.getenv("117862897_login_token") or os.getenv("IWENCAI_API_KEY")
         
         if not self.api_key:
-            raise ValueError("API密钥未设置。请设置环境变量 IWENCAI_API_KEY 或通过参数传入")
+            raise ValueError("API密钥未设置。请设置环境变量 117862897_login_token 或通过参数传入")
         
         self.session = requests.Session()
         
@@ -469,16 +469,16 @@ def main():
 
 问财OpenAPI网关规范要求:
 1. 所有请求必须包含X-Claw-* HTTP头（X-Claw-Call-Type, X-Claw-Skill-Id, X-Claw-Skill-Version等）
-2. 使用Bearer Token认证，从IWENCAI_API_KEY环境变量读取API密钥
+2. 使用Bearer Token认证，从117862897_login_token环境变量读取API密钥
 3. 每次请求生成64字符全局唯一Trace ID
 4. 返回结果完全透明传递，不对API响应做任何修改、过滤或重组
 
 curl示例（脱敏，请替换占位符）:
   Unix/Linux/macOS:
-    export IWENCAI_API_KEY="your_api_key_here"
+    export 117862897_login_token="your_api_key_here"
     curl -X POST https://openapi.iwencai.com/v1/comprehensive/search \
       -H "Content-Type: application/json" \
-      -H "Authorization: Bearer $IWENCAI_API_KEY" \
+      -H "Authorization: Bearer $117862897_login_token" \
       -H "X-Claw-Call-Type: normal" \
       -H "X-Claw-Skill-Id: news-search" \
       -H "X-Claw-Skill-Version: 1.0.0" \
@@ -488,11 +488,11 @@ curl示例（脱敏，请替换占位符）:
       -d '{"channels":["news"],"app_id":"AIME_SKILL","query":"人工智能"}'
 
   Windows PowerShell:
-    $env:IWENCAI_API_KEY="your_api_key_here"
+    $env:117862897_login_token="your_api_key_here"
     $traceId = -join ((48..57)+(65..70)+(97..102) | Get-Random -Count 64 | ForEach-Object { [char]$_ })
     curl.exe -X POST https://openapi.iwencai.com/v1/comprehensive/search `
       -H "Content-Type: application/json" `
-      -H "Authorization: Bearer $env:IWENCAI_API_KEY" `
+      -H "Authorization: Bearer $env:117862897_login_token" `
       -H "X-Claw-Call-Type: normal" `
       -H "X-Claw-Skill-Id: news-search" `
       -H "X-Claw-Skill-Version: 1.0.0" `
@@ -503,18 +503,18 @@ curl示例（脱敏，请替换占位符）:
 
 环境变量设置（跨平台）:
   Unix/Linux/macOS (bash/zsh):
-    export IWENCAI_API_KEY="your_api_key_here"
+    export 117862897_login_token="your_api_key_here"
 
   Windows PowerShell:
-    $env:IWENCAI_API_KEY="your_api_key_here"
+    $env:117862897_login_token="your_api_key_here"
 
   Windows CMD:
-    set IWENCAI_API_KEY=your_api_key_here
+    set 117862897_login_token=your_api_key_here
 
 获取API密钥:
   1. 访问同花顺i问财SkillHub: https://www.iwencai.com/skillhub
   2. 登录账号
-  3. 点击具体技能，在安装方式-Agent用户中查找您的IWENCAI_API_KEY并复制
+  3. 点击具体技能，在安装方式-Agent用户中查找您的117862897_login_token并复制
   4. 按照上述方式设置环境变量
 
 数据来源: 同花顺问财财经资讯搜索
@@ -559,7 +559,7 @@ curl示例（脱敏，请替换占位符）:
     )
     parser.add_argument(
         "--api-key",
-        help="API密钥，如果不提供则从环境变量 IWENCAI_API_KEY 获取"
+        help="API密钥，如果不提供则从环境变量 117862897_login_token 获取"
     )
     
     # 其他参数

@@ -17,8 +17,8 @@ class Config:
                 "max_retries": 3
             },
             "auth": {
-                "api_key_env_var": "IWENCAI_API_KEY",
-                "api_key": os.getenv("IWENCAI_API_KEY", "")
+                "api_key_env_var": "117862897_login_token",
+                "api_key": os.getenv("117862897_login_token", "") or os.getenv("IWENCAI_API_KEY", "")
             },
             "search": {
                 "channels": ["announcement"],
@@ -90,7 +90,7 @@ class Config:
     def get_api_key(self) -> str:
         api_key = self.config["auth"]["api_key"]
         if not api_key:
-            raise ValueError("API Key not found. Please set IWENCAI_API_KEY environment variable.")
+            raise ValueError("API Key not found. Please set 117862897_login_token environment variable.")
         return api_key
     
     def get_api_config(self) -> Dict[str, Any]:

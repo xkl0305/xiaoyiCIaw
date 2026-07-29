@@ -49,7 +49,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=99bf6ac00e692569 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=274384b00c566add -->
 # Memory Global Summary
 
 ## Important Constraints
@@ -103,17 +103,17 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户确认需要进行‘自进化’操作（‘当然要’）
-- 用户确认‘自进化’功能已执行，并询问接下来的流程
-- 用户要求介绍已安装的"opencode-acp-config"技能，并提供一两个快速开始样例
-- 用户需要已安装的'law-skills' skill的介绍和快速开始的样例，并确认了需求；用户要求了解已安装的名为'law-skills'的skill的介绍，并希望获得一两个快速开始的样例
-- 用户想要修改每日维护相关的脚本或配置，但脚本文件 '/home/sandbox/.openclaw/workspace/scripts/daily_maintenance.py' 不存在
+- 用户有一个"消息队列"相关的待办事项或项目
+- 用户有一个"子Agent"相关的待办事项或项目
+- 用户对助手之前的建议或答复表示肯定并同意执行："要"
+- 收到来自用户的一条自动触发指令[cron:c00cf543-a6ec-4e43-ad0c-fdd7cb06fea4 crusheart-engine-init]，要求执行引擎初始化流程并报告状态
+- 用户要求开启沙箱的Swap
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
+- 用户询问是否可以对7个数据库执行索引合并和ANALYZE操作
 - 用户询问当前已安装的技能数量是否有增减
 - 用户请求介绍已安装的"excel-analysis"并给出快速开始样例
-- 用户请求获取"电话"主题的相关信息
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

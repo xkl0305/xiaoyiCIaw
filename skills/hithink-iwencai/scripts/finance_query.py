@@ -5,7 +5,7 @@
 严格遵循 Iwencai (问财) OpenAPI 网关规范：
 - 每次请求携带 8 个 X-Claw-* Header
 - X-Claw-Trace-Id 为每次新生成的 64 字符十六进制唯一 ID
-- Authorization Bearer 仅从环境变量 IWENCAI_API_KEY 读取
+- login-token 仅从环境变量 117862897_login_token 读取（兼容旧名 IWENCAI_API_KEY）
 - 优先使用 POST
 - 使用 Python3 标准库，跨平台兼容
 
@@ -46,12 +46,12 @@ def generate_trace_id() -> str:
 
 def get_api_key(cli_api_key: Optional[str]) -> str:
     """获取 API 密钥：优先 CLI 参数，其次环境变量。"""
-    key = cli_api_key or os.environ.get("IWENCAI_API_KEY", "")
+    key = cli_api_key or os.environ.get("117862897_login_token", "") or os.environ.get("IWENCAI_API_KEY", "")
     if not key:
         raise APIError(
-            "API 密钥未设置。请通过 --api-key 参数或环境变量 IWENCAI_API_KEY 指定。\n"
+            "API 密钥未设置。请通过 --api-key 参数或环境变量 117862897_login_token 指定。\n"
             "首次使用获取指引：打开 https://www.iwencai.com/skillhub → 登录 → 点击 Skill → "
-            "安装方式-Agent用户-复制您的 IWENCAI_API_KEY。"
+            "安装方式-Agent用户-复制您的 117862897_login_token。"
         )
     return key
 
@@ -184,7 +184,7 @@ def parse_args():
   python3 scripts/cli.py --query "毛利率排名" --api-key "your-key"
 
 环境变量:
-  IWENCAI_API_KEY    API 密钥（必填，也可通过 --api-key 传入）
+  117862897_login_token 或 IWENCAI_API_KEY    API 密钥（必填，也可通过 --api-key 传入）
         """
     )
 
@@ -213,7 +213,7 @@ def parse_args():
         "--api-key",
         type=str,
         default=None,
-        help="API 密钥（默认从环境变量 IWENCAI_API_KEY 读取）"
+        help="API 密钥（默认从环境变量 117862897_login_token 或 IWENCAI_API_KEY 读取）"
     )
 
     parser.add_argument(

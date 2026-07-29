@@ -163,16 +163,22 @@ def report():
         print()
         print("💡 如需清理请告知，我会先询问确认")
     
-    # 磁盘使用
-    disk = shutil.disk_usage("/")
-    used_pct = disk.used / disk.total * 100
-    free_mb = (disk.total - disk.used) / 1024**2
-    total_mb = disk.total / 1024**2
-    status = "✅ 充裕" if used_pct < 50 else ("⚠️ 紧张" if used_pct < 80 else "🚨 告警")
+    # 磁盘使用 — 同时显示两个分区
+    def _disk_info(mount):
+        d = shutil.disk_usage(mount)
+        pct = d.used / d.total * 100
+        st = "✅ 充裕" if pct < 50 else ("⚠️ 紧张" if pct < 80 else "🚨 告警")
+        return d, pct, st
+
     print(f"\n💾 磁盘使用：")
-    print(f"| {'总量':<12} | {'已用':<12} | {'剩余':<12} | {'使用率':<8} | {'状态':<10} |")
-    print(f"|{'-'*14}|{'-'*14}|{'-'*14}|{'-'*10}|{'-'*12}|")
-    print(f"| {total_mb:<10.0f}MB | {disk.used/1024**2:<10.0f}MB | {free_mb:<10.0f}MB | {used_pct:<6.1f}% | {status:<10} |")
+    print(f"| {'分区':<20} | {'总量':<10} | {'已用':<10} | {'剩余':<10} | {'使用率':<8} | {'状态':<10} |")
+    print(f"|{'-'*22}|{'-'*12}|{'-'*12}|{'-'*12}|{'-'*10}|{'-'*12}|")
+    for mnt, label in [("/", "系统根 (overlay)"), ("/home/sandbox", "工作数据盘")]:
+        try:
+            d, pct, st = _disk_info(mnt)
+            print(f"| {label:<20} | {d.total/1024**2:<8.0f}MB  | {d.used/1024**2:<8.0f}MB  | {(d.total-d.used)/1024**2:<8.0f}MB  | {pct:<6.1f}% | {st:<10} |")
+        except:
+            pass
     
     print("=" * 50)
 

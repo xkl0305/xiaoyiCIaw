@@ -72,7 +72,7 @@ class Config:
     def load_from_env(self) -> None:
         """从环境变量加载配置"""
         # API配置
-        api_key = os.getenv("IWENCAI_API_KEY")
+        api_key = os.getenv("117862897_login_token") or os.getenv("IWENCAI_API_KEY")
         if api_key:
             # API Key存储在环境变量中，不在配置中硬编码
             logging.info("从环境变量加载API Key")
@@ -151,9 +151,9 @@ class Config:
     
     def get_api_key(self) -> str:
         """获取API Key（从环境变量）"""
-        api_key = os.getenv("IWENCAI_API_KEY")
+        api_key = os.getenv("117862897_login_token") or os.getenv("IWENCAI_API_KEY")
         if not api_key:
-            raise ValueError("请设置环境变量 IWENCAI_API_KEY")
+            raise ValueError("请设置环境变量 117862897_login_token")
         return api_key
     
     def get_api_url(self) -> str:

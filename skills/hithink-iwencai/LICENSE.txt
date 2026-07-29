@@ -67,7 +67,7 @@ Included Skills and Their Original Components:
    - Original: news-search/SKILL.md
    - Script: news-search/scripts/__main__.py
 
-10. report-search (v2.0.0)
+10. report-search (v1.0.0)
     - Original: report-search/SKILL.md
     - Script: report-search/scripts/research_report_search.py
 

@@ -1045,13 +1045,21 @@ def dream_consolidation() -> Dict:
                         cursor = conn.cursor()
                         # 查过去24小时内新增的记忆
                         cutoff = int(time.time()) - 86400
+                        # 先COUNT拿真实总数（修复：之前LIMIT 50后len(rows)永远≤50）
+                        total_row = cursor.execute(
+                            "SELECT COUNT(*) AS cnt FROM yaoyao_memories "
+                            "WHERE created_at > ?",
+                            (cutoff,)
+                        ).fetchone()
+                        real_count = total_row["cnt"] if total_row else 0
+                        # 再LIMIT 50拿详情用于preview
                         rows = cursor.execute(
                             "SELECT date, user_text, asst_text FROM yaoyao_memories "
                             "WHERE created_at > ? ORDER BY created_at DESC LIMIT 50",
                             (cutoff,)
                         ).fetchall()
                         conn.close()
-                        recent_count = len(rows)
+                        recent_count = real_count  # 用真实总数，不再被LIMIT卡死
                         for r in rows[:10]:
                             ut = (r["user_text"] or "")[:200]
                             at = (r["asst_text"] or "")[:200]
@@ -1574,41 +1582,43 @@ def _format_report(results: Dict, elapsed: float) -> str:
     # 梦境步骤（results.dreaming.steps）— 合并为一行，无数据则显示 —
     dream = results.get("dreaming", {}).get("steps", {})
     dream_parts = []
+    import re
     for step_key, step_label in [
         ("index_merge", "索引合并"),
         ("cold_hot", "冷热调整"),
-        ("llm_dream", "梦境固化"),
-        ("profile_update", "画像更新"),
     ]:
         st = dream.get(step_key, {})
         if not st:
             continue
         status = st.get("status", "?")
-        if status in ("error", "failed"):
-            icon = "❌"
-        elif status in ("ok", "done"):
-            icon = "✅"
-        elif status == "skipped":
-            icon = "ℹ️"
-        else:
-            icon = "⏭️"
+        if status in ("error", "failed", "skipped"):
+            continue
         detail = st.get("reason", "") or st.get("note", "")
-        if not detail and status == "done":
+        if not detail:
             h = st.get("hot", 0)
             w = st.get("warm", 0)
             c = st.get("cold", 0)
             if h > 0 or w > 0 or c > 0:
-                detail = f"hot={h} w={w} c={c}"
-            elif st.get("recent", 0) > 0:
-                detail = f"{st['recent']}条"
-        txt = icon
-        if detail:
-            txt += f" {detail}"
-        dream_parts.append(f"{step_label} {txt}")
+                detail = f"(hot={h}, w={w}, c={c})"
+        # 格式化
+        if step_key == "index_merge":
+            # 直接用 reason 原文，如 "ANALYZE 7 个数据库"
+            dream_parts.append(f"{step_label} → {detail}")
+        elif step_key == "cold_hot" and detail:
+            dream_parts.append(f"{step_label}{detail}")
+    # llm_dream — 单独处理，不带标签
+    llm = dream.get("llm_dream", {})
+    if llm and llm.get("status") not in ("error", "failed", "disabled_by_config"):
+        rc = llm.get("recent", 0)
+        pr = llm.get("processed", 0)
+        if rc > 0:
+            dream_parts.append(f"扫描{rc}条新记忆 ✅")
+        elif pr > 0:
+            dream_parts.append(f"{pr}条已处理 ✅")
     if dream_parts:
-        lines.append(TR("💤 梦境步骤", " | ".join(dream_parts)[:80]))
+        lines.append(TR("💤 梦境固化", " → ".join(dream_parts)[:80]))
     else:
-        lines.append(TR("💤 梦境步骤", "—"))
+        lines.append(TR("💤 梦境固化", "—"))
 
     # 情绪分析（results 顶层）— 始终输出
     ea = results.get("emotion_analysis", {})
@@ -1703,6 +1713,40 @@ def _format_report(results: Dict, elapsed: float) -> str:
     if bh_issues:
         for bi in bh_issues:
             lines.append(TR("⚠️", bi[:40]))
+
+    # 🔗 清理归档（合并TODO/子Agent/消息队列）
+    ta = results.get("todo_archive", {})
+    sc = results.get("subagent_cleanup", {})
+    mq = results.get("msg_queue_cleanup", {})
+    parts = []
+    # TODO
+    ta_n = ta.get("archived", 0)
+    if ta_n > 0:
+        parts.append(f"TODO-归档{ta_n}项")
+    else:
+        s = ta.get("status", "")
+        if s == "no_file":
+            parts.append("TODO-ℹ️不存在")
+        elif s == "no_completed":
+            parts.append("TODO-ℹ️无完成项")
+        else:
+            parts.append("TODO-—")
+    # 子Agent
+    sc_n = sc.get("cleaned", 0)
+    if sc_n > 0:
+        sc_kb = sc.get("freed_bytes", 0) / 1024
+        parts.append(f"子Agent-清理{sc_n}个({sc_kb:.0f}KB)")
+    else:
+        parts.append("子Agent-✅无残留")
+    # 消息队列
+    mq_n = mq.get("cleaned", 0)
+    if mq_n > 0:
+        parts.append(f"消息队列-清理{mq_n}条")
+    elif mq.get("status") in ("no_db", "no_table"):
+        parts.append("消息队列-ℹ️无数据")
+    else:
+        parts.append("消息队列-✅无过期")
+    lines.append(TR("📋 清理归档", " | ".join(parts)))
 
     # 建议 + 评分说明
     notes = []

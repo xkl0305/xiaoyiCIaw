@@ -1,23 +1,23 @@
 ---
 name: report-search
 description: 收录了主流投研机构发布的研究报告，帮你快速获取专业、深度的分析逻辑、投资评级、目标价等重要投研决策信息。
-version: 2.0.0
+version: 1.0.0
 ---
 
 # 研报搜索技能
 
 ## 版本
-当前技能版本：2.0.0（与X-Claw-Skill-Version头一致）
+当前技能版本：1.0.0（与X-Claw-Skill-Version头一致）
 
 ## 首次使用 - 获取 API Key
-所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
+所有技能都需要 117862897_login_token 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
 
 步骤 1：获取 API Key
 在浏览器内打同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub
 
 步骤 2：登录
 
-步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制
+步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制
 
 步骤 4：配置环境变量
 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
@@ -67,7 +67,7 @@ version: 2.0.0
 |--------|----------|
 | `X-Claw-Call-Type` | `normal`：正常请求；`retry`：失败后的重试。按实际调用场景二选一。 |
 | `X-Claw-Skill-Id` | 技能标识，固定为 `report-search`。 |
-| `X-Claw-Skill-Version` | 当前技能版本号，固定为 `2.0.0`。 |
+| `X-Claw-Skill-Version` | 当前技能版本号，固定为 `1.0.0`。 |
 | `X-Claw-Plugin-Id` | 插件 ID，固定为 `none`。 |
 | `X-Claw-Plugin-Version` | 插件版本，固定为 `none`。 |
 | `X-Claw-Trace-Id` | **每次请求必须新生成**的**全局唯一**追踪 ID；**长度为 64 个字符**（使用 64 位十六进制字符串）。 |
@@ -76,14 +76,14 @@ version: 2.0.0
 - **Base URL**: `https://openapi.iwencai.com`
 - **接口路径**: `/v1/comprehensive/search`
 - **请求方式**: POST（优先使用 POST）
-- **认证方式**: API Key (Bearer Token)
+- **认证方式**: Authorization Bearer Token
 
 ### 认证要求
 在请求头中需要携带API Key进行认证：
 ```
-Authorization: Bearer {IWENCAI_API_KEY}
+Authorization: Bearer {117862897_login_token}
 ```
-其中 `IWENCAI_API_KEY` 是用户申请的有效API密钥，需要设置为环境变量。
+其中 `117862897_login_token` 是用户申请的有效API密钥，需要设置为环境变量。
 
 ### 请求参数
 ```json
@@ -138,17 +138,17 @@ def search_reports(query: str):
 
 #### Unix/Linux/macOS (bash/zsh)
 ```bash
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_login_token_here"
 ```
 
 #### Windows PowerShell
 ```powershell
-$env:IWENCAI_API_KEY="your_api_key_here"
+$env:117862897_login_token="your_login_token_here"
 ```
 
 #### Windows CMD
 ```cmd
-set IWENCAI_API_KEY=your_api_key_here
+set 117862897_login_token=your_login_token_here
 ```
 
 ### 命令行使用
@@ -180,10 +180,10 @@ TRACE_ID=$(python3 -c "import secrets; print(secrets.token_hex(32))")
 # 使用环境变量中的 API Key
 curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "Authorization: Bearer  $117862897_login_token" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: report-search" \
-  -H "X-Claw-Skill-Version: 2.0.0" \
+  -H "X-Claw-Skill-Version: 1.0.0" \
   -H "X-Claw-Plugin-Id: none" \
   -H "X-Claw-Plugin-Version: none" \
   -H "X-Claw-Trace-Id: $TRACE_ID" \
@@ -202,10 +202,10 @@ $TRACE_ID = python -c "import secrets; print(secrets.token_hex(32))"
 # 调用研报搜索接口
 $headers = @{
     "Content-Type" = "application/json"
-    "Authorization" = "Bearer $env:IWENCAI_API_KEY"
+    "Authorization" = "$env:117862897_login_token"
     "X-Claw-Call-Type" = "normal"
     "X-Claw-Skill-Id" = "report-search"
-    "X-Claw-Skill-Version" = "2.0.0"
+    "X-Claw-Skill-Version" = "1.0.0"
     "X-Claw-Plugin-Id" = "none"
     "X-Claw-Plugin-Version" = "none"
     "X-Claw-Trace-Id" = $TRACE_ID
@@ -242,13 +242,13 @@ Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/comprehensive/search" -Me
 1. **接收用户查询**: 获取用户的专业搜索需求
 2. **查询拆解分析**: 分析查询复杂度，决定是否需要拆分为多个专业子查询
 3. **专业查询生成**: 生成标准化的专业查询关键词，优化搜索效果
-4. **API调用执行**: 生成并执行API调用代码，使用Bearer Token认证和X-Claw-* Header
+4. **API调用执行**: 生成并执行API调用代码，使用Authorization: Bearer认证和X-Claw-* Header
 5. **数据质量评估**: 检查返回的研究报告是否专业、完整，能否回答用户问题
 6. **专业数据处理**: 对搜索结果进行专业排序、过滤、摘要和关键信息提取
 7. **结果整合返回**: 将处理后的专业结果返回给大模型，生成深度回答
 
 ### 代码生成要求
-- 生成完整的API调用代码，包括Bearer Token认证、X-Claw-* Header、64字符Trace ID
+- 生成完整的API调用代码，包括Authorization Bearer认证、X-Claw-* Header、64字符Trace ID
 - 处理网络异常和接口错误，实现专业重试机制
 - **严格遵守响应透明传递要求**：返回完整的API响应，不得对响应内容做任何修改、过滤、重组
 - 确保代码符合Python最佳实践，可读性和可维护性高
@@ -276,7 +276,7 @@ Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/comprehensive/search" -Me
 ### 配置文件要求
 - 必须包含 `config.example.json` 配置文件示例
 - 必须实现 `config.py` 配置管理模块
-- API密钥必须从环境变量 `IWENCAI_API_KEY` 获取，不得硬编码
+- API密钥必须从环境变量 `117862897_login_token` 获取，不得硬编码
 
 ### 目录结构要求
 ```
@@ -324,7 +324,7 @@ Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/comprehensive/search" -Me
 ## 注意事项
 
 1. **数据专业性**: 专注于研究报告类型，确保返回结果的深度和专业性
-2. **认证合规**: 必须使用Bearer Token认证方式，符合公网访问要求
+2. **认证合规**: 必须使用Authorization: Bearer认证方式，符合公网访问要求
 3. **来源标注**: 必须明确标注数据来源于同花顺问财
 4. **错误处理**: 实现完善的错误处理和重试机制
 5. **性能优化**: 考虑接口调用频率限制，实现合理的请求间隔

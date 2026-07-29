@@ -15,31 +15,31 @@ version: 1.0.0
 
 ## 首次使用 - 获取 API Key
 
-所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
+所有技能都需要 117862897_login_token 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
 
 步骤 1：获取 API Key
 在浏览器内打同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub
 
 步骤 2：登录
 
-步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制
+步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制
 
 步骤 4：配置环境变量
 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
 
 **Unix/Linux/macOS (bash/zsh):**
 ```bash
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_login_token_here"
 ```
 
 **Windows (PowerShell):**
 ```powershell
-$env:IWENCAI_API_KEY="your_api_key_here"
+$env:117862897_login_token="your_login_token_here"
 ```
 
 **Windows (CMD):**
 ```cmd
-set IWENCAI_API_KEY=your_api_key_here
+set 117862897_login_token=your_login_token_here
 ```
 
 ## 技能功能
@@ -76,7 +76,7 @@ set IWENCAI_API_KEY=your_api_key_here
 - **Base URL**: `https://openapi.iwencai.com`
 - **接口路径**: `/v1/comprehensive/search`
 - **请求方式**: POST
-- **认证方式**: API Key (Bearer Token)
+- **认证方式**: Authorization Bearer Token
 
 ### 问财OpenAPI网关规范要求
 
@@ -97,9 +97,9 @@ set IWENCAI_API_KEY=your_api_key_here
 #### 2. 认证要求
 使用OAuth2.0/JWT风格认证：
 ```
-Authorization: Bearer {IWENCAI_API_KEY}
+Authorization: Bearer {117862897_login_token}
 ```
-其中 `IWENCAI_API_KEY` 必须从环境变量读取，禁止硬编码在代码中。
+其中 `117862897_login_token` 必须从环境变量读取，禁止硬编码在代码中。
 
 #### 3. 请求参数
 ```json
@@ -118,7 +118,7 @@ TRACE_ID=$(python3 -c "import secrets; print(secrets.token_hex(32))")
 # 调用新闻搜索接口
 curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "Authorization: Bearer  $117862897_login_token" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: news-search" \
   -H "X-Claw-Skill-Version: 1.0.0" \
@@ -140,7 +140,7 @@ $TRACE_ID = python -c "import secrets; print(secrets.token_hex(32))"
 # 调用新闻搜索接口
 $headers = @{
     "Content-Type" = "application/json"
-    "Authorization" = "Bearer $env:IWENCAI_API_KEY"
+    "Authorization" = "$env:117862897_login_token"
     "X-Claw-Call-Type" = "normal"
     "X-Claw-Skill-Id" = "news-search"
     "X-Claw-Skill-Version" = "1.0.0"
@@ -283,7 +283,7 @@ def search_news(query: str):
 ## 注意事项
 
 ### API使用规范
-1. API密钥需要从环境变量安全获取：`IWENCAI_API_KEY`
+1. API密钥需要从环境变量安全获取：`117862897_login_token`
 2. 注意请求频率限制，避免被限制访问
 3. 请求参数中的`channels`和`app_id`为固定值，不要修改
 4. `query`参数支持中文关键词搜索

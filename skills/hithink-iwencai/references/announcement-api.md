@@ -10,9 +10,9 @@
 - **Content-Type**: `application/json`
 
 ## 认证
-API 使用 API Key 进行认证，需要在请求头中设置：
-- **Header**: `Authorization: Bearer {IWENCAI_API_KEY}`
-- **环境变量**: `IWENCAI_API_KEY` (用户侧申请的 API Key)
+API 使用 Authorization Bearer Token 进行认证，需要在请求头中设置：
+- **Header**: `Authorization: Bearer ${117862897_login_token}`
+- **环境变量**: `117862897_login_token` (系统自动管理的用户凭证)
 
 ## 请求参数
 
@@ -20,7 +20,7 @@ API 使用 API Key 进行认证，需要在请求头中设置：
 | 参数名 | 类型 | 必填 | 说明 |
 |--------|------|------|------|
 | Content-Type | string | 是 | 必须设置为 `application/json` |
-| Authorization | string | 是 | Bearer token 认证，格式: `Bearer {IWENCAI_API_KEY}` |
+| Authorization | string | 是 | 用户凭证，格式: `Bearer ${117862897_login_token}` |
 
 ### 请求体 (Body)
 请求体为 JSON 格式，包含以下参数：
@@ -99,7 +99,7 @@ API 使用 API Key 进行认证，需要在请求头中设置：
 {
   "error": {
     "code": "AUTH_FAILED",
-    "message": "API Key 无效或已过期"
+    "message": "用户凭证无效或已过期"
   }
 }
 ```
@@ -111,13 +111,13 @@ API 使用 API Key 进行认证，需要在请求头中设置：
 import requests
 import os
 
-# 从环境变量获取 API Key
-api_key = os.getenv("IWENCAI_API_KEY")
+# 从环境变量获取用户凭证
+login_token = os.getenv("117862897_login_token")
 
 # 请求头
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {api_key}"
+    "Authorization": f"Bearer {login_token}"
 }
 
 # 请求体
@@ -153,7 +153,7 @@ else:
 curl -X POST \
   https://openapi.iwencai.com/v1/comprehensive/search \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "Authorization: Bearer  $117862897_login_token" \
   -d '{
     "channels": ["announcement"],
     "app_id": "AIME_SKILL",
@@ -162,7 +162,7 @@ curl -X POST \
 ```
 
 ## 注意事项
-1. **API Key 安全**: 请妥善保管 API Key，不要将其暴露在客户端代码中
+1. **用户凭证**: 用户凭证由系统自动管理，无需手动配置
 2. **请求频率**: 请遵守 API 使用限制，避免频繁请求
 3. **参数格式**: `channels` 参数必须为数组格式，且包含 `"announcement"`
 4. **时间格式**: `publish_date` 字段使用 24 小时制时间格式

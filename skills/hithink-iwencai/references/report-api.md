@@ -12,7 +12,8 @@
 - **接口路径**: `/v1/comprehensive/search`
 - **请求方式**: POST
 - **Content-Type**: `application/json`
-- **API Key 环境变量**: `IWENCAI_API_KEY`
+- **认证方式**: Authorization Bearer Token
+- **用户凭证环境变量**: `117862897_login_token`
 
 ## 请求说明
 
@@ -20,6 +21,7 @@
 
 ```
 Content-Type: application/json
+Authorization: Bearer ${117862897_login_token}
 ```
 
 ### 请求参数
@@ -112,10 +114,11 @@ Content-Type: application/json
 
 ### 环境变量设置
 
-在使用此接口前，需要设置 API Key 环境变量：
+在使用此接口前，需要设置用户凭证环境变量（由系统自动管理）：
 
 ```bash
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_login_token"
+export 117862897_login_token_expire_time="expire_timestamp"
 ```
 
 ### 调用示例（Python）
@@ -128,12 +131,12 @@ import json
 # API配置
 BASE_URL = "https://openapi.iwencai.com"
 ENDPOINT = "/v1/comprehensive/search"
-API_KEY = os.getenv("IWENCAI_API_KEY")
+LOGIN_TOKEN = os.getenv("117862897_login_token")
 
 # 请求头
 headers = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {API_KEY}"
+    "Authorization": f"{LOGIN_TOKEN}"
 }
 
 # 请求体
@@ -173,12 +176,12 @@ const axios = require('axios');
 // API配置
 const BASE_URL = 'https://openapi.iwencai.com';
 const ENDPOINT = '/v1/comprehensive/search';
-const API_KEY = process.env.IWENCAI_API_KEY;
+const LOGIN_TOKEN = process.env.117862897_login_token;
 
 // 请求头
 const headers = {
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${API_KEY}`
+  'Authorization': `${LOGIN_TOKEN}`
 };
 
 // 请求体
@@ -208,17 +211,17 @@ axios.post(`${BASE_URL}${ENDPOINT}`, payload, { headers })
 
 ## 注意事项
 
-1. **API Key**: 需要申请有效的 API Key 并设置为 `IWENCAI_API_KEY` 环境变量
+1. **用户凭证**: 用户凭证由系统自动管理，通过环境变量 `117862897_login_token` 传递
 2. **参数固定值**: `channels` 参数必须为 `["report"]`，`app_id` 参数必须为 `AIME_SKILL`
 3. **搜索关键词**: `query` 参数支持中文关键词，建议使用具体的搜索词以获得更准确的结果
 4. **响应数据**: 返回的文章数据按发布时间倒序排列
-5. **错误处理**: 如果请求失败，请检查网络连接、API Key 和请求参数
+5. **错误处理**: 如果请求失败，请检查网络连接、用户凭证和请求参数
 6. **数据来源**: 所有数据均来源于同花顺问财财经资讯搜索接口，使用时请注明数据来源
 
 ## 常见问题
 
-### Q: 如何获取 API Key？
-A: 需要向接口提供方申请有效的 API Key。
+### Q: 如何获取用户凭证？
+A: 用户凭证由系统自动管理和刷新，无需手动申请。
 
 ### Q: 搜索不到结果怎么办？
 A: 可以尝试调整搜索关键词，使用更具体或更通用的词汇。

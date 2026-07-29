@@ -12,7 +12,57 @@
  */
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
+
+const REPORTS_ROOT = path.resolve(os.homedir(), '.openclaw/workspace/reports');
+
+function fail(message) {
+  console.error(`错误：${message}`);
+  process.exit(1);
+}
+
+function isWithinDirectory(candidatePath, allowedRoot) {
+  const relative = path.relative(allowedRoot, candidatePath);
+  return relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative));
+}
+
+function resolveAllowedInputPath(inputFile) {
+  const absoluteInputPath = path.resolve(inputFile);
+
+  if (path.extname(absoluteInputPath) !== '.md') {
+    fail('只允许读取 .md 文件');
+  }
+
+  if (!fs.existsSync(absoluteInputPath)) {
+    fail('文件不存在: ' + inputFile);
+  }
+
+  const realInputPath = fs.realpathSync(absoluteInputPath);
+
+  if (!isWithinDirectory(realInputPath, REPORTS_ROOT)) {
+    fail('输入文件必须位于允许目录内: ' + REPORTS_ROOT);
+  }
+
+  return realInputPath;
+}
+
+function resolveAllowedOutputPath(outputFile) {
+  const absoluteOutputPath = path.resolve(outputFile);
+  const outputDir = path.dirname(absoluteOutputPath);
+
+  if (!fs.existsSync(outputDir)) {
+    fail('输出目录不存在: ' + outputDir);
+  }
+
+  const realOutputDir = fs.realpathSync(outputDir);
+
+  if (!isWithinDirectory(realOutputDir, REPORTS_ROOT)) {
+    fail('输出文件必须位于允许目录内: ' + REPORTS_ROOT);
+  }
+
+  return path.join(realOutputDir, path.basename(absoluteOutputPath));
+}
 
 // 主题配置
 const themes = {
@@ -26,13 +76,15 @@ const themes = {
     codeText: '#1f2937',
     blockquote: '#f9fafb',
     blockquoteBorder: '#d1d5db',
+    muted: '#666666',
     tableHeader: '#f9fafb',
     tableBorder: '#e5e7eb',
     tableStripe: '#fafafa',
     tableHover: '#f0f4ff',
     hr: '#e5e7eb',
     shadow: 'rgba(0, 0, 0, 0.1)',
-    scrollHint: 'rgba(0, 0, 0, 0.08)'
+    scrollHint: 'rgba(0, 0, 0, 0.08)',
+    footer: '#888888'
   },
   dark: {
     bodyBg: '#1a1a1a',
@@ -44,13 +96,15 @@ const themes = {
     codeText: '#e5e5e5',
     blockquote: '#2d2d2d',
     blockquoteBorder: '#4a4a4a',
+    muted: '#b3b3b3',
     tableHeader: '#2d2d2d',
     tableBorder: '#4a4a4a',
     tableStripe: '#222222',
     tableHover: '#2d2d3d',
     hr: '#4a4a4a',
     shadow: 'rgba(0, 0, 0, 0.3)',
-    scrollHint: 'rgba(255, 255, 255, 0.06)'
+    scrollHint: 'rgba(255, 255, 255, 0.06)',
+    footer: '#9ca3af'
   }
 };
 
@@ -306,7 +360,7 @@ function generateHtml(markdown, options = {}) {
       background: ${theme.blockquote};
       border-left: 4px solid ${theme.blockquoteBorder};
       border-radius: 0 8px 8px 0;
-      color: #666;
+      color: ${theme.muted};
     }
     blockquote p { margin: 0; }
 
@@ -323,6 +377,7 @@ function generateHtml(markdown, options = {}) {
     code {
       font-family: "Fira Code", "JetBrains Mono", Consolas, Monaco, monospace;
       background: ${theme.code};
+      color: ${theme.codeText};
       padding: 2px 6px;
       border-radius: 4px;
       font-size: 0.9em;
@@ -399,6 +454,36 @@ function generateHtml(markdown, options = {}) {
       margin: 1em 0;
     }
 
+    /* 页眉 */
+    .report-header {
+      text-align: center;
+      padding: 20px 0 30px;
+      border-bottom: 1px solid ${theme.hr};
+      margin-bottom: 30px;
+    }
+    .report-header .author {
+      font-size: 0.9em;
+      color: ${theme.link};
+      font-weight: 500;
+    }
+    .report-header .author-icon {
+      margin-right: 8px;
+    }
+
+    /* 页脚 */
+    .report-footer {
+      text-align: center;
+      padding: 30px 0 20px;
+      border-top: 1px solid ${theme.hr};
+      margin-top: 40px;
+      color: ${theme.footer};
+      font-size: 0.9em;
+    }
+    .report-footer .author {
+      color: ${theme.link};
+      font-weight: 500;
+    }
+
     /* 打印 */
     @media print {
       body { padding: 0; background: white; color: black; }
@@ -407,6 +492,7 @@ function generateHtml(markdown, options = {}) {
       .table-wrapper { overflow: visible; border: none; }
       table { min-width: 0; font-size: 0.85em; }
       th, td { padding: 6px 8px; }
+      .report-header, .report-footer { border-color: #ccc; }
     }
 
     /* 移动端适配 */
@@ -461,9 +547,15 @@ function generateHtml(markdown, options = {}) {
 </head>
 <body>
   <div class="container">
+    <header class="report-header">
+      <div class="author"><span class="author-icon">🎨</span>小艺报告专家 · 内容由AI生成仅供参考</div>
+    </header>
     ${content}
+    <footer class="report-footer">
+      <div class="author"><span class="author-icon">🎨</span>小艺报告专家 · 内容由AI生成仅供参考</div>
+    </footer>
   </div>
-</body>
+  </body>
 </html>`;
 }
 
@@ -516,20 +608,18 @@ Markdown 转 HTML 转换工具
   }
 
   if (!inputFile) {
-    console.error('错误：请指定输入文件');
-    process.exit(1);
+    fail('请指定输入文件');
   }
 
-  if (!fs.existsSync(inputFile)) {
-    console.error('错误：文件不存在: ' + inputFile);
-    process.exit(1);
-  }
+  const safeInputFile = resolveAllowedInputPath(inputFile);
 
   if (!outputFile) {
-    outputFile = inputFile.replace(/\.md$/, '.html');
+    outputFile = safeInputFile.replace(/\.md$/, '.html');
   }
 
-  const markdown = fs.readFileSync(inputFile, 'utf-8');
+  const safeOutputFile = resolveAllowedOutputPath(outputFile);
+
+  const markdown = fs.readFileSync(safeInputFile, 'utf-8');
 
   // 从文件内容提取标题
   const titleMatch = markdown.match(/^#\s+(.+)$/m);
@@ -538,11 +628,11 @@ Markdown 转 HTML 转换工具
   }
 
   const html = generateHtml(markdown, { theme, title });
-  fs.writeFileSync(outputFile, html, 'utf-8');
+  fs.writeFileSync(safeOutputFile, html, 'utf-8');
 
   console.log('✅ 转换完成！');
-  console.log('   输入: ' + inputFile);
-  console.log('   输出: ' + outputFile);
+  console.log('   输入: ' + safeInputFile);
+  console.log('   输出: ' + safeOutputFile);
   console.log('   主题: ' + theme);
 }
 

@@ -38,7 +38,7 @@ class APIClient:
         self.max_retries = self.config.get("api.max_retries")
         self.retry_delay = self.config.get("api.retry_delay")
         self.skill_id = "report-search"
-        self.skill_version = "2.0.0"
+        self.skill_version = "1.0.0"
         
         # 设置日志
         self.config.setup_logging()
@@ -232,8 +232,8 @@ class APIClient:
 if __name__ == "__main__":
     import sys
     
-    if not os.getenv("IWENCAI_API_KEY"):
-        print("请设置环境变量 IWENCAI_API_KEY")
+    if not os.getenv("117862897_login_token"):
+        print("请设置环境变量 117862897_login_token")
         sys.exit(1)
     
     try:

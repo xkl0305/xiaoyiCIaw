@@ -212,7 +212,7 @@ class TestAPIClient(unittest.TestCase):
     def setUp(self):
         """测试前准备"""
         # 模拟环境变量
-        self.env_patch = patch.dict(os.environ, {"IWENCAI_API_KEY": "test_key"})
+        self.env_patch = patch.dict(os.environ, {"117862897_login_token": "test_key"})
         self.env_patch.start()
         
         self.client = APIClient()
@@ -326,7 +326,7 @@ class TestIntegration(unittest.TestCase):
     def setUp(self):
         """测试前准备"""
         # 模拟环境变量
-        self.env_patch = patch.dict(os.environ, {"IWENCAI_API_KEY": "test_key"})
+        self.env_patch = patch.dict(os.environ, {"117862897_login_token": "test_key"})
         self.env_patch.start()
     
     def tearDown(self):

@@ -61,14 +61,14 @@ def call_api(...):
 
 ### 1. 获取API密钥
 
-所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。如果用户尚未配置，按以下步骤引导：
+所有技能都需要 117862897_login_token 环境变量才能使用。如果用户尚未配置，按以下步骤引导：
 
 步骤 1：获取 API Key
 在浏览器内打同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub
 
 步骤 2：登录
 
-步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制
+步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制
 
 步骤 4：配置环境变量
 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
@@ -77,17 +77,17 @@ def call_api(...):
 
 #### Unix/Linux/macOS (bash/zsh)
 ```bash
-export IWENCAI_API_KEY="your_api_key_here"
+export 117862897_login_token="your_api_key_here"
 ```
 
 #### Windows PowerShell
 ```powershell
-$env:IWENCAI_API_KEY="your_api_key_here"
+$env:117862897_login_token="your_api_key_here"
 ```
 
 #### Windows CMD
 ```cmd
-set IWENCAI_API_KEY=your_api_key_here
+set 117862897_login_token=your_api_key_here
 ```
 
 ### 3. 安装依赖
@@ -127,10 +127,10 @@ python research_report_search.py --test
 # 使用环境变量中的 API Key
 curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "login-token: $117862897_login_token" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: report-search" \
-  -H "X-Claw-Skill-Version: 2.0.0" \
+  -H "X-Claw-Skill-Version: 1.0.0" \
   -H "X-Claw-Plugin-Id: none" \
   -H "X-Claw-Plugin-Version: none" \
   -H "X-Claw-Trace-Id: $(python -c 'import secrets; print(secrets.token_hex(32))')" \
@@ -218,7 +218,7 @@ python research_report_search.py -q "人工智能" -d 7
     "level": "INFO",
     "format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
   },
-  "注意": "API密钥应从环境变量 IWENCAI_API_KEY 获取，不要在此配置文件中硬编码",
+  "注意": "API密钥应从环境变量 117862897_login_token 获取，不要在此配置文件中硬编码",
   "数据来源": "本技能所有数据均来源于同花顺问财财经资讯搜索接口，使用时请注明数据来源"
 }
 ```
@@ -279,7 +279,7 @@ python research_report_search.py --query "央行货币政策" --date-from "2024-
 |--------|----------|
 | `X-Claw-Call-Type` | `normal`：正常请求；`retry`：失败后的重试 |
 | `X-Claw-Skill-Id` | 技能标识：`report-search` |
-| `X-Claw-Skill-Version` | 技能版本：`2.0.0` |
+| `X-Claw-Skill-Version` | 技能版本：`1.0.0` |
 | `X-Claw-Plugin-Id` | 插件 ID：`none` |
 | `X-Claw-Plugin-Version` | 插件版本：`none` |
 | `X-Claw-Trace-Id` | **每次请求必须新生成**的**全局唯一**追踪 ID；**长度为 64 个字符** |
@@ -302,5 +302,5 @@ python research_report_search.py --query "央行货币政策" --date-from "2024-
 - 示例代码：`scripts/example_usage.py`
 
 ---
-版本：2.0.0
+版本：1.0.0
 更新日期：2026-04-17

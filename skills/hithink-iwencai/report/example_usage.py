@@ -277,10 +277,10 @@ def example_curl_usage():
     print("1. 基本搜索 (Unix/Linux/macOS):")
     print("   curl -X POST \"https://openapi.iwencai.com/v1/comprehensive/search\" \\")
     print("     -H \"Content-Type: application/json\" \\")
-    print("     -H \"Authorization: Bearer $IWENCAI_API_KEY\" \\")
+    print("     -H \"Authorization: Bearer $117862897_login_token\" \\")
     print("     -H \"X-Claw-Call-Type: normal\" \\")
     print("     -H \"X-Claw-Skill-Id: report-search\" \\")
-    print("     -H \"X-Claw-Skill-Version: 2.0.0\" \\")
+    print("     -H \"X-Claw-Skill-Version: 1.0.0\" \\")
     print("     -H \"X-Claw-Plugin-Id: none\" \\")
     print("     -H \"X-Claw-Plugin-Version: none\" \\")
     print("     -H \"X-Claw-Trace-Id: $(python -c 'import secrets; print(secrets.token_hex(32))')\" \\")
@@ -294,10 +294,10 @@ def example_curl_usage():
     print("   $traceId = python -c \"import secrets; print(secrets.token_hex(32))\"")
     print("   curl.exe -X POST \"https://openapi.iwencai.com/v1/comprehensive/search\" \\")
     print("     -H \"Content-Type: application/json\" \\")
-    print("     -H \"Authorization: Bearer $env:IWENCAI_API_KEY\" \\")
+    print("     -H \"Authorization: Bearer $env:117862897_login_token\" \\")
     print("     -H \"X-Claw-Call-Type: normal\" \\")
     print("     -H \"X-Claw-Skill-Id: report-search\" \\")
-    print("     -H \"X-Claw-Skill-Version: 2.0.0\" \\")
+    print("     -H \"X-Claw-Skill-Version: 1.0.0\" \\")
     print("     -H \"X-Claw-Plugin-Id: none\" \\")
     print("     -H \"X-Claw-Plugin-Version: none\" \\")
     print("     -H \"X-Claw-Trace-Id: $traceId\" \\")
@@ -315,14 +315,14 @@ def example_curl_usage():
 def main():
     """主函数"""
     print("研报搜索技能使用示例")
-    print("版本: 2.0.0")
+    print("版本: 1.0.0")
     print("规范: 符合iwencai-skill-creator要求")
     print("=" * 80)
     
     # 检查API Key
-    if not os.getenv("IWENCAI_API_KEY"):
-        print("警告: 请先设置环境变量 IWENCAI_API_KEY")
-        print("示例: export IWENCAI_API_KEY=\"your_api_key_here\"")
+    if not os.getenv("117862897_login_token"):
+        print("警告: 请先设置环境变量 117862897_login_token")
+        print("示例: export 117862897_login_token=\"your_api_key_here\"")
         print()
         print("以下示例将模拟运行，不会实际调用API")
         print("=" * 80)

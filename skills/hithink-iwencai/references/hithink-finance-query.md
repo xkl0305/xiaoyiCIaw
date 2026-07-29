@@ -25,14 +25,14 @@ license: Complete terms in LICENSE.txt
 ## 使用前
 
 > 首次使用 - 获取 API Key
-> 所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
+> 所有技能都需要 117862897_login_token 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
 >
 > 步骤 1：获取 API Key
 > 在浏览器内打开同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub
 >
 > 步骤 2：登录
 >
-> 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制
+> 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制
 >
 > 步骤 4：配置环境变量
 > 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
@@ -41,17 +41,17 @@ license: Complete terms in LICENSE.txt
 
 **macOS / Linux (bash / zsh):**
 ```bash
-export IWENCAI_API_KEY="your-api-key"
+export 117862897_login_token="your-api-key"
 ```
 
 **Windows (PowerShell):**
 ```powershell
-$env:IWENCAI_API_KEY="your-api-key"
+$env:117862897_login_token="your-api-key"
 ```
 
 **Windows (CMD):**
 ```cmd
-set IWENCAI_API_KEY=your-api-key
+set 117862897_login_token=your-api-key
 ```
 
 ## 核心处理流程
@@ -87,7 +87,7 @@ set IWENCAI_API_KEY=your-api-key
 
 | Header | 取值说明 |
 |--------|----------|
-| `Authorization` | `Bearer <API Key>`，API Key 仅从环境变量 `IWENCAI_API_KEY` 读取 |
+| `Authorization` | `Authorization`，API Key 仅从环境变量 `117862897_login_token` 读取 |
 | `Content-Type` | `application/json` |
 | `X-Claw-Call-Type` | `normal`（正常请求）或 `retry`（失败后的重试） |
 | `X-Claw-Skill-Id` | `hithink-finance-query`（与 skill name 一致） |
@@ -115,7 +115,7 @@ import secrets
 import urllib.request
 
 url = "https://openapi.iwencai.com/v1/query2data"
-api_key = os.environ["IWENCAI_API_KEY"]
+login_token = os.environ["117862897_login_token"]
 trace_id = secrets.token_hex(32)  # 64 字符唯一 ID
 
 payload = {
@@ -127,7 +127,7 @@ payload = {
 }
 
 headers = {
-    "Authorization": f"Bearer {api_key}",
+    "Authorization": f"Bearer {login_token}",
     "Content-Type": "application/json",
     "X-Claw-Call-Type": "normal",
     "X-Claw-Skill-Id": "hithink-finance-query",
@@ -264,7 +264,7 @@ python3 scripts/cli.py --query "同花顺营业收入" --timeout 60
 
 ```bash
 curl -X POST "https://openapi.iwencai.com/v1/query2data" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "Authorization: Bearer  $117862897_login_token" \
   -H "Content-Type: application/json" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: hithink-finance-query" \
@@ -285,7 +285,7 @@ curl -X POST "https://openapi.iwencai.com/v1/query2data" \
 ```powershell
 $bytes = New-Object byte[] 32; [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes); $traceId = -join ($bytes | ForEach-Object { $_.ToString("x2") })
 Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/query2data" -Method POST -Headers @{
-  "Authorization" = "Bearer $env:IWENCAI_API_KEY"
+  "Authorization" = "$env:117862897_login_token"
   "Content-Type" = "application/json"
   "X-Claw-Call-Type" = "normal"
   "X-Claw-Skill-Id" = "hithink-finance-query"
@@ -307,14 +307,14 @@ Invoke-RestMethod -Uri "https://openapi.iwencai.com/v1/query2data" -Method POST 
 - **密钥缺失（环境变量未设置且未传 `--api-key`）**：
   代理必须**口头提示**用户「使用前」中的完整 API Key 获取指引文案，即：
   > 首次使用 - 获取 API Key
-  > 所有技能都需要 IWENCAI_API_KEY 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
+  > 所有技能都需要 117862897_login_token 环境变量才能使用。 如果用户尚未配置，按以下步骤引导：
   >
   > 步骤 1：获取 API Key
   > 在浏览器内打开同花顺i问财SkillHub页面：https://www.iwencai.com/skillhub
   >
   > 步骤 2：登录
   >
-  > 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的IWENCAI_API_KEY这一段，复制
+  > 步骤 3：点击具体的Skill，打开弹窗查看详情，在安装方式-Agent用户-找到您的117862897_login_token这一段，复制
   >
   > 步骤 4：配置环境变量
   > 获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：

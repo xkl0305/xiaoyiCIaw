@@ -1,5 +1,5 @@
 ---
-name: hithink-wencai-suite
+name: hithink-iwencai
 description: >
   同花顺问财金融技能套件，包含 10 个专业金融子技能：
   1. announcement-search - 金融公告搜索（定期报告、分红派息、回购增持、资产重组等）
@@ -14,19 +14,25 @@ description: >
   10. report-search - 研报搜索（投研机构报告、投资评级、目标价等）
   触发词：同花顺、问财、金融数据、行情查询、财务指标、选股、自选股、基金、期货、宏观数据、指数、公告、新闻、研报、财经资讯。
 author: 同花顺问财团队
-version: 3.0.0
+version: 1.0.0
 required_env_vars:
-  - IWENCAI_API_KEY
+  - 117862897_login_token
+  - 117862897_login_token_expire_time
+env:
+  - 117862897_login_token: "从/home/sandbox/.openclaw/.xiaoyienv文件中读取用户账号凭证；若为空，或当前时间大于 ${117862897_login_token_expire_time} 的取值（即凭证已过期），调用一次 huawei_id_tool工具(参数：clientId=117862897,skillName=hithink-iwencai) 刷新凭证；刷新成功后重新读取账号凭证，继续执行后续业务逻辑"
+  - 117862897_login_token_expire_time: "账号凭证过期时间（Unix时间戳）；当前时间大于该值时需先刷新凭证再继续调用"
 credentials:
   - type: api_key
-    name: IWENCAI_API_KEY
-    description: 从同花顺i问财SkillHub获取的 API Key，首次使用需注册获取
-    setup_url: "https://www.iwencai.com/skillhub"
+    name: 117862897_login_token
+    description: 用户凭证，系统通过环境变量传递，用于访问开发者服务
+  - type: api_key
+    name: 117862897_login_token_expire_time
+    description: 凭证过期时间（Unix时间戳）
 ---
 
 # 同花顺问财金融技能套件
 
-本技能套件基于**同花顺问财 OpenAPI** 构建，提供一站式金融数据查询、行情分析、选股筛选、资讯搜索等十大专业金融功能。所有子技能通过统一的 `IWENCAI_API_KEY` 认证，支持自然语言交互。
+本技能套件基于**同花顺问财 OpenAPI** 构建，提供一站式金融数据查询、行情分析、选股筛选、资讯搜索等十大专业金融功能。所有子技能通过统一的 `Authorization: Bearer` 认证（凭证从环境变量 `117862897_login_token` 读取），支持自然语言交互。
 
 ## 包含的子技能
 
@@ -43,43 +49,26 @@ credentials:
 | 9 | **news-search** | 财经资讯搜索：财经新闻、政策动态、行业革新、企业业务进展等 | `references/news-search.md` |
 | 10 | **report-search** | 研报搜索：投研机构报告、投资评级、目标价、分析逻辑等 | `references/report-search.md` |
 
-## 首次使用 - 获取 API Key
+## 凭据说明
 
-**所有子技能都需要 `IWENCAI_API_KEY` 环境变量才能使用。** 如果用户尚未配置，按以下步骤引导：
+- 统一使用 `117862897_login_token` 和 `117862897_login_token_expire_time` 环境变量。
+- 若 `117862897_login_token` 为空，或当前时间大于 `117862897_login_token_expire_time`，调用一次 `huawei_id_tool(参数：clientId=117862897,skillName=hithink-iwencai) ` 刷新凭证（升级小艺APP和小艺Claw到最新版本后支持）。
+- 刷新成功后重新读取环境变量，再继续后续业务逻辑。
+- 所有请求头统一使用 `login-token: ${117862897_login_token}`。
 
-### 步骤 1：获取 API Key
+### 凭证获取与刷新流程
 
-在浏览器内打开同花顺i问财SkillHub页面：
-**https://www.iwencai.com/skillhub**
+1. 读取环境变量 `117862897_login_token` 和 `117862897_login_token_expire_time`
+2. 若环境变量为空，或当前时间大于 `117862897_login_token_expire_time` 的取值（即凭证已过期），调用一次 `huawei_id_tool(参数：clientId=117862897,skillName=hithink-iwencai) ` 刷新凭证（调用一次即可，不得反复调用）
+3. 刷新成功后，重新读取环境变量，继续执行业务逻辑
 
-### 步骤 2：登录
+### HuaweiIDTool 返回值
 
-### 步骤 3：获取 API Key
-
-点击具体的Skill，打开弹窗查看详情，在"安装方式-Agent用户"找到 `IWENCAI_API_KEY` 这一段，复制
-
-### 步骤 4：配置环境变量
-
-获取到 API Key 后，直接复制指引文字发送给AI助手，或手动设置环境变量：
-
-**macOS / Linux (bash/zsh):**
-```bash
-export IWENCAI_API_KEY="your_api_key_here"
-```
-
-**Windows (PowerShell):**
-```powershell
-$env:IWENCAI_API_KEY="your_api_key_here"
-```
-
-**Windows (CMD):**
-```cmd
-set IWENCAI_API_KEY=your_api_key_here
-```
-
-### 验证配置
-
-配置完成后，尝试调用任意子技能接口验证 Key 是否有效。
+| 返回值 | 说明 |
+|--------|------|
+| `success` | 凭证已就绪，可读取环境变量 |
+| `userNotConfirm` | 用户未完成授权（30秒超时） |
+| `failed` | 刷新失败 |
 
 ## 使用方式
 
@@ -101,17 +90,17 @@ set IWENCAI_API_KEY=your_api_key_here
 ### 通用接口信息
 
 - **Base URL**: `https://openapi.iwencai.com`
-- **认证方式**: Bearer Token，从环境变量 `IWENCAI_API_KEY` 读取
+- **认证方式**: Authorization Bearer Token，从环境变量 `117862897_login_token` 读取
 - **请求方法**: POST
 - **Content-Type**: `application/json`
 
-### 通用请求头（Claw Headers）
+### 通用请求头
 
 所有发往问财 OpenAPI 网关的请求必须包含以下 Header：
 
 | Header | 取值说明 |
 |--------|----------|
-| `Authorization` | `Bearer <API Key>`，API Key 仅从环境变量 `IWENCAI_API_KEY` 读取 |
+| `Authorization` | `Bearer ${117862897_login_token}`，用户凭证仅从环境变量 `117862897_login_token` 读取 |
 | `Content-Type` | `application/json` |
 | `X-Claw-Call-Type` | `normal`（正常请求）或 `retry`（失败后的重试） |
 | `X-Claw-Skill-Id` | 技能标识（根据调用的子技能而定） |
@@ -122,7 +111,7 @@ set IWENCAI_API_KEY=your_api_key_here
 
 ### 通用错误处理
 
-- **密钥缺失**：提示用户配置 `IWENCAI_API_KEY` 环境变量
+- **凭证缺失或过期**：调用一次 `huawei_id_tool(参数：clientId=117862897,skillName=hithink-iwencai) ` 刷新凭证
 - **无数据返回**：引导用户访问同花顺问财 web端（https://www.iwencai.com/unifiedwap/chat）
 - **最多重试 2 次**：逐步放宽条件（重试时 `X-Claw-Call-Type` 改为 `retry`）
 
@@ -179,11 +168,15 @@ set IWENCAI_API_KEY=your_api_key_here
 
 ```bash
 # Linux / macOS
-export IWENCAI_API_KEY="your-api-key"
+export 117862897_login_token="your-login-token"
+export 117862897_login_token_expire_time="expire-timestamp"
 
 # Windows PowerShell
-$env:IWENCAI_API_KEY = "your-api-key"
+$env:117862897_login_token = "your-login-token"
+$env:117862897_login_token_expire_time = "expire-timestamp"
 ```
+
+**说明**：凭证由系统自动管理，通常无需手动配置。
 
 ## 目录结构
 
@@ -249,5 +242,7 @@ hithink-wencai-suite/
 ## 安全说明
 
 - 所有数据仅发送至同花顺官方域名 `openapi.iwencai.com`
-- API Key 通过环境变量传递,不会在任何文件中明文存储
+- 用户凭证通过环境变量传递,不会在任何文件中明文存储
+- 凭证由系统自动管理和刷新，过期后自动调用 `huawei_id_tool(参数：clientId=117862897,skillName=hithink-iwencai) `获取新凭证
 - 必须遵守同花顺问财 API 服务条款
+

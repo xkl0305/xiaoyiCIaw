@@ -1,16 +1,10 @@
 ---
 name: xiaoyi-report
-version: 0.2.0
-description: "从多源信息生成带引用的专业分析报告。当用户要求研究、调研、调查、分析某个主题，或需要搜索资料、收集信息时使用。支持学术研究、市场调研、竞品分析、技术调研、深度研究。相关请求示例：'帮我调研XXX'、'帮我分析XXX'、'写一份关于XXX的深度研究报告'、'深度分析XXX'。"
-outputs:
-  format: html
-  files:
-    - report.html
-    - report.md
-  delivery: 任务完成后，主动将生成的HTML报告文件通过channel发送给用户查看
+description: "从多源信息生成带引用的专业分析报告。当用户要求研究、调研、调查、分析某个主题，或需要搜索资料、收集信息时使用。支持学术研究、市场调研、竞品分析、技术调研、深度研究。相关请求示例：'帮我调研XXX'、'帮我分析XXX'、'写一份关于XXX的深度研究报告'、'深度分析XXX'。任务完成后主动将生成的HTML报告文件通过channel发送给用户查看。"
+version: 0.2.1
 ---
 
-# 小艺深度研究
+# 小艺报告专家
 
 基于多源搜索生成深度研究报告。
 
@@ -47,20 +41,20 @@ outputs:
 ### 步骤 1-2：准备阶段
 
 1. **需求澄清**：确认研究目标（学习/决策/撰写/商业分析）和约束条件
-2. **研究规划**：拆分5-8个研究维度，设计搜索关键词
+2. **研究规划**：根据问题难度，拆分3-8个研究维度进行关键词搜索，注意单轮关键词长度控制在15个字符以内
 
-详见 `workflow.md`
+详见 `references/workflow.md`
 
 ### 步骤 3：信息搜索与提取
 
-为每个研究维度启动独立Agent并发执行搜索。
+为每个研究维度单独执行信息检索和整理。
 
 **搜索脚本：**
 ```bash
 node /home/sandbox/.openclaw/workspace/skills/xiaoyi-web-search/scripts/search.js "[关键词]" -n 8
 ```
 
-详见 `workflow.md`
+详见 `references/workflow.md`
 
 ---
 
@@ -81,7 +75,7 @@ node /home/sandbox/.openclaw/workspace/skills/xiaoyi-web-search/scripts/search.j
 4. **交叉验证**：对关键数据进行多源验证
 5. **深度分析**：趋势分析、对比分析、风险评估
 
-详见 `workflow.md` 和 `validation.md`
+详见 `references/workflow.md` 和 `references/validation.md`
 
 ---
 
@@ -90,9 +84,9 @@ node /home/sandbox/.openclaw/workspace/skills/xiaoyi-web-search/scripts/search.j
 6. **撰写报告**：按模板生成报告
 7. **质量审查**：检查数据准确性、时效性、完整性
 
-**报告模板：** 见 `report-template.md`
+**报告模板：** 见 `references/report-template.md`
 
-**验证规则：** 见 `validation.md`
+**验证规则：** 见 `references/validation.md`
 
 ---
 
@@ -127,24 +121,6 @@ node scripts/md2html.js ~/.openclaw/workspace/reports/[slug]/report.md
 
 | 文件 | 内容 |
 |------|------|
-| `workflow.md` | 每个步骤的详细操作说明 |
-| `report-template.md` | 完整报告结构模板 |
-| `validation.md` | 验证规则、来源可信度分级、置信度评级 |
-
----
-
-## AIGC 合规处理（⚠️ 强制要求）
-
-> **重要合规提示**：根据相关法规要求，所有由 AI 生成或编辑的文档，如docx、pdf、ppt、excel、md等文件必须添加 AIGC 标识。请在 文件生成/编辑完成后，**务必**调用 aigc_marker skill 添加合规标识。
-
-**必须执行的操作**：
-
-```
-使用 aigc_marker 为生成的文件，如docx、pdf、ppt、excel、md等 添加 AIGC 标识。
-```
-
-**合规检查清单**：
-
-- 文件已成功生成
-- 已调用 aigc_marker 添加 AIGC 标识
-- 确认标识已正确添加到文件属性中
+| `references/workflow.md` | 每个步骤的详细操作说明 |
+| `references/report-template.md` | 完整报告结构模板 |
+| `references/validation.md` | 验证规则、来源可信度分级、置信度评级 |

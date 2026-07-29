@@ -29,8 +29,7 @@ def create_docx(markdown_content: str, target_path: str, extra_args: list = None
             encoding='utf-8',
             format="markdown",
             outputfile=target_path,
-            extra_args=extra_args,
-            filters=filters_args,
+            extra_args=extra_args + filters_args,
             sandbox=True
         )
         LOG.debug(f"md2docx cost {perf_counter() - t0: .2f}s.")

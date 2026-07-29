@@ -30,21 +30,21 @@
 流程：
 1. 打开链接，登录同花顺账号
 2. 点击具体的Skill，查看详情
-3. 在"安装方式-Agent用户"中找到 `IWENCAI_API_KEY`，复制
+3. 在"安装方式-Agent用户"中找到 `117862897_login_token`，复制
 
 ### 2. 配置环境变量
 
-获取到 API Key 后，设置环境变量 `IWENCAI_API_KEY`：
+获取到 API Key 后，设置环境变量 `117862897_login_token`：
 
 ```bash
 # Linux / macOS
-export IWENCAI_API_KEY=你的API_KEY
+export 117862897_login_token=你的API_KEY
 
 # Windows PowerShell
-$env:IWENCAI_API_KEY = "你的API_KEY"
+$env:117862897_login_token = "你的API_KEY"
 
 # Windows CMD
-set IWENCAI_API_KEY=你的API_KEY
+set 117862897_login_token=你的API_KEY
 ```
 
 > 建议将环境变量写入 shell 配置文件（`~/.bashrc`、`~/.zshrc` 等）或系统环境变量中，避免每次重启后需要重新设置。
@@ -209,7 +209,7 @@ python __main__.py -q "特斯拉投资评级"
 | 项目 | 值 |
 |------|---|
 | API 域名 | `https://openapi.iwencai.com` |
-| 认证方式 | Bearer Token，环境变量 `IWENCAI_API_KEY` |
+| 认证方式 | Bearer Token，环境变量 `117862897_login_token` |
 | 请求方法 | POST |
 | Content-Type | application/json |
 
@@ -219,7 +219,7 @@ python __main__.py -q "特斯拉投资评级"
 A: 访问 https://www.iwencai.com/skillhub，登录后点击具体Skill查看详情即可获取。
 
 ### Q: 所有技能都使用同一个 API Key 吗？
-A: 是的，所有10个子技能共享同一个 `IWENCAI_API_KEY`。
+A: 是的，所有10个子技能共享同一个 `117862897_login_token`。
 
 ### Q: 查询没有结果怎么办？
 A: 可以尝试：

@@ -27,17 +27,17 @@
 
    **macOS / Linux (bash/zsh):**
    ```bash
-   export IWENCAI_API_KEY="your_api_key_here"
+   export 117862897_login_token="your_api_key_here"
    ```
 
    **Windows (PowerShell):**
    ```powershell
-   $env:IWENCAI_API_KEY="your_api_key_here"
+   $env:117862897_login_token="your_api_key_here"
    ```
 
    **Windows (CMD):**
    ```cmd
-   set IWENCAI_API_KEY=your_api_key_here
+   set 117862897_login_token=your_api_key_here
    ```
 
 ### 基本使用
@@ -76,7 +76,7 @@ announcement-search --input queries.txt --output results.csv
 ### 环境变量配置
 ```bash
 # 设置API Key
-export IWENCAI_API_KEY="your_api_key"
+export 117862897_login_token="your_api_key"
 
 # 可选：设置日志级别
 export LOG_LEVEL="INFO"
@@ -92,7 +92,7 @@ export LOG_LEVEL="INFO"
 # 使用环境变量中的API Key
 curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $IWENCAI_API_KEY" \
+  -H "login-token: $117862897_login_token" \
   -H "X-Claw-Call-Type: normal" \
   -H "X-Claw-Skill-Id: announcement-search" \
   -H "X-Claw-Skill-Version: 1.0.0" \
@@ -112,7 +112,7 @@ curl -X POST "https://openapi.iwencai.com/v1/comprehensive/search" \
 $traceId = python -c "import secrets; print(secrets.token_hex(32))"
 curl.exe -X POST "https://openapi.iwencai.com/v1/comprehensive/search" `
   -H "Content-Type: application/json" `
-  -H "Authorization: Bearer $env:IWENCAI_API_KEY" `
+  -H "login-token: $env:117862897_login_token" `
   -H "X-Claw-Call-Type: normal" `
   -H "X-Claw-Skill-Id: announcement-search" `
   -H "X-Claw-Skill-Version: 1.0.0" `
@@ -200,7 +200,7 @@ title,summary,url,publish_date
 ### 错误信息示例
 ```bash
 # API认证失败
-错误：API认证失败，请检查IWENCAI_API_KEY环境变量
+错误：API认证失败，请检查117862897_login_token环境变量
 
 # 网络错误
 错误：网络连接失败，请检查网络连接
