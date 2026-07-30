@@ -90,3 +90,7 @@ SOUL.md.bak*
 # Celia 记忆系统自动生成文件（不跟踪）
 .quality_scores.json
 memory/celia_memory/
+
+# node_modules
+node_modules/
+pnpm-lock.yaml
