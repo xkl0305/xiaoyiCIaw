@@ -90,20 +90,30 @@ echo ""
 PREVIEW_OK=true
 
 # 标题帧（frame=0）
+# P2-9：scale 0.25→0.5——180p 只能看构图，文字错别字/画面偏色看不清
 echo "🔍 检查标题帧 (frame=0)..."
 if npx remotion still src/index.ts MainComposition "$OUT_DIR/preview-title.png" \
-  --frame=0 --scale=0.25 --props="$SCRIPT_JSON" 2>&1; then
+  --frame=0 --scale=0.5 --props="$SCRIPT_JSON" 2>&1; then
   echo "✅ 标题帧正常"
 else
   echo "❌ 标题帧失败"
   PREVIEW_OK=false
 fi
 
-# 场景帧（标题90帧后约2秒处，frame=138）
+# P2-9：场景帧动态定位——取首场景中点帧，避免写死 frame 恰好落在转场上
+# （旧版写死 138 是 TITLE_FRAMES=90 时代的值，标题改 72 帧后 138 已偏离首场景中点；
+#  若首场景较短，写死值甚至可能落在转场帧上，预览检查意义打折）
+# 首场景全局起始帧 = TITLE_FRAMES(72) - 片头转场(18)
+# ⚠️ 72/18 与模板 MainComposition.tsx 常量 TITLE_FRAMES/TRANSITION_FRAMES 联动，改模板常量需同步此处
+SCENE_MID_FRAME=$(node -e "
+  const d = require('$SCRIPT_JSON');
+  const sd = (Array.isArray(d.sceneDurations) && d.sceneDurations[0]) || 135;
+  console.log(72 - 18 + Math.floor(sd / 2));
+")
 echo ""
-echo "🔍 检查场景帧 (frame=138)..."
+echo "🔍 检查场景帧 (frame=${SCENE_MID_FRAME}，首场景中点)..."
 if npx remotion still src/index.ts MainComposition "$OUT_DIR/preview-mid.png" \
-  --frame=138 --scale=0.25 --props="$SCRIPT_JSON" 2>&1; then
+  --frame=${SCENE_MID_FRAME} --scale=0.5 --props="$SCRIPT_JSON" 2>&1; then
   echo "✅ 场景帧正常"
 else
   echo "❌ 场景帧失败"
@@ -127,17 +137,21 @@ echo "  输出: $MP4_PATH"
 echo "  超时: ${TIMEOUT}s"
 echo ""
 
+# 渲染并发度：nproc 的一半，至少为 1（单核环境下 $(($(nproc) / 2)) 会算成 0，导致 remotion 报错）
+CONCURRENCY=$(( $(nproc) / 2 ))
+[ "$CONCURRENCY" -lt 1 ] && CONCURRENCY=1
+
 START_TIME=$(date +%s)
 
 # 使用 timeout 控制渲染时间
 RENDER_EXIT=0
 if command -v timeout &>/dev/null; then
   timeout "${TIMEOUT}" npx remotion render src/index.ts MainComposition "$MP4_PATH" \
-    --codec h264 --crf 23 --concurrency=$(($(nproc) / 2)) --props="$SCRIPT_JSON" 2>&1 || RENDER_EXIT=$?
+    --codec h264 --crf 23 --concurrency="$CONCURRENCY" --props="$SCRIPT_JSON" 2>&1 || RENDER_EXIT=$?
 else
   # 没有 timeout 命令则直接跑
   npx remotion render src/index.ts MainComposition "$MP4_PATH" \
-    --codec h264 --crf 23 --concurrency=$(($(nproc) / 2)) --props="$SCRIPT_JSON" 2>&1 || RENDER_EXIT=$?
+    --codec h264 --crf 23 --concurrency="$CONCURRENCY" --props="$SCRIPT_JSON" 2>&1 || RENDER_EXIT=$?
 fi
 
 if [ "$RENDER_EXIT" -ne 0 ]; then

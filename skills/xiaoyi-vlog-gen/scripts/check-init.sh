@@ -19,7 +19,6 @@ fi
 # ─── 检查2：依赖是否已安装 ───
 if [ ! -f "$TEMPLATE_DIR/node_modules/remotion/package.json" ]; then
   echo "❌ 依赖未安装，需要执行 docs/setup.md"
-  rm -rf "$TEMPLATE_DIR"
   exit 1
 fi
 
@@ -31,7 +30,6 @@ CORE_FILES=(
 for f in "${CORE_FILES[@]}"; do
   if [ ! -f "$TEMPLATE_DIR/$f" ]; then
     echo "❌ 核心文件缺失: $f，需要执行 docs/setup.md"
-    rm -rf "$TEMPLATE_DIR"
     exit 1
   fi
 done
@@ -49,7 +47,6 @@ if [ -d "$SKEL_DIR" ]; then
     [ ! -f "$skel_file" ] && continue
     if [ ! -f "$tmpl_file" ] || ! diff -q "$skel_file" "$tmpl_file" &>/dev/null; then
       echo "⚠️  skill 已更新，文件与骨架不一致: $f，需要执行 docs/setup.md"
-      rm -rf "$TEMPLATE_DIR"
       exit 1
     fi
   done

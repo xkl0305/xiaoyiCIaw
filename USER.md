@@ -49,7 +49,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=90619b51b16629b1 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=62d5fbce0c76ca6b -->
 # Memory Global Summary
 
 ## Important Constraints
@@ -103,11 +103,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户删除了三个文件或变更，但发现某些内容（❄️代表的内容）丢失了，希望恢复
-- 用户有一个"消息队列"相关的待办事项或项目
-- 用户有一个"子Agent"相关的待办事项或项目
-- 用户对助手之前的建议或答复表示肯定并同意执行："要"
-- 收到来自用户的一条自动触发指令[cron:c00cf543-a6ec-4e43-ad0c-fdd7cb06fea4 crusheart-engine-init]，要求执行引擎初始化流程并报告状态
+- 用户要求助手运行脚本后，将输出的引擎分组柱状图、系统身份、状态汇总等内容完整保存并整理成带✅/⚠️/❌标记的表格回复
+- 用户表示要‘试一试’或执行一个测试动作
+- 用户需要配置Dream Run自动触发
+- 用户对梦境数量为0提出疑问，需要了解原因
+- 用户希望安装这些skills
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案

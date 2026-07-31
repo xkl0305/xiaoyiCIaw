@@ -1714,7 +1714,7 @@ def _format_report(results: Dict, elapsed: float) -> str:
         for bi in bh_issues:
             lines.append(TR("⚠️", bi[:40]))
 
-    # 🔗 清理归档（合并TODO/子Agent/消息队列）
+    # 🔗 清理归档（三个都展示，简化描述）
     ta = results.get("todo_archive", {})
     sc = results.get("subagent_cleanup", {})
     mq = results.get("msg_queue_cleanup", {})
@@ -1724,13 +1724,7 @@ def _format_report(results: Dict, elapsed: float) -> str:
     if ta_n > 0:
         parts.append(f"TODO-归档{ta_n}项")
     else:
-        s = ta.get("status", "")
-        if s == "no_file":
-            parts.append("TODO-ℹ️不存在")
-        elif s == "no_completed":
-            parts.append("TODO-ℹ️无完成项")
-        else:
-            parts.append("TODO-—")
+        parts.append("TODO-归档0项")
     # 子Agent
     sc_n = sc.get("cleaned", 0)
     if sc_n > 0:
