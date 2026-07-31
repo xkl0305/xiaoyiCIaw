@@ -29819,11 +29819,11 @@ _自动维护 · 详情见 workspace_
 
 **结论：** 全绿，无告警，一切正常 ❄️
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=8f08cc8184e9709c -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=5822a997f1fe257c -->
 # Celia Scenario Memory Summaries
 
 - [smart_office] 用户多次（至少5-8次以上）提醒需要记住并固化进化收尾签字流程，认为该事项高度重要，且对助手多次未记住该事项感到不满。...
-- [education_learning] 用户已安装名为'seedream-image-gen'的技能，希望了解其介绍和快速开始样例。用户还安装了'vercel-react-best-practices'技能，询问该技能是什么，并要求给一两个快速开始的样例。
+- [education_learning] 用户已安装名为 `seedream-image-gen`、`vercel-react-best-practices`、`web-design-guidelines` 和 `jdgold` 的技能，分别要求了解每个技能的介绍及一两个快速开始的样例。
 - [data_analysis_bi] 用户当前涉及**数据分析与商业智能**（子场景：数据处理、统计分析、报告生成），主要关注结构化数据处理与洞察输出。
 - [professional_dev] - 用户拥有三个Git仓库（gitee、github、cnb.cool），当前Git统计为已提交143次、未提交114个文件或变更。用户询问是否与仓库比对一致。...
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
