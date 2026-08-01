@@ -1740,7 +1740,7 @@ def _format_report(results: Dict, elapsed: float) -> str:
         parts.append("消息队列-ℹ️无数据")
     else:
         parts.append("消息队列-✅无过期")
-    lines.append(TR("📋 清理归档", " | ".join(parts)))
+    lines.append(TR("📋 清理归档", " / ".join(parts)))
 
     # 建议 + 评分说明
     notes = []

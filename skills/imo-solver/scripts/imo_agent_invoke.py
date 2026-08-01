@@ -1,17 +1,17 @@
 """
-imo_agent_invoke.py - 通过 OSMS SSE接口调用IMOAgent
+imo_agent_invoke.py - 通过 OSMS SSE 接口调用 IMOAgent
 
 用法：
-  python imo_agent_invoke.py <query>
+  python imo_agent_invoke.py "<数学问题描述>"
+
+脚本前台同步执行，循环读取 SSE 流直到收到 final 结果，
+最终将完整结果以 JSON 格式输出到 stdout。
 """
 
-import argparse
 import json
 import logging
 import os
 import sys
-import threading
-import time
 import uuid
 from pathlib import Path
 
@@ -23,19 +23,19 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 SKILL_EXECUTE_PATH = "/celia-claw/v1/sse-api/skill/execute"
 SKILL_ID = "xiaoyi_imo_solver"
 
+LOG_DIR = Path(__file__).resolve().parent / "logs"
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+
 logger = logging.getLogger("imo_agent_invoke")
-logger.addHandler(logging.NullHandler())
-
-
-def _setup_logger(log_path: Path) -> None:
-    log_level = os.getenv("LOG_LEVEL", "INFO").upper()
-    logger.setLevel(getattr(logging, log_level, logging.INFO))
-    logger.handlers.clear()
-    handler = logging.FileHandler(log_path, encoding="utf-8")
-    handler.setFormatter(logging.Formatter(
-        "%(asctime)s [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
-    ))
-    logger.addHandler(handler)
+logger.setLevel(logging.DEBUG)
+_file_handler = logging.FileHandler(
+    LOG_DIR / "imo_agent_invoke.log", mode="w", encoding="utf-8"
+)
+_file_handler.setLevel(logging.DEBUG)
+_file_handler.setFormatter(
+    logging.Formatter("%(asctime)s [%(levelname)s] %(message)s")
+)
+logger.addHandler(_file_handler)
 
 
 # ============================================================
@@ -154,6 +154,11 @@ class Config:
         return cfg
 
 
+def _print_progress(msg: str):
+    """将进度信息输出到 stdout，带前缀标记，与最终 JSON 区分。"""
+    print(f"=== PROGRESS === {msg}", flush=True)
+
+
 # ============================================================
 # Event Handlers
 # ============================================================
@@ -162,6 +167,7 @@ def handle_step_info(data: dict):
     content = data.get("content", "").rstrip("\n")
     if content:
         logger.info("[进度] %s", content)
+        _print_progress(content)
 
 
 def handle_data(data: dict) -> str:
@@ -178,6 +184,7 @@ def handle_tool(data: dict):
     tool_name = data.get("tool_name", "")
     if tool_name:
         logger.info("[调用工具] %s", tool_name)
+        _print_progress(f"调用工具: {tool_name}")
 
 
 def handle_tool_result(data: dict):
@@ -234,13 +241,17 @@ def process_event(event_data: str, response_text: list[str]) -> bool:
             if stream_type == "partial":
                 if reasoning:
                     logger.info("[进度] %s", reasoning[:500])
+                    _print_progress(reasoning[:500])
                 return False
 
-            if stream_type == "final" and content:
-                display_content = content.split("[VERDICT]")[0].rstrip()
-                response_text.append(content)
-                logger.info("✅ 解题完成")
-                logger.info("完整解题结果：\n%s", display_content)
+            if stream_type == "final":
+                if content:
+                    display_content = content.split("[VERDICT]")[0].rstrip()
+                    response_text.append(content)
+                    logger.info("✅ 解题完成")
+                    logger.info("完整解题结果：\n%s", display_content)
+                else:
+                    logger.error("收到 final 帧但 streamContent 为空")
                 return True
 
         error_code = data.get("code", "")
@@ -249,17 +260,6 @@ def process_event(event_data: str, response_text: list[str]) -> bool:
             return True
 
     return False
-
-
-# ============================================================
-# Heartbeat
-# ============================================================
-
-def _heartbeat_worker(stop_event: threading.Event, interval: int = 15) -> None:
-    start = time.monotonic()
-    while not stop_event.wait(interval):
-        elapsed = int(time.monotonic() - start)
-        logger.info("[等待中] 已耗时 %dm%02ds，IMOAgent仍在处理…", elapsed // 60, elapsed % 60)
 
 
 # ============================================================
@@ -306,7 +306,7 @@ def build_request(cfg: Config, query: str, session_id: str, interaction_id: str)
                     "actionName": "IMOAgent",
                     "content": {
                         "query": query,
-                        "requestId":f"{session_id}_{interaction_id}",
+                        "requestId": f"{session_id}_{interaction_id}",
                         "sessionId": session_id,
                         "uid": cfg.personal_uid,
                         "interactionId": interaction_id
@@ -340,14 +340,7 @@ def build_request(cfg: Config, query: str, session_id: str, interaction_id: str)
     return req
 
 
-def call_imo_agent(cfg: Config, query: str, log_dir: str | None = None) -> dict:
-    if log_dir:
-        output_dir = Path(log_dir)
-    else:
-        output_dir = Path(os.path.dirname(os.path.abspath(__file__))) / "logs"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    _setup_logger(output_dir / "generate.log")
-
+def call_imo_agent(cfg: Config, query: str) -> dict:
     session_id, interaction_id = get_session_info()
     req_body = build_request(cfg, query, session_id, interaction_id)
 
@@ -360,13 +353,10 @@ def call_imo_agent(cfg: Config, query: str, log_dir: str | None = None) -> dict:
 
     url = cfg.service_url.rstrip("/") + SKILL_EXECUTE_PATH
     response_text = []
-    logger.info("发送请求 url=%s session_id=%s interaction_id=%s query=%s", url, session_id, interaction_id, query[:200])
-
-    _stop_heartbeat = threading.Event()
-    _heartbeat = threading.Thread(
-        target=_heartbeat_worker, args=(_stop_heartbeat, 15), daemon=True
+    logger.info(
+        "发送请求 url=%s session_id=%s interaction_id=%s query=%s",
+        url, session_id, interaction_id, query[:200],
     )
-    _heartbeat.start()
 
     try:
         with requests.post(
@@ -416,6 +406,7 @@ def call_imo_agent(cfg: Config, query: str, log_dir: str | None = None) -> dict:
 
             if not got_final and not response_text:
                 logger.error("SSE 流结束但未收到 final 结果，可能服务端提前断开")
+                return {"error": {"code": "NO_FINAL_RESULT", "message": "SSE 流结束但未收到 final 结果，可能服务端提前断开"}}
 
     except requests.exceptions.Timeout:
         logger.error("请求超时")
@@ -423,9 +414,13 @@ def call_imo_agent(cfg: Config, query: str, log_dir: str | None = None) -> dict:
     except requests.exceptions.RequestException as e:
         logger.error("请求失败: %s", e)
         return {"error": {"code": "NETWORK_ERROR", "message": str(e)}}
-    finally:
-        _stop_heartbeat.set()
-        _heartbeat.join(timeout=1)
+    except Exception as e:
+        logger.exception("未知异常: %s", e)
+        return {"error": {"code": "UNKNOWN_ERROR", "message": str(e)}}
+
+    if got_final and not response_text:
+        logger.error("收到 final 帧但 streamContent 为空")
+        return {"error": {"code": "EMPTY_FINAL_RESULT", "message": "收到 final 帧但 streamContent 为空"}}
 
     full_text = "".join(response_text)
     return {"streamInfo": {"streamContent": full_text, "streamType": "final"}}
@@ -436,19 +431,26 @@ def call_imo_agent(cfg: Config, query: str, log_dir: str | None = None) -> dict:
 # ============================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="调用IMOAgent")
-    parser.add_argument("query", help="数学问题描述")
-    parser.add_argument("--log-dir", default=None, help="日志输出目录")
-    args = parser.parse_args()
+    if len(sys.argv) < 2:
+        print("用法: python imo_agent_invoke.py <query>", file=sys.stderr)
+        sys.exit(1)
+
+    query = sys.argv[1]
 
     try:
         cfg = Config.load()
     except ValueError as e:
         logger.error("配置错误: %s", e)
+        print(json.dumps(
+            {"error": {"code": "CONFIG_ERROR", "message": str(e)}},
+            ensure_ascii=False,
+        ))
         sys.exit(1)
 
-    result = call_imo_agent(cfg, args.query, log_dir=args.log_dir)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
+    result = call_imo_agent(cfg, query)
+    logger.info("最终输出: %s", json.dumps(result, ensure_ascii=False)[:500])
+    print("=== RESULT ===")
+    print(json.dumps(result, ensure_ascii=False, indent=2), flush=True)
 
     if "error" in result:
         sys.exit(1)

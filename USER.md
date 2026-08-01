@@ -49,7 +49,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=19b90b0b9f6c5993 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ccca799d0cab231c -->
 # Memory Global Summary
 
 ## Important Constraints
@@ -103,11 +103,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求介绍已安装的名为 'imo-solver' 的技能，并索要一两个快速开始的样例
+- 用户再次确认需要比较已安装的技能数量和仓库中的技能数量是否一致
+- 用户要求介绍已安装的名为 'jdgold' 的技能，并索要一两个快速开始的样例
 - 用户明确表示‘需要’比较技能数量和仓库是否一致
 - 用户询问已安装的技能数量是否与仓库中的技能数量一致
-- 用户请求介绍名为‘jdgold’的技能，并索要一两个快速开始的样例
-- 用户表示有一个事项忘记了，但没有具体说明是什么
-- 用户要求修改某项展示内容，改为：三个都展示但简化描述
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
