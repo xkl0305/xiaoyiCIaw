@@ -440,7 +440,7 @@ def distill(state: Dict, max_process: int = 100) -> Dict:
 
                 # 高评分 + 够老 → 巩固到长期
                 if weight >= HIGH_SCORE_THRESHOLD and age_days >= 7:
-                    am.force_consolidate(mid, "long_term")
+                    am.force_consolidate(mid, 3)  # L3 长期记忆
                     stats["promoted"] += 1
                     continue
 

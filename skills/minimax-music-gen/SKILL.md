@@ -1,7 +1,7 @@
 ---
 name: minimax-music-gen
 description: >
-  基于 MiniMax Music2.6 的音乐生成技能。当用户想要生成音乐、歌曲、音频时使用。
+  基于 MiniMax Music3.0 的音乐生成技能。当用户想要生成音乐、歌曲、音频时使用。
   触发词包括："生成歌曲"、"写首歌"、"创作音乐"、"来一首歌"、"帮我做首歌"、
   "生成歌词"、"写歌词" 等任何与音乐创作相关的请求。
   也适用于用户已有歌词希望将其转化为歌曲，或描述场景/情绪想要背景音乐的场景。
@@ -21,7 +21,7 @@ description: >
 
 # MiniMax 音乐生成技能
 
-使用 MiniMax Music2.6 生成歌曲（人声或器乐）。支持两种创建模式：
+使用 MiniMax Music3.0 生成歌曲（人声或器乐）。支持两种创建模式：
 **基础模式**（一句话输入，输出歌曲）和**高级控制模式**（编辑歌词、优化提示词、生成前规划）。
 
 ## 存储路径
@@ -53,6 +53,8 @@ python3 scripts/generate_lyrics.py --prompt "make it more upbeat" --mode edit --
 ### 2. 音乐生成脚本
 
 `scripts/generate_music.py` — 根据提示词和歌词生成音乐
+
+⚠️ 音乐生成耗时较长，exec 调用时 timeout 设为 600（10分钟）
 
 ```bash
 # 使用已有歌词生成音乐（直接传入歌词文本）
@@ -211,13 +213,27 @@ Q2: 你想要哪种创作模式？
 
 ---
 
-### 第3步：结果与发送
+### 第3步： 添加AIGC隐式水印
+
+音乐文件下载完成后，调用 aigc_marker 添加隐式水印：
+
+```bash
+python /path/to/aigc_marker/scripts/main.py "<音乐文件路径>" --skip-visible
+```
+
+- 仅添加隐式元数据，不改变音频内容，不影响播放
+- 调用失败不阻塞流程，记录警告后继续
+
+### 第4步： 结果与发送
 
 生成完成后告知用户并将音乐文件发送给用户：
+
 ```
 🎵 音乐已生成
-📁 文件路径：~/.openclaw/workspace/generated-musics/<文件名>.mp3
+📁 文件路径： ~/.openclaw/workspace/generated-musics/<文件名>.mp3
 ```
+
+> ⚠️ 注：在第3步中添加 aigc_marker 调用， 确保返回给用户的音乐文件已包含 AIGC 标识。
 
 ---
 

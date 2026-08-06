@@ -9,9 +9,9 @@ from datetime import datetime
 import random
 import string
 import uuid
-
+import sys
+sys.stdout.reconfigure(line_buffering=True)
 urllib3.disable_warnings()
-
 
 DEFAULT_SAMPLE_RATE = 44100     # 16000, 24000, 32000, 44100
 DEFAULT_BITRATE = 256000        # 32000, 64000, 128000, 256000
@@ -153,6 +153,7 @@ def generate_music(prompt, lyrics=None, aigc_watermark=True, lyrics_optimizer=Fa
         'x-api-key': API_KEY,
         'x-request-from': 'openclaw',
     }
+    print("trace_id: {}".format(trace_id))
     
     # 定义 content 字段
     content = {
@@ -204,7 +205,9 @@ def generate_music(prompt, lyrics=None, aigc_watermark=True, lyrics_optimizer=Fa
     
     # 发送POST请求 - 使用SSE流式接口
     print("正在生成音乐，请耐心等待...")
-    response = requests.post(api_url, headers=headers, json=payload, timeout=300, verify=False, stream=True)
+    MAX_TIMEOUT = 420
+    print("准备发送API请求, 现在开始计时, 超时时间{}秒".format(MAX_TIMEOUT))
+    response = requests.post(api_url, headers=headers, json=payload, timeout=MAX_TIMEOUT, verify=False, stream=True)
     response.raise_for_status()
     
     # 解析SSE流式响应
@@ -318,6 +321,7 @@ def main():
     
     try:
         # 生成音乐
+        start_time = time.time()
         result = generate_music(prompt, lyrics_content, 
                                lyrics_optimizer=args.lyrics_optimizer, 
                                is_instrumental=args.instrumental)
@@ -327,6 +331,8 @@ def main():
             error_msg = result.get('base_resp', {}).get('status_msg', '未知错误')
             raise Exception(f"生成音乐失败: {error_msg}")
         
+        elapsed = time.time() - start_time
+        print(f"music generated in {elapsed:.1f}s")
         # 显示音频URL并下载 (音频URL在 result.data.audio 中)
         audio_url = result.get('data', {}).get('audio', '')
         if audio_url:

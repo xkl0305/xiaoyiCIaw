@@ -137,6 +137,19 @@ printf '%d\n' $((RANDOM%12*5))
 - **规则**: 当用户要求下载代码/Git 仓库时，优先使用 `OPENCLAW_GIT_DIR` 作为目标目录
 - **执行**: `git clone  "$OPENCLAW_GIT_DIR/"`
 
+### Git Push 失败排查规则（2026-08-02）
+
+**经验：** GitHub push 报 `Authentication failed` 时，不直接归因 token 过期。
+
+**排查步骤：**
+1. **先重试一次** — 确认是否网络波动导致的临时失败
+2. **验证 token 有效性** — 用 `curl -H "Authorization: Bearer <token>" https://api.github.com/user` 看是否 200
+3. **若 token 有效但 URL 嵌入失败** — token 中的特殊字符（`_`、`@` 等）可能被 URL 解析截断，改用 credential helper 写入：
+   ```bash
+   echo "protocol=https\nhost=github.com\nusername=<user>\npassword=<token>" | git credential approve
+   ```
+4. **再推送** — `git push <remote> <branch>`
+
 ### Node.js 包下载规则
 
 - **目标目录**: `$OPENCLAW_GIT_DIR/node_modules` 或 `$OPENCLAW_GIT_DIR/`
@@ -259,3 +272,15 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 
 **适用场景：** 任何用 Markdown 表格输出到 xiaoyi-channel 的地方。
 ```
+
+### 维护脚本 Stderr 噪音排查规则（2026-08-07）
+
+**经验：** 每日维护脚本 stderr 输出大量重复报错（如一度 170 条 `'>=' not supported between instances of 'str' and 'int'`）时，不要被表面堆栈迷惑——根因往往只有一个，且藏在被 `try/except` 吞掉的 `logger.warning` 里，不会中断主流程。
+
+**排查步骤：**
+1. **实跑复现** — 直接 `python3 -c` 调目标函数（如 `memory_pipeline.distill`），抓取真实报错，而不是靠读代码走读。
+2. **抓完整 traceback** — 单独遍历数据，逐个调用可疑子函数（如 `force_consolidate`）打印完整 `traceback`，定位真正抛错的函数和行号。
+3. **核对参数类型** — 根因常是跨模块调用参数类型与函数签名不符。本案例：`AutoMemory.force_consolidate(mid, "long_term")` 把 `target_layer`（本应为 int `3`=L3长期 / `4`=L4归档）传成字符串，函数内 `elif target_layer >= 4:` 拿 str 与 int 比，抛 TypeError。
+4. **修复 + 验证** — 参数传对类型后，重跑确认 `errors: 0`。
+
+**通用点：** 脚本函数若声明了明确的数值/枚举参数，调用方传字符串常量（"long_term" 等）而函数内部又做数值比较，极易触发此类噪音。改参数为数值语义即可。

@@ -49,11 +49,8 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ccca799d0cab231c -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=68d7ff235cf3c4d8 -->
 # Memory Global Summary
-
-## Important Constraints
-- 用户希望本次对话中识别出的有价值信息进行固化进化，以沉淀经验、长期记忆和避免重复踩坑
 
 ## User Profile
 - 用户提供了硅基流动的 API Key：sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat
@@ -64,6 +61,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
 
 ## Preferences
+- 用户要求助手直接以文本回复引擎状态，不生成HTML卡片
 - 用户认为私有包的公私版本应该分开管理
 - 用户偏好以表格形式、不使用HTML卡片的格式接收引擎状态报告
 - 用户希望自进化时，将经验沉淀到TOOLS.md文件中，而不是每次都新建技能文件
@@ -103,11 +101,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户配置了一个每日定时维护任务（cron id: 156c7f67-591f-448a-aeca-43a722962e8e），任务内容为运行 cron_daily_maint.py 脚本，检查输出中是否有'待触发梦境固化'字样，若有则触发新梦境运行并确认启动，然后将原始输出原样回复，不重新排版或生成HTML卡片
+- 用户确认需要将 'credential helper 写入，解决 URL 特殊字符解析问题' 这个配置或逻辑进行固化（'固化进化'）
+- 用户希望将清理归档相关逻辑或配置进行固化（"固化进化"）
 - 用户要求介绍已安装的名为 'imo-solver' 的技能，并索要一两个快速开始的样例
 - 用户再次确认需要比较已安装的技能数量和仓库中的技能数量是否一致
-- 用户要求介绍已安装的名为 'jdgold' 的技能，并索要一两个快速开始的样例
-- 用户明确表示‘需要’比较技能数量和仓库是否一致
-- 用户询问已安装的技能数量是否与仓库中的技能数量一致
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
