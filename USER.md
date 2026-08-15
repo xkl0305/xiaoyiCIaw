@@ -49,7 +49,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=27c2222213088133 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=5a5e5b0c1af9ca9f -->
 # Memory Global Summary
 
 ## User Profile
@@ -104,11 +104,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户在询问依赖缺失时是否跳过
+- 用户想确认归档技能（位于 skills/.archive/ 目录，保留在本机）是否可以恢复
+- 用户确认提交操作可以解决Git提交次数与未提交次数差异的问题，并选择了方案B
 - 用户通过cron任务向AI发起了一个定时任务请求，任务内容是运行引擎初始化脚本并整理状态回复
 - 用户询问自查bug并且修复的进展
-- 用户希望对当前出图过程中发现的错误点进行固化进化，且已阅读相关信息并确认
-- 用户希望对'人格视角出图系统'的概览文档进行修改和补充，以记录和固化错误点
-- 用户指出'人格视角出图系统 · 概览'文档中的描述写错了，与实际技能属性不符
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案

@@ -1,0 +1,86 @@
+{
+  "goals": [
+    {
+      "id": "goal_3c48e64a",
+      "title": "\u6c99\u7bb1\u6e05\u7406",
+      "priority": "medium",
+      "context": "workspace \u78c1\u76d8\u5360\u7528 751M\uff08\u603b\u91cf 20G/\u4f7f\u7528 11G\uff09\uff0c\u9700\u8981\u6e05\u7406\u4e34\u65f6\u6587\u4ef6\u3001\u7f13\u5b58\u3001\u751f\u6210\u6587\u4ef6\u3002\u90e8\u5206\u76ee\u5f55\u9700\u8981\u7528\u6237\u786e\u8ba4\u662f\u5426\u4fdd\u7559\u3002",
+      "created_at": "2026-07-06T14:29:59.443073+00:00Z",
+      "status": "active"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "task_28601be2",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u786e\u8ba4 generated-images \u662f\u5426\u4fdd\u7559 (21M)",
+      "priority": "medium",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.267092+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_89e64864",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u786e\u8ba4 generated-videos \u662f\u5426\u4fdd\u7559 (1.7M)",
+      "priority": "medium",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.315186+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_6fd61dac",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u786e\u8ba4 .persona_visual \u7f13\u5b58\u662f\u5426\u4fdd\u7559 (11M)",
+      "priority": "medium",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.363448+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_77984745",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u786e\u8ba4 MaoZeDongAnthology \u662f\u5426\u4fdd\u7559 (4M)",
+      "priority": "medium",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.412581+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_a86a6c40",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u786e\u8ba4 scripts/_archived \u65e7\u811a\u672c\u662f\u5426\u4fdd\u7559 (5.2M)",
+      "priority": "medium",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.460386+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_3c458641",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u6e05\u7406 .crusheart* .state .engine_logs \u7b49\u5f15\u64ce\u7f13\u5b58 (~17M)",
+      "priority": "low",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.508923+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_40c843ae",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u6e05\u7406 __pycache__ / npm cache / temp \u7b49\u4e34\u65f6\u6587\u4ef6",
+      "priority": "low",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.557902+00:00Z",
+      "notes": ""
+    },
+    {
+      "id": "task_a8bcad49",
+      "goal_id": "goal_3c48e64a",
+      "title": "\u6267\u884c\u6700\u7ec8\u6e05\u7406\u5e76\u9a8c\u8bc1\u7a7a\u95f4\u91ca\u653e",
+      "priority": "low",
+      "status": "pending",
+      "created_at": "2026-07-06T14:30:08.606620+00:00Z",
+      "notes": ""
+    }
+  ]
+}
