@@ -1,0 +1,21 @@
+{
+  "orderId": "1030938730000733964700499858",
+  "orderStatus": "餐厅配餐中",
+  "pickupCode": "35057",
+  "createTime": "2026-05-29 12:00:00",
+  "storeName": "麦当劳北京紫雀路餐厅",
+  "storeAddress": "紫薇路55号院7号楼",
+  "realTotalAmount": "13.00",
+  "orderProductList": [
+    {
+      "productName": "xxx套餐 xx...",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "xxx套餐",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    }
+  ]
+}

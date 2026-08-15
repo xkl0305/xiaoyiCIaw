@@ -1,0 +1,23 @@
+{
+  "orderId": "1030938730000733964700499858",
+  "payH5Url": "",
+  "payId": "pay_mock_001",
+  "orderDetail": {
+    "orderId": "1030938730000733964700499858",
+    "storeName": "麦当劳北京紫雀路餐厅",
+    "storeAddress": "北京市海淀区紫雀路1号",
+    "orderStatus": "待支付",
+    "createTime": "2026-05-29 12:00:00",
+    "totalAmount": "51.40",
+    "realTotalAmount": "43.80",
+    "deliveryPrice": "6.00",
+    "realDeliveryPrice": "6.00",
+    "realPackingFeeTotalPrice": "2.00",
+    "couponList": [
+      {
+        "couponName": "9.9元大薯条券",
+        "discountAmount": "7.60"
+      }
+    ]
+  }
+}

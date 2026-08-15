@@ -5,7 +5,7 @@ description: >
   适用情形：处理 Word(doc/docx)、PowerPoint(ppt/pptx)、Excel(xls/xlsx)、PDF、Markdown(md) 及 HTML 之间的相互转换。
   当用户意图涉及“格式转换”或明确的转换指令（如“docx转pdf”、“md转word”、“网页转ppt”、“excel转pdf”等）时必须触发。支持单文件与批量处理，系统会自动识别各类格式的中英文及扩展名别名。
   不适用情形：不支持将 PDF 转换为 Word (doc/docx) 格式。
-version: 1.1.0  
+version: 1.1.1  
 allowed-tools: Read, Bash, Write
 ---
 

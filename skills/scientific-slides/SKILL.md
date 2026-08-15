@@ -1,1 +1,0 @@
-scientific-slides/SKILL.md

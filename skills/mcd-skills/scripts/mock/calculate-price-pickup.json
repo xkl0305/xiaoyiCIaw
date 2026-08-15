@@ -1,0 +1,15 @@
+{
+  "productList": [
+    {
+      "productCode": "M001",
+      "productName": "板烧鸡腿堡",
+      "quantity": 1,
+      "originalSubtotal": 2600,
+      "subtotal": 2600
+    }
+  ],
+  "productOriginalPrice": 2600,
+  "productPrice": 2600,
+  "originalPrice": 2600,
+  "price": 2600
+}

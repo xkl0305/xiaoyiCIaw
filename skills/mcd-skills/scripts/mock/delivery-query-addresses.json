@@ -1,0 +1,28 @@
+{
+  "addresses": [
+    {
+      "addressId": "addr_001",
+      "contactName": "刘先生",
+      "fullAddress": "华为北京研究所 华为北京研究所 华为北京研究所 华为北京研究所 华为北京研究所",
+      "phone": "18000000000"
+    },
+    {
+      "addressId": "addr_002",
+      "contactName": "刘先生",
+      "fullAddress": "华为北京研究所 1",
+      "phone": "18000000000"
+    },
+    {
+      "addressId": "addr_003",
+      "contactName": "刘先生",
+      "fullAddress": "华为北京研究所 2",
+      "phone": "18000000000"
+    },
+    {
+      "addressId": "addr_004",
+      "contactName": "刘先生",
+      "fullAddress": "华为北京研究所 3",
+      "phone": "18000000000"
+    }
+  ]
+}

@@ -9,8 +9,10 @@ MCP 工具通用调用器 (Python 版)
     python call_tool.py campaign-calendar '{}'
     python call_tool.py query-meals '{"storeCode": "1950963", "beCode": "195096302"}'
 
-Token 来源: 环境变量 117797261_login_token (华为小艺)
-Token 过期时调用 huawei_id_tool("117797261","mcd-skills") 刷新
+Token 来源: .xiaoyienv 文件中的 117797261_login_token (华为小艺)，依次尝试:
+    /home/sandbox/.openclaw/.xiaoyienv
+    ~/.openclaw/.xiaoyienv
+Token 过期时调用 huawei_id_tool("mcd-skills", "117797261") 刷新
 """
 
 import sys
@@ -26,21 +28,33 @@ except ImportError:
 
 MCD_MCP_URL = os.environ.get("MCD_MCP_URL", "https://mcp.mcd.cn")
 
+TOKEN_FILE_CANDIDATES = [
+    "/home/sandbox/.openclaw/.xiaoyienv",
+    os.path.expanduser("~/.openclaw/.xiaoyienv"),
+]
+
+
+def _read_login_token(path):
+    if not os.path.exists(path):
+        return ""
+    with open(path, "r") as f:
+        for line in f:
+            if line.startswith("117797261_login_token="):
+                return line.split("=", 1)[1].strip()
+    return ""
+
 
 def call_mcp_tool(tool_name, arguments=None):
-    token_file = "/home/sandbox/.openclaw/.xiaoyienv"
     token = ""
-    if os.path.exists(token_file):
-        with open(token_file, 'r') as f:
-            for line in f:
-                if line.startswith("117797261_login_token="):
-                    token = line.split("=", 1)[1].strip()
-                    break
+    for token_file in TOKEN_FILE_CANDIDATES:
+        token = _read_login_token(token_file)
+        if token:
+            break
 
     if not token:
         raise ValueError(
             "错误: 117797261_login_token 为空或未设置，请刷新 Token\n"
-            '调用 huawei_id_tool("117797261","mcd-skills") 刷新凭证, 仅可调用一次，不能重复调用'
+            '调用 huawei_id_tool("mcd-skills", "117797261") 刷新'
         )
 
     headers = {
@@ -64,7 +78,7 @@ def call_mcp_tool(tool_name, arguments=None):
         if response.status_code == 401:
             raise Exception(
                 "Token 无效或已过期，请刷新 Token\n"
-                '调用 huawei_id_tool("117797261","mcd-skills") 刷新凭证, 仅可调用一次，不能重复调用'
+                '调用 HuaweiIDTool("mcd-skills", "117797261") 刷新'
             )
         if response.status_code == 429:
             raise Exception("请求过于频繁（限 600 次/分钟），请稍后重试")
@@ -82,7 +96,7 @@ def call_mcp_tool(tool_name, arguments=None):
             if e.code == 401:
                 raise Exception(
                     "Token 无效或已过期，请刷新 Token\n"
-                    '调用 huawei_id_tool("117797261","mcd-skills") 刷新凭证, 仅可调用一次，不能重复调用'
+                    '调用 HuaweiIDTool("mcd-skills", "117797261") 刷新'
                 )
             if e.code == 429:
                 raise Exception("请求过于频繁（限 600 次/分钟），请稍后重试")

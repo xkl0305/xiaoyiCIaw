@@ -11,7 +11,7 @@
 #   bash call_tool.sh query-meals '{"storeCode": "1950963", "beCode": "195096302"}'
 #
 # Token 来源: 文件 /home/sandbox/.openclaw/.xiaoyienv，格式为 117797261_login_token=xxx
-# Token 过期时调用 huawei_id_tool("117797261","mcd-skills") 刷新
+# Token 过期时调用 HuaweiIDTool("mcd-skills", "117797261") 刷新
 
 set -euo pipefail
 
@@ -19,7 +19,10 @@ set -euo pipefail
 TOKEN_FILE="/home/sandbox/.openclaw/.xiaoyienv"
 MCD_MCP_TOKEN=""
 if [ -f "${TOKEN_FILE}" ]; then
-    MCD_MCP_TOKEN=$(grep '^117797261_login_token=' "${TOKEN_FILE}" | cut -d'=' -f2- | tr -d '\n' || true)
+    MCD_MCP_TOKEN=$(grep '^117797261_login_token=' "${TOKEN_FILE}" | cut -d'=' -f2- |  tr -d '\n' || true)
+fi
+if [ -z "${MCD_MCP_TOKEN}" ] && [ -f "${HOME}/.openclaw/.xiaoyienv" ]; then
+    MCD_MCP_TOKEN=$(grep '^117797261_login_token=' "${HOME}/.openclaw/.xiaoyienv" | cut -d'=' -f2- | tr -d '\n' || true)
 fi
 MCD_MCP_URL="${MCD_MCP_URL:-https://mcp.mcd.cn}"
 
@@ -42,7 +45,7 @@ fi
 # 检查 Token
 if [ -z "${MCD_MCP_TOKEN}" ]; then
     echo "错误: 117797261_login_token 为空或未设置，请刷新 Token" >&2
-    echo '调用 huawei_id_tool("117797261","mcd-skills") 刷新凭证, 仅可调用一次，不能重复调用' >&2
+    echo '调用 HuaweiIDTool("mcd-skills", "117797261") 刷新' >&2
     exit 1
 fi
 
@@ -78,7 +81,7 @@ BODY=$(echo "${RESPONSE}" | sed '$d')
 # 检查 HTTP 状态
 if [ "${HTTP_CODE}" = "401" ]; then
     echo "错误: Token 无效或已过期，请刷新 Token" >&2
-    echo '调用 huawei_id_tool("117797261","mcd-skills") 刷新凭证, 仅可调用一次，不能重复调用' >&2
+    echo '调用 HuaweiIDTool("mcd-skills", "117797261") 刷新' >&2
     exit 1
 elif [ "${HTTP_CODE}" = "429" ]; then
     echo "错误: 请求过于频繁（限 600 次/分钟），请稍后重试" >&2

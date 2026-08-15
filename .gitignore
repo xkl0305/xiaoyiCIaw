@@ -94,3 +94,6 @@ memory/celia_memory/
 # node_modules
 node_modules/
 pnpm-lock.yaml
+
+# 技能归档区: 本机留档, 不同步到 git 远程
+skills/.archive/

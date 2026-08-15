@@ -1,0 +1,375 @@
+{
+  "categories": [
+    {
+      "name": "超值推荐",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "9900014479",
+          "tags": [
+            "热销",
+            "用券"
+          ]
+        },
+        {
+          "code": "9900005466",
+          "tags": [
+            "热销"
+          ]
+        },
+        {
+          "code": "9900004835",
+          "tags": [
+            "用券"
+          ]
+        },
+        {
+          "code": "9900005123",
+          "tags": [
+            "新品"
+          ]
+        },
+        {
+          "code": "9900006124",
+          "tags": [
+            "套餐"
+          ]
+        },
+        {
+          "code": "9900007125",
+          "tags": [
+            "限时"
+          ]
+        },
+        {
+          "code": "9900008126",
+          "tags": [
+            "超值"
+          ]
+        },
+        {
+          "code": "9900009127",
+          "tags": [
+            "双人"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "今日推荐",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "9900010201",
+          "tags": [
+            "店长推荐"
+          ]
+        },
+        {
+          "code": "9900010202",
+          "tags": [
+            "热销"
+          ]
+        },
+        {
+          "code": "9900010203",
+          "tags": []
+        },
+        {
+          "code": "9900010204",
+          "tags": [
+            "低卡"
+          ]
+        },
+        {
+          "code": "9900010205",
+          "tags": [
+            "早餐"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "汉堡",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "4820",
+          "tags": []
+        },
+        {
+          "code": "9900011001",
+          "tags": [
+            "经典"
+          ]
+        },
+        {
+          "code": "9900011002",
+          "tags": [
+            "辣"
+          ]
+        },
+        {
+          "code": "9900011003",
+          "tags": [
+            "鸡肉"
+          ]
+        },
+        {
+          "code": "9900011004",
+          "tags": [
+            "牛肉"
+          ]
+        },
+        {
+          "code": "9900011005",
+          "tags": [
+            "鱼"
+          ]
+        },
+        {
+          "code": "9900011006",
+          "tags": [
+            "儿童"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "小食甜品",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "9900012001",
+          "tags": []
+        },
+        {
+          "code": "9900012002",
+          "tags": [
+            "薯条"
+          ]
+        },
+        {
+          "code": "9900012003",
+          "tags": [
+            "鸡块"
+          ]
+        },
+        {
+          "code": "9900012004",
+          "tags": [
+            "甜品"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "饮料",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "9900013001",
+          "tags": []
+        },
+        {
+          "code": "9900013002",
+          "tags": [
+            "咖啡"
+          ]
+        },
+        {
+          "code": "9900013003",
+          "tags": [
+            "汽水"
+          ]
+        },
+        {
+          "code": "9900013004",
+          "tags": [
+            "奶昔"
+          ]
+        },
+        {
+          "code": "9900013005",
+          "tags": [
+            "热饮"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "快乐分享",
+      "daypart": 2,
+      "meals": [
+        {
+          "code": "9900014001",
+          "tags": [
+            "分享盒"
+          ]
+        },
+        {
+          "code": "9900014002",
+          "tags": [
+            "家庭"
+          ]
+        },
+        {
+          "code": "9900014003",
+          "tags": [
+            "聚会"
+          ]
+        }
+      ]
+    }
+  ],
+  "meals": {
+    "4820": {
+      "name": "吉士汉堡包",
+      "currentPrice": "14.00"
+    },
+    "9900004835": {
+      "name": "麦辣鸡腿堡套餐",
+      "currentPrice": "32.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900005123": {
+      "name": "双层吉士汉堡套餐",
+      "currentPrice": "38.50"
+    },
+    "9900005466": {
+      "name": "大堡口福四件套",
+      "currentPrice": "34.90"
+    },
+    "9900006124": {
+      "name": "巨无霸套餐",
+      "currentPrice": "42.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900007125": {
+      "name": "酥酥多笋卷四件套",
+      "currentPrice": "36.90",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900008126": {
+      "name": "双人欢享桶",
+      "currentPrice": "69.90"
+    },
+    "9900009127": {
+      "name": "周末家庭餐",
+      "currentPrice": "89.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900010201": {
+      "name": "培根蔬萃双层牛堡",
+      "currentPrice": "28.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900010202": {
+      "name": "不素之霸双层牛堡",
+      "currentPrice": "26.50"
+    },
+    "9900010203": {
+      "name": "麦香鱼套餐",
+      "currentPrice": "29.90"
+    },
+    "9900010204": {
+      "name": "鸡胸沙拉",
+      "currentPrice": "22.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900010205": {
+      "name": "猪柳蛋麦满分套餐",
+      "currentPrice": "24.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900011001": {
+      "name": "汉堡包",
+      "currentPrice": "12.50",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900011002": {
+      "name": "麦辣鸡腿堡",
+      "currentPrice": "18.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900011003": {
+      "name": "麦辣鸡翅汉堡",
+      "currentPrice": "19.50"
+    },
+    "9900011004": {
+      "name": "双层吉士汉堡",
+      "currentPrice": "20.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900011005": {
+      "name": "巨无霸",
+      "currentPrice": "23.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900011006": {
+      "name": "开心乐园餐（汉堡）",
+      "currentPrice": "25.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900012001": {
+      "name": "中薯条",
+      "currentPrice": "9.90"
+    },
+    "9900012002": {
+      "name": "大薯条",
+      "currentPrice": "12.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900012003": {
+      "name": "麦乐鸡（5块）",
+      "currentPrice": "11.50"
+    },
+    "9900012004": {
+      "name": "苹果派",
+      "currentPrice": "8.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900013001": {
+      "name": "可口可乐（中）",
+      "currentPrice": "8.00"
+    },
+    "9900013002": {
+      "name": "拿铁（中）",
+      "currentPrice": "19.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900013003": {
+      "name": "雪碧（中）",
+      "currentPrice": "8.00"
+    },
+    "9900013004": {
+      "name": "草莓奶昔",
+      "currentPrice": "15.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900013005": {
+      "name": "热红茶",
+      "currentPrice": "10.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900014001": {
+      "name": "麦乐鸡分享盒（20块）",
+      "currentPrice": "39.90",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900014002": {
+      "name": "家庭欢享餐",
+      "currentPrice": "99.00"
+    },
+    "9900014003": {
+      "name": "派对小食拼盘",
+      "currentPrice": "45.00",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    "9900014479": {
+      "name": "板烧鸡腿堡+9.9元大薯条超值套装",
+      "currentPrice": "35.90",
+      "image": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    }
+  }
+}

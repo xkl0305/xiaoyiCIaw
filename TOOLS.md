@@ -108,6 +108,8 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   2. 支持本地文件路径(fileLocalUrls)和公网URL(fileRemoteUrls)两种方式
   3. 两种参数可同时使用，会一并处理
 
+- **出图/出文件后回传（2026-08-08 补充）**：用 seedream-image-gen 等技能**生成图片/文件后回传用户**时，**不要用 `MEDIA:路径` 附件方式**——xiaoyi-channel 对话框不渲染 MEDIA 附件，用户看不到。必须改用 `send_file_to_user` 直接推文件到用户设备。
+
 ### 定时任务 (Cron) 配置规则
 
 - **强制要求1**: 创建定时任务时，**必须指定 `--channel` 参数，必须明确指定 channel，不能用 last**
@@ -166,6 +168,24 @@ printf '%d\n' $((RANDOM%12*5))
 
 ### OpenClaw 操作约束
 核心原则
+
+### supervisord 一次性脚本配置坑点（2026-08-09）
+
+**经验：** 用 supervisord 管理"跑一遍就退出"(one-shot)的程序（如 `/opt/bin/watch_paired.py` 这种补权限脚本）时，必须把 `startsecs` 设为 `0`。否则脚本秒退没撑过默认的 `startsecs=2`，会被误判为"启动失败"(exit 0; not expected)，supervisord 反复拉起，多次后进入 FATAL 状态刷噪音。
+
+**修复：**
+```ini
+[program:watch_paired]
+autorestart=false
+startsecs=0        ; 一次性脚本必须设 0，正常退出即算完成
+```
+
+**生效命令（只重载受影响程序，不重启 gateway）：**
+```bash
+python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update watch_paired
+```
+
+**验证：** 状态应为 EXITED（`exit status 0; expected`），而非反复 FATAL。改配置前先 `cp supervisord.conf supervisord.conf.bak-$(date +%Y%m%d-%H%M%S)` 备份。
 - 禁止通过 `SIGUSR1` 重启 `openclaw-gateway`。
 - 禁止直接 `kill` OpenClaw 进程，除非人工明确授权。
 - 禁止使用 `openclaw gateway restart` `openclaw gateway stop`  `openclaw gateway start`
@@ -199,6 +219,21 @@ printf '%d\n' $((RANDOM%12*5))
 **硅基流动（SiliconFlow）**
 - **SILICONFLOW_API_URL**: `https://api.siliconflow.cn/v1/images/generations`
 - **SILICONFLOW_API_KEY**: `sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat`
+
+### Seedream 双通道体检与补回（2026-08-08）
+
+**背景：** 人格视角出图 bridge 传 `channel='ark,huawei_sse'`，但 `.xiaoyienv` 里 ARK 配置（SEEDREAM_API_URL/KEY/ENDPOINT_ID）丢失时，provider 会**静默退化成仅 huawei_sse 单通道**，双通道名存实亡且无报错，只剩华为一根线裸奔。
+
+**体检方法（怀疑双通道失效时）：**
+```bash
+python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); from providers import seedream_provider as s; cfg=s._load_all_channel_configs(); print('通道数:', len(cfg), [c['name'] for c in cfg])"
+```
+- 返回 `['huawei_sse']`（1张）→ ARK 配置丢失，需补回
+- 返回 `['huawei_sse','ark']`（2张）→ 正常
+
+**补回来源：** `.xiaoyienv` 不在 git、升级会被覆写，丢失时用上方「Seedream 通道配置备份」里的 ARK 配置补写回 `/home/sandbox/.openclaw/.xiaoyienv`。
+
+**注意：** 改 `.xiaoyienv` 前先 `cp` 备份一份（`.xiaoyienv.bak-<时间戳>`），再追加而非覆盖原文。
 
 ### 记忆系统双数据源排查指南
 

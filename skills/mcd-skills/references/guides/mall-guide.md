@@ -53,7 +53,7 @@
 
 **参数**：
 
-详见 scripts/cache/ 下当天的工具缓存文件（inputSchema）
+需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：必须已调用 `mall-points-products`，由用户选择一个商品后获取 spuId
 
@@ -63,7 +63,7 @@
 
 **参数**：
 
-详见 scripts/cache/ 下当天的工具缓存文件（inputSchema）
+需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：
 - 必须调用本工具完成交易，禁止直接生成"下单成功"等结论性文字
@@ -190,7 +190,7 @@
 
 ### 调用顺序（不可跳步）
 
-0. 检查 `117797261_login_token` 是否有效；过期则调用 `huawei_id_tool("117797261","mcd-skills")` 刷新，仅调用一次，不得重复调用。
+0. 检查 `117797261_login_token` 是否有效；过期则调用 `HuaweiIDTool("mcd-skills", "117797261")` 刷新
 1. （查积分）`query-my-account` → 展示积分详情
 2. （兑换）`mall-points-products` → 用户选择商品
 3. （按需）`mall-product-detail` → 展示商品详情

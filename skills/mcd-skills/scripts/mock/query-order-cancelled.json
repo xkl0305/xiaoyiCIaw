@@ -1,0 +1,15 @@
+{
+  "orderId": "1030678480000553265155007027",
+  "orderStatus": "订单已取消",
+  "storeName": "麦当劳南京徐庄路餐厅",
+  "storeAddress": "玄武大道699-8号1幢102室",
+  "realTotalAmount": "37",
+  "createTime": "2026-06-26 16:58:00",
+  "orderProductList": [
+    {
+      "productName": "巨无霸三件套",
+      "productImage": "https://menu-img.mcd.cn/pcm/prod/menu/20260610/product/MS_9900005466_320.png",
+      "quantity": 1
+    }
+  ]
+}

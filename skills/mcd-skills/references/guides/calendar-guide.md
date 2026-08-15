@@ -43,7 +43,7 @@
 
 **参数**：
 
-详见 scripts/cache/ 下当天的工具缓存文件（inputSchema）
+需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：若用户指定了日期但你不确定当前日期，先调用 `now-time-info` 获取
 
@@ -85,7 +85,7 @@
 
 ### 调用顺序
 
-0. 检查 `117797261_login_token` 是否有效；过期则调用 `huawei_id_tool("117797261","mcd-skills")` 刷新，仅调用一次，不得重复调用。
+0. 检查 `117797261_login_token` 是否有效；过期则调用 `HuaweiIDTool("mcd-skills", "117797261")` 刷新
 1. （按需）`now-time-info` → 获取当前日期，用于构造 specifiedDate
 2. `campaign-calendar` → 展示活动列表 + 已订阅内容
 3. （可选）引导用户领券或进入点餐

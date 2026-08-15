@@ -51,7 +51,7 @@
 
 **参数**：
 
-详见 scripts/cache/ 下当天的工具缓存文件（inputSchema）
+需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：无
 
@@ -136,7 +136,7 @@
 - 查看已有券 → `query-my-coupons`
 - 三个工具之间无强制先后依赖，按用户意图直接调用即可
 
-### 图片展示要求）
+### 图片展示要求
 
 - 查询优惠券时，图片链接必须完整响应
 - 不要截断、修改或省略图片 URL

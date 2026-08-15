@@ -1,0 +1,52 @@
+{
+  "orderId": "1030938730000733964700499858",
+  "orderStatus": "待支付",
+  "expirePayTime": "2026-05-29 14:50:00",
+  "payH5Url": "https://pay.mcd.cn/h5/example",
+  "createTime": "2026-05-29 12:00:00",
+  "storeName": "麦当劳北京紫雀路餐厅",
+  "storeAddress": "紫薇路55号院7号楼",
+  "realTotalAmount": "58.00",
+  "orderProductList": [
+    {
+      "productName": "板烧鸡腿堡套餐",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "麦辣鸡翅",
+      "quantity": 2,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "大薯条",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "可口可乐中杯",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "麦乐鸡5块",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "双层吉士汉堡",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "苹果派",
+      "quantity": 2,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    },
+    {
+      "productName": "巨无霸套餐",
+      "quantity": 1,
+      "productImage": "https://menu-img.mcdchina.net/pcm/sit/menu/ProductPool/product/MS_G504967_320.png"
+    }
+  ]
+}

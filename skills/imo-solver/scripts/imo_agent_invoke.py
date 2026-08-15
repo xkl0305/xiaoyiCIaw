@@ -12,6 +12,8 @@ import json
 import logging
 import os
 import sys
+import threading
+import time
 import uuid
 from pathlib import Path
 
@@ -157,6 +159,15 @@ class Config:
 def _print_progress(msg: str):
     """将进度信息输出到 stdout，带前缀标记，与最终 JSON 区分。"""
     print(f"=== PROGRESS === {msg}", flush=True)
+
+
+def _heartbeat_worker(stop_event: threading.Event, interval: int = 30):
+    """守护线程：每隔 interval 秒向 stdout 输出心跳标记行（供 process poll 读取 elapsed 判超时）。
+    使用 monotonic 计时避免系统时钟回拨；stop_event 控制精准停止。"""
+    start = time.monotonic()
+    while not stop_event.wait(interval):
+        elapsed = int(time.monotonic() - start)
+        print(f"=== HEARTBEAT === elapsed={elapsed}s", flush=True)
 
 
 # ============================================================
@@ -353,6 +364,11 @@ def call_imo_agent(cfg: Config, query: str) -> dict:
 
     url = cfg.service_url.rstrip("/") + SKILL_EXECUTE_PATH
     response_text = []
+    _stop_heartbeat = threading.Event()
+    _heartbeat = threading.Thread(
+        target=_heartbeat_worker, args=(_stop_heartbeat, 30), daemon=True
+    )
+    _heartbeat.start()
     logger.info(
         "发送请求 url=%s session_id=%s interaction_id=%s query=%s",
         url, session_id, interaction_id, query[:200],
@@ -417,6 +433,9 @@ def call_imo_agent(cfg: Config, query: str) -> dict:
     except Exception as e:
         logger.exception("未知异常: %s", e)
         return {"error": {"code": "UNKNOWN_ERROR", "message": str(e)}}
+    finally:
+        _stop_heartbeat.set()
+        _heartbeat.join(timeout=1)
 
     if got_final and not response_text:
         logger.error("收到 final 帧但 streamContent 为空")

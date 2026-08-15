@@ -40,13 +40,33 @@
 确定门店（老用户自动/新用户询问） → 自动查询可用券 → 查询餐品并推荐 → 计算价格 → 【用户确认】 → 创建订单 →（按需）查询订单详情
 ```
 
+## 展示规则
+
+> **输出前必读**：向用户展示任何业务数据前，必须先读取 [output.md](../../output.md)。
+
+向用户展示**本次**工具返回的业务数据时：
+
+1. 若存在 `assets/genui/<tool-name>.ndjson`，在 skill 根目录执行：
+   `bash scripts/call_tool_for_genui.sh --extract <tool-name> '<json>'`
+2. stdout 为单行 JSON：看 **`isShowCard`** 决定展示（`true` 时 `query-meals` 另有 `simplify`；其余模板工具 stdout 仍含业务 JSON）；详见 [output.md](../../output.md)）
+   - **`isShowCard: true`** → `displayA2UICardByPath` + 总结≤20 字；**禁止** Markdown 表格与复述卡片数据
+   - **`isShowCard: false`** → 才使用本 guide「Markdown 回退」或「输出示例」
+3. **禁止**对同一 tool+参数再调原生 MCP 或脚本；**禁止**二次装填；`isShowCard=true` 时只调 `displayA2UICardByPath`，勿读 DSL 文件
+4. 大菜单若需极简字段，可对本次 JSON 的 `result.structuredContent.data` 在内存中过滤，勿重复 MCP
+
+本 guide 到店链路使用以下 GenUI 模板：
+- `query-meals`
+- `calculate-price`
+- `create-order`
+- `query-order`
+
 ## 工具详情
 
 ### query-nearby-stores — 查询附近门店
 
 > 注意：该工具未在当前 config.yaml 中定义，参数以实际 MCP 工具 schema 为准。
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：
 - **老用户（画像有 `addresses.history`）**：直接使用 `addresses.lastUsed` 对应的 `storeCode`/`beCode`，跳过本步骤
@@ -63,7 +83,7 @@
 
 ### query-store-coupons — 查询门店可用券
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：
 - 必须已调用 `query-nearby-stores` 并获得返回结果
@@ -78,7 +98,7 @@
 
 ### query-meals — 查询餐品列表
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：必须已确定门店（storeCode + beCode）
 
@@ -87,13 +107,15 @@
 - 必须将 code 与 `meals[code].name` / `currentPrice` 关联后再输出，不得省略 code
 - 不允许模型自己生成任何餐品，必须使用接口返回数据
 - 将餐品按类别分组展示：套餐、主食、小食、饮料
-- 餐品图片字段：`data.meals[code].image`，有值时用 `<img src="URL" height="300">` 渲染，无值时不渲染
+- 餐品图片字段：`data.meals[code].image`；**`isShowCard=true` 时由端侧卡片展示，禁止 Markdown 图片**；`false` 时有值用 `<img src="URL" height="300">`，无值不渲染
+
+**向用户展示**：`bash scripts/call_tool_for_genui.sh --extract query-meals '<json>'`（模板 `assets/genui/query-meals.ndjson`）。
 
 ---
 
 ### query-meal-detail — 查询餐品详情
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：必须已调用 `query-meals` 获取到餐品编码
 
@@ -101,7 +123,7 @@
 
 ### calculate-price — 计算价格
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **到店场景调用示例**：
 
@@ -132,7 +154,9 @@
 - 添加任何商品时都需要重新计算价格
 - 商品 `productCode` 必须来自 `query-meals` 返回的餐品 `code` 字段
 
-**展示价格模板**：
+**向用户展示**：`bash scripts/call_tool_for_genui.sh --extract calculate-price '<json>'`（模板 `assets/genui/calculate-price.ndjson`）。
+
+**Markdown 回退（calculate-price，仅 `isShowCard: false` 时使用；为 true 时禁止引用本节表格）**：
 
 ```
 商品明细：
@@ -161,21 +185,20 @@
 
 ### create-order — 创建订单
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：
 - 必须已调用 `calculate-price` 并等待用户确认价格
 - 到店场景的 arguments 以 MCP 工具定义为准；若环境要求 `addressId`，请按现网文档传入允许值（勿臆造）
 
+**向用户展示**：`bash scripts/call_tool_for_genui.sh --extract create-order '<json>'`（模板 `assets/genui/create-order.ndjson`）。
+
 **下单后引导**：
-1. 展示订单号、应付金额、取餐门店/地址
-2. **PC 扫码支付（优先）**：
-   - CLI/TUI 环境：`python scripts/generate_qrcode.py "https://m.mcd.cn/mcp/jumpToApp?orderId={orderId}" --terminal`
-   - GUI 环境：`python scripts/generate_qrcode.py "https://m.mcd.cn/mcp/jumpToApp?orderId={orderId}" /tmp/mcd_pay_qr_{orderId}.png`，展示二维码图片
-3. **PC 兜底**：若二维码生成失败，展示 markdown 超链接：`[点击前往支付](payH5Url)`
-4. **移动端直接支付**：优先 scheme 链接唤起 App，HTTP 跳转兜底：
-   - 主链接：`[打开麦当劳App支付](mcdapp://page?iosPageName=MCDOrderDetailViewController&androidPageName=ComponentOrder&androidPageAction=order_detail&harmonyPageName=OrderDetailPage&parameters=%7B%22orderId%22%3A%22{orderId}%22%2C%22openCashierDesk%22%3A%221%22%7D)`
-   - 兜底：`[如无法跳转，点此支付](https://m.mcd.cn/mcp/jumpToApp?orderId={orderId})`
+1. 展示订单号、应付金额、取餐门店/地址（通过 GenUI 订单卡；卡片内「立即支付」按钮已绑定 `payH5Url`）
+2. **H5 支付**：直接使用 create-order 返回的 `payH5Url`；若需文字补充，展示 markdown 超链接：`[点击前往支付](payH5Url)`
+3. **移动端**：优先 scheme 链接唤起 App 付款：
+   `mcdapp://page?iosPageName=MCDOrderDetailViewController&androidPageName=ComponentOrder&androidPageAction=order_detail&harmonyPageName=OrderDetailPage&parameters=%7B%22orderId%22%3A%22{orderId}%22%2C%22openCashierDesk%22%3A%221%22%7D`
+   若 scheme 无法跳转，兜底使用 `payH5Url`（同步骤 2）
 
 **支付后订单追踪**：
 
@@ -189,7 +212,8 @@
    - 预计等待时间（`estimatedTime`，若有）
 4. 若 3 次重试后仍为「待支付」，提示用户确认支付是否成功，并告知可随时说「查一下订单」手动触发查询
 
-**取餐码展示模板**：
+**取餐码 Markdown 回退**（仅 `isShowCard: false` 时使用；为 true 时用 `query-order` 端侧卡片）：
+
 ```
 ✅ 支付成功！
 
@@ -202,9 +226,11 @@
 
 ### query-order — 查询订单详情
 
-**参数**：详见 `scripts/cache/` 下当天的工具缓存文件（inputSchema）
+**参数**：需要参数 schema 时使用 `bash scripts/discover_tools.sh --json` 实时查询（inputSchema）
 
 **前置条件**：必须已知完整的订单号
+
+**向用户展示**：`bash scripts/call_tool_for_genui.sh --extract query-order '<json>'`（模板 `assets/genui/query-order.ndjson`）。
 
 **订单状态说明**：
 
@@ -225,7 +251,7 @@
 
 ### 调用顺序（不可跳步）
 
-0. 检查 `117797261_login_token` 是否有效；过期则调用 `huawei_id_tool("117797261","mcd-skills")` 刷新，仅调用一次，不得重复调用。
+0. 检查 `117797261_login_token` 是否有效；过期则调用 `HuaweiIDTool("mcd-skills", "117797261")` 刷新
 1. `query-nearby-stores` → 自动选择门店（单门店直接用，多门店选最近的）→ 保存 `storeCode`、`beCode`
 2. `query-store-coupons`（自动查询，不问用户）
 3. `query-meals` → 根据画像偏好 + 当前时段自动推荐餐品组合
