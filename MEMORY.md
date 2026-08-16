@@ -44,6 +44,7 @@
 - 全中文交流
 - 简洁直接的回复风格
 - 重视记忆持久化
+- **技能不搞自动归档/活跃分类**（2026-08-16 固化）— 技能统一保留在 `skills/` 目录，不做自动归档/活跃/过期分类。维护脚本 `daily_maintenance.py` 的 `skill_curator_maintenance()` 已关闭"按90天未用自动搬技能到 .archive"的逻辑，以后维护报告技能部分只显示全部活跃
 - **永远在线模式**（2026-05-03 声明）— 用户随时可联网、调用外部 API、使用第三方服务。不适用于离线/无网场景的假设。
   - 因此 `NO_EXTERNAL_API` / `NO_REAL_PAYMENT` / `NO_REAL_SEND` / `NO_REAL_DEVICE` 等安全限制在用户自身执行任务时不应默认阻断，仅在用户要求沙箱/测试模式时启用。
 用户是永远在线模式（2026-05-03 声明）
@@ -38511,13 +38512,13 @@ _此文件由你不断演化。当你发现你是谁时，更新它。_😏❄�
 
 📝 固化: aef37ab929cd04f2
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=da4f1e0a8a098dfc -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=956f0e7fa3a80ab3 -->
 # Celia Scenario Memory Summaries
 
-- [smart_office] 用户发现收尾签名的格式存在换行问题，并多次（至少5次，实际至少8次）提醒需要记住并固化进化收尾签字流程，但助手多次未记住。...
+- [smart_office] 用户多次（至少5次，后提及至少8次）提醒助手记住并固化进化"收尾签字流程"，该流程存在换行问题：在输出❄️符号时不应打回车、不换行，直接接❄️，但用户自己习惯性回车。...
 - [education_learning] 用户已安装名为 `seedream-image-gen`、`vercel-react-best-practices`、`web-design-guidelines` 和 `jdgold` 的技能，分别要求了解每个技能的介绍及一两个快速开始的样例。
 - [data_analysis_bi] 用户当前涉及**数据分析与商业智能**（子场景：数据处理、统计分析、报告生成），主要关注结构化数据处理与洞察输出。
-- [professional_dev] 用户拥有三个Git仓库（gitee、github、cnb.cool），此前多次要求推送三个仓库。用户执行了 git revert，并完成了三仓推送。用户询问仓库存有提交hash为3137aa8bb764e643482d77665e278d75c8b75f16的内容。...
+- [professional_dev] 用户重启成功。用户确认需要推送 `scripts/cron_daily_maint.py` 和 `scripts/cron_engine_init.py`，但暂时决定不推送；询问 `tc-chengxin/` 目录下20多个文件的改动内容后决定推送。...
 - [social_engagement] 用户正在持续完善"琪琪人格内容"的社交平台内容与社群互动规范。具体包括：
 - [service_integration] 用户已注册好彩云天气服务，并询问注册后下一步该做什么。用户之前收到的链接访问时返回 404 错误。
 - [knowledge_research] 用户询问了TOOLS.md文件的作用、哪个文件负责吸取教训、当前助手的记忆由什么主导、对象存储、腾讯的workbuddy、知识图谱是否需要设置定时任务、是否有免费的类似小云雀的网站、...

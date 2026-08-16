@@ -49,7 +49,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=5a5e5b0c1af9ca9f -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=aad8a9c63a4b35c0 -->
 # Memory Global Summary
 
 ## User Profile
@@ -61,6 +61,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户当前的系统时间使用亚洲/上海时区（UTC+8），参考时间为2026-08-04 03:36。
 
 ## Preferences
+- 用户明确提出技能管理不要搞"活跃不活跃"的分类方式
 - 用户要求不自行重新整理 cron 脚本输出的表格顺序或重新排版，原样输出回复消息
 - 用户讨论的'人格视角出图系统'应该属于技能（skill），而不是其他类型的模块
 - 用户要求助手直接以文本回复引擎状态，不生成HTML卡片
@@ -104,17 +105,17 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户在询问依赖缺失时是否跳过
-- 用户想确认归档技能（位于 skills/.archive/ 目录，保留在本机）是否可以恢复
-- 用户确认提交操作可以解决Git提交次数与未提交次数差异的问题，并选择了方案B
-- 用户通过cron任务向AI发起了一个定时任务请求，任务内容是运行引擎初始化脚本并整理状态回复
-- 用户询问自查bug并且修复的进展
+- 用户正在从官方转换源查找TTS模型（lessac），并询问查找进展（"从官方转换源找，找的如何了"）
+- 用户在询问三个仓库中，归档前是否有TTS模型（lessac），这是一个验证性问题
+- 用户提到API Key（约15个）可以补充，但需要用户本人操作
+- 用户确认了技能管理方式变更的决策
+- 用户明确提出技能管理不要搞'活跃不活跃'的分类方式
 ### Long-term Intent
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
+- 用户需要中文TTS模型
 - 用户询问是否可以对7个数据库执行索引合并和ANALYZE操作
 - 用户询问当前已安装的技能数量是否有增减
-- 用户请求介绍已安装的"excel-analysis"并给出快速开始样例
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->

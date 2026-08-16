@@ -547,7 +547,7 @@ def skill_curator_maintenance():
     except ImportError:
         stats = {"total_skills": 0, "categories": 0, "category_breakdown": {}}
     
-    # 归档超过90天未使用的技能到 .archive
+    # 技能统一保留在 skills/ 目录，不做自动归档/分类（俞哥 2026-08-16 要求：技能不搞活跃不活跃）
     results = {"total_skills": stats.get("total_skills", 0),
                "categories": stats.get("categories", 0),
                "scanned_at": stats.get("scanned_at", ""),
@@ -557,32 +557,8 @@ def skill_curator_maintenance():
         skill_path = os.path.join(skills_dir, item)
         if not os.path.isdir(skill_path) or item.startswith(".") or item == ".archive":
             continue
-        skill_md = os.path.join(skill_path, "SKILL.md")
-        if not os.path.exists(skill_md):
-            continue
-        try:
-            mtime = datetime.fromtimestamp(os.path.getmtime(skill_md), tz=BEIJING_TZ)
-            days_since = (now - mtime).days
-        except Exception:
-            continue
-        if days_since > 90:
-            archive_dir = os.path.join(skills_dir, ".archive")
-            os.makedirs(archive_dir, exist_ok=True)
-            try:
-                dest = os.path.join(archive_dir, item)
-                if not os.path.exists(dest):
-                    shutil.move(skill_path, dest)
-                    results["archived"].append(item)
-                else:
-                    results["stale"].append({"name": item, "days_inactive": days_since, "note": "归档同名"})
-            except Exception as e:
-                _log_error("skill_curator_maintenance", str(e)[:80])
-        # 阈值已调整为 90 天（俞哥要求），90 天以上直接归档
-        elif days_since <= 7:
-            results["active"] += 1
-        else:
-            # 8~90 天 -> kept，不再标"过期"
-            results["kept"] += 1
+        # 不再按使用时长自动归档/移动技能，全部保留在 skills/，只统计数量
+        results["active"] += 1
     results["stale_count"] = len(results["stale"])
     results["archived_count"] = len(results["archived"])
     return results

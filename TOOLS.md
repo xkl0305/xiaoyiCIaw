@@ -319,3 +319,19 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 4. **修复 + 验证** — 参数传对类型后，重跑确认 `errors: 0`。
 
 **通用点：** 脚本函数若声明了明确的数值/枚举参数，调用方传字符串常量（"long_term" 等）而函数内部又做数值比较，极易触发此类噪音。改参数为数值语义即可。
+
+### 本地 TTS (sherpa-onnx) 安装经验（2026-08-16）
+- runtime/模型下载后解压到 `~/.openclaw/tools/sherpa-onnx-tts/{runtime,models}`，env 配到 `~/.openclaw/.env`（SHERPA_ONNX_RUNTIME_DIR / SHERPA_ONNX_MODEL_DIR）
+- **英文 piper 模型（如 en_US-lessac-high）自带 espeak-ng-data → 开箱即用**，wrapper 直接可跑
+- **中文 pinyin 模型（xiao_ya/aishell3/zh-hf 等）统一缺 `phontab` 文件**（中文拼音音素表），且公开渠道（GitHub release/代码搜索/HuggingFace 官方源）均无法获取 → 别在这上面反复下载模型空耗
+- 实测命令：技能 wrapper `sherpa-onnx-tts -o out.wav "文本"`（wrapper 对多 onnx / 非默认名模型需加 `--model-file/--tokens-file/--data-dir`）
+
+### GitHub / HuggingFace 镜像加速（2026-08-16）
+- GitHub 直连慢/失败时，加前缀代理：`https://ghfast.top/<原github.com URL>`（实测可完整拉大文件，备选 gh-proxy.com）
+- HuggingFace 直连不通/卡死时，换国内镜像：`https://hf-mirror.com/<原huggingface.co URL>`（含 API：`https://hf-mirror.com/api/...`）
+
+### 自进化流程纪律：进化请求必须走标准格式（2026-08-16 强化）
+- 进化请求**必须**使用标准「🧠 小艺Claw进化请求」格式（含`进化项 / 经验规则 / 修改文件`三个字段），并明确输出「### 是否确认进行本次进化？」等待用户审批
+- **禁止**用普通文字（如「自进化请求…」「两条经验…」）描述带过后自行落地；禁止先执行、后自我认定已走流程
+- 若已用非标准方式发出请求，必须改用标准格式重新走一遍审批，不得直接修改目标文件
+- 用户审批（确认/记/好的）后，才按流程：应用修改 → 待进化项移入 `evolution-drafts/approved/` → 标准格式回复
