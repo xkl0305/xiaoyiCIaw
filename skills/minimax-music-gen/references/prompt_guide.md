@@ -1,335 +1,129 @@
-# Prompt Writing Guide for MiniMax Music API
+# 提示词写作指南
 
-This reference helps construct high-quality music generation prompts.
+本参考文档用于编写高质量的音乐生成提示词。
 
-## Core Principle
+## 核心原则
 
-**Write prompts as vivid English sentences, not comma-separated tags.**
+**将提示词写成生动的完整句子，而不是逗号分隔的关键词标签。**
 
-The API responds best to descriptive, narrative-style prompts that paint a complete picture
-of the song. Each prompt should read like a creative brief for a musician.
+API 对描述性、叙事风格的提示词响应最佳，这类提示词能完整描绘歌曲的全貌。每条提示词都应读起来像写给音乐人的一份创作简报。
 
----
+## 提示词结构
 
-## Prompt Structure
-
-A complete prompt follows this sentence pattern:
+一条完整的提示词遵循以下句式：
 
 ```
-A [mood/emotion] [BPM optional] [genre + sub-genre] [song/piece/track].
-[Vocal description OR "Instrumental with..." description].
-[Narrative/theme — what the song is about].
-[Atmosphere/scene details].
-[Key instruments and production elements].
+一首 [情绪/情感] [BPM 可选] [流派 + 子流派] 歌曲.
+[人声描述 或 乐器演奏描述].
+[叙事/主题 — 歌曲讲述的内容].
+[氛围/场景细节].
+[关键乐器与制作元素].
 ```
 
-### Vocal Track Example
-
+**人声歌曲示例：**
 ```
-A melancholic yet defiant Pop-House song, featuring emotional vocals, about
-lighting a torch in the cold dark night as a form of romantic rebellion,
-energetic rhythm with synth elements.
+一首忧郁而倔强的流行浩室歌曲，带有情感人声，讲述在寒冷黑夜中点起火炬
+作为浪漫的反抗，节奏充满能量，并融入合成器元素。
 ```
 
-### Instrumental Example
-
+**纯音乐示例：**
 ```
-A warm and uplifting 100 BPM indie folk instrumental piece, evoking a sunny
-afternoon stroll through a small town market, featuring bright acoustic guitar
-fingerpicking, gentle ukulele strums, light hand claps, and a whistled melody
-that feels like pure contentment.
+一首温暖而振奋的 100 BPM 独立民谣纯音乐，描绘阳光午后在小镇集市漫步的场景，
+明亮的原声吉他指弹、轻柔的尤克里里扫弦、轻快的拍手声，以及一段
+令人心满意足的哨音旋律。
 ```
 
----
+## 如何逐步构建提示词
 
-## How to Build a Prompt Step by Step
+**1. 以「情绪 + 流派」开头（必填）**
 
-### 1. Open with mood + genre (required)
-
-Start with the emotional core and musical style:
-
-| Pattern | Example |
+| 模式 | 示例 |
 |---------|---------|
-| Single mood | "A melancholic R&B song" |
-| Contrasting moods | "A melancholic yet defiant Pop-House song" |
-| With BPM | "A smoky 74 BPM Neo-Soul fusion" |
-| With era/region | "A laid-back 90 BPM Island Reggae" |
-| Genre blend | "An Avant-Garde Jazz and Neo-Soul fusion" |
+| 单一情绪 | 一首忧郁的节奏布鲁斯歌曲 |
+| 对比情绪 | 一首忧郁而倔强的流行浩室歌曲 |
+| 带 BPM | 一首慵懒烟雾感的 74 BPM 新灵魂乐融合 |
+| 带年代/地域 | 一首悠闲的 90 BPM 海岛雷鬼 |
+| 流派融合 | 一首先锋爵士与新灵魂乐的融合 |
 
-### 2. Describe the vocals (for vocal tracks)
+**2. 描述人声（用于人声歌曲）**
 
-Use "featuring..." or "Vocals:..." to describe the singer:
+良好的人声描述：
+- 带有顺滑感性的情感人声
+- 人声：极低沉沙哑的男中音，演唱真实自然
+- 人声：性感老练的男中音，带有平滑爵士转音与气声演唱
+- 人声：空灵清澈的嗓音，配以丰润混响
+- 人声：轻松的灵魂乐人声，带即兴哼唱与旋律拟声
 
-**Good vocal descriptions** (from high-quality demos):
-- "featuring smooth emotional vocals"
-- "featuring emotional vocals"
-- "Vocals: Ultra-low, gravelly baritone with authentic phrasing"
-- "Vocals: Sultry, sophisticated male baritone with smooth jazz inflections and breathy delivery"
-- "Vocals: Ethereal, crystal-clear Enya-style vocals with lush reverb"
-- "Vocals: Relaxed, soul-flavored vocals with ad-libs and melodic scats"
+糟糕的描述（过于笼统）：女声
 
-**Bad** (too vague): "female vocal", "温柔女声"
+**3. 添加叙事/主题（推荐）**
 
-For instrumental tracks, skip this or write:
-- "Instrumental with rich orchestral textures"
-- "A pure instrumental piece driven by..."
+- 关于在寒冷黑夜中点起火炬作为浪漫的反抗
+- 关于放下完美主义、像流水一样接纳真实的自己
 
-### 3. Add narrative/theme (recommended)
+纯音乐则描述场景：描绘沿海岸公路的日出自驾
 
-Use "about..." to give the song a story or emotional arc:
+**4. 设定情绪/氛围（推荐）**
 
-- "about lighting a torch in the cold dark night as a form of romantic rebellion"
-- "about letting go of perfectionism and embracing your true self like flowing water"
-- "about salvaging memory fragments in space-time and letting go of past obsessions"
+- 苦乐参半但治愈的氛围
+- 充满力量、自我关爱的氛围
 
-For instrumentals, describe the scene/journey instead:
-- "evoking a sunrise drive along a coastal highway"
-- "capturing the energy of a neon-lit city at 2 AM"
+**5. 指定制作元素（推荐）**
 
-### 4. Set the mood/atmosphere (recommended)
+- 柔和节拍搭配低保真元素
+- 温暖的无线贝斯低音线、闪耀的罗兹电钢琴与爵士刷鼓
 
-Add mood descriptors as a phrase:
-- "bittersweet but healing mood"
-- "empowering and self-loving mood"
-- "the overall vibe is grotesque opulence"
+## 流派参考
 
-### 5. Specify production elements (recommended)
+| 类别 | 流派 |
+|----------|--------|
+| 流行与舞曲 | 流行、舞曲流行、电子流行、合成器流行、梦幻流行、韩流、日系流行、华语流行、都市流行、浩室、未来贝斯、电子舞曲 |
+| 摇滚与另类 | 摇滚、独立摇滚、流行摇滚、后摇、自赏、朋克、金属、另类 |
+| 节奏布鲁斯/灵魂/放克 | 节奏布鲁斯、新灵魂乐、当代节奏布鲁斯、放克、福音、灵魂乐 |
+| 嘻哈 | 嘻哈、陷阱说唱、布姆巴普、低保真嘻哈、云说唱、钻头说唱、非洲节拍 |
+| 电子 | 氛围、科技舞曲、鼓打贝斯、冷潮、蒸汽波、阿玛皮亚诺 |
+| 民谣/原声 | 民谣、独立民谣、乡村、中国传统、凯尔特民谣 |
+| 爵士/布鲁斯 | 爵士、平滑爵士、融合爵士、波萨诺瓦、布鲁斯、先锋爵士 |
+| 古典 | 古典、管弦乐、影视配乐、电影原声、史诗、新古典、钢琴独奏 |
+| 世界音乐 | 雷鬼、拉丁、华尔兹、探戈、弗拉门戈 |
 
-End with key instruments and production choices:
-- "mellow beats with lo-fi elements"
-- "rhythmic beats with R&B influences"
-- "energetic rhythm with synth elements"
-- "featuring a warm fretless bassline, shimmering Rhodes piano, and brushed jazz drums"
+## 人声风格参考
 
----
-
-## Genre Reference
-
-### Pop & Dance
-- Pop, Dance Pop, Electropop, Synth-pop, Dream Pop, Indie Pop
-- K-pop, J-pop, C-pop, City Pop
-- House, Pop-House, Deep House, Progressive House
-- Hyperpop, Future Bass, EDM
-
-### Rock & Alternative
-- Rock, Indie Rock, Pop Rock, Post-Rock, Shoegaze
-- Punk, Garage Rock, Metal, Alternative
-
-### R&B, Soul & Funk
-- R&B, Neo-Soul, Contemporary R&B, Funk
-- Gospel, Soul, Motown
-
-### Hip-Hop & Rap
-- Hip-Hop, Trap, Boom Bap, Lo-fi Hip-Hop
-- Cloud Rap, Drill, Afrobeats
-
-### Electronic
-- Electronic, Ambient, Techno, Drum and Bass
-- Chillwave, Vaporwave, IDM, Glitch
-- Amapiano, Afro House
-
-### Folk & Acoustic
-- Folk, Indie Folk, Folk Rock, Country
-- Chinese Traditional (古风/中国风), Celtic Folk
-
-### Jazz & Blues
-- Jazz, Smooth Jazz, Jazz Fusion, Bossa Nova
-- Blues, Neo-Soul, Avant-Garde Jazz
-
-### Classical & Cinematic
-- Classical, Orchestral, Cinematic, Film Score
-- Epic, Neoclassical, Piano Solo
-- New Age, Ambient Orchestral
-
-### World & Regional
-- Reggae, Latin, Afro, Celtic
-- Waltz, Tango, Flamenco
-
----
-
-## Vocal Style Reference
-
-### By character
-| Style | Prompt phrase |
+| 风格 | 提示词短语 |
 |-------|--------------|
-| Smooth & emotional | "smooth emotional vocals" |
-| Raw & unpolished | "raw, unpolished vocals shifting between whispers and screams" |
-| Breathy & intimate | "breathy delivery with intimate phrasing" |
-| Powerful & soulful | "powerful soulful vocals with gospel inflections" |
-| Sultry & sophisticated | "sultry, sophisticated baritone with jazz inflections" |
-| Ethereal & clear | "ethereal, crystal-clear vocals with lush reverb" |
-| Conversational | "conversational delivery with organic mumbles and spontaneous hums" |
-| Aggressive & intense | "aggressive vocal delivery with rhythmic intensity" |
+| 顺滑而富有情感 | 顺滑感性的情感人声 |
+| 原始而不加修饰 | 原始不加修饰的人声，在低语与嘶喊之间转换 |
+| 气声而亲密 | 气声唱法配合亲密的乐句处理 |
+| 力量而深情 | 浑厚深情的灵魂乐人声，带福音颤音 |
+| 魅惑而老练 | 性感老练的男中音，带爵士转音 |
+| 空灵而清澈 | 空灵清澈的人声，配以丰润混响 |
+| 激进而强烈 | 激进强烈的人声演绎，节奏感十足 |
 
-### By effect
-| Effect | Prompt phrase |
-|--------|--------------|
-| Auto-tune | "vocals with heavy auto-tune processing" |
-| Distorted | "vocals with heavy electronic distortion, mechanical and cold" |
-| Reverb-heavy | "vocals drenched in cathedral reverb" |
-| Layered | "lush layered vocal harmonies" |
-| Call-and-response | "featuring a heavy Gospel Choir providing call-and-response ad-libs" |
+## 乐器与制作参考
 
----
+| 类别 | 示例 |
+|----------|---------|
+| 弦乐与吉他 | 原声吉他指弹、电吉他连复段、无品贝斯、小提琴、大提琴、二胡、古筝、琵琶 |
+| 键盘与合成器 | 钢琴、罗兹电钢琴、合成器铺底、合成器主音、琶音器、八音盒、管风琴 |
+| 鼓与打击乐 | 爵士刷鼓、电子鼓、808 踩镲、陷阱节奏打击乐、卡宏鼓、邦戈鼓 |
+| 管乐与铜管 | 萨克斯、小号、长笛、口琴、竹笛、箫 |
+| 质感与音效 | 黑胶爆音、磁带底噪、氛围音垫、故障音效元素、雨声 |
 
-## Instrument & Production Reference
+## BPM 参考
 
-### Strings & Guitar
-- acoustic guitar fingerpicking, electric guitar riffs, distorted guitar
-- fretless electric bass, deep sub bass, warm bassline
-- violin, cello, orchestral strings, erhu (二胡), guzheng (古筝), pipa (琵琶)
-
-### Keys & Synth
-- piano, Rhodes piano, vintage electric piano
-- synth pad, synth lead, arpeggiator, analog synthesizer
-- music box, accordion, organ
-
-### Drums & Percussion
-- brushed jazz drums, live drums, electronic drums
-- 808 bass and hi-hats, boom-bap drums, trap percussion
-- hand claps, finger snaps, cajón, bongos, bodhrán
-- tribal percussion, multi-layered polyrhythmic drums
-
-### Wind & Brass
-- saxophone (soprano/alto/tenor), trumpet, trombone
-- flute, tin whistle, harmonica
-- bamboo flute (竹笛), xiao (箫), suona (唢呐)
-
-### Texture & Effects
-- vinyl crackle, tape hiss, lo-fi texture
-- ambient pads, atmospheric reverb, delay effects
-- glitch elements, laser sounds, industrial noise
-- wind chimes, rain sounds, city ambience
-
----
-
-## BPM Reference
-
-| Feel | BPM | Use in prompt |
+| 感觉 | BPM | 提示词用法 |
 |------|-----|---------------|
-| Very slow, meditative | 40-60 | "a meditative 50 BPM..." |
-| Slow ballad | 60-80 | "a slow 70 BPM ballad..." |
-| Mid-tempo groove | 80-110 | "a groovy 95 BPM..." |
-| Upbeat, energetic | 110-130 | "an upbeat 120 BPM..." |
-| Fast, driving | 130-160 | "a driving 140 BPM..." |
-| Very fast, intense | 160+ | "an intense 170 BPM..." |
+| 极慢、冥想感 | 40-60 | 一首 50 BPM 的冥想感乐曲 |
+| 慢速抒情 | 60-80 | 一首 70 BPM 的舒缓抒情曲 |
+| 中速律动 | 80-110 | 一首 95 BPM 的律动感乐曲 |
+| 欢快、有活力 | 110-130 | 一首 120 BPM 的欢快乐曲 |
+| 快速、有冲劲 | 130-160 | 一首 140 BPM 的强劲乐曲 |
 
-Note: BPM is optional. Only include it when tempo precision matters.
+## 高质量提示词技巧
 
----
-
-## Complete Prompt Examples
-
-### Emotional Pop (vocal)
-```
-A melancholic yet defiant Pop-House song, featuring emotional vocals, about
-lighting a torch in the cold dark night as a form of romantic rebellion,
-energetic rhythm with synth elements.
-```
-
-### Neo-Soul Groove (vocal)
-```
-An uplifting and groovy neo-soul pop song, featuring smooth emotional vocals,
-about letting go of perfectionism and embracing your true self like flowing
-water, empowering and self-loving mood, rhythmic beats with R&B influences.
-```
-
-### Chill R&B (vocal)
-```
-A reflective and atmospheric chill R&B song, featuring smooth emotional vocals,
-about salvaging memory fragments in space-time and letting go of past
-obsessions, bittersweet but healing mood, mellow beats with lo-fi elements.
-```
-
-### Jazz Lounge (vocal)
-```
-A smooth 92 BPM Neo-Soul and Contemporary Jazz-Pop. Vocals: Sultry,
-sophisticated male baritone with smooth jazz inflections and breathy delivery.
-Instrumentation: A melodic, sliding Fretless Electric Bass and lush Rhodes
-Piano chords. Features a warm, soulful Soprano Saxophone solo. Percussion:
-Snapping crisp rimshots and a subtle Shaker. Vibe: A high-end rooftop lounge
-at night. Elegant, modern, and deeply romantic.
-```
-
-### Celtic Fantasy (vocal)
-```
-A magical 85 BPM Celtic Folk and Cinematic Fantasy blend. Vocals: Ethereal,
-crystal-clear vocals with lush reverb and wordless high-note echoes.
-Instrumentation: A soaring Tin Whistle melody and a rhythmic Bodhrán.
-Features the shimmering texture of a Celtic Harp. Percussion: Subtle wind
-chimes. Vibe: A hidden fairy garden in an ancient forest. Mystical, soaring,
-and peaceful.
-```
-
-### Avant-Garde Jazz (vocal)
-```
-A smoky 74 BPM Avant-Garde Jazz and Neo-Soul fusion. Vocals: Ultra-low,
-gravelly baritone with conversational, non-linear delivery, featuring organic
-mumbles, spontaneous hums, and erratic jazz scats. Instrumentation: A warm,
-wandering fretless bassline with deep sub-extension, shimmering Rhodes piano,
-and brushed jazz drums. Atmosphere: Integrated city ambience and vinyl crackle.
-Wide dynamic range, shifting from minimalist bass-and-vocal sections to lush,
-spiritually ascending harmonies.
-```
-
-### Island Reggae (vocal)
-```
-A laid-back 90 BPM Island Reggae. Vocals: Relaxed, soul-flavored vocals with
-ad-libs and melodic scats. Instrumentation: The bright, tropical sound of
-Steel Drums and a rhythmic Ukulele strum. Percussion: A steady one-drop
-reggae beat with Bongos. Vibe: A birthday party on a Caribbean island.
-Carefree, sunny, and rhythmic.
-```
-
-### Cinematic Instrumental
-```
-A sweeping cinematic orchestral piece building from a solitary piano melody
-into a full symphonic crescendo, evoking the feeling of standing on a
-mountaintop at dawn watching the world awaken below, featuring soaring
-strings, triumphant brass, and thundering timpani.
-```
-
-### Lo-fi Study Beats (instrumental)
-```
-A calm and dreamy lo-fi hip-hop instrumental, capturing late-night study
-vibes with soft rain outside the window, featuring sampled jazz piano chords,
-mellow electronic drums with tape saturation, gentle vinyl crackle, and a
-wandering bass that feels like drifting between thoughts.
-```
-
-### Chinese Traditional (instrumental)
-```
-An elegant and poetic Chinese traditional instrumental piece, evoking moonlit
-reflections on a still lake in an ancient garden, featuring delicate guzheng
-arpeggios, flowing bamboo flute melodies, soft pipa plucks, and subtle
-orchestral strings that swell like mist rising at dawn.
-```
-
-### EDM / Electronic (instrumental)
-```
-A high-energy 130 BPM progressive electronic instrumental with a massive
-synth build-up crashing into a euphoric drop, pulsing sidechain bass,
-crystalline arpeggiated synths, and cinematic breakdown sections that feel
-like floating through neon-lit clouds before the beat slams back in.
-```
-
----
-
-## Tips for High-Quality Prompts
-
-1. **Write sentences, not tag lists**: "A melancholic R&B song about..." beats
-   "R&B, 忧郁, 慢板, 钢琴".
-2. **Be vivid and specific**: "salvaging memory fragments in space-time" is far
-   more evocative than "sad memories".
-3. **Describe vocals as a character**: Give them personality, not just gender.
-   "Sultry baritone with jazz inflections" not "male vocal".
-4. **Include a scene or vibe**: "A high-end rooftop lounge at night" gives the
-   model a coherent world to build around.
-5. **Mix detail levels**: Specify 2-3 key instruments precisely, leave the rest
-   to the model. Over-specifying everything can constrain creativity.
-6. **BPM is optional but powerful**: Use it when tempo precision matters for
-   your use case (e.g., video editing, dance choreography).
-7. **English prompts work best**: The model responds most reliably to English
-   prompts. Chinese scene descriptions can be mixed in for flavor.
-8. **For instrumentals**: Replace vocal descriptions with instrument focus and
-   scene/journey narrative. Use "instrumental" or "instrumental piece" explicitly.
+1. **写句子而非标签列表**："一首忧郁的节奏布鲁斯歌曲，关于……" 优于 "节奏布鲁斯、悲伤、慢速、钢琴"。
+2. **生动且具体**："在时空中打捞记忆碎片" 优于 "悲伤回忆"。
+3. **把人声描述得像一个角色**：用 "性感老练的男中音，带爵士转音" 而非 "男声"。
+4. **加入场景或氛围**："夜晚的高级屋顶酒廊" 能让模型拥有一个连贯的世界。
+5. **混合细节层次**：精确指定 2-3 个关键乐器，其余交给模型发挥。
+6. **纯音乐提示词**：将人声描述替换为乐器重点和场景叙事。
