@@ -548,14 +548,10 @@ def skill_curator_maintenance():
         stats = {"total_skills": 0, "categories": 0, "category_breakdown": {}}
     
     # 技能统一保留在 skills/ 目录，不做自动归档/分类（俞哥 2026-08-16 要求：技能不搞活跃不活跃）
-    # 技能统一保留在 skills/ 目录，不做自动归档/分类（俞哥 2026-08-16 要求：技能不搞活跃不活跃）
-    # 展示口径改为：技能总数 / 可用(Eligible) / 缺依赖(Missing)（俞哥 2026-08-17 要求）
-    # 可用 = 目录含 SKILL.md；缺依赖 = 缺 SKILL.md（无法被技能系统加载）
     results = {"total_skills": stats.get("total_skills", 0),
                "categories": stats.get("categories", 0),
                "scanned_at": stats.get("scanned_at", ""),
-               "archived": [], "stale": [], "active": 0, "kept": 0,
-               "eligible": 0, "missing_deps": []}
+               "archived": [], "stale": [], "active": 0, "kept": 0}
     now = datetime.now(BEIJING_TZ)
     for item in sorted(os.listdir(skills_dir)):
         skill_path = os.path.join(skills_dir, item)
@@ -563,13 +559,8 @@ def skill_curator_maintenance():
             continue
         # 不再按使用时长自动归档/移动技能，全部保留在 skills/，只统计数量
         results["active"] += 1
-        if os.path.isfile(os.path.join(skill_path, "SKILL.md")):
-            results["eligible"] += 1
-        else:
-            results["missing_deps"].append(item)
-    results["stale_count"] = 0
-    results["archived_count"] = 0
-    results["missing_count"] = len(results["missing_deps"])
+    results["stale_count"] = len(results["stale"])
+    results["archived_count"] = len(results["archived"])
     return results
 
 
@@ -1493,9 +1484,12 @@ def _format_report(results: Dict, elapsed: float) -> str:
     # 技能维护
     cr = results.get("curator", {})
     total_skills = cr.get("total_skills", 0)
-    eligible = cr.get("eligible", 0)
-    missing_count = cr.get("missing_count", 0)
-    lines.append(TR("📦 技能", f"{total_skills} 个 / 可用 {eligible} / 缺依赖 {missing_count}"))
+    archived_count = cr.get("archived_count", 0)
+    stale_count = cr.get("stale_count", 0)
+    if archived_count > 0 or stale_count > 0:
+        lines.append(TR("📦 技能", f"{total_skills} 个 / 归档 {archived_count} / 过期 {stale_count}"))
+    else:
+        lines.append(TR("📦 技能", f"{total_skills} 个，全部活跃 ✅"))
 
     # 异常报告
     ar = results.get("anomaly_report", {})

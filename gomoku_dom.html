@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>大师级五子棋</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"PingFang SC","Microsoft YaHei",sans-serif;background:#f3eee4;display:flex;justify-content:center;padding:14px;min-height:100vh;color-scheme:light;forced-color-adjust:none;}
+.wrap{width:100%;max-width:520px;background:#fbf9f4;border-radius:18px;box-shadow:0 12px 40px rgba(80,60,30,.16);padding:14px;}
+h1{text-align:center;font-size:18px;color:#5b4a36;letter-spacing:4px;margin-bottom:10px;}
+.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:8px;flex-wrap:wrap;}
+.chips{display:flex;gap:6px;}
+.chip{background:#fff;border:1px solid #e4dccd;border-radius:999px;padding:4px 10px;font-size:12px;color:#6b5a44;}
+.btns{display:flex;gap:6px;}
+.btn{border:none;border-radius:8px;padding:7px 12px;font-size:12px;background:#fff;color:#5b4a36;border:1px solid #e4dccd;cursor:pointer;}
+.btn.p{background:#8a6f4d;color:#fff;border-color:#8a6f4d;}
+.btn:disabled{opacity:.4;}
+#goban{width:100%;border-collapse:collapse;background:#eec98e;border:2px solid #a67c3a;border-radius:8px;table-layout:fixed;}
+#goban td{position:relative;padding:0;border-left:1px solid #a67c3a;border-top:1px solid #a67c3a;height:0;}
+#goban td::after{content:"";display:block;padding-bottom:100%;}
+.st{position:absolute;left:7%;top:7%;width:86%;height:86%;border-radius:50%;transform:scale(0);transition:transform .15s;z-index:2;}
+.st.show{transform:scale(1);}
+.st.bo{background:#1a1a1a;border:1px solid #000;box-shadow:0 2px 3px rgba(0,0,0,.45);}
+.st.wo{background:#ffffff;border:1px solid #c9c9c9;box-shadow:0 2px 3px rgba(0,0,0,.3);}
+.st.las{outline:2px solid #e33;outline-offset:-2px;border-radius:50%;}
+.hint{text-align:center;margin-top:10px;font-size:13px;color:#9a8a72;}
+.mask{position:fixed;inset:0;background:rgba(40,30,15,.45);display:none;align-items:center;justify-content:center;z-index:50;}
+.mask.show{display:flex;}
+.modal{background:#fffdf8;border-radius:18px;padding:26px 30px;text-align:center;min-width:250px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.modal .ic{font-size:50px;}
+.modal h2{margin:10px 0 4px;font-size:22px;color:#4a3a24;}
+.modal p{color:#9a8a72;font-size:13px;margin-bottom:18px;}
+.modal button{background:#8a6f4d;color:#fff;border:none;border-radius:10px;padding:11px 26px;font-size:14px;cursor:pointer;}
+.cf{position:fixed;width:10px;height:14px;z-index:60;pointer-events:none;top:-20px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⚫ 大师五子棋 ⚪</h1>
+  <div class="bar">
+    <div class="chips"><span class="chip">你：黑子</span><span class="chip">AI：白子</span></div>
+    <div class="btns">
+      <button class="btn" id="undo">悔棋</button>
+      <button class="btn p" id="newGame">新一局</button>
+    </div>
+  </div>
+  <table id="goban"></table>
+  <div class="hint" id="hint">你执黑先行，点交叉点落子</div>
+</div>
+<div class="mask" id="mask">
+  <div class="modal">
+    <div class="ic" id="mIc">🏆</div>
+    <h2 id="mTitle">你赢了！</h2>
+    <p id="mSub">大师级对手也被你击败！</p>
+    <button id="again">再来一局</button>
+  </div>
+</div>
+<script>
+"use strict";
+var N=15,E=0,B=1,W=2;
+var P=B,AIp=W,DEPTH=4,CLIMIT=16;
+var bd=[],cur=P,hist=[],over=false,th=false;
+var D=[[1,0],[0,1],[1,1],[1,-1]];
+function inB(r,c){return r>=0&&r<N&&c>=0&&c<N;}
+var GOB=document.getElementById('goban');
+var TDS=[];
+(function build(){
+  var html="";
+  for(var r=0;r<N;r++){html+="<tr>";for(var c=0;c<N;c++){html+='<td data-r="'+r+'" data-c="'+c+'"></td>';}html+="</tr>";}
+  GOB.innerHTML=html;
+  for(var r=0;r<N;r++){TDS[r]=[];for(var c=0;c<N;c++){TDS[r][c]=GOB.rows[r].cells[c];}}
+})();
+function rnd(){
+  for(var r=0;r<N;r++)for(var c=0;c<N;c++)TDS[r][c].innerHTML="";
+  for(var k=0;k<hist.length;k++){var m=hist[k];var td=TDS[m.r][m.c];
+    var isBo=(m.x===B);
+    td.innerHTML='<div class="st show" style="background:'+(isBo?'#1a1a1a':'#fffaf0')+';border:1px solid '+(isBo?'#000':'#d8d0c0')+'"></div>';
+  }
+  if(hist.length){var l=hist[hist.length-1];var s=TDS[l.r][l.c].querySelector(".st");if(s)s.classList.add("las");}
+}
+function hh(t){document.getElementById("hint").textContent=t;}
+function btns(on){document.getElementById("undo").disabled=!on||over||th;}
+function cw(r,c,x){
+  for(var d=0;d<4;d++){var dr=D[d][0],dc=D[d][1],cnt=1;
+    for(var i=1;i<5;i++){var nr=r+dr*i,nc=c+dc*i;if(!inB(nr,nc)||bd[nr][nc]!==x)break;cnt++;}
+    for(var i=1;i<5;i++){var nr=r-dr*i,nc=c-dc*i;if(!inB(nr,nc)||bd[nr][nc]!==x)break;cnt++;}
+    if(cnt>=5)return true;
+  }
+  return false;
+}
+function mv(r,c,x){bd[r][c]=x;hist.push({r:r,c:c,x:x});}
+function reset(){
+  bd=[];for(var r=0;r<N;r++){bd[r]=[];for(var c=0;c<N;c++)bd[r][c]=E;}
+  hist=[];cur=P;over=false;th=false;btns(true);hh("你执黑先行，点交叉点落子");rnd();
+}
+var SC={W:10000000,F4:900000,F3:100000,T3:60000,T32:8000,T2:4000,T22:600};
+function pt(cnt,o1,o2){
+  if(cnt>=5)return SC.W;
+  if(o1&&o2){if(cnt==4)return SC.F4;if(cnt==3)return SC.T3;if(cnt==2)return SC.T2;return 100;}
+  var o=o1||o2;if(!o)return cnt>=4?SC.F3:0;
+  if(cnt==4)return SC.F3;if(cnt==3)return SC.T32;if(cnt==2)return SC.T22;return 0;
+}
+function ls(r,c,x){
+  var tot=0;
+  for(var d=0;d<4;d++){var dr=D[d][0],dc=D[d][1],cnt=1,o1=true,o2=true;
+    for(var i=1;i<N;i++){var nr=r+dr*i,nc=c+dc*i;if(!inB(nr,nc)){o1=false;break;}if(bd[nr][nc]==x)cnt++;else if(bd[nr][nc]==E)break;else{o1=false;break;}}
+    for(var i=1;i<N;i++){var nr=r-dr*i,nc=c-dc*i;if(!inB(nr,nc)){o2=false;break;}if(bd[nr][nc]==x)cnt++;else if(bd[nr][nc]==E)break;else{o2=false;break;}}
+    tot+=pt(cnt,o1,o2);
+  }
+  return tot;
+}
+function ev(){
+  var a=0,h=0;
+  for(var r=0;r<N;r++)for(var c=0;c<N;c++){var v=bd[r][c];if(v==E)continue;if(v==AIp)a+=sa(r,c,AIp);else h+=sa(r,c,P);}
+  return a-h*1.15;
+}
+function sa(r,c,x){
+  var s=0;
+  for(var d=0;d<4;d++){var dr=D[d][0],dc=D[d][1],pr=r-dr,pc=c-dc;
+    if(inB(pr,pc)&&bd[pr][pc]==x)continue;
+    var cnt=1;
+    for(var i=1;i<N;i++){var nr=r+dr*i,nc=c+dc*i;if(!inB(nr,nc))break;if(bd[nr][nc]==x){cnt++;continue;}break;}
+    var o1=false,o2=false;
+    if(!inB(pr,pc))o1=false;else o1=bd[pr][pc]==E;
+    var nr=r+dr*cnt,nc=c+dc*cnt;
+    if(inB(nr,nc))o2=bd[nr][nc]==E;else o2=false;
+    s+=pt(cnt,o1,o2);
+  }
+  return s;
+}
+function h5(){
+  for(var r=0;r<N;r++)for(var c=0;c<N;c++){var v=bd[r][c];if(v==E)continue;
+    for(var d=0;d<4;d++){var dr=D[d][0],dc=D[d][1],pr=r-dr,pc=c-dc;
+      if(inB(pr,pc)&&bd[pr][pc]==v)continue;
+      var cnt=1;
+      for(var i=1;i<5;i++){var nr=r+dr*i,nc=c+dc*i;if(!inB(nr,nc)||bd[nr][nc]!=v)break;cnt++;}
+      if(cnt>=5)return v;
+    }}
+  return E;
+}
+function gen(){
+  var set=[],arr=[];for(var r=0;r<N;r++)for(var c=0;c<N;c++){
+    if(bd[r][c]==E)continue;
+    for(var dr=-2;dr<=2;dr++)for(var dc=-2;dc<=2;dc++){var nr=r+dr,nc=c+dc;
+      if(inB(nr,nc)&&bd[nr][nc]==E&&!set[nr*N+nc]){set[nr*N+nc]=1;arr.push([nr,nc]);}}
+  }
+  return arr;
+}
+function ab(depth,al,be,x){
+  var w=h5();if(w){if(w==AIp)return 1000000;return -1000000;}
+  if(depth==0)return ev();
+  var c=gen();c.sort(function(a,b){return ls(b[0],b[1],x)-ls(a[0],a[1],x);});
+  if(c.length>CLIMIT)c=c.slice(0,CLIMIT);
+  if(!c.length)return 0;
+  if(x==AIp){var bst=-Infinity;for(var i=0;i<c.length;i++){var r=c[i][0],cc=c[i][1];bd[r][cc]=AIp;var v=ab(depth-1,al,be,P);bd[r][cc]=E;if(v>bst)bst=v;if(bst>al)al=bst;if(be<=al)break;}return bst;}
+  else{var bst2=Infinity;for(var i=0;i<c.length;i++){var r=c[i][0],cc=c[i][1];bd[r][cc]=P;var v=ab(depth-1,al,be,AIp);bd[r][cc]=E;if(v<bst2)bst2=v;if(bst2<be)be=bst2;if(be<=al)break;}return bst2;}
+}
+function aiTurn(){
+  if(over)return;
+  if(!hist.length){mv(7,7,AIp);after();return;}
+  var c=gen();c.sort(function(a,b){return ls(b[0],b[1],AIp)-ls(a[0],a[1],AIp);});
+  if(c.length>CLIMIT)c=c.slice(0,CLIMIT);
+  if(!c.length){reset();return;}
+  for(var i=0;i<c.length;i++){var r=c[i][0],cc=c[i][1];bd[r][cc]=AIp;if(cw(r,cc,AIp)){bd[r][cc]=E;mv(r,cc,AIp);after();return;}bd[r][cc]=E;}
+  var bm=c[0],bv=-Infinity;
+  for(var i=0;i<c.length;i++){var r=c[i][0],cc=c[i][1];bd[r][cc]=AIp;var v=ab(DEPTH-1,-Infinity,Infinity,P);bd[r][cc]=E;if(v>bv){bv=v;bm=c[i];}}
+  mv(bm[0],bm[1],AIp);after();
+}
+function after(){
+  th=false;btns(true);cur=P;
+  var l=hist[hist.length-1];
+  if(cw(l.r,l.c,AIp)){win("🤖","AI 获胜","大师级 AI 更胜一筹，再来挑战！");return;}
+  hh("轮到你了，点交叉点落子");rnd();
+}
+GOB.addEventListener("click",function(e){
+  if(over||th||cur!=P)return;
+  var td=e.target&&e.target.closest?e.target.closest("td"):null;
+  if(!td)return;
+  var r=+td.getAttribute("data-r"),c=+td.getAttribute("data-c");
+  if(bd[r][c]!=E)return;
+  mv(r,c,P);cur=AIp;th=true;btns(false);
+  if(cw(r,c,P)){th=false;win("🏆","你赢了！","大师级对手也被你击败！");return;}
+  hh("AI 思考中…");rnd();
+  setTimeout(aiTurn,30);
+});
+function win(ic,t,sub){
+  over=true;th=false;btns(false);
+  document.getElementById("mIc").textContent=ic;
+  document.getElementById("mTitle").textContent=t;
+  document.getElementById("mSub").textContent=sub;
+  document.getElementById("mask").classList.add("show");
+  launch();
+}
+document.getElementById("again").addEventListener("click",function(){document.getElementById("mask").classList.remove("show");reset();});
+document.getElementById("newGame").addEventListener("click",function(){document.getElementById("mask").classList.remove("show");reset();});
+document.getElementById("undo").addEventListener("click",function(){
+  if(th||over||hist.length<2)return;
+  hist.pop();hist.pop();bd=[];for(var r=0;r<N;r++){bd[r]=[];for(var c=0;c<N;c++)bd[r][c]=E;}
+  for(var k=0;k<hist.length;k++)bd[hist[k].r][hist[k].c]=hist[k].x;
+  cur=P;th=false;btns(true);hh("已悔棋，该你了");rnd();
+});
+var COL=["#e74c3c","#f1c40f","#2ecc71","#3498db","#9b59b6","#e67e22","#ff6b9d"];
+function launch(){
+  for(var i=0;i<70;i++)(function(){
+    var el=document.createElement("div");el.className="cf";
+    el.style.background=COL[Math.floor(Math.random()*COL.length)];
+    el.style.left=Math.random()*innerWidth+"px";
+    el.style.width=(6+Math.random()*5)+"px";el.style.height=(8+Math.random()*8)+"px";
+    el.style.borderRadius=Math.random()>0.5?"50%":"2px";
+    document.body.appendChild(el);
+    var vy=2+Math.random()*3,pos=0;
+    (function f(){pos+=vy;el.style.top=pos+"px";el.style.transform="rotate("+(pos*2)+"deg)";
+      if(pos<innerHeight+40)requestAnimationFrame(f);else el.remove();})();
+  })();
+}
+reset();rnd();
+</script>
+</body>
+</html>
