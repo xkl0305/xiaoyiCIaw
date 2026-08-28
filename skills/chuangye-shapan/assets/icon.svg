@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>创业沙盘 icon</title>
+  <desc>创业沙盘技能图标：沙盘上的路径与信号灯</desc>
+  <rect width="512" height="512" rx="96" fill="#2C2C2A"/>
+  <rect x="88" y="88" width="336" height="336" rx="48" fill="#F1EFE8"/>
+  <circle cx="180" cy="200" r="34" fill="#1D9E75"/>
+  <circle cx="332" cy="200" r="34" fill="#D85A30"/>
+  <circle cx="256" cy="330" r="34" fill="#378ADD"/>
+  <path d="M210 210 L322 210" stroke="#2C2C2A" stroke-width="14" stroke-linecap="round"/>
+  <path d="M196 235 L240 305" stroke="#2C2C2A" stroke-width="14" stroke-linecap="round"/>
+  <path d="M316 235 L272 305" stroke="#2C2C2A" stroke-width="14" stroke-linecap="round"/>
+  <path d="M256 364 L256 396" stroke="#2C2C2A" stroke-width="14" stroke-linecap="round"/>
+  <polygon points="256,436 232,404 280,404" fill="#2C2C2A"/>
+</svg>

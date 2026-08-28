@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 800" width="100%">
+  <title>创业沙盘全链路验证框架 V4 优化版</title>
+  <desc>从宏观预判到方案推演的完整创业验证流程</desc>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#5F5E5A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arr-loop" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#534AB7" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="340" y="32" text-anchor="middle" font-family="sans-serif" font-size="15px" font-weight="700" fill="#2C2C2A">创业沙盘全链路验证框架 V4</text>
+  <text x="340" y="50" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#888780">宏观预判 · 假设验证 · 用户访谈 · 证据链追溯 · 方案推演</text>
+
+  <!-- Node 1: Layer 0 -->
+  <rect x="50" y="64" width="320" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+  <text x="210" y="85" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Layer 0 · 宏观环境与行业机会预判</text>
+  <text x="210" y="104" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">5 步分析链 + 五维罗盘 (政策/社会/技术/经济/竞争)</text>
+  <text x="380" y="92" font-family="sans-serif" font-size="11px" fill="#888780">输出: 时机信号</text>
+
+  <!-- Arrow 1 -->
+  <line x1="210" y1="120" x2="210" y2="140" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 2: Phase 0 -->
+  <rect x="50" y="144" width="320" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+  <text x="210" y="165" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Phase 0 · 不确定性扫描 + 快速画像</text>
+  <text x="210" y="184" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">场景-行为-特征三连问 + 痛点强度 + 雇佣枪测试</text>
+  <text x="380" y="172" font-family="sans-serif" font-size="11px" fill="#888780">1h · 0元</text>
+
+  <!-- Arrow 2 -->
+  <line x1="210" y1="200" x2="210" y2="220" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 3: Phase 1 -->
+  <rect x="50" y="224" width="320" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+  <text x="210" y="245" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Phase 1 · 假设分解 → 可检验性子假设</text>
+  <text x="210" y="264" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">Desirability / Viability / Feasibility + 证据状态</text>
+  <text x="380" y="252" font-family="sans-serif" font-size="11px" fill="#888780">1-2h</text>
+
+  <!-- Arrow 3 -->
+  <line x1="210" y1="280" x2="210" y2="300" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 4: Phase 2 (Upgraded) -->
+  <rect x="50" y="304" width="320" height="56" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1"/>
+  <text x="210" y="325" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Phase 2 · 反假设 + 杀手证据设计 (>=3个)</text>
+  <text x="210" y="344" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">什么数据出现就证伪？← 更名为：竞争假设 → 反假设</text>
+  <rect x="56" y="308" width="28" height="14" rx="3" fill="#BA7517"/>
+  <text x="70" y="319" text-anchor="middle" font-family="sans-serif" font-size="9px" fill="#fff" font-weight="700">升级</text>
+
+  <!-- Arrow 4 -->
+  <line x1="210" y1="360" x2="210" y2="380" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 5: Phase 3 -->
+  <rect x="50" y="384" width="320" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+  <text x="210" y="405" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Phase 3 · 优先级排序 → Top 3</text>
+  <text x="210" y="424" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">双轴: 影响程度 × 证据匮乏  → 得分最高者优先验证</text>
+  <text x="380" y="412" font-family="sans-serif" font-size="11px" fill="#888780">1h</text>
+
+  <!-- Arrow 5 -->
+  <line x1="210" y1="440" x2="210" y2="460" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 6: Phase 4 -->
+  <rect x="50" y="464" width="320" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="1"/>
+  <text x="210" y="485" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#2C2C2A">Phase 4-A/B · 调研设计 + 访谈提纲 (四层×五维)</text>
+  <text x="210" y="504" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#5F5E5A">定人·定量·定标准 + 功能→流程→情感→动机层</text>
+  <text x="380" y="492" font-family="sans-serif" font-size="11px" fill="#888780">3-5h</text>
+
+  <!-- Arrow 6 -->
+  <line x1="210" y1="520" x2="210" y2="540" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 7: Decision Gate (New) -->
+  <rect x="50" y="544" width="320" height="44" rx="8" fill="#E6F1FB" stroke="#185FA5" stroke-width="1"/>
+  <text x="210" y="570" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#0C447C">5 项评分卡 · Go / No-Go 决策门</text>
+  <rect x="56" y="548" width="28" height="14" rx="3" fill="#185FA5"/>
+  <text x="70" y="559" text-anchor="middle" font-family="sans-serif" font-size="9px" fill="#fff" font-weight="700">新增</text>
+  <text x="380" y="570" font-family="sans-serif" font-size="11px" fill="#185FA5">5项全YES</text>
+
+  <!-- Arrow 7 -->
+  <line x1="210" y1="588" x2="210" y2="608" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 8: Phase 5 (New PMF) -->
+  <rect x="50" y="612" width="320" height="56" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
+  <text x="210" y="633" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#173404">Phase 5 · 执行反馈 + PMF 综合判定</text>
+  <text x="210" y="652" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#27500A">单源追溯→跨访谈整合→PMF判定卡→停止条件</text>
+  <rect x="56" y="616" width="28" height="14" rx="3" fill="#3B6D11"/>
+  <text x="70" y="627" text-anchor="middle" font-family="sans-serif" font-size="9px" fill="#fff" font-weight="700">+PMF</text>
+  <text x="380" y="640" font-family="sans-serif" font-size="11px" fill="#888780">1-4周</text>
+
+  <!-- Arrow 8 -->
+  <line x1="210" y1="668" x2="210" y2="688" stroke="#5F5E5A" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Node 9: Phase 6 (New UE) -->
+  <rect x="50" y="692" width="320" height="56" rx="8" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
+  <text x="210" y="713" text-anchor="middle" font-family="sans-serif" font-size="13px" font-weight="700" fill="#173404">Phase 6 · 方案推演 + 单位经济模型</text>
+  <text x="210" y="732" text-anchor="middle" font-family="sans-serif" font-size="12px" fill="#27500A">竞品5层→方案5维→成本拆解→LTV/CAC→闭环回Top3</text>
+  <rect x="56" y="696" width="28" height="14" rx="3" fill="#3B6D11"/>
+  <text x="70" y="707" text-anchor="middle" font-family="sans-serif" font-size="9px" fill="#fff" font-weight="700">+UE</text>
+  <text x="380" y="720" font-family="sans-serif" font-size="11px" fill="#888780">3-6h</text>
+
+  <!-- Feedback Loop -->
+  <path d="M530 720 L530 92 L370 92" fill="none" stroke="#534AB7" stroke-width="1.5" stroke-dasharray="6,4" marker-end="url(#arr-loop)"/>
+  <text x="545" y="410" font-family="sans-serif" font-size="11px" fill="#534AB7" font-weight="700">迭代循环</text>
+  <text x="545" y="426" font-family="sans-serif" font-size="10px" fill="#7F77DD">验证→修正→再验证</text>
+
+  <!-- Legend -->
+  <rect x="50" y="758" width="160" height="16" rx="4" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+  <text x="65" y="771" font-family="sans-serif" font-size="11px" fill="#2C2C2A">灰色: 原版保留</text>
+  <rect x="225" y="758" width="120" height="16" rx="4" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+  <text x="235" y="771" font-family="sans-serif" font-size="11px" fill="#633806">黄色: 升级</text>
+  <rect x="360" y="758" width="130" height="16" rx="4" fill="#EAF3DE" stroke="#3B6D11" stroke-width="0.5"/>
+  <text x="370" y="771" font-family="sans-serif" font-size="11px" fill="#173404">绿色: 新增</text>
+  <rect x="505" y="758" width="130" height="16" rx="4" fill="#E6F1FB" stroke="#185FA5" stroke-width="0.5"/>
+  <text x="515" y="771" font-family="sans-serif" font-size="11px" fill="#0C447C">蓝色: 决策机制</text>
+</svg>
