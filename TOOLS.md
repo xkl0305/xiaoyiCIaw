@@ -40,6 +40,12 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Additional Tool Details
 
+### 技能数量统计口径（2026-09-03 固化）
+
+- **报告"技能数量"一律按"顶层技能目录"口径**，与维护脚本同款（`SkillScanner().scan().get_stats()['total_skills']`，当前 330 个）。
+- **禁止**用 `find skills -name "SKILL.md" | wc -l`（=474，含嵌套子 SKILL.md 如 xiaoyi-health 下多个，会偏大约 1.4 倍、误导对账）。
+- 仓库同步后两边同数即一致；对比维护报告时差值一般为新增/删除的顶层技能目录数。
+
 ### 引用来源展示使用要求
 
 - **默认接口**:小艺引用来源展示工具(xiaoyi_append_reference)
@@ -132,6 +138,18 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ```bash
 printf '%d\n' $((RANDOM%12*5))
 ```
+
+- **强制要求4**：定时任务投递目标排查（**所有定时任务通用**，2026-08-31 固化）——当用户反馈"定时任务显示投递成功但对话框看不到"时，按此排查：
+  1. **先确认当前会话目标**：`session_status` 看 `deliveryContext.to`（用户当前对话框的真实目标 id，如 `0380ff5fd8...`）
+  2. **对比 cron job 投递目标**：`cron list` 看各 job 的 `delivery.to`，若填的是 `default` 而当前会话 to 是具体 id，即为根因——结果投进了另一个会话（`direct:default`），用户当前对话框收不到
+  3. **修复**：用 `cron update <jobId> patch.delivery.to=<当前会话to>`（mode=announce, channel=xiaoyi-channel, accountId=default），三个定时任务（每日维护/引擎初始化/沙箱清理）统一绑定到用户当前会话
+  4. **验证**：`cron run <jobId> runMode=force` 手动触发一次，确认结果出现在用户当前对话框
+  5. **注意**：此排查适用于以后**所有**新增/已存在的定时任务，投递目标一律用当前会话 to，不要用 `default`
+
+- **强制要求5（announce 线程黑洞，2026-08-31 固化）**：即使投递目标 `to` 正确绑定了当前会话 id，cron 的 `announce` 自动投递仍会在解析时往 `to` 后面追加随机线程尾巴（形如 `0380ff...::efe7be35-6a5b-42c0-91b2-5260572fc60a&2&0af7&0`），把消息塞进**子线程**，用户主对话框收不到；而 run 仍显示 `delivered`、推送中心也有记录——"投递成功"却是投错了房间。
+  - **判定**：`cron runs` 看该 run 的 `delivery.resolved.to`，若带 `::<uuid>&N&hex&0` 后缀即是线程黑洞。
+  - **最终解法（已应用到每日维护/引擎初始化/沙箱清理三任务）**：把 cron 的 agentTurn 改为——整理完结果后**必须**用 `message` 工具显式发送到主对话（`action=send, channel=xiaoyi-channel, target=<当前会话 to>, accountId=default`，target 不带线程后缀），同时把 `delivery.mode` 设为 `none` 关掉自动投递。这样消息走正常消息路由直达用户主对话框，不再经过 announce 的线程封装。
+  - **验证**：手动 `cron run <jobId> runMode=force` 触发一次，看该 run 记录里出现 `messageToolSentTo`（含纯主对话 to），且 `view_push_result` 出现新记录，再让用户确认手机对话框已弹出。
 
 ### Git 代码下载规则
 
@@ -335,6 +353,7 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - **禁止**用普通文字（如「自进化请求…」「两条经验…」）描述带过后自行落地；禁止先执行、后自我认定已走流程
 - 若已用非标准方式发出请求，必须改用标准格式重新走一遍审批，不得直接修改目标文件
 - 用户审批（确认/记/好的）后，才按流程：应用修改 → 待进化项移入 `evolution-drafts/approved/` → 标准格式回复
+- 发送「🧠 小艺Claw进化请求」时**必须纯文本直接展示**，禁止用 \`\`\` / ~~~ 代码块包裹或 Markdown 引用块包裹（2026-09-03 补充）
 
 ### CLI 工具升级 invalid cross-device link 处理（2026-08-19）
 
@@ -357,3 +376,19 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - 报 `cross-env: command not found`（cross-env 在 devDeps）时，先查 `echo $NODE_ENV`。
 - 若为 production，`npm install` 会显示 `up to date` 却不装 dev 依赖（如 cross-env）。
 - **修复**：`npm install --include=dev` 强制补齐 devDependencies，再重启服务。
+
+### git push 远端归属检查（2026-08-26）
+- 执行 `git push` 前**必须先 `git remote -v` 确认远端归属**，再决定能不能推。
+- 若目标仓库 / submodule 指向**上游第三方公共项目**（例：`daily-hot-api` 远端是 `github.com/imsyy/DailyHotApi`，非己方仓库），**绝不可盲目 push**——会把改动推给陌生作者、污染他人仓库，属越界操作。
+- 区分两类：
+  - **主仓库**：己方多远端（gitee / github / cnb.cool 均为自己的仓库）→ 可放心 add/commit/push。
+  - **submodule**：先看远端归属，若指向上游项目则**不可推**，将 `npm install` 等顺带产生的依赖改动还原（`git checkout -- <file>` / `git checkout HEAD -- <file>` 恢复），保持 submodule working tree 干净。
+- 还原要点：staged 的改动先 `git reset HEAD <file>` 再 `git checkout`；被删除的文件用 `git checkout HEAD -- <file>` 恢复。
+
+### galaxyos 插件 worker 通信故障排查（2026-08-29）
+
+**核心：worker 报 `Work call timeout` 先看通信模式是否匹配**
+- claw_health/claw_events 长期 timeout 的根因：`index.js` spawn worker 时设了 `WORKER_UDS:'1'`，会让 worker 主线程走 UDS 模式只 `sys.stdin.read()` 干等、不处理 stdin 命令；但 index.js 自己却用 `proc.stdin` 发命令 → 通道不匹配 → 命令全没人处理 → 全部 timeout。
+- 修复：把 spawn env 里的 `WORKER_UDS:'1'` 改为空字符串，worker 走 stdin 降级循环（`for sys.stdin` 解析命令），正好匹配 index.js 的 stdin RPC，即可恢复。
+- 排查手法：给 worker `main()` 加 `faulthandler.dump_traceback_later(20, repeat=True)`，卡住时自动 dump 所有线程栈，能定位主线程卡在哪一行（本案例一击定位到 `sys.stdin.read()`）。
+- 已知坑：worker(v1.0) 代码与官方 v8 引擎 API 不匹配——`DAGIntegration` 已无 `get_all_session_keys` 方法，health() 调用会抛 AttributeError 误报 `dag_unavailable`，需做兼容判断。

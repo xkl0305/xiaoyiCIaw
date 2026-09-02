@@ -176,7 +176,7 @@ def report():
     for mnt, label in [("/", "系统根 (overlay)"), ("/home/sandbox", "工作数据盘")]:
         try:
             d, pct, st = _disk_info(mnt)
-            print(f"| {label:<20} | {d.total/1024**2:<8.0f}MB  | {d.used/1024**2:<8.0f}MB  | {(d.total-d.used)/1024**2:<8.0f}MB  | {pct:<6.1f}% | {st:<10} |")
+            print(f"| {label:<20} | {d.total/1024**3:<8.1f}GB  | {d.used/1024**3:<8.1f}GB  | {(d.total-d.used)/1024**3:<8.1f}GB  | {pct:<6.1f}% | {st:<10} |")
         except:
             pass
     

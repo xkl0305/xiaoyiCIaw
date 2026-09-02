@@ -51,7 +51,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=f03dd430185fee47 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=d2c2a70990f858f6 -->
 # Memory Global Summary
 
 ## User Profile
@@ -63,6 +63,9 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户当前的系统时间使用亚洲/上海时区（UTC+8），参考时间为2026-08-04 03:36。
 
 ## Preferences
+- 用户对每日维护任务的输出格式有硬性要求：禁止使用Markdown代码块包裹，必须直接以Markdown表格形式原样列出全部项目，确保手机端表格正常渲染，且不要自行重新整理表格顺序或重新排版，也不要生成HTML卡片
+- 每日维护cron任务第三步回复中禁止使用Markdown代码块包裹，必须直接用Markdown表格原样列出所有项目并保持顺序和排版，且不生成HTML卡片，同时确保手机端表格正常渲染
+- 用户要求助手输出每日维护任务的原始输出内容，不要重新整理表格顺序或重新排版，也不生成HTML卡片
 - 用户希望在早间情报速递的新闻分类中使用汉字而不是数字编号，如不能用“1”作为分类标记
 - 用户询问是否将新闻分为四大类，并认为当前分类数量太少，希望增加分类
 - 用户希望早间情报速递的新闻分类增加到四个或更多，认为当前分类数量太少，并偏好国内国外分开分类
@@ -113,18 +116,18 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户配置了一个定时任务（cron:156c7f67-591f-448a-aeca-43a722962e8e），名为crusheart-daily-maintenance，每天执行日常维护脚本，并检查是否需要触发梦境固化
-- 用户质疑'👨👩👧 民生社会'、'🎬 文娱体育'两个板块是否与微博热搜板块对应
-- 用户询问早间情报速递中'👨👩👧 民生社会'和'🎬 文娱体育'两个板块是否需要合并
-- 用户要求：最终回复需原样输出 cron_daily_maint.py 的完整输出，不得重新整理或重新排版；若触发了新梦境运行，需在末尾附加一句说明；不得生成 HTML 卡片。
-- 用户环境中已安装名为"daily-hot-news"的skill，用户请求介绍该skill并给出一两个快速开始样例
+- 整理完毕后必须用 message 工具发送完整回复，参数为 action=send，channel="xiaoyi-channel"，target="0380ff5fd8f64722a93e28596a6cb9a7"，accountId="default"，这是投递到用户主对话框的唯一可靠方式，不要依靠系统自动投递
+- 定时任务要求用户将引擎状态整理成表格消息，关键状态用✅/⚠️/❌标记，不生成HTML卡片
+- 用户通过cron任务crusheart-daily-maintenance（ID:156c7f67-591f-448a-aeca-43a722962e8e）在2026-09-01 05:00（Asia/Shanghai）执行每日维护脚本，要求运行/home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py，并将脚本原始输出内容原样整理为回复消息，不得自行重新整理表格顺序或重新排版，不得生成HTML卡片，且必须通过message工具发送到xiaoyi-channel的target 0380ff5fd8f64722a93e28596a6cb9a7（accountId=default）
+- 用户要求使用message工具投递整理好的回复，参数为action=send、channel="xiaoyi-channel"、target="0380ff5fd8f64722a93e28596a6cb9a7"、accountId="default"，并明确指出这是投递到用户主对话框的唯一可靠方式，不能依靠系统自动投递
+- 用户询问自进化请求的处理情况
 ### Long-term Intent
 - 用户要求制作一款人机交互的五子棋游戏，难度为大师级，要求画面干净高清、无多余杂乱元素，一方获胜时弹窗提示并庆祝，需适配手机、平板、电脑等各种设备
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
-- 用户询问在配置工具或选项时该选哪种方案，希望助手给出建议
-- 用户发起了早间情报速递（每日新闻简报）事务
+- 用户配置了每日维护定时任务，执行时间为每日（由cron触发），当前实例触发于2026-08-29 05:00（Asia/Shanghai）。
 - 用户询问'方法一，右上角也没有是消失了吗'，对之前提到的方法一产生疑问，可能指某个界面元素或操作项疑似消失
+- 用户请求介绍一下已安装的'codeflying' skill，并希望获得一两个快速开始的样例
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
