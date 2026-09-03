@@ -392,3 +392,20 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - 修复：把 spawn env 里的 `WORKER_UDS:'1'` 改为空字符串，worker 走 stdin 降级循环（`for sys.stdin` 解析命令），正好匹配 index.js 的 stdin RPC，即可恢复。
 - 排查手法：给 worker `main()` 加 `faulthandler.dump_traceback_later(20, repeat=True)`，卡住时自动 dump 所有线程栈，能定位主线程卡在哪一行（本案例一击定位到 `sys.stdin.read()`）。
 - 已知坑：worker(v1.0) 代码与官方 v8 引擎 API 不匹配——`DAGIntegration` 已无 `get_all_session_keys` 方法，health() 调用会抛 AttributeError 误报 `dag_unavailable`，需做兼容判断。
+
+### 微博 Weibo ClawBot 插件安装流程（2026-09-04 固化）
+
+**插件**：`@wecode-ai/weibo-openclaw-plugin`（npm 官方，weibo 通道，v2.2.13）
+
+**安装步骤（严格按序）：**
+1. 装前必须 plugin-audit 审计（`audit-plugin.py`），把插件自身源码抽离 node_modules 再扫，模型二次审查外发地址
+2. `export OPENCLAW_CLAWHUB_URL=https://cn.clawhub-mirror.com && export npm_config_maxsockets=1 && export npm_config_concurrency=1`
+3. `npm pack @wecode-ai/weibo-openclaw-plugin` → 得到 tgz 文件
+4. `NPM_CONFIG_REGISTRY=https://registry.npmmirror.com openclaw plugins install '<tgz>'`（安装前先 `umask 0022`）
+5. 凭证写入 `openclaw.json → channels.weibo`：`appId` / `appSecret`；**客户端拿到的 clientId/Secret 对应 AppId/AppSecret**；改配置前先备份 `cp openclaw.json openclaw.json.bak-$(date +%Y%m%d-%H%M%S)`
+6. 重启（**重启前必须先提示用户会短暂断连**）：`python3 -m supervisor.supervisorctl restart openclaw-gateway`
+7. 验证：`openclaw status` → `Weibo ON · OK · configured`；实测 `weibo_hot_search` 确认连通
+
+**成功后可用工具**：weibo_token / weibo_search / weibo_status / weibo_hot_search / weibo_crowd（能解决微博热搜接口被 403 拦截的问题）
+
+**备注**：plugins install 时输出的 config warnings（crusheart 等既有项）与本次无关，可忽略；openclaw.json 修改后需校验 JSON 合法再重启。

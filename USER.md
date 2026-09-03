@@ -26,6 +26,7 @@
 - **输出格式偏好：** 结论先行，重要信息分点呈现，简洁清晰
 - **我喜欢的沟通基调：** 简单直接、率真，不绕弯子不刻意客套
 - **早间情报速递板块结构（2026-08-24 确定，8 大类）：** ⚖️时政要闻 / 🌏国际风云 / 💰财经商业 / 🤖AI大模型 / 🔧科技硬件 / 🏛️政策法规 / 👨👩👧民生社会 / 🎬文娱体育。规则：AI 大模型独立成类（用户为 AI 产品运营）；重大人事/国家大政归时政，具体制度/条例归政策法规；条目用数字编号，信息量要足。
+- **早间情报默认全量加料版（2026-09-03 确定）：** 8 大类每类 5~6 条 + 每条信息量写实 + 末尾附"🔥微博实时热搜 Top10"；除非用户临时说精简，否则默认按此密集度。用户已认可并希望"更多"。
 
 _(You can add additional information based on the user's personal details.)_
 
@@ -51,8 +52,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=d2c2a70990f858f6 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=398a790d902af221 -->
 # Memory Global Summary
+
+## Important Constraints
+- 用户表示需要记住固化进化一下，暗示希望将微博channel安装、重启等操作经验沉淀为长期记忆，避免重复踩坑
 
 ## User Profile
 - 用户提供了硅基流动的 API Key：sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat
@@ -63,6 +67,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户当前的系统时间使用亚洲/上海时区（UTC+8），参考时间为2026-08-04 03:36。
 
 ## Preferences
+- 用户希望'早间情报速递'的速递条数能再多一些
 - 用户对每日维护任务的输出格式有硬性要求：禁止使用Markdown代码块包裹，必须直接以Markdown表格形式原样列出全部项目，确保手机端表格正常渲染，且不要自行重新整理表格顺序或重新排版，也不要生成HTML卡片
 - 每日维护cron任务第三步回复中禁止使用Markdown代码块包裹，必须直接用Markdown表格原样列出所有项目并保持顺序和排版，且不生成HTML卡片，同时确保手机端表格正常渲染
 - 用户要求助手输出每日维护任务的原始输出内容，不要重新整理表格顺序或重新排版，也不生成HTML卡片
@@ -112,15 +117,14 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户在询问有关'琪琪人格内容'时，要求调整输出顺序，将5、6、7项放在前面
 - 用户认为既然是仓库，就应该用仓库的图标
 - 用户认为'migrate_yaoyao_to_celia.py （废弃的 Python 版）'虽然已废弃但不想删除，以备万一有用
-- 用户确认需要（推仓库）
 
 ## Pending Tasks & Intents
 ### Todo
-- 整理完毕后必须用 message 工具发送完整回复，参数为 action=send，channel="xiaoyi-channel"，target="0380ff5fd8f64722a93e28596a6cb9a7"，accountId="default"，这是投递到用户主对话框的唯一可靠方式，不要依靠系统自动投递
+- 用户对'早间情报速递'每个素材只提供3条速递不满，希望速递条数能再多一些
+- 用户请求推送仓库
 - 定时任务要求用户将引擎状态整理成表格消息，关键状态用✅/⚠️/❌标记，不生成HTML卡片
-- 用户通过cron任务crusheart-daily-maintenance（ID:156c7f67-591f-448a-aeca-43a722962e8e）在2026-09-01 05:00（Asia/Shanghai）执行每日维护脚本，要求运行/home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py，并将脚本原始输出内容原样整理为回复消息，不得自行重新整理表格顺序或重新排版，不得生成HTML卡片，且必须通过message工具发送到xiaoyi-channel的target 0380ff5fd8f64722a93e28596a6cb9a7（accountId=default）
-- 用户要求使用message工具投递整理好的回复，参数为action=send、channel="xiaoyi-channel"、target="0380ff5fd8f64722a93e28596a6cb9a7"、accountId="default"，并明确指出这是投递到用户主对话框的唯一可靠方式，不能依靠系统自动投递
 - 用户询问自进化请求的处理情况
+- 用户提出每日维护相关事项
 ### Long-term Intent
 - 用户要求制作一款人机交互的五子棋游戏，难度为大师级，要求画面干净高清、无多余杂乱元素，一方获胜时弹窗提示并庆祝，需适配手机、平板、电脑等各种设备
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
