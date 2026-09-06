@@ -90,6 +90,9 @@ node common-skill/bin/smarthome-claw.js control_device \
 ### 4.3 实时视频设置
 
 #### 打开实时视频
+
+> **【注意】提示用户实时视频开启会明显增加门锁耗电**
+
 ```bash
 node common-skill/bin/smarthome-claw.js control_device \
   --dev-id "xxx" \
@@ -163,7 +166,11 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### ⚠️ 逗留时长参数映射（关键规则）
 
+> **【强制】必须先确认门锁是一代锁还是二代锁，根据不同锁使用对应的映射表**
+
 the `stayDuration` 参数值与实际秒数不是一一对应的，必须使用以下映射表进行转换：
+
+#### 二代门锁逗留时长映射表
 
 | 参数值 | 实际时长 |
 |--------|----------|
@@ -176,12 +183,24 @@ the `stayDuration` 参数值与实际秒数不是一一对应的，必须使用�
 | 27     | 30 秒    |
 | 57     | 60 秒    |
 
+#### 一代门锁逗留时长映射表
+
+| 参数值 | 实际时长 |
+|--------|----------|
+| 3      | 6 秒     |
+| 6      | 9 秒     |
+| 12     | 15 秒    |
+| 17     | 20 秒    |
+| 22     | 25 秒    |
+| 27     | 30 秒    |
+| 57     | 60 秒    |
+
 **转换规则：**
 1. **设置时**：用户说"设置逗留时长为 X 秒" → 查表找到对应的 **参数值** 传入 `stayDuration`
-2. **查询时**：API 返回 `stayDuration: 12` → 查表转换为 **实际秒数** 告诉用户（如"逗留时长为15秒"）
+2. **查询时**：API 返回 `stayDuration: 12` → 查表转换为 **实际秒数** 告诉用户（如二代门锁"逗留时长为15秒"）
 3. **禁止直接使用用户说的秒数作为参数值**，必须通过映射表转换
 
-#### 设置逗留时长为15秒（参数值12）
+#### 设置二代门锁逗留时长为15秒（参数值12）
 ```bash
 node common-skill/bin/smarthome-claw.js control_device \
   --dev-id "xxx" \
@@ -192,7 +211,38 @@ node common-skill/bin/smarthome-claw.js control_device \
   --verbose
 ```
 
+### 4.7 录像模式设置
+
+> **【注意】录像模式设置仅一代门锁支持，二代门锁可在逗留时长设置中选择立即录像**
+
+一代门锁支持设置录像模式：
+- **节能模式**：达到逗留时长开始录像
+- **极致模式**：检测到有人立即录像，提示用户会降低门锁续航
+
+#### 设置录像模式为节能模式
+```bash
+node common-skill/bin/smarthome-claw.js control_device \
+  --dev-id "xxx" \
+  --prod-id "xxx" \
+  --operation "POST" \
+  --sid "catEyeSetting" \
+  --data '{"takeSnapshotSwitch": 0}' \
+  --verbose
+```
+
+#### 设置录像模式为极致模式
+```bash
+node common-skill/bin/smarthome-claw.js control_device \
+  --dev-id "xxx" \
+  --prod-id "xxx" \
+  --operation "POST" \
+  --sid "catEyeSetting" \
+  --data '{"takeSnapshotSwitch": 1}' \
+  --verbose
+```
+
 ## 5. 注意事项
 
 - 本技能仅支持控制，不支持查询操作
 - **不支持查询逗留视频、查询按门铃抓拍等操作**
+- 当用户反馈抓拍不灵敏时，提示用户修改逗留时长与录像模式（仅一代锁）

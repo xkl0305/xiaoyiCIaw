@@ -1,6 +1,6 @@
 ---
 # 固定元数据头（必须，AI 优先读取）
-name: router-claw
+name: router-skill
 description: 路由器信息查询控制与儿童上网保护技能
 version: 1.1.0
 permissions: 发送get请求和post请求的权限、以及儿童上网保护操作权限,路由器信息查询、配置修改等
@@ -13,10 +13,12 @@ permissions: 发送get请求和post请求的权限、以及儿童上网保护操
 
 - [ ] **应用ID转换**：所有 appId 必须转换为应用名称（使用 sa_app_info.js 映射表）
 - [ ] **敏感信息过滤**：不得输出 deviceId、prodId、homeId、uid 等技术ID，不得输出WiFi密码
-- [ ] **时长格式化**：秒数转换为"X小时X分钟"格式
+- [ ] **时长格式化**：凡需展示给用户的时长（设置结果确认、当前规则展示、参数回显等），**一律只允许输出“X小时X分钟”格式**，**严禁**在回复中以任何形式出现秒——包括但不限于出现“= xx秒”、“（xx秒）”等任何带“秒”的表述。
 - [ ] **用户友好展示**：以表格或清单形式展示，不暴露技术细节
-- [ ] **隐私保护**：当用户查询"女儿/儿子/老婆/家人是否在家"等家庭成员到家情况时，使用 `check_presence` 命令查询，回复信息仅包含"在家/不在家"和接入时间，**禁止输出** IP地址、MAC地址、接口类型（如5GHz/2.4GHz/LAN）、信号强度等敏感技术细节。首次使用时需先通过 `config_presence` 配置家庭成员-设备映射。
-
+- [ ] **隐私保护**：当用户查询"女儿/儿子/老婆/家人是否在家"等家庭成员到家情况时，使用 `check_presence` 命令查询，回复信息仅包含"在家/不在家"和接入时间，**禁止输出** IP地址、MAC地址、接口类型（如5GHz/2.4GHz/LAN）、信号强度等敏感技术细节。首次使用时需先通过对话让用户告知家庭成员与设备的对应关系，然后参考 `路由器上下文记忆`进行配置。
+- [ ] **多家庭确认门禁（强制）**：
+  - **触发条件**：用户没有明确指定家庭，或当前上下文中无家庭信息时，才需要执行本门禁
+  - **多家庭时**：当用户有多个家庭时，**必须先询问用户想查询哪个家庭的情况**，等待用户明确选择某一家庭（或用户明确声明”查全部家庭”）后才能继续查询
 ---
 
 # Router Skill
@@ -50,116 +52,156 @@ Router Skill提供路由器信息查询、儿童上网控制和路由器管理�
 
 ---
 
-**【重要】子技能 SKILL.md 快速查找表：**
-| 子技能 | SKILL.md 完整路径 |
-|--------|-------------------|
-| child-protect | `router-skill/child-protect/SKILL.md` |
-| router-control | `router-skill/router-control/SKILL.md` |
-| router-diag | `router-skill/router-diag/SKILL.md` |
-
----
-
 ## 🚨 AI 调用规范（强制遵守）
 
-### 前置判断流程（必须执行）
+### 调用模式
 
-在调用本技能前，AI **必须**按以下流程判断：
+| 模式 | 触发场景 | 行为 |
+|------|----------|------|
+| 交互式 | 用户主动发起对话 | 必须先询问用户确认家庭和路由器 |
+| 非交互式 | 定时任务、外部系统调用等 | 按优先级自动选择，详见下方规则 |
 
-```
-用户提问
-    ↓
-1. 调用 get_homes_info 获取家庭列表
-    ↓
-2. 判断家庭数量
-    ├─ 只有1个家庭 → 直接使用该家庭
-    └─ 有多个家庭 → 必须询问用户选择哪个家庭
-    ↓
-3. 调用 get_devices_info 获取设备列表
-    ↓
-4. 筛选路由器设备（prodId 匹配路由器型号）
-    ↓
-5. 判断路由器数量
-    ├─ 只有1个路由器 → 直接使用
-    └─ 有多个路由器 → 必须询问用户选择哪个
-    ↓
-6. 调用本技能，传入明确的参数
-    ↓
-7. 根据用户指令，选择对应的子技能进行具体操作，执行相关命令并返回结果给用户
-```
+---
 
-### 泛指性问题处理
+### 🔖 路由器上下文记忆
 
-当用户问"我家有多少..."、"家里..."等泛指性问题时：
+**目的**：仅针对路由器设备。跨会话持久化用户已确认的家庭和路由器选择，避免重复询问。
 
-1. **联系对话上下文确定具体家庭和路由**，若没有指定家庭或路由器，可以主动询问用户
-2. **综合家庭命名**，若用户问“家里”相关信息，请把家庭名称含”办公区“、”实验室“等含有明确办公信息的家庭过滤掉;
-3. 若是非交互式场景，用户无特殊指定，**必须遍历所有家庭**，逐一查询
-4. **汇总结果**后统一展示给用户
-5. **禁止**只查第一个家庭就返回
+**存储**：`TOOLS.md` 中 `#### 家庭网络信息` 区块（从该标题到文件末尾或下一个 `####` 标题），**该区块受保护，禁止删除、压缩、合并**。
 
-**示例：**
-- 用户："我家路由有多少儿童上网保护设备？"
-- 正确做法1：根据对话确定用户询问的是XX家庭XX路由信息，默认展示
-- 正确做法2：自动过滤掉不在线的路由，在在线路由中逐一查询，看哪些路由配置了儿童上网保护；
-- 正确做法2：用户未特殊指定，遍历所有有路由器的家庭，汇总展示
-- 错误做法：只查第一个家庭
+**格式**（必须严格遵循，使用 bullet 列表格式，便于人机共读）：
 
-### 非交互式调用方式
-若用户未提前指定具体家庭和路由，**必须遍历所有家庭**，逐一查询，或者列出所有家庭和路由问用户是哪个家庭和路由
-通过 `exec` 工具调用时，**必须预先设置环境变量**：
+```markdown
+#### 家庭网络信息
 
-```bash
-export ROUTER_DEVID="<路由器设备ID>"
-export ROUTER_PRODID="<路由器产品ID>"
-node router-skill/bin/router-claw.js get_child_protect --device-id <设备ID> --skill-id xiaoyi_router
+- **家（家庭名称）**：homeId: <家庭ID>
+  - **路由器名称**（prodId: <产品ID>, devId: <设备ID>） ← **偏好路由器**（如用户指定）
+  - **members**：{"角色名": "设备HostName", ...}
 ```
 
-### 批量查询所有家庭
+**字段说明**：
+- `homeId` 用于 `--home-id` 参数，**仅限于用户明确要求遍历该家庭全部路由器的汇总场景，否则优先使用--router-id和--prod-id操作指定路由器**
+- `devId` 用于 `--router-id` 参数（**关键字段，必须记录**）
+- `prodId` 用于 `--prod-id` 参数（**关键字段，必须记录**）
+- `members` 用于 check_presence 的 `--family-map` 参数，key 为角色名（如"女儿"），value 为设备 HostName
 
-使用 `--all-homes` 参数自动遍历所有家庭：
+### 交互式调用流程
 
-```bash
-node router-skill/bin/router-claw.js get_child_protect --all-homes --skill-id xiaoyi_router
+#### ⚠️ 执行前必读清单（强制）
+- [ ] **输出禁令**：回复用户中严禁出现 TOOLS.md、devId、prodId、homeId 等技术词汇
+- **禁止：用户未确认前只查第一个家庭或第一个路由器**
+
+0. **前置判断（强制执行）**：联系对话上下文并读取 `TOOLS.md` 的 `#### 家庭网络信息` 区块：
+   - 若已有该家庭的 devId 和 prodId 记录 → 直接用 `--router-id + --prod-id` 调用，跳到步骤7-9;
+   - 若有 homeId 但缺路由器名称或 devId → 跳到步骤3，调用 get_devices_info 获取设备列表，并执行后续步骤4-9
+   - 若无该区块或无 devId 记录或无法确定 → 必须执行步骤1到9，然后进行记录确认，**凡是要精确查询/操作某台偏好路由器，必须先 get_devices_info 获取其 devId 并用 --router-id+--prod-id；--home-id 仅用于用户明确要求的『遍历该家庭全部路由器』的汇总场景，不能替代精确查询。**
+1. 调用 `get_homes_info` 获取家庭列表, **过滤非家庭场所**：家庭名称含"办公区"、"实验室"、"公司"等明确办公信息的，优先不作为目标，除非用户明确指定
+2. 家庭数量判断：
+   - 1个家庭 → 跳转到步骤3
+   - 多个家庭 → 询问用户想操作哪个/哪些家庭，再执行步骤3
+3. 对每个目标家庭，调用 `get_devices_info` 获取设备列表
+4. 筛选路由器设备（匹配 prodId）
+5. 过滤离线的路由器：调用 `getDevicesOnlineStatus` 获取路由器在线状态，只保留在线（status=online）的路由器, 若无在线路由器，终止流程并提示用户"当前没有在线的路由器设备"
+6. 在线路由器数量判断：
+   - 1个在线路由器 → 跳转到步骤8
+   - 多个在线路由器 → 询问用户想操作哪个/哪些路由器
+7. 依次对每个目标路由器使用 `--router-id + --prod-id` 参数操作相关接口
+   - **【重要】设置操作后必须查询**：执行设置类操作（如 `set_block_time`、`set_net_off` 等）后，**必须**再执行对应的查询接口（如 `get_child_protect`）检查设置是否生效
+8. 汇总所有结果，统一展示
+9. 【强制】记录确认（不可跳过）
+   - 检查 TOOLS.md 中 #### 家庭网络信息 区块
+   - 按场景1~4判断是否需要询问用户记录/更新路由器偏好
+
+**记录确认**（执行后询问用户）：
+- 场景1：`TOOLS.md` 无类似家庭网络信息，但用户主动指定了家庭或路由器
+  → 执行完主流程后询问用户：`是否要记住这个选择，下次不再询问？`
+  → 用户确认后，将 homeId、devId、prodId、路由器名称按上述格式写入 `#### 家庭网络信息` 区块
+- 场景2：`TOOLS.md` 有配置，但与用户要求操作的路由器不一致
+  → 询问用户是否选择新路由器，确认后更新 devId、prodId和路由器名称
+- 场景3：用户明确要求不记住
+  → 删除该家庭的偏好路由器标记
+- 场景4：`TOOLS.md` 有类似家庭网络信息，但缺少 devId、prodId或格式不符合上述模板
+  → 执行完主流程后询问用户：`是否帮你记录路由器偏好？`
+  → 用户确认后，按模板格式整块重写该家庭的配置项
+
+**输出措辞规范**
+❌ 错误："TOOLS.md 中缺少 devId 记录，是否帮你记录？"
+❌ 错误："是否帮你记录到配置文件中？"
+✅ 正确："是否记住你的路由器选择，下次不再询问？"
+
+**【重要】**
+- **不能自行判断**删除还是保留配置，必须询问用户，只有用户**明确答复**后才能新增/更新/删除配置
+- **写入时必须包含 devId和prodId**，这是后续直接调用 `--router-id`和`--prod-id` 的关键
+
+**【强制】写入格式校验：**
+- 写入前必须对比现有 `#### 家庭网络信息` 区块与上方模板格式
+- 若现有格式与模板不一致（字段缺失、标签写法不同、members 未用 JSON 等），必须**整块按模板重写**，禁止仅在旧格式上局部追加字段
+- 写入后再次读取确认格式已合规
+
+---
+
+### 非交互式调用规则
+
+**场景判断（由 AI 自动识别，无需用户确认）：**
+
+| 场景类型 | 触发场景示例 | 参数选择 |
+|----------|-------------|----------|
+| 定时自动查询/全量数据 | 所有家庭下的所有路由器设备汇总 | `--all-homes` |
+| 外部系统已指定家庭 | 后台系统传入家庭ID，遍历该家庭所有在线路由器 | `--home-id` |
+| 外部系统已指定路由器 | 后台系统传入路由器设备ID和产品ID，如未传，则优先读取`TOOLS.md`文件中的家庭配置获取路由器设备信息 | `--router-id + --prod-id` |
+| 兜底默认 | 无法确定目标，且`TOOLS.md`文件中无家庭配置信息 | `--batch-mode` |
+
+**决策流程：**
 ```
-
-### 非交互模式
-
-使用 `--batch-mode` 参数跳过用户交互，自动选择默认值：
-
-```bash
-node router-skill/bin/router-claw.js get_child_protect --batch-mode --skill-id xiaoyi_router
-```
-
-### 直接指定家庭
-
-使用 `--home-id` 参数跳过交互式选择：
-
-```bash
-node router-skill/bin/router-claw.js get_child_protect --home-id <家庭ID> --skill-id xiaoyi_router
+是定时任务/外部系统调用场景？
+    ↓
+┌─ 是全量查询类场景？（含”所有”、”全部”、”汇总”、”统计”、”简报”等）─┐
+│  是 → --all-homes                                                     │
+│  否 → 已指定路由器ID？                                                │
+│       ├─ 是 → --router-id + --prod-id                                │
+│       └─ 否 → 已指定家庭ID？                                          │
+│            ├─ 是 → --home-id                                         │
+│            └─ 否 → --batch-mode                                      │
 ```
 
 ---
 
-## 命令行参数说明
+### 命令行参数
 
-### 通用参数
-
-| 参数 | 说明 | 示例 |
-|------|------|------|
-| `--device-id <id>` | 设备 ID（儿童保护设备编号） | `--device-id 1` |
-| `--home-id <id>` | 家庭 ID（跳过交互选择） | `--home-id abc123` |
-| `--all-homes` | 遍历所有家庭查询 | `--all-homes` |
-| `--batch-mode` | 批量模式（非交互，自动选择默认值） | `--batch-mode` |
-| `--skill-id <id>` | 技能 ID | `--skill-id xiaoyi_router` |
-| `-v, --verbose` | 调试日志 | `-v` |
-
-### 操作类参数
-
-| 参数 | 说明 | 示例 |
-|------|------|------|
-| `--action <type>` | 操作类型 | `--action newCreate` |
+| 参数 | 说明 | 示例 | 适用模式 |
+|------|------|------|----------|
+| `--home-id` | 指定家庭ID，遍历该家庭所有在线路由器执行操作 | `--home-id home001` | 交互式/非交互式 |
+| `--all-homes` | 遍历所有家庭所有路由器（仅查询类命令；全量查询场景使用） | `--all-homes` | 交互式/非交互式 |
+| `--batch-mode` | 自动选第一个家庭第一个路由器（兜底） | `--batch-mode` | 非交互式 |
+| `--router-id` | 路由器设备ID（直接指定路由器，跳过自动选择） | `--router-id dev001` | 交互式/非交互式 |
+| `--prod-id` | 产品ID（与 --router-id 配合使用，单独使用无效） | `--prod-id HWAX3` | 交互式/非交互式 |
+| `--skill-id` | 技能ID | `--skill-id xiaoyi_router` | 所有 |
+| `-v, --verbose` | 调试日志 | `-v` | 所有 |
 | `--data <json>` | 控制参数（JSON字符串） | `--data '{"enable":1}'` |
-| `--type <num>` | 应用分类 | `--type 1` |
+
+**命令示例：**
+```bash
+# 场景1：直接指定路由器 → --router-id + --prod-id（适用于已知路由器devId和prodId的场景）
+node router-skill/bin/router-claw.js <tool-name> --router-id <路由器设备ID> --prod-id <产品ID> --skill-id xiaoyi_router
+
+# 场景2：全量数据查询（家庭简报、设备汇总等）→ --all-homes
+node router-skill/bin/router-claw.js <tool-name> --all-homes --skill-id xiaoyi_router
+
+# 场景3：指定家庭（遍历该家庭所有在线路由器）→ --home-id
+node router-skill/bin/router-claw.js <tool-name> --home-id <家庭ID> --skill-id xiaoyi_router
+
+# 场景4：兜底默认 → --batch-mode
+node router-skill/bin/router-claw.js <tool-name> --batch-mode --skill-id xiaoyi_router
+
+```
+
+**tool-name 说明：**
+- tool-name 为 router-claw.js 中定义的具体命令名称
+- 完整命令列表可通过 `node router-skill/bin/router-claw.js --help` 查看
+- 常用工具类别：
+  - 儿童上网保护：`get_child_protect`、`set_block_time`、`set_net_off`、`set_net_duration` 等
+  - 路由器控制：`get_wan_status`、`get_ipv6`、`set_ipv6` 等
+  - 路由器诊断：`get_host_info`、`get_router_status`、`get_wifi_config` 等
 
 ---
 
@@ -173,26 +215,36 @@ node router-skill/bin/router-claw.js get_child_protect --home-id <家庭ID> --sk
 node router-skill/bin/router-claw.js get_router_device_by_prodid --prodid <设备型号>
 ```
 
+---
+
 ### 【隐私保护版】查询家人是否在家（返回结果仅含设备名、在线状态和接入时间，无IP/MAC等敏感信息）
 ```bash
-node router-skill/bin/router-claw.js check_presence --name 女儿
+# 使用 --family-map 参数传入家庭成员映射配置
+node router-skill/bin/router-claw.js check_presence --family-map '{"女儿":"HUAWEI nova 14 Ultra","儿子":"一加 Ace 5"}'
+# 查询指定成员
+node router-skill/bin/router-claw.js check_presence --name 女儿 --family-map '{"女儿":"HUAWEI nova 14 Ultra"}'
 ```
-- 注1：--name 支持任意已配置的家庭角色名（如"女儿""儿子""老婆"），见下方 config_presence 配置方法
-- 注2：不传 --name 时，返回所有已配置家庭成员的状态
-- 注3：回答用户时仅用"在家/不在家"和接入时间，禁止输出任何IP/MAC/接口类型
+> **强制门禁（使用前必读）**：调用 `check_presence` 前，**必须先按上面”多家庭确认门禁”完成确认**：
+> > 1. **多家庭确认**：当用户没有明确指定家庭且当前上下文无家庭信息时，枚举用户下的所有家庭，若 > 1 个家庭，先向用户展示家庭清单，等待用户明确选择特定家庭，或用户明示”查全部家庭”
+> > 2. **多路由器查询**：确认家庭后，查询该家庭下**所有**在线路由器（因为用户的手机可能连过多个路由器，第一个路由器显示离线，用户可能连到另外的路由器上了，用户问的是”到家了吗/是否在家”而非”连上哪个路由器”）
+> > 3. **禁止行为**：未获得明确家庭选择时，**严禁只查其中一台路由器就下结论**
+- 注1：--family-map 格式为 JSON 对象，key 为角色名（如"女儿""儿子""老婆"），value 为 HostName 字符串（HostName 从 `get_devices_info` 扫描结果中获取）
+- 注2：只使用 HostName 匹配，若检测到多个同名设备会提示用户确认
+- 注3：不传 --name 时，返回所有已配置家庭成员的状态
+- 注4：回答用户时仅用"在家/不在家"和接入时间，禁止输出任何IP/MAC/接口类型
 
-### 配置家庭成员-设备映射（首次使用需先配置，只需配置一次）
+### 配置家庭成员-设备映射（首次使用需先配置）
+- 触发条件：用户主动要求配置家庭成员关系，或在某次对话中提到了家庭成员等
+- 触发后需确认：查看`TOOLS.md` 中是否有用户偏好路由器以及devId，如无则调用 `get_devices_info` 获取设备列表，筛选出在线的路由器设备向用户确认，然后使用对应的devId和prodId，执行下面的命令扫描在线设备；
+- 举例：
+1. 记住妈妈的手机是nova 14 —— 直接记录
+2. 帮我查下儿子的上网时长？ —— `TOOLS.md` 中无儿子的信息，通过扫描当前对应路由器下的在线设备，提供列表询问用户儿子的设备名称，然后再记录
+- 记录方式：参考`路由器上下文记忆`章节说明，保存到`TOOLS.md` 中 `#### 家庭网络信息` 区块
+
 ```bash
 # ① 自动探测：扫描当前在线设备，返回设备列表供选择
-node router-skill/bin/router-claw.js config_presence --detect
-# ② 手动配置：设置角色名到设备 HostName 的映射（通过 --data 传入 JSON）
-node router-skill/bin/router-claw.js config_presence --data '{"女儿":"HUAWEI nova 14 Ultra","儿子":"一加 Ace 5","老婆":"HUAWEI Pura 70 Pro"}'
-# ③ 查看当前配置
-node router-skill/bin/router-claw.js config_presence
+node router-skill/bin/router-claw.js config_presence --detect --router-id <路由器设备ID> --prod-id <产品ID> --skill-id xiaoyi_router
 ```
-- 注1：配置保存在 router-skill/config/family-presence.json
-- 注2：配置文件只存储角色名和设备名，不存储任何敏感信息
-- 注3：家庭不同，角色和设备名也不同，每家需独立配置
 
 ### 查询路由下挂设备信息（完整版，含IP/MAC等所有技术细节）
 ```bash
@@ -200,6 +252,8 @@ node router-skill/bin/router-claw.js get_host_info
 ```
 - 注1：查询完整设备列表时使用此命令
 - 注2：用户在查询下挂设备时，需要告诉用户各个设备的名称/品牌型号/IP/MAC/在线状态等信息
+- 注3：`TxKBytes` / `RxKBytes` 是设备第一次连接该路由器以来的累计流量（非本次在线以来的流量）
+- 注4：不支持按指定日期或时间段查询流量，仅支持查询累计流量
 
 ## 错误处理
 
@@ -207,16 +261,6 @@ node router-skill/bin/router-claw.js get_host_info
 
 | 错误信息 | 原因 | 解决方案 |
 |---------|------|---------|
-| `ROUTER_DEVID not found` | 未设置路由器设备ID | 先获取设备信息，设置环境变量 |
-| `selectedDevice is not defined` | 脚本内部bug | 使用 `--home-id` 或 `--batch-mode` 参数 |
-| `No router found in home` | 该家庭没有路由器 | 检查设备列表，确认路由器型号 |
-
-### 交互式选择失败
-
-当通过 `exec` 调用时，交互式选择会失效（无法接收用户输入）。
-
-**解决方案：**
-1. 使用 `--home-id` 参数直接指定家庭
-2. 使用 `--all-homes` 参数遍历所有家庭
-3. 使用 `--batch-mode` 参数自动选择默认值
-4. 预先设置 `ROUTER_DEVID` 和 `ROUTER_PRODID` 环境变量
+| `MISSING_ROUTER_CONFIG` | 缺少路由器配置 | 请优先阅读 router-skill/SKILL.md 中"AI 调用规范"章节 |
+| `NO_ONLINE_ROUTER` | 该家庭没有在线的路由器 | 检查路由器设备状态 |
+| `DEVICE_OFFLINE` | 指定路由器当前离线 | 选择该家庭其他在线路由器，或询问用户是否切换路由器 |

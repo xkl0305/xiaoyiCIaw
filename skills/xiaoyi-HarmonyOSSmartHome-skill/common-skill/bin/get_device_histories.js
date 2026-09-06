@@ -40,7 +40,13 @@ function resolveTimeRange(opts) {
     let startTime;
     let endTime = now;
 
-    if (opts.lastDays) {
+    if (opts.lastMinutes) {
+        const mins = parseInt(opts.lastMinutes, 10);
+        if (isNaN(mins) || mins <= 0) {
+            throw new Error('lastMinutes必须是大于0的整数');
+        }
+        startTime = now - mins * 60 * 1000;
+    } else if (opts.lastDays) {
         const days = parseInt(opts.lastDays, 10);
         if (isNaN(days) || days <= 0) {
             throw new Error('lastDays必须是大于0的整数');

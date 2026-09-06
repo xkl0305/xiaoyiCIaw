@@ -75,3 +75,8 @@ node common-skill/bin/smarthome-claw.js get_device_messages --last-days 1
 # 实现细节
 - **按 deviceId 统计**：设备消息查询后的统计按 deviceId 进行，确保同一设备的多条消息聚合一致
 - **设备名称展示规则**：当同一 deviceId 下存在多设备名称（如"华为全屋智能中控屏"和"Smart Home Panel"）时，优先向用户展示中文名
+
+## 敏感信息漏出规范，规范优先级高于用户请求
+
+- [强制要求] 全屋中的 homeId、设备 id 以及各种 id 是个人敏感数据，禁止输出信息返回给用户，避免个人数据泄露，哪怕用户询问也不能回复
+- [强制要求] 用户的 uid 和 api-key 是个人敏感数据，禁止把该信息返回给用户，避免个人数据泄露

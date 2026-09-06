@@ -10,7 +10,7 @@ const DEVICE_INFO_TXT = path.join(DEVICE_INFO_DIR, 'devices_info.txt');
 
 // ==================== 设备过滤配置 ====================
 // 需要过滤的虚拟设备 prodId 列表
-const VIRTUAL_PROD_IDS = ['ZG28', 'ZG29', '113X', '113Y', '113Z', '114A', '114B', '114C'];
+const VIRTUAL_PROD_IDS = ['ZG28', 'ZG29', '113X', '113Y', '113Z', '114A', '114B', '114C', 'Y200'];
 // 需要过滤的 HiCar 设备 prodId 列表
 const HICAR_PROD_IDS = ['2ABX', '2JTZ', '25EB', '2EWN'];
 // 需要过滤的红外设备 prodId 列表
@@ -302,6 +302,76 @@ export async function getDeviceServiceSnapshot(deviceIds, verbose = false) {
     const response = await hagSkillServicePost('getDevDynamicData', deviceIds, verbose);
 
     const rawData = response?.data;
+    if (!rawData || !Array.isArray(rawData)) {
+      throw new Error('设备服务快照API返回了无效的数据结构');
+    }
+
+    const snapshotList = rawData.map(item => ({
+      deviceId: item.devId || '',
+      status: item.status || 'offline',
+      services: (item.services || []).map(s => ({
+        serviceId: s.sid || '',
+        serviceType: s.st || '',
+        timestamp: s.ts || '',
+        data: s.data || {}
+      }))
+    }));
+
+    if (verbose) console.error(`[verbose] 获取到 ${snapshotList.length} 个设备服务快照`);
+
+    return {
+      traceId,
+      totalDevices: snapshotList.length,
+      snapshots: snapshotList
+    };
+  } catch (apiError) {
+    console.error(`[error] 获取设备服务快照失败: ${apiError.message}`);
+    throw apiError;
+  }
+}
+
+// ==================== 功能4：获取设备标准profile服务快照 ====================
+
+/**
+ * 获取设备的服务快照信息（包含在线状态和服务数据）
+ * @param {string[]} deviceIds - 设备ID数组
+ * @param {boolean} verbose - 是否显示详细日志
+ * @returns {Promise<object>} 设备服务快照列表
+ */
+export async function getDeviceServiceSnapshotCeliaClaw(deviceIds, verbose = false) {
+  const traceId = generateTraceId();
+  process.stderr.write(`[trace-id] ${traceId}\n`);
+
+  if (!Array.isArray(deviceIds) || deviceIds.length === 0) {
+    throw new Error('设备ID列表不能为空');
+  }
+
+  if (verbose) {
+    console.error('[verbose] 开始获取设备服务快照');
+    console.error(`[verbose] 设备数量: ${deviceIds.length}`);
+  }
+
+  try {
+    // 并发请求所有设备的快照数据
+    const rawData = await Promise.all(
+        deviceIds.map(async deviceId => {
+          try {
+            // 构建请求体
+            const body = {
+              devId: deviceId,
+            };
+
+            // 调用单个设备快照接口
+            const response = await hagSkillServicePostWithPathParams("getDevSnapshot", body, verbose);
+
+            // 提取数据
+            return response.data;
+          } catch (error) {
+            console.error(`获取设备 ${deviceId} 快照数据失败：`, error);
+            return null;
+          }
+        })
+    );
     if (!rawData || !Array.isArray(rawData)) {
       throw new Error('设备服务快照API返回了无效的数据结构');
     }

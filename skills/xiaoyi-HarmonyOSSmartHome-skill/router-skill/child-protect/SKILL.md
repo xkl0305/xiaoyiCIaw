@@ -32,14 +32,17 @@ child-protect 子技能负责管理儿童上网保护功能，包括设备管理
 
 #### get_child_protect 详细用法
 
-**查询儿童保护设备（单个家庭）**
+**查询儿童保护设备（指定路由器设备）**
 ```bash
-export ROUTER_DEVID="<路由器设备ID>"
-export ROUTER_PRODID="<路由器产品ID>"
-node router-skill/bin/router-claw.js get_child_protect --device-id <设备ID> --skill-id xiaoyi_router
+node router-skill/bin/router-claw.js get_child_protect --router-id <路由器设备ID> --prod-id <产品ID> --skill-id xiaoyi_router
 ```
 
-**查询儿童保护设备（所有家庭）**
+**查询儿童保护设备（仅用于『遍历该家庭全部路由器』的汇总场景，用户明确该场景才能使用，否则通过 `get_devices_info` 获取设备列表再使用--router-id和--prod-id查询）**
+```bash
+node router-skill/bin/router-claw.js get_child_protect --home-id <家庭ID> --skill-id xiaoyi_router
+```
+
+**查询儿童保护设备（所有家庭下的所有路由器设备）**
 ```bash
 node router-skill/bin/router-claw.js get_child_protect --all-homes --skill-id xiaoyi_router
 ```
@@ -58,43 +61,75 @@ node router-skill/bin/router-claw.js get_child_protect --all-homes --skill-id xi
 
 ### 3.2 全局时间控制
 
-#### 3.2.1 上网时段设置（set_net_time）
+#### 3.2.1 上网时段与禁止上网时段设置
+
+**⚠️ 核心原则：先查后改，意图不明必问**
+
+1. **查询**：先调用 `get_child_protect` 获取当前时段配置
+2. **判断**：若新规则与已有规则冲突，判断用户意图是「替换」还是「追加」
+3. **确认**：意图不明时必须询问用户（示例：「现有 7:00~14:00 规则，您想替换还是追加？」）
+4. **执行**：替换 → 先 `newDelete` 再 `newCreate`；追加 → 直接 `newCreate`
+5. **重要**：调用`newCreate`每次会新增规则，重复调用会产生重复规则，无论什么命令执行后都必须使用`get_child_protect`进行验证
+
+---
+
+##### 直接设置允许上网时段（set_net_time）
+
+适用于用户已明确具体允许的时间范围，可直接增删改允许时段规则。
 
 **【重要】action 参数说明：**
-| action 值 | 功能 | 必须完全匹配 |
-|-----------|------|-------------|
-| `newCreate` | 创建新的上网时段规则 | ✅ 是 |
-| `newUpdate` | 更新已有的上网时段规则 | ✅ 是 |
-| `newDelete` | 删除已有的上网时段规则 | ✅ 是 |
 
-⚠️ **注意：action 参数必须完全匹配上述值，使用 `delete`、`create`、`update` 等错误值会导致操作无效但返回成功！**
+| action 值 | 功能 |
+|-----------|------|
+| `newCreate` | 创建新的上网时段规则 |
+| `newUpdate` | 更新已有的上网时段规则 |
+| `newDelete` | 删除已有的上网时段规则 |
 
-| 场景 | 示例用法 |
-|------|----------|
-| 添加允许上网时段（例如：周一到周五，每天早上8点到23点允许上网，周六周日不允许上网） | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newCreate --data '{"id":"","enable":1,"timeFrom":"08:00","timeTo":"23:00","today":0,"device":"1","monday":1,"saturday":0,"sunday":0,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
-| 关闭允许上网时段（例如：关闭周一到周五的上网时段设置，那周一到周五就默认允许上网） | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newUpdate --data '{"id":"1","enable":0,"timeFrom":"08:00","timeTo":"23:00","today":1,"device":"1","monday":1,"saturday":0,"sunday":0,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
-| 删除上网时段配置（若出现上网时段规则冲突或重复的情况，可以执行该命令删除重复时段或冲突时段） | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newDelete --data '{"id":"1","enable":0,"timeFrom":"08:00","timeTo":"10:30","today":1,"device":"1","monday":1,"saturday":1,"sunday":1,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
+⚠️ **action 参数必须完全匹配上述值，使用 `delete`、`create`、`update` 等错误值会导致操作无效但返回成功！**
 
-#### 3.2.2 禁止上网时段设置（set_block_time）
+**命令示例：**
 
-**参数说明：**
-- `--forbid-start`: 不允许上网开始时间 (HH:MM)
-- `--forbid-end`: 不允许上网结束时间 (HH:MM)
-- `--weekdays`: 日期类型 (weekday=工作日 / weekend=周末 / everyday=每天)
+| 场景 | 命令 |
+|------|------|
+| 添加允许上网时段（周一~周五 08:00~23:00，周六周日不允许） | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newCreate --data '{"id":"","enable":1,"timeFrom":"08:00","timeTo":"23:00","today":0,"device":"1","monday":1,"saturday":0,"sunday":0,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
+| 关闭允许上网时段（enable=0 表示关闭该上网时段设置，默认允许上网） | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newUpdate --data '{"id":"1","enable":0,"timeFrom":"08:00","timeTo":"23:00","today":1,"device":"1","monday":1,"saturday":0,"sunday":0,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
+| 删除上网时段配置 | `node router-skill/bin/router-claw.js set_net_time --device-id 1 --action newDelete --data '{"id":"1","enable":0,"timeFrom":"08:00","timeTo":"10:30","today":1,"device":"1","monday":1,"saturday":1,"sunday":1,"thursday":1,"friday":1,"tuesday":1,"wednesday":1}'` |
 
-| 场景 | 示例用法 |
-|------|----------|
-| 设置周一到周五 8点到12点不允许上网（自动反向设置为工作日允许时段0-8点和12-24点，周末24小时允许） | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 08:00 --forbid-end 12:00 --weekdays weekday` |
-| 设置每天 20点到22点不允许上网（自动反向设置每天允许时段0-20点和22-24点） | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 20:00 --forbid-end 22:00 --weekdays everyday` |
-| 设置周末 18点到21点不允许上网（自动反向设置工作日24小时允许，周末允许时段0-18点和21-24点） | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 18:00 --forbid-end 21:00 --weekdays weekend` |
+##### 禁止上网时段设置（set_block_time）
 
-#### 3.2.3 上网时长设置（set_net_duration）
+适用于用户说「禁止 XX 点到 XX 点上网」，**自动反向转换为允许规则**（见 3.2.1 set_net_time）。
+
+**参数：** `--forbid-start`（开始时间）、`--forbid-end`（结束时间）、`--weekdays`（weekday=工作日 / weekend=周末 / everyday=每天）
+
+**冲突处理：** 遵循 3.2.1 核心原则——意图不明时询问用户是替换还是追加。
+
+| 场景 | 命令 |
+|------|------|
+| 周一~周五 08:00~12:00 禁止上网 | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 08:00 --forbid-end 12:00 --weekdays weekday` |
+| 每天 20:00~22:00 禁止上网 | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 20:00 --forbid-end 22:00 --weekdays everyday` |
+| 周末 18:00~21:00 禁止上网 | `node router-skill/bin/router-claw.js set_block_time --device-id 1 --forbid-start 18:00 --forbid-end 21:00 --weekdays weekend` |
+
+**常见用户意图与 action 映射**
+
+当用户要求对已有规则执行操作时，按以下对应关系选择：
+
+| 用户说 | action | 参数 | 说明 |
+|--------|--------|------|------|
+| "关闭/禁用/停用" | `newUpdate` | `enable: 0` | 暂时禁用，规则配置保留，可随时重新开启 |
+| "删除/移除/去掉" | `newDelete` | 传该规则 id | 彻底移除，需重新创建才能恢复 |
+
+⚠️ **"关闭"≠"删除"**：关闭是禁用（enable=0），删除是直接用newDelete移除规则。
+
+#### 3.2.2 上网时长设置（set_net_duration）
 
 **【重要】时长单位说明：**
-- `timeSummary.allowed` 字段单位为**秒**，表示**每天**的允许上网时长
+- `timeSummary.allowed` 字段单位为**秒**，表示**每天**的允许上网时长，属于**内部请求/换算用数值**，严禁以任何形式回显给用户——包括但不限于出现“= xx秒”、“（xx秒）”等任何带“秒”的表述。展示给用户的时长一律采用“X小时X分钟”格式。
+**例外**：当用户要求设置为无限制（或≥24小时）时，allowed 值使用 90000，仅代表 24 小时均可上网，该数值及原始秒数严禁以任何形式出现在面向用户的文字中，用户可见内容只允许为"无限制"。查询/设置后的内部校验结果（含 allowed 字段）仅用于自己核对，不得回显给用户。
 - 示例：`allowed: 21600` = 21600秒 = 6小时/天
-- 示例：`allowed: 90000` = 90000秒 = 25小时/天（相当于无限制，因为一天只有24小时）
-- **【强制】25小时就相当于无上网时长限制，不要给用户展示25小时，直接展示"无时长限制"**
+- 示例：`allowed: 90000` (24小时均可上网)
+
+**【强制】秒级处理规则**：调用`set_net_duration`前解析上网时长并换算总秒数：可被 60 整除则直接处理（换算过程严禁展示给用户）；存在秒余数（含时分秒格式、总秒数无法整除 60）时，提醒用户时长最小单位为分钟，询问是否舍弃秒取整分钟；确认后下发整分钟对应秒数，禁止下发带余数秒值；
+**【强制】时长与时段冲突**：如果用户要求上网时长设为无限制(>=24小时)，或允许的上网时长超过了当前上网时段范围时，必须先询问用户是否要关闭/更改上网时段，得到明确确认后才能操作，严禁自行关闭或修改；
 
 | 场景 | 示例用法 |
 |------|----------|
@@ -103,7 +138,7 @@ node router-skill/bin/router-claw.js get_child_protect --all-homes --skill-id xi
 | 删除上网时长（例如：删除周一到周五（工作日）允许上网时长的设置） | `node router-skill/bin/router-claw.js set_net_duration --device-id 1 --action update --data '{"daily":{"monday":90000,"tuesday":90000,"wednesday":90000,"thursday":90000,"friday":90000,"saturday":10800,"sunday":10800},"device":"1"}'` |
 | 删除上网时长（例如：删除周末允许上网时长的设置） | `node router-skill/bin/router-claw.js set_net_duration --device-id 1 --action update --data '{"daily":{"monday":90000,"tuesday":90000,"wednesday":90000,"thursday":90000,"friday":90000,"saturday":90000,"sunday":90000},"device":"1"}'` |
 
-#### 3.2.4 一键断网/延时断网（set_net_off）
+#### 3.2.3 一键断网/延时断网（set_net_off）
 
 | 场景 | 示例用法 |
 |------|----------|
@@ -144,14 +179,32 @@ node router-skill/bin/router-claw.js only_deny_app  --data '{"device":"","apps":
 ### 3.5 使用时长查询说明
 
 通过 get_child_protect 获取各类别使用时长：
+- 查询设备上网时长：`timeSummary -> used`的值为当日已使用时长，单位: 秒；`timeSummary -> timeRule`有7个数值，依次为周一到周日的上网时长限制，单位: 分钟，**例外：1500仅表示无限制，不代表时长**; `timeSummary -> allowed`的值为当日允许上网时长，单位: 秒；
 - 查询设备当天玩游戏时长：`today -> time -> game` 的值代表游戏时长，单位：秒
 - 查询设备看视频娱乐时长：`today -> time -> video`
 - 查询设备学习时长：`today -> time -> study`
 - 查询设备进行社交资讯时长：`today -> time -> social`
 
-## 4. 数据显示格式
+## 4. 操作结果验证（强制规则）
 
-### 4.1 儿童保护信息
+### 4.1 验证要求
+
+操作后**必须**执行以下步骤：
+
+1. **展示当前规则**：调用 `get_child_protect` 获取最新配置，展示时段/时长/应用限制/断网状态
+2. **校验一致性**：实际规则与预期一致 → ✅ 成功；不一致 → ❌ 失败并展示实际规则
+3. **跨天时段处理**：禁止时段跨天（如 21:00~次日10:00）展示为反向允许时段（10:00~21:00）
+
+### 4.2 校验模板
+
+**成功**：`✅ 设置成功！当前规则：[规则描述]，请确认`
+**失败**：`❌ 设置失败，当前操作暂不可用。实际：[实际规则]，请稍后重试`
+
+---
+
+## 5. 数据显示格式
+
+### 5.1 儿童保护信息
 ```json
 {
   "today": {
@@ -184,7 +237,7 @@ node router-skill/bin/router-claw.js only_deny_app  --data '{"device":"","apps":
 }
 ```
 
-### 4.2 应用分类
+### 5.2 应用分类
 | 分类ID | 分类名称 | 说明 |
 |--------|----------|------|
 | 1 | 游戏类 | 游戏应用 |
@@ -195,7 +248,7 @@ node router-skill/bin/router-claw.js only_deny_app  --data '{"device":"","apps":
 | 6 | 工具类 | 工具类应用 |
 | 7 | 生活类 | 生活类应用 |
 
-## 5. 注意事项
+## 6. 注意事项
 
 1. 设备ID必须是路由器管理的设备，需要先用路由器技能扫描设备列表
 2. 设置时间限制时，注意格式为24小时制，格式为"HH:MM"
@@ -205,7 +258,28 @@ node router-skill/bin/router-claw.js only_deny_app  --data '{"device":"","apps":
 6. 禁用app时如果没说只禁用，都是追加禁用app使用deny_app
 7. 用户问设备的主人回家没，不要回答设备连接方式、信号强度、IP地址的信息
 
-## 6. 错误处理
+## 7. 强制安全规则
+
+**【强制】删除儿童设备前必须先查最新设备映射**
+
+在执行 `del_child_device` 删除设备前，**必须**：
+1. 先调用 `get_child_protect` 获取最新的儿童保护设备列表
+2. 确认每个设备的 `device` ID 和 `hostName`（设备名）的映射关系
+3. **向用户展示当前列表并确认要删除的设备名称**，得到明确确认后再执行
+
+**原因：** 添加/删除设备后，device ID 可能重新排列，凭记忆中的 ID 操作会导致**删错设备**。
+
+示例流程：
+```
+1. 执行 get_child_protect → 获取最新列表 → 展示给用户
+2. 用户确认要删除的设备名
+3. 执行 del_child_device 传入正确的 device ID
+4. 执行 get_child_protect 验证删除结果
+```
+
+⚠️ 任何时候都不能单凭用户说"移除那个设备"就执行，必须让用户说出**设备名称**。
+
+## 8. 错误处理
 
 如遇错误会返回以下格式：
 ```json

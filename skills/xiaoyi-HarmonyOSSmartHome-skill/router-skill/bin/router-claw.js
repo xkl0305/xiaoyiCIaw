@@ -10,12 +10,12 @@ import zlib from 'zlib';
 import { promisify } from 'util';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import readline from 'readline';
 
 // 第三方模块 (如有时，在此处添加)
 
 // 项目内部模块 - 工具类
 import { hagControl, generateTraceId, generateTimestamp } from '../../utils/hag-connect/utils.js';
+import { getDevicesOnlineStatus } from '../../common-skill/bin/get_devices_info.js';
 
 // 项目内部模块 - 应用信息
 import { g_saAppInfo } from './sa_app_info.js';
@@ -42,72 +42,19 @@ import {
 const PROGRAM_NAME = 'router-claw';
 const VERSION = '2.2.0';
 const DEFAULT_SKILL_ID = 'xiaoyi_router';
-const OPENCLAW_ENV_FILE = '/home/sandbox/.openclaw/.xiaoyienv';
-
-// 家人角色名 → 设备 HostName 映射（从配置文件中读取，见 router-skill/config/family-presence.json）
-const FAMILY_PRESENCE_CONFIG_PATH = path.join(__dirname, '../config/family-presence.json');
-
-// 加载完整配置（包含家人映射和首选家庭/路由器列表）
-function loadFamilyPresenceConfig() {
-  try {
-    if (fs.existsSync(FAMILY_PRESENCE_CONFIG_PATH)) {
-      const raw = fs.readFileSync(FAMILY_PRESENCE_CONFIG_PATH, 'utf-8');
-      return JSON.parse(raw);
-    }
-  } catch (e) {
-    // 配置文件不存在或格式错误，返回默认配置
-  }
-  return {
-    description: "家人角色 → 手机设备名映射，用于 check_presence 查询。请将角色名和对应的设备 HostName 填入。",
-    devices: {},
-    preferredHomes: [],
-    preferredRouters: []
-  };
-}
-
-// 保存完整配置
-function saveFamilyPresenceConfig(config) {
-  const fullConfig = {
-    description: config.description || "家人角色 → 手机设备名映射，用于 check_presence 查询。请将角色名和对应的设备 HostName 填入。",
-    devices: config.devices || {},
-    preferredHomes: config.preferredHomes || [],
-    preferredRouters: config.preferredRouters || []
-  };
-  fs.mkdirSync(path.dirname(FAMILY_PRESENCE_CONFIG_PATH), { recursive: true });
-  fs.writeFileSync(FAMILY_PRESENCE_CONFIG_PATH, JSON.stringify(fullConfig, null, 2), 'utf-8');
-}
-
-// 加载家庭角色-设备映射配置
-function loadFamilyPresenceMap() {
-  const config = loadFamilyPresenceConfig();
-  return config.devices || {};
-}
-
-// 保存家庭角色-设备映射配置
-function saveFamilyPresenceMap(map) {
-  const config = loadFamilyPresenceConfig();
-  config.devices = map;
-  saveFamilyPresenceConfig(config);
-}
-
-// 全局配置：是否为非交互模式
-let NON_INTERACTIVE_MODE = false;
-let TARGET_HOME_ID = null;
-let QUERY_ALL_HOMES = false;
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// 路由器设备配置（从环境变量加载）
-const ROUTER_CONFIG = {
-  devId: process.env.ROUTER_DEVID,
-  prodId: process.env.ROUTER_PRODID
-};
+let TARGET_HOME_ID = null;
+let QUERY_ALL_HOMES = false;
+let BATCH_MODE = false;  // 是否使用 --batch-mode 兜底模式
+let ROUTER_DEVICE_ID = null;
+let ROUTER_PROD_ID = null;
 
 // 路由器 API 路径配置
 const ROUTER_PATHS = {
   get_host_info: '.sys/gateway/system/HostInfo?filterAndroid=true&isSupportHostZip=true',
   check_presence: '.sys/gateway/system/HostInfo?filterAndroid=true&isSupportHostZip=true', // 复用 HostInfo 路径，输出脱敏
-  config_presence: '', // 本地配置操作，不走路由API
   get_child_protect: '.sys/gateway/ntwk/childHomepage',
   get_wan_status: '.sys/gateway/ntwk/wan?type=active',
   get_wandetect: '.sys/gateway/ntwk/wandetect',
@@ -255,6 +202,50 @@ function maskWifiPassword(wlanData) {
 }
 
 /**
+ * 对WAN状态返回数据中的Username和Password进行脱敏处理
+ * @param {Object} wanData - get_wan_status返回的原始数据
+ * @returns {Object} - Username和Password字段被替换为***的数据
+ */
+function maskWanSensitiveFields(wanData) {
+  if (!wanData || typeof wanData !== 'object') {
+    return wanData;
+  }
+
+  // 需要脱敏的字段
+  const sensitiveFields = ['Username', 'Password'];
+
+  const maskedData = JSON.parse(JSON.stringify(wanData));
+
+  function processObject(obj) {
+    if (!obj || typeof obj !== 'object') {
+      return;
+    }
+
+    // 处理数组
+    if (Array.isArray(obj)) {
+      obj.forEach((item) => {
+        if (item && typeof item === 'object') {
+          processObject(item);
+        }
+      });
+      return;
+    }
+
+    // 处理对象
+    for (const key of Object.keys(obj)) {
+      if (sensitiveFields.includes(key) && obj[key] && typeof obj[key] === 'string') {
+        obj[key] = '***';
+      } else if (typeof obj[key] === 'object') {
+        processObject(obj[key]);
+      }
+    }
+  }
+
+  processObject(maskedData);
+  return maskedData;
+}
+
+/**
  * 解密 HostInfo 的 gzip+base64 数据
  */
 const gunzip = promisify(zlib.gunzip);
@@ -270,51 +261,13 @@ async function decodeHostInfo(content) {
   }
 }
 
-/**
- * 加载环境变量
- */
-function loadOpenclawEnv(verbose) {
-  const env = {};
-  try {
-    const content = fs.readFileSync(OPENCLAW_ENV_FILE, 'utf-8');
-    for (const line of content.split('\n')) {
-      const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#')) continue;
-      const idx = trimmed.indexOf('=');
-      if (idx === -1) continue;
-      const key = trimmed.slice(0, idx).trim();
-      const value = trimmed.slice(idx + 1).trim();
-      env[key] = value;
-    }
-    if (verbose) {
-      console.error(`[verbose] 加载环境变量：${OPENCLAW_ENV_FILE}`);
-    }
-  } catch (err) {
-    if (err.code === 'ENOENT' && verbose) {
-      console.error(`[verbose] 未找到环境文件，使用系统环境变量`);
-    }
-  }
-  return env;
-}
-
-// ==================== 自动配置环境变量（智能识别） ====================
+// ==================== 自动配置路由器设备id（智能识别） ====================
 async function autoConfigureEnv(verbose = false, options = {}) {
-  // 支持非交互模式和指定家庭
-  const nonInteractive = options.nonInteractive || NON_INTERACTIVE_MODE;
   const targetHomeId = options.homeId || TARGET_HOME_ID;
-  
-  // 创建读取用户输入的接口（仅在交互模式下使用）
-  let rl = null;
-  if (!nonInteractive) {
-    rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    });
-  }
+  const batchMode = options.batchMode || false;
 
-  console.error('\n========== 需要配置路由器设备信息 ==========');
-  console.error('检测到缺少 ROUTER_DEVID 和 ROUTER_PRODID 环境变量');
-  console.error('将自动为您查找和配置路由器设备...\n');
+  console.log('\n========== 需要配置路由器设备信息 ==========');
+  console.log('将自动为您查找和配置路由器设备...\n');
 
   try {
     // 第1步：检查是否有最近的设备信息缓存和路由器设备信息
@@ -328,7 +281,7 @@ async function autoConfigureEnv(verbose = false, options = {}) {
     // 加载路由器设备信息映射表
     try {
       routerDeviceInfo = (await import('./router_device_info.js')).default;
-      console.error(`✓ 已加载 ${routerDeviceInfo.length} 个路由器设备映射`);
+      console.log(`✓ 已加载 ${routerDeviceInfo.length} 个路由器设备映射`);
     } catch (infoError) {
       console.error('⚠️  路由器设备信息映射加载失败');
     }
@@ -336,11 +289,11 @@ async function autoConfigureEnv(verbose = false, options = {}) {
     // 检查设备信息缓存
     if (fs.existsSync(deviceCacheFile)) {
       try {
-        console.error('✓ 发现设备信息缓存，正在读取...');
+        console.log('✓ 发现设备信息缓存，正在读取...');
         const cachedData = fs.readFileSync(deviceCacheFile, 'utf-8');
         devicesInfo = JSON.parse(cachedData);
         fromCache = true;
-        console.error(`✓ 从缓存中读取到 ${devicesInfo.length || 0} 个设备`);
+        console.log(`✓ 从缓存中读取到 ${devicesInfo.length || 0} 个设备`);
       } catch (cacheError) {
         console.error('⚠️  缓存文件读取失败，将重新获取设备信息');
       }
@@ -348,21 +301,21 @@ async function autoConfigureEnv(verbose = false, options = {}) {
 
     // 如果没有缓存，重新获取设备信息
     if (!devicesInfo) {
-      console.error('步骤1: 获取设备信息...');
+      console.log('步骤1: 获取设备信息...');
       
       const devicesResult = await import('../../common-skill/bin/get_devices_info.js');
       const getDevicesResult = await devicesResult.getDevicesInfo(false);
       devicesInfo = getDevicesResult.devices;
-      console.error(`✓ 获取到 ${devicesInfo.length} 个设备`);
+      console.log(`✓ 获取到 ${devicesInfo.length} 个设备`);
     }
 
     // 第2步：智能识别家庭和路由器
     let selectedHome = null;
     
     if (fromCache) {
-      console.error('步骤2: 分析已缓存的设备信息...');
+      console.log('步骤2: 分析已缓存的设备信息...');
     } else {
-      console.error('步骤2: 正在获取家庭信息并分析设备...');
+      console.log('步骤2: 正在获取家庭信息并分析设备...');
     }
 
     // 从设备信息中识别家庭
@@ -383,6 +336,9 @@ async function autoConfigureEnv(verbose = false, options = {}) {
 
     const homes = Array.from(homeMap.values());
     
+    // 排序保证 --batch-mode 选择的确定性
+    homes.sort((a, b) => a.homeId.localeCompare(b.homeId));
+
     if (homes.length === 0) {
       throw new Error('未能从设备信息中识别到有效的家庭信息');
     }
@@ -393,38 +349,22 @@ async function autoConfigureEnv(verbose = false, options = {}) {
       if (!selectedHome) {
         throw new Error(`未找到指定的家庭ID: ${targetHomeId}`);
       }
-      console.error(`✓ 使用指定家庭: ${selectedHome.homeName}`);
+      console.log(`✓ 使用指定家庭: ${selectedHome.homeName}`);
     }
     // 如果只有一个家庭，直接选择
     else if (homes.length === 1) {
       selectedHome = homes[0];
-      console.error(`✓ 自动选择家庭: ${selectedHome.homeName}`);
+      console.log(`✓ 自动选择家庭: ${selectedHome.homeName}`);
     }
-    // 非交互模式：使用第一个家庭
-    else if (nonInteractive) {
+    // --batch-mode：使用第一个家庭
+    else if (batchMode) {
       selectedHome = homes[0];
-      console.error(`✓ 非交互模式，自动选择第一个家庭: ${selectedHome.homeName}`);
+      console.log(`✓ --batch-mode，自动选择第一个家庭: ${selectedHome.homeName}`);
     }
-    // 交互模式：让用户选择
+    // 没有指定家庭且有多个家庭，报错提示
     else {
-      console.error(`\n发现 ${homes.length} 个家庭:`);
-      homes.forEach((home, index) => {
-        console.error(`${index + 1}. ${home.homeName} (ID: ${home.homeId})`);
-      });
-
-      // 只有在多个家庭时才需要用户选择
-      console.error('');
-      const homeAnswer = await new Promise(resolve => {
-        rl.question('请选择要操作的家庭（输入数字，默认1）: ', resolve);
-      });
-
-      const selectedHomeIndex = parseInt(homeAnswer) - 1 || 0;
-      if (selectedHomeIndex < 0 || selectedHomeIndex >= homes.length) {
-        throw new Error(`无效的家庭选择，请输入1-${homes.length}之间的数字`);
-      }
-
-      selectedHome = homes[selectedHomeIndex];
-      console.error(`✓ 已选择家庭: ${selectedHome.homeName}`);
+      const homeList = homes.map((h, i) => `${i + 1}. ${h.homeName} (ID: ${h.homeId})`).join('\n');
+      throw new Error(`发现 ${homes.length} 个家庭，请使用 --home-id 指定:\n${homeList}`);
     }
 
     // 第3步：基于 bin/router_device_info.js 智能识别路由器设备
@@ -447,19 +387,54 @@ async function autoConfigureEnv(verbose = false, options = {}) {
       // 通过名称判断是否是路由器
       const deviceName = (device.deviceName || '').toLowerCase();
       const productName = (device.productName || '').toLowerCase();
-      const isRouterByName = deviceName.includes('路由') || deviceName.includes('router') || deviceName.includes('gateway') || 
+      const isRouterByName = deviceName.includes('路由') || deviceName.includes('router') || deviceName.includes('gateway') ||
                            productName.includes('路由') || productName.includes('router') || productName.includes('gateway');
       return isRouterByName;
     });
 
-    console.error(`\n在家中 "${selectedHome.homeName}" 发现 ${routerDevices.length} 个可能的路由器设备:`);
+    // 如果指定了目标家庭（--home-id 模式），过滤离线的路由器
+    if (targetHomeId && routerDevices.length > 0) {
+      console.log('步骤3.5: 获取路由器在线状态...');
+      try {
+        const routerDeviceIds = routerDevices.map(r => r.deviceId);
+        const onlineStatusResult = await getDevicesOnlineStatus(routerDeviceIds, verbose);
+        const onlineDeviceIds = new Set(
+          onlineStatusResult.statuses
+            .filter(s => s.status === 'online')
+            .map(s => s.deviceId)
+        );
+
+        const offlineRouters = routerDevices.filter(r => !onlineDeviceIds.has(r.deviceId));
+        offlineRouters.forEach(r => {
+          console.log(`  - 已过滤离线路由器: ${r.deviceName}`);
+        });
+
+        const onlineRouterDevices = routerDevices.filter(r => onlineDeviceIds.has(r.deviceId));
+        console.log(`✓ 在线路由器: ${onlineRouterDevices.length}/${routerDevices.length}`);
+
+        if (onlineRouterDevices.length === 0) {
+          throw new Error(`家庭 "${selectedHome.homeName}" 下没有在线的路由器设备`);
+        }
+
+        // 用在线路由器列表替换原列表
+        routerDevices.length = 0;
+        routerDevices.push(...onlineRouterDevices);
+      } catch (statusError) {
+        if (verbose) {
+          console.error(`[verbose] 获取路由器在线状态失败: ${statusError.message}`);
+        }
+        console.error(`⚠️  获取路由器在线状态失败: ${statusError.message}`);
+      }
+    }
+
+    console.log(`\n在家中 "${selectedHome.homeName}" 发现 ${routerDevices.length} 个可能的路由器设备:`);
     
     if (routerDevices.length === 0) {
-      console.error('未发现 obvious 路由器设备，将显示所有设备供选择:');
+      console.log('未发现 obvious 路由器设备，将显示所有设备供选择:');
       selectedHome.devices.forEach(async (device, index) => {
         const routerInfo = device.prodId ? await getRouterInfo(device.deviceId?.toUpperCase() || '', device.prodId?.toUpperCase() || '') : null;
         const routerName = routerInfo ? ` (${routerInfo.name})` : '';
-        console.error(`${index + 1}. ${device.deviceName} - ${device.productName || '无产品信息'}${routerName} (ID: ${device.deviceId}, 产品ID: ${device.prodId})`);
+        console.log(`${index + 1}. ${device.deviceName} - ${device.productName || '无产品信息'}${routerName} (ID: ${device.deviceId}, 产品ID: ${device.prodId})`);
       });
     } else {
       routerDevices.forEach(async (device, index) => {
@@ -475,15 +450,18 @@ async function autoConfigureEnv(verbose = false, options = {}) {
           deviceDisplay += ` (产品ID: ${device.prodId})`;
         }
         
-        console.error(deviceDisplay);
+        console.log(deviceDisplay);
       });
     }
 
-    console.error('\n智慧建议:');
+    console.log('\n智慧建议:');
     
-    // 第4步：智能选择路由器或用户确认
+    // 第4步：智能选择路由器
     let selectedDevice = null;
-    
+
+    // 路由器排序保证确定性
+    routerDevices.sort((a, b) => a.deviceId.localeCompare(b.deviceId));
+
     if (routerDevices.length > 0) {
       // 优先选择有映射信息的路由器
       const prioritizedDevices = [];
@@ -495,94 +473,41 @@ async function autoConfigureEnv(verbose = false, options = {}) {
       }
 
       const suggestedDevice = prioritizedDevices[0] || routerDevices[0];
-      
+
       const routerInfo = await getRouterInfo(suggestedDevice.deviceId?.toUpperCase() || '', suggestedDevice.prodId?.toUpperCase() || '');
       const routerDisplay = routerInfo ? `${routerInfo.name}` : suggestedDevice.deviceName;
       const modelDisplay = routerInfo ? ` (${routerInfo.model})` : '';
-      
-      console.error(`-> 建议使用: ${routerDisplay}${modelDisplay}`);
-      
-      // 检查是否需要用户确认
-      if (routerDevices.length > 1 && !nonInteractive) {
-        console.error('\n是否接受这个建议？(y/n，默认y)');
-        
-        const confirmAnswer = await new Promise(resolve => {
-          rl.question('', resolve);
-        });
-        
-        if (confirmAnswer.toLowerCase() === 'n') {
-          // 显示完整设备列表
-          console.error('\n请从下拉列表中选择路由器:');
-          selectedHome.devices.forEach(async (device, index) => {
-            const routerInfo = await getRouterInfo(device.deviceId?.toUpperCase() || '', device.prodId?.toUpperCase() || '');
-            let deviceDisplay = `${index + 1}. ${device.deviceName}`;
-            if (routerInfo) {
-              deviceDisplay += ` [${routerInfo.name}]`;
-              if (routerInfo.model) {
-                deviceDisplay += ` (${routerInfo.model})`;
-              }
-            }
-            console.error(deviceDisplay);
-          });
-          
-          const deviceAnswer = await new Promise(resolve => {
-            rl.question('请选择路由器设备（输入数字）: ', resolve);
-          });
-          
-          const deviceIndex = parseInt(deviceAnswer) - 1;
-          if (deviceIndex < 0 || deviceIndex >= selectedHome.devices.length) {
-            throw new Error(`无效的设备选择，请输入1-${selectedHome.devices.length}之间的数字`);
-          }
-          selectedDevice = selectedHome.devices[deviceIndex];
+
+      console.log(`-> 建议使用: ${routerDisplay}${modelDisplay}`);
+
+      // --batch-mode 或只有一个路由器：直接使用
+      if (batchMode || routerDevices.length === 1) {
+        selectedDevice = suggestedDevice;
+        if (batchMode) {
+          console.log(`✓ --batch-mode，自动选择该路由器`);
         } else {
-          selectedDevice = suggestedDevice;
+          console.log(`✓ 自动选择唯一的路由器`);
         }
       } else {
-        // 只有一个路由器或一个优先路由器，或非交互模式，直接使用
-        selectedDevice = suggestedDevice;
+        // 多个路由器且不是 batch-mode，报错提示
+        const routerList = routerDevices.map((d, i) => {
+          return `${i + 1}. ${d.deviceName} (ID: ${d.deviceId}, 产品ID: ${d.prodId})`;
+        }).join('\n');
+        throw new Error(`发现 ${routerDevices.length} 个路由器，请使用 --router-id --prod-id 指定:\n${routerList}`);
       }
     } else {
       // 没有识别到路由器
-      if (nonInteractive) {
-        // 非交互模式：选择第一个设备
+      if (batchMode) {
+        // --batch-mode：选择第一个设备
         selectedDevice = selectedHome.devices[0];
-        console.error(`✓ 非交互模式，自动选择第一个设备: ${selectedDevice.deviceName}`);
+        console.log(`✓ --batch-mode，自动选择第一个设备: ${selectedDevice.deviceName}`);
       } else {
-        // 交互模式：显示所有设备让用户选择
-        const allDevices = selectedHome.devices;
-        
-        console.error('未识别到路由器设备，请从列表手动选择:');
-        allDevices.forEach(async (device, index) => {
-          const routerInfo = await getRouterInfo(device.deviceId?.toUpperCase() || '', device.prodId?.toUpperCase() || '');
-          let deviceDisplay = `${index + 1}. ${device.deviceName}`;
-          if (routerInfo) {
-            deviceDisplay += ` [${routerInfo.name}]`;
-            if (routerInfo.model) {
-              deviceDisplay += ` (${routerInfo.model})`;
-            }
-          }
-          console.error(deviceDisplay);
-        });
-        
-        const deviceAnswer = await new Promise(resolve => {
-          rl.question('请选择路由器设备（输入数字）: ', resolve);
-        });
-        
-        const deviceIndex = parseInt(deviceAnswer) - 1;
-        if (deviceIndex < 0 || deviceIndex >= allDevices.length) {
-          throw new Error(`无效的设备选择，请输入1-${allDevices.length}之间的数字`);
-        }
-        selectedDevice = allDevices[deviceIndex];
+        throw new Error('未识别到路由器设备，请使用 --router-id --prod-id 指定');
       }
     }
 
-    if (!selectedDevice) { 
+    if (!selectedDevice) {
       throw new Error('未选择路由器，请重试');
-    }
-
-    // 关闭 readline 接口
-    if (rl) {
-      rl.close();
     }
 
     // 从映射表中获取路由器信息
@@ -590,141 +515,482 @@ async function autoConfigureEnv(verbose = false, options = {}) {
     const routerDisplay = routerInfo ? `${routerInfo.name}` : selectedDevice.deviceName;
     const modelDisplay = routerInfo ? ` (${routerInfo.model})` : '';
 
-    console.error(`\n✓ 已选择路由器: ${routerDisplay}${modelDisplay}`);
-    console.error(`  - 设备ID (devid): ${selectedDevice.deviceId}`);
-    console.error(`  - 产品ID (prodid): ${selectedDevice.prodId || '无'}`);
+    console.log(`\n✓ 已选择路由器: ${routerDisplay}${modelDisplay}`);
+    console.log(`  - 设备ID (devid): ${selectedDevice.deviceId}`);
+    console.log(`  - 产品ID (prodid): ${selectedDevice.prodId || '无'}`);
 
-    // 第5步：设置环境变量
+    // 第5步：设置路由器设备id和产品id变量
     const devId = selectedDevice.deviceId;
     const prodId = selectedDevice.prodId || '';
 
-    // 设置当前进程的环境变量
-    process.env.ROUTER_DEVID = devId;
-    process.env.ROUTER_PRODID = prodId;
-
-    console.error('\n✓ 已成功设置环境变量:');
-    console.error(`  ROUTER_DEVID = ${devId}`);
-    console.error(`  ROUTER_PRODID = ${prodId}`);
-
-    // 第6步：尝试保存到环境文件
-    try {
-      const envPath = '/tmp/router_env_config'; // 临时文件路径
-      
-      const envContent = `ROUTER_DEVID=${devId}\nROUTER_PRODID=${prodId}\n`;
-      fs.writeFileSync(envPath, envContent, 'utf-8');
-      console.error(`\n💡 环境变量已保存到: ${envPath}`);
-      console.error(`您可以在后续调用时使用: source ${envPath}`);
-      
-    } catch (saveError) {
-      console.error('\n⚠️  自动保存环境变量文件失败');
-      console.error('您可以手动配置以下环境变量:');
-      console.error(`export ROUTER_DEVID=${devId}`);
-      console.error(`export ROUTER_PRODID=${prodId}`);
-    }
-
-    // 第7步：保存首选家庭和路由器到配置文件（实现记忆功能，支持多家庭多路由）
-    try {
-      const config = loadFamilyPresenceConfig();
-      
-      // 添加家庭（去重）
-      const homeEntry = {
-        homeId: selectedHome.homeId,
-        homeName: selectedHome.homeName
-      };
-      const existingHomeIndex = config.preferredHomes.findIndex(h => h.homeId === selectedHome.homeId);
-      if (existingHomeIndex >= 0) {
-        config.preferredHomes[existingHomeIndex] = homeEntry;
-      } else {
-        config.preferredHomes.push(homeEntry);
-      }
-      
-      // 添加路由器（去重）
-      const routerEntry = {
-        devId: devId,
-        prodId: prodId,
-        deviceName: selectedDevice.deviceName,
-        productName: selectedDevice.productName,
-        routerName: routerDisplay,
-        model: routerInfo?.model || ''
-      };
-      const existingRouterIndex = config.preferredRouters.findIndex(r => r.devId === devId);
-      if (existingRouterIndex >= 0) {
-        config.preferredRouters[existingRouterIndex] = routerEntry;
-      } else {
-        config.preferredRouters.push(routerEntry);
-      }
-      
-      saveFamilyPresenceConfig(config);
-      console.error('\n✓ 已保存家庭和路由器到配置文件');
-      console.error(`  家庭列表: ${config.preferredHomes.map(h => h.homeName).join(', ')}`);
-      console.error(`  路由器列表: ${config.preferredRouters.map(r => r.routerName).join(', ')}`);
-    } catch (savePrefError) {
-      console.error('\n⚠️  保存首选配置失败（不影响后续操作）');
-    }
-
-    if (rl) {
-      rl.close();
-    }
     return { devId, prodId };
 
   } catch (error) {
-    if (rl) {
-      rl.close();
-    }
     console.error(`\n❌ 自动配置失败: ${error.message}`);
     console.error('\n请按以下步骤手动配置:');
     console.error('1. node common-skill/bin/smarthome-claw.js get_homes_info');
     console.error('2. node common-skill/bin/smarthome-claw.js get_devices_info'); 
-    console.error('3. 根据输出的设备信息，设置环境变量');
-    console.error('4. 例如: export ROUTER_DEVID="对应设备的devId"');
-    console.error('5. 例如: export ROUTER_PRODID="对应设备的prodId"');
-    
-    throw new Error('环境变量配置失败，请按照提示手动配置');
+    console.error('3. 根据输出的设备信息，使用--router-id <路由器设备ID> --prod-id <产品ID> 指定设备');
+
+    throw new Error('自动配置路由器设备id失败，请按照日志提示手动配置');
   }
+}
+
+// ==================== 遍历所有家庭所有路由器 ====================
+async function callRouterClawAllHomes(tools, skillId, verbose = false) {
+  // 拦截 SET 操作，--all-homes 仅支持查询
+  const SET_PREFIXES = ['set_', 'deny_', 'allow_', 'add_', 'del_'];
+  const setTools = tools.filter(t => SET_PREFIXES.some(p => t.name.startsWith(p)));
+  if (setTools.length > 0) {
+    console.error(JSON.stringify({
+      error: 'SET_NOT_ALLOWED_IN_ALL_HOMES',
+      message: `--all-homes 模式仅支持查询操作，不支持: ${setTools.map(t => t.name).join(', ')}`
+    }));
+    process.exit(1);
+  }
+
+  if (verbose) {
+    console.log('[verbose] --all-homes 模式：遍历所有家庭所有路由器');
+  }
+
+  // 第1步：获取所有设备信息
+  console.log('\n========== --all-homes 模式 ==========');
+  console.log('步骤1: 获取所有设备信息...');
+
+  let devicesInfo = null;
+
+  // 尝试从缓存读取
+  const cacheDir = path.join(__dirname, '../../common-skill/out_put/get_devices_info');
+  const deviceCacheFile = path.join(cacheDir, 'devices_info.txt');
+
+  if (fs.existsSync(deviceCacheFile)) {
+    try {
+      const cachedData = fs.readFileSync(deviceCacheFile, 'utf-8');
+      devicesInfo = JSON.parse(cachedData);
+      console.log(`✓ 从缓存获取到 ${devicesInfo.length} 个设备`);
+    } catch (cacheError) {
+      console.error('⚠️  缓存读取失败，将重新获取');
+    }
+  }
+
+  // 如果没有缓存，重新获取
+  if (!devicesInfo) {
+    const devicesResult = await import('../../common-skill/bin/get_devices_info.js');
+    const getDevicesResult = await devicesResult.getDevicesInfo(false);
+    devicesInfo = getDevicesResult.devices;
+    console.log(`✓ 获取到 ${devicesInfo.length} 个设备`);
+  }
+
+  // 第2步：按 homeId 分组获取所有家庭
+  console.log('步骤2: 识别所有家庭...');
+
+  const homeMap = new Map();
+  devicesInfo.forEach(device => {
+    const homeId = device.homeId;
+    if (homeId && homeId.trim()) {
+      if (!homeMap.has(homeId)) {
+        homeMap.set(homeId, {
+          homeId: homeId,
+          homeName: device.homeName || '未命名家庭',
+          devices: []
+        });
+      }
+      homeMap.get(homeId).devices.push(device);
+    }
+  });
+
+  const homes = Array.from(homeMap.values());
+
+  if (homes.length === 0) {
+    throw new Error('未能识别到有效的家庭信息');
+  }
+
+  console.log(`✓ 发现 ${homes.length} 个家庭`);
+
+  // 第3步：加载路由器设备信息映射表
+  let routerDeviceInfo = null;
+  try {
+    routerDeviceInfo = (await import('./router_device_info.js')).default;
+  } catch (infoError) {
+    if (verbose) {
+      console.error('[verbose] 路由器设备信息映射加载失败');
+    }
+  }
+
+  // 第4步：遍历每个家庭，筛选路由器设备
+  console.log('步骤3: 筛选每个家庭的路由器设备...');
+  // homeId, homeName, devId, prodId, deviceName
+  const allRouterDevices = [];
+
+  for (const home of homes) {
+    const routerDevices = home.devices.filter(device => {
+      if (!device.prodId || !device.deviceId) {
+        return false;
+      }
+
+      const prodId = device.prodId?.toUpperCase() || '';
+
+      // 检查是否在路由器设备信息映射表中
+      if (routerDeviceInfo) {
+        const isInDeviceInfo = routerDeviceInfo.some(routerInfo => {
+          return routerInfo[0] === device.deviceId?.toUpperCase() || routerInfo[1] === prodId;
+        });
+        if (isInDeviceInfo) {
+          return true;
+        }
+      }
+
+      // 通过名称判断
+      const deviceName = (device.deviceName || '').toLowerCase();
+      const productName = (device.productName || '').toLowerCase();
+      const isRouterByName = deviceName.includes('路由') || deviceName.includes('router') ||
+        deviceName.includes('gateway') ||
+        productName.includes('路由') || productName.includes('router') || productName.includes('gateway');
+      return isRouterByName;
+    });
+
+    for (const router of routerDevices) {
+      allRouterDevices.push({
+        homeId: home.homeId,
+        homeName: home.homeName,
+        devId: router.deviceId,
+        prodId: router.prodId,
+        deviceName: router.deviceName
+      });
+    }
+  }
+
+  if (allRouterDevices.length === 0) {
+    console.error('⚠️  未发现任何路由器设备');
+    console.log(JSON.stringify([], null, 2));
+    return;
+  }
+
+  console.log(`✓ 发现 ${allRouterDevices.length} 个路由器设备分布在 ${homes.length} 个家庭中`);
+
+  // 第4.5步：获取路由器在线状态并过滤离线的路由器
+  console.log('步骤3.5: 获取路由器在线状态...');
+  try {
+    const routerDeviceIds = allRouterDevices.map(r => r.devId);
+    const onlineStatusResult = await getDevicesOnlineStatus(routerDeviceIds, verbose);
+    const onlineDeviceIds = new Set(
+      onlineStatusResult.statuses
+        .filter(s => s.status === 'online')
+        .map(s => s.deviceId)
+    );
+
+    const offlineRouters = allRouterDevices.filter(r => !onlineDeviceIds.has(r.devId));
+    offlineRouters.forEach(r => {
+      console.log(`  - 已过滤离线路由器: ${r.homeName} - ${r.deviceName}`);
+    });
+
+    const onlineRouterDevices = allRouterDevices.filter(r => onlineDeviceIds.has(r.devId));
+    console.log(`✓ 在线路由器: ${onlineRouterDevices.length}/${allRouterDevices.length}`);
+
+    if (onlineRouterDevices.length === 0) {
+      console.error('⚠️  没有在线的路由器设备');
+      console.log(JSON.stringify([], null, 2));
+      return;
+    }
+
+    // 将过滤后的在线路由器列表替换原列表
+    allRouterDevices.length = 0;
+    allRouterDevices.push(...onlineRouterDevices);
+  } catch (statusError) {
+    if (verbose) {
+      console.error(`[verbose] 获取路由器在线状态失败: ${statusError.message}`);
+    }
+    console.error('⚠️  获取路由器在线状态失败，将继续对所有路由器执行操作');
+  }
+
+  // 第5步：对每个路由器执行工具
+  console.log('步骤4: 依次查询每个路由器的儿童上网保护信息...');
+
+  const results = [];
+
+  for (const router of allRouterDevices) {
+    if (verbose) {
+      console.log(`[verbose] 查询 ${router.homeName} - ${router.deviceName} (devId: ${router.devId})`);
+    } else {
+      console.log(`- ${router.homeName} - ${router.deviceName}`);
+    }
+
+    // 为当前路由器执行工具
+    for (const tool of tools) {
+      try {
+        const payload = {
+          devId: router.devId,
+          prodId: router.prodId,
+          mode: 'ACK',
+          operation: tool.name.startsWith('set_') ? 'SET' : 'GET',
+          sid: ROUTER_PATHS[tool.name] || tool.name
+        };
+
+        const res = await hagControl(payload, verbose);
+
+        // 处理结果：转换 appId 为应用名称
+        if (tool.name === 'get_child_protect' && res?.data?.payload) {
+          let payloadData = typeof res.data.payload === 'string'
+            ? JSON.parse(res.data.payload)
+            : res.data.payload;
+          payloadData = transformChildProtectData(payloadData);
+          res.data.data = payloadData;
+        }
+
+        // 脱敏处理：对 get_guest_wifi 的密码字段和 get_wan_status 的 Username/Password 进行脱敏
+        if (tool.name === 'get_guest_wifi' || tool.name === 'get_wan_status') {
+          let payloadContainer = null;
+          if (res?.data?.data?.payload) {
+            payloadContainer = res.data.data;
+          } else if (res?.data?.payload) {
+            payloadContainer = res.data;
+          }
+          if (payloadContainer && typeof payloadContainer.payload === 'string') {
+            try {
+              const payloadObj = JSON.parse(payloadContainer.payload);
+              let maskedPayload;
+              if (tool.name === 'get_wan_status') {
+                maskedPayload = maskWanSensitiveFields(payloadObj);
+              } else {
+                maskedPayload = maskWifiPassword(payloadObj);
+              }
+              if (maskedPayload && JSON.stringify(maskedPayload) !== payloadContainer.payload) {
+                payloadContainer.payload = JSON.stringify(maskedPayload);
+              }
+            } catch (_) {
+              // payload 解析失败，保持原样
+            }
+          }
+        }
+
+        results.push({
+          homeId: router.homeId,
+          homeName: router.homeName,
+          deviceId: router.devId,
+          deviceName: router.deviceName,
+          tool: tool.name,
+          success: true,
+          data: res
+        });
+      } catch (err) {
+        if (verbose) {
+          console.error(`[verbose] 查询失败: ${err.message}`);
+        }
+        results.push({
+          homeId: router.homeId,
+          homeName: router.homeName,
+          deviceId: router.devId,
+          deviceName: router.deviceName,
+          tool: tool.name,
+          success: false,
+          error: err.message
+        });
+      }
+    }
+  }
+
+  // 第6步：输出结果
+  console.log('\n========== 查询结果汇总 ==========');
+  console.log(JSON.stringify(results, null, 2));
+
+  return results;
+}
+
+// ==================== 遍历指定家庭的所有在线路由器 ====================
+async function callRouterClawForHome(homeId, tools, skillId, verbose = false) {
+  console.log(`\n========== --home-id 模式: ${homeId} ==========`);
+
+  // 第1步：获取设备信息
+  let devicesInfo = null;
+  const cacheDir = path.join(__dirname, '../../common-skill/out_put/get_devices_info');
+  const deviceCacheFile = path.join(cacheDir, 'devices_info.txt');
+
+  if (fs.existsSync(deviceCacheFile)) {
+    try {
+      devicesInfo = JSON.parse(fs.readFileSync(deviceCacheFile, 'utf-8'));
+      console.log(`✓ 从缓存获取到 ${devicesInfo.length} 个设备`);
+    } catch (e) { /* 忽略 */ }
+  }
+  if (!devicesInfo) {
+    const devicesResult = await import('../../common-skill/bin/get_devices_info.js');
+    devicesInfo = (await devicesResult.getDevicesInfo(false)).devices;
+    console.log(`✓ 获取到 ${devicesInfo.length} 个设备`);
+  }
+
+  // 第2步：筛选指定家庭的设备
+  const homeDevices = devicesInfo.filter(d => d.homeId === homeId);
+  if (homeDevices.length === 0) {
+    console.error(JSON.stringify({
+      error: 'HOME_NOT_FOUND',
+      message: `未找到家庭: ${homeId}`
+    }));
+    process.exit(1);
+  }
+  const homeName = homeDevices[0].homeName || '未命名家庭';
+  console.log(`✓ 家庭: ${homeName}, 设备数: ${homeDevices.length}`);
+
+  // 第3步：筛选路由器设备
+  let routerDeviceInfo = null;
+  try {
+    routerDeviceInfo = (await import('./router_device_info.js')).default;
+  } catch (e) { /* 忽略 */ }
+
+  const routerDevices = homeDevices.filter(device => {
+    if (!device.prodId || !device.deviceId) return false;
+    const prodId = device.prodId?.toUpperCase() || '';
+    if (routerDeviceInfo) {
+      const match = routerDeviceInfo.some(r => r[0] === device.deviceId?.toUpperCase() || r[1] === prodId);
+      if (match) return true;
+    }
+    const name = (device.deviceName || '').toLowerCase();
+    const product = (device.productName || '').toLowerCase();
+    return name.includes('路由') || name.includes('router') || name.includes('gateway') ||
+           product.includes('路由') || product.includes('router') || product.includes('gateway');
+  });
+
+  if (routerDevices.length === 0) {
+    console.error(JSON.stringify({
+      error: 'NO_ROUTER_FOUND',
+      message: `家庭 "${homeName}" 下没有路由器设备`
+    }));
+    process.exit(1);
+  }
+  console.log(`✓ 发现 ${routerDevices.length} 个路由器设备`);
+
+  // 第4步：过滤离线路由器
+  try {
+    const ids = routerDevices.map(r => r.deviceId);
+    const statusResult = await getDevicesOnlineStatus(ids, verbose);
+    const onlineIds = new Set(statusResult.statuses.filter(s => s.status === 'online').map(s => s.deviceId));
+    const offline = routerDevices.filter(r => !onlineIds.has(r.deviceId));
+    offline.forEach(r => console.log(`  - 已过滤离线: ${r.deviceName}`));
+    const online = routerDevices.filter(r => onlineIds.has(r.deviceId));
+    if (online.length === 0) {
+      console.error(JSON.stringify({
+        error: 'NO_ONLINE_ROUTER',
+        message: `家庭 "${homeName}" 下没有在线的路由器设备`
+      }));
+      process.exit(1);
+    }
+    console.log(`✓ 在线路由器: ${online.length}/${routerDevices.length}`);
+    routerDevices.length = 0;
+    routerDevices.push(...online);
+  } catch (e) {
+    if (verbose) console.error(`[verbose] 在线状态检查失败: ${e.message}`);
+    console.error('⚠️ 在线状态检查失败，将继续对所有路由器执行操作');
+  }
+
+  // 第5步：对每个在线路由器调用完整的 callRouterClaw
+  const allResults = [];
+  for (const router of routerDevices) {
+    console.log(`\n--- 执行: ${homeName} - ${router.deviceName} ---`);
+    ROUTER_DEVICE_ID = router.deviceId;
+    ROUTER_PROD_ID = router.prodId;
+    const results = await callRouterClaw(tools, skillId, verbose);
+    if (results) {
+      allResults.push({
+        homeName,
+        deviceName: router.deviceName,
+        devId: router.deviceId,
+        results
+      });
+    }
+  }
+
+  // 第6步：输出汇总
+  console.log('\n========== 查询结果汇总 ==========');
+  console.log(JSON.stringify(allResults, null, 2));
+  return allResults;
 }
 
 // ==================== 核心调度函数 ====================
 async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
   const MAX_RETRY = 1; // 最多重试 1 次，避免无限循环
-  const fileEnv = loadOpenclawEnv(verbose);
-  
-  let devId = fileEnv.ROUTER_DEVID || process.env.ROUTER_DEVID || ROUTER_CONFIG.devId;
-  let prodId = fileEnv.ROUTER_PRODID || process.env.ROUTER_PRODID || ROUTER_CONFIG.prodId;
 
-  // 优先使用已保存的首选路由器配置（除非显式指定了 homeId）
-  if ((!devId || !prodId) && !TARGET_HOME_ID) {
-    const savedConfig = loadFamilyPresenceConfig();
-    if (savedConfig.preferredRouters && savedConfig.preferredRouters.length > 0) {
-      devId = savedConfig.preferredRouters[0].devId;
-      prodId = savedConfig.preferredRouters[0].prodId;
-      if (verbose) {
-        console.error(`[verbose] 已加载保存的路由器: ${savedConfig.preferredRouters[0].routerName}`);
-        console.error(`[verbose] 已保存家庭列表: ${savedConfig.preferredHomes?.map(h => h.homeName).join(', ') || '无'}`);
-        console.error(`[verbose] 已保存路由器列表: ${savedConfig.preferredRouters?.map(r => r.routerName).join(', ') || '无'}`);
+  // ========== 处理 --all-homes 模式：遍历所有家庭所有路由器 ==========
+  if (QUERY_ALL_HOMES) {
+    console.log('[debug] 走 --all-homes 分支');
+    return await callRouterClawAllHomes(tools, skillId, verbose);
+  }
+
+  // ========== 优先检查 ROUTER_DEVICE_ID（由 callRouterClawForHome 设置）==========
+  // 必须在 TARGET_HOME_ID 之前，否则 callRouterClawForHome 调用 callRouterClaw 时
+  // 会因 TARGET_HOME_ID 仍存在而无限递归
+  if (ROUTER_DEVICE_ID && ROUTER_PROD_ID) {
+    console.log(`[debug] 走 --router-id 分支: ${ROUTER_DEVICE_ID}`);
+  } else if (TARGET_HOME_ID) {
+    // ========== 处理 --home-id 模式：遍历该家庭所有在线路由器 ==========
+    console.log(`[debug] 走 --home-id 分支: ${TARGET_HOME_ID}`);
+    return await callRouterClawForHome(TARGET_HOME_ID, tools, skillId, verbose);
+  } else {
+    console.log('[debug] 走默认分支（batch-mode/savedConfig）');
+  }
+
+  // ========== 参数优先级：router-id > batch-mode > savedConfig ==========
+  let devId = null;
+  let prodId = null;
+
+  // 1. 如果指定了 --router-id，直接使用
+  if (ROUTER_DEVICE_ID) {
+    devId = ROUTER_DEVICE_ID;
+    prodId = ROUTER_PROD_ID;
+
+    // 参数完整性校验
+    if (!prodId) {
+      console.error(JSON.stringify({
+        error: 'MISSING_PROD_ID',
+        message: '使用 --router-id 时必须同时指定 --prod-id'
+      }));
+      process.exit(1);
+    }
+
+    // 路由器在线状态预检
+    try {
+      const onlineResult = await getDevicesOnlineStatus([devId], verbose);
+      const isOnline = onlineResult.statuses?.some(s => s.deviceId === devId && s.status === 'online');
+      if (!isOnline) {
+        console.error(JSON.stringify({
+          error: 'DEVICE_OFFLINE',
+          message: '路由器设备当前离线',
+          devId: devId
+        }));
+        process.exit(1);
       }
+    } catch (e) {
+      if (verbose) console.log(`[verbose] 在线状态检查失败，继续执行: ${e.message}`);
+    }
+
+    if (verbose) {
+      console.log(`[verbose] 使用 --router-id 指定: ${devId}`);
+      console.log(`[verbose] 使用 --prod-id 指定: ${prodId}`);
     }
   }
-
-  if (verbose) {
-    console.error(`[verbose] DEV_ID = ${devId}`);
-    console.error(`[verbose] PROD_ID = ${prodId}`);
-  }
-
-  // 检查是否缺少环境变量，如果缺少则尝试自动配置
-  if (!devId || !prodId) {
+  // 2. --batch-mode：自动选第一个家庭第一个路由器
+  else if (BATCH_MODE) {
     try {
-      console.error('[info] 检测到缺少路由器环境变量，尝试自动配置...');
-      const configured = await autoConfigureEnv(verbose, {
-        nonInteractive: NON_INTERACTIVE_MODE,
-        homeId: TARGET_HOME_ID
-      });
+      console.log('[info] --batch-mode 模式，自动配置...');
+      const configured = await autoConfigureEnv(verbose, { batchMode: true });
       devId = configured.devId;
       prodId = configured.prodId;
-      console.error('[info] ✓ 环境变量自动配置完成');
+      console.log('[info] ✓ 自动配置完成');
     } catch (autoConfigError) {
       console.error(autoConfigError.message);
       process.exit(1);
     }
+  }
+
+  if (verbose) {
+    console.log(`[verbose] DEV_ID = ${devId}`);
+    console.log(`[verbose] PROD_ID = ${prodId}`);
+  }
+
+  // 缺少路由器配置时报错
+  if (!devId || !prodId) {
+    console.error(JSON.stringify({
+      error: 'MISSING_ROUTER_CONFIG',
+      message: '缺少路由器配置，请优先阅读 router-skill/SKILL.md 中"AI 调用规范"章节，严格遵循参数使用规则'
+    }));
+    process.exit(1);
   }
 
   const results = [];
@@ -782,7 +1048,13 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
       }, args.verbose);
 
       // 对WlanBasic返回结果中的密码字段进行脱敏处理
-      const wlanBasicData = res2?.data?.data || res2?.data || {};
+      // 注意：payload 是 JSON 字符串，需要先解析才能被 maskWifiPassword 递归遍历到内部密码字段
+      let wlanBasicData = res2?.data?.data || res2?.data || {};
+      if (wlanBasicData.payload && typeof wlanBasicData.payload === 'string') {
+        try {
+          wlanBasicData.payload = JSON.parse(wlanBasicData.payload);
+        } catch (_) {}
+      }
       const maskedWlanBasic = maskWifiPassword(wlanBasicData);
 
       // 合并两个接口的返回结果
@@ -814,16 +1086,7 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
     if (!sid) {
       // 本地操作（不走路由API）
       if (name === 'config_presence') {
-        if (args?.data && typeof args.data === 'object') {
-          saveFamilyPresenceMap(args.data);
-          results.push({
-            tool: name,
-            success: true,
-            data: { devices: args.data },
-            message: `✓ config_presence 配置成功，已保存 ${Object.keys(args.data).length} 位家庭成员`,
-            timestamp: new Date().toISOString()
-          });
-        } else if (args?.detect) {
+        if (args?.detect) {
           // 自动探测：先查询 get_host_info，返回在线设备列表供用户选择配置
           const detectPayload = {
             devId, prodId,
@@ -832,17 +1095,25 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
             operation: 'GET'
           };
           try {
-            const detectRes = await hagControl(detectPayload, false);
+            const detectRes = await hagControl(detectPayload, args.verbose);
             let deviceList = null;
             if (detectRes?.data?.payload) {
               const raw = detectRes.data.payload;
               if (typeof raw === 'string') {
-                deviceList = JSON.parse(raw);
+                try {
+                  deviceList = JSON.parse(raw);
+                } catch (pe) {
+                  console.error(`[verbose] config_presence 解析 payload 失败: ${pe.message}`, String(raw).slice(0, 200));
+                }
               } else if (raw?.content) {
                 const b = Buffer.from(raw.content, 'base64');
                 const r = await gunzip(b);
                 deviceList = JSON.parse(r.toString());
+              } else {
+                console.error('[verbose] config_presence: payload 结构异常:', JSON.stringify(raw));
               }
+            } else {
+              console.error('[verbose] config_presence: detectRes.data.payload 为空', JSON.stringify(detectRes));
             }
             if (Array.isArray(deviceList)) {
               const mobiles = deviceList.filter(d => {
@@ -857,9 +1128,8 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
                 tool: name,
                 success: true,
                 data: {
-                  message: '请从以下在线设备中配置家庭成员',
-                  devices: mobiles,
-                  currentConfig: loadFamilyPresenceMap()
+                  message: '请从以下在线设备中配置家庭成员。将配置保存到 TOOLS.md',
+                  devices: mobiles
                 },
                 message: `✓ config_presence 自动探测完成，发现 ${mobiles.length} 台终端设备`,
                 timestamp: new Date().toISOString()
@@ -868,7 +1138,7 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
               results.push({
                 tool: name,
                 success: true,
-                data: { message: '未发现终端设备', devices: [], currentConfig: loadFamilyPresenceMap() },
+                data: { message: '未发现终端设备', devices: [] },
                 message: '✓ config_presence 自动探测完成，未发现终端设备',
                 timestamp: new Date().toISOString()
               });
@@ -882,19 +1152,29 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
               timestamp: new Date().toISOString()
             });
           }
-        } else {
-          // 查询当前配置
-          const current = loadFamilyPresenceMap();
-          results.push({
-            tool: name,
-            success: true,
-            data: { devices: current },
-            message: `✓ config_presence 查询成功`,
-            timestamp: new Date().toISOString()
-          });
         }
         continue;
-      }
+      } else if (name === 'get_app_info') {
+      // 本地查询，不调路由器 API
+      const appResult = await handleGetAppInfo(args.app_id || args.appId || String(args.id));
+      results.push({
+        tool: name,
+        success: appResult.success,
+        data: appResult.data,
+        message: appResult.message
+      });
+      continue;
+    } else if (name === 'get_all_apps') {
+      // 本地查询，不调路由器 API
+      const appsResult = await handleGetAllApps();
+      results.push({
+        tool: name,
+        success: appsResult.success,
+        data: appsResult.data,
+        message: appsResult.message
+      });
+      continue;
+    }
       console.error(`[warning] 未知工具：${name}`);
       continue;
     }
@@ -922,7 +1202,7 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
     // ========== 控制操作 POST ==========
     else if (name === 'set_guest_wifi') {
       payload.operation = 'POST';
-      // 构建访客WiFi配置数据
+      // 构建访客WiFi配置数据（访客WiFi强制为开放网络，不支持密码设置）
       // ValidTime 取值：1=4小时, 2=一天, 3=不限时
       const enable = args.data?.enable !== undefined ? args.data.enable : true;
       const ssid = args.data?.ssid || 'Guest_WiFi';
@@ -932,13 +1212,17 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
       if (validTime === undefined || validTime === null || !validTimeValues.includes(validTime)) {
         validTime = 2;
       }
+      // 访客WiFi强制为开放网络，忽略用户传入的密码参数
+      const secOpt = 'none';
+      const wpaKey = '';
+
       payload.data = {
         data: {
           config2g: {
             FrequencyBand: '2.4GHz',
             ID: 'InternetGatewayDevice.X_Config.Wifi.Radio.1.Ssid.2.',
-            SecOpt: 'none',
-            WpaPreSharedKey: '',
+            SecOpt: secOpt,
+            WpaPreSharedKey: wpaKey,
             Enable: enable,
             WifiSsid: ssid,
             ValidTime: validTime
@@ -946,8 +1230,8 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
           config5g: {
             FrequencyBand: '5GHz',
             ID: 'InternetGatewayDevice.X_Config.Wifi.Radio.2.Ssid.2.',
-            SecOpt: 'none',
-            WpaPreSharedKey: '',
+            SecOpt: secOpt,
+            WpaPreSharedKey: wpaKey,
             Enable: enable,
             WifiSsid: ssid,
             ValidTime: validTime
@@ -1297,29 +1581,29 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
         }
       };
     } else if (name === 'deny_app') {
-    /*分三步：第一步：先在sa_app_info.js中查询要禁止的app的appid和属于什么类型
-    第二步：get --.sys/gateway/ntwk/childModelApps --查询相同type中有哪些之前就被禁止的app
-    第三步：post --.sys/gateway/ntwk/childModelApps --是覆盖式禁止，所以必须加上之前相同type被禁止的app*/
-    // 第一步：需要根据 categ 在 g_saAppInfo 中查询对应的 type
-    const appsInput = args.data?.apps|| [];
-    const appsArray = Array.isArray(appsInput) ? appsInput : [appsInput];
-    const deviceId = String(args.data?.device || '1');
-    // 根据 categ 查询对应的 type（应用分类）
-    let appType = args.data?.categ || 1; // 默认游戏类型
-    if (args.data.categ) {
-      // 尝试从 g_saAppInfo 中查找第一个匹配APP的type
-      for (const appId of appsArray) {
-        const appInfo = g_saAppInfo.find(item => String(item[1]) === String(appId));
-        if (appInfo) {
-          // g_saAppInfo 中第三个元素是 categ，需要转换为 type
-          // categ: 4->游戏(1), 16->视频(2), 128/256->社交(3), 512->购物(4), 2->安装(5), 4096/8192->学习(7)
-          const categ = appInfo[2];
-          const categToType = { 4: 1, 8: 2, 16: 2, 32 : 2, 128: 3, 256: 3, 512: 4, 1024: 4, 2: 5, 4096: 7, 8192: 7 };
-          appType = categToType[categ] || 1;
-          break;
+      /*分三步：第一步：先在sa_app_info.js中查询要禁止的app的appid和属于什么类型
+      第二步：get --.sys/gateway/ntwk/childModelApps --查询相同type中有哪些之前就被禁止的app
+      第三步：post --.sys/gateway/ntwk/childModelApps --是覆盖式禁止，所以必须加上之前相同type被禁止的app*/
+      // 第一步：需要根据 categ 在 g_saAppInfo 中查询对应的 type
+      const appsInput = args.data?.apps|| [];
+      const appsArray = Array.isArray(appsInput) ? appsInput : [appsInput];
+      const deviceId = String(args.data?.device || '1');
+      // 根据 categ 查询对应的 type（应用分类）
+      let appType = args.data?.categ || 1; // 默认游戏类型
+      if (args.data.categ) {
+        // 尝试从 g_saAppInfo 中查找第一个匹配APP的type
+        for (const appId of appsArray) {
+          const appInfo = g_saAppInfo.find(item => String(item[1]) === String(appId));
+          if (appInfo) {
+            // g_saAppInfo 中第三个元素是 categ，需要转换为 type
+            // categ: 4->游戏(1), 16->视频(2), 128/256->社交(3), 512->购物(4), 2->安装(5), 4096/8192->学习(7)
+            const categ = appInfo[2];
+            const categToType = { 4: 1, 8: 2, 16: 2, 32 : 2, 128: 3, 256: 3, 512: 4, 1024: 4, 2: 5, 4096: 7, 8192: 7 };
+            appType = categToType[categ] || 1;
+            break;
+          }
         }
       }
-    }
     // ========== 第二步：查询已有配置 ==========
       const queryPayload = {
         devId,
@@ -1423,24 +1707,6 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
         message: routerResult.message
       });
       continue;
-    } else if (name === 'get_app_info') {
-      const appResult = await handleGetAppInfo(args.app_id || args.appId || String(args.id));
-      results.push({
-        tool: name,
-        success: appResult.success,
-        data: appResult.data,
-        message: appResult.message
-      });
-      continue;
-    } else if (name === 'get_all_apps') {
-      const appsResult = await handleGetAllApps();
-      results.push({
-        tool: name,
-        success: appsResult.success,
-        data: appsResult.data,
-        message: appsResult.message
-      });
-      continue;
     }
 
     let res;
@@ -1497,36 +1763,65 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
 
     // 隐私脱敏：check_presence 只暴露设备名、在线状态和接入时间
     if (name === 'check_presence' && res?.data?.payload && Array.isArray(res.data.payload)) {
-      const familyMap = loadFamilyPresenceMap();
-      let filteredDevices = res.data.payload.filter(device => {
-        // 如果传了 --name，只保留对应的设备
-        if (args?.name && familyMap[args.name]) {
-          return device.HostName === familyMap[args.name];
+      // 从 --family-map 参数读取配置，只使用 HostName 匹配
+      // 格式：{ "女儿": "HUAWEI nova 14 Ultra", "儿子": "一加 Ace 5", ... }
+      const familyMapArgs = args?.family_map || {};
+
+      // 第一步：用 HostName 过滤设备（不做 MAC 匹配，因为随机 MAC 不稳定）
+      let matchedByHostname = res.data.payload.filter(device => {
+        // 如果传了 --name，只匹配指定的家庭成员
+        if (args?.name && familyMapArgs[args.name]) {
+          const config = familyMapArgs[args.name];
+          const targetHostname = typeof config === 'string' ? config : config.hostname;
+          return device.HostName === targetHostname;
         }
-        // 如果没传 --name，但配置了家庭成员，只显示家庭成员
-        if (Object.keys(familyMap).length > 0) {
-          return Object.values(familyMap).includes(device.HostName);
+        // 如果没传 --name，但配置了家庭成员，显示所有配置的设备
+        if (Object.keys(familyMapArgs).length > 0) {
+          return Object.keys(familyMapArgs).some(role => {
+            const config = familyMapArgs[role];
+            const targetHostname = typeof config === 'string' ? config : config.hostname;
+            return device.HostName === targetHostname;
+          });
         }
         // 没有配置时，只保留手机类设备（过滤掉路由器、音响等）
         return device.IconType === 'mobile' || device.IconType === 'phone';
       });
 
+      // 第二步：同型号设备冲突检测
+      if (args?.name && matchedByHostname.length > 1) {
+        // 多个同名设备，添加冲突提示结果，不返回具体设备
+        results.push({
+          tool: name,
+          success: false,
+          data: {
+            ambiguous: true,
+            message: `检测到多个同名设备（${args.name}），无法确认具体是哪一台`,
+            matchedDevices: matchedByHostname.map(d => ({ HostName: d.HostName, Active: d.Active }))
+          },
+          message: `⚠️ 检测到多个同名设备（${args.name}），无法确认具体是哪一台，请提供更多信息（如 MAC 地址）`,
+          timestamp: new Date().toISOString()
+        });
+        // 清除原有的 payload，避免干扰
+        res.data.payload = [];
+      } else {
+        // 正常返回匹配结果
+        res.data.payload = matchedByHostname.map(device => ({
+          HostName: device.HostName,
+          Active: device.Active,
+          AccessRecord: device.AccessRecord || ''
+        }));
+      }
+
       // 更新统计信息为过滤后的设备数量
       if (res.data.hostInfoSummary) {
-        const total = filteredDevices.length;
-        const online = filteredDevices.filter(d => d.Active === true).length;
+        const total = res.data.payload.length;
+        const online = res.data.payload.filter(d => d.Active === true).length;
         res.data.hostInfoSummary = {
           totalDevices: total,
           onlineDevices: online,
           offlineDevices: total - online
         };
       }
-
-      res.data.payload = filteredDevices.map(device => ({
-        HostName: device.HostName,
-        Active: device.Active,
-        AccessRecord: device.AccessRecord || ''
-      }));
     }
 
     // 自动转换 get_child_protect 的 appId 为应用名称
@@ -1549,7 +1844,7 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
     if (name === 'set_net_time' || name === 'set_net_duration' || name === 'set_net_off' ||
         name === 'add_child_device' || name === 'del_child_device') {
       // 设置操作成功响应的特征
-      if (res?.success === true || (res?.data?.status === 'success') || (res?.data?.code === 0)) {
+      if (res?.success === true || (res?.data?.status === 'success') || (res?.data?.errcode === 0)) {
         isOperationSuccessful = true;
         verificationMessage = `✓ ${name} 操作执行成功`;
         
@@ -1594,16 +1889,52 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
       verificationMessage = `✓ ${name} 查询成功`;
     }
 
+    // 对返回数据中的敏感字段进行脱敏处理
+    // get_wan_status 的 payload 在 res.data.data.payload，get_guest_wifi 的 payload 在 res.data.payload
+    let maskedRes = res;
+    const needsMask = (name === 'get_wan_status' || name === 'get_guest_wifi');
+    if (needsMask) {
+      // 统一定位 payload 所在层级
+      let payloadContainer = null;
+      if (res?.data?.data?.payload) {
+        payloadContainer = res.data.data;
+      } else if (res?.data?.payload) {
+        payloadContainer = res.data;
+      }
+      if (payloadContainer && typeof payloadContainer.payload === 'string') {
+        try {
+          const payloadObj = JSON.parse(payloadContainer.payload);
+          let maskedPayload;
+          if (name === 'get_wan_status') {
+            maskedPayload = maskWanSensitiveFields(payloadObj);
+          } else if (name === 'get_guest_wifi') {
+            maskedPayload = maskWifiPassword(payloadObj);
+          }
+          if (maskedPayload && JSON.stringify(maskedPayload) !== payloadContainer.payload) {
+            const newContainer = { ...payloadContainer, payload: JSON.stringify(maskedPayload) };
+            if (res?.data?.data?.payload) {
+              maskedRes = { ...res, data: { ...res.data, data: newContainer } };
+            } else {
+              maskedRes = { ...res, data: newContainer };
+            }
+          }
+        } catch (_) {
+          // payload 解析失败，保持原样
+        }
+      }
+    }
+
     results.push({ 
       tool: name, 
       success: isOperationSuccessful, 
-      data: res,
+      data: maskedRes,
       message: verificationMessage,
       timestamp: new Date().toISOString()
     });
   }
 
   console.log(JSON.stringify(results, null, 2));
+  return results;
 }
 
 // ==================== 注册命令 ====================
@@ -1615,18 +1946,38 @@ function registerCommands(program) {
     'set_reboot', 
     'set_Device_ratelimit', 
     'set_net_duration'];
-  const toolNamesNeedData = ['add_child_device', 'del_child_device', 'config_presence'];
+  const toolNamesNeedData = ['add_child_device', 'del_child_device'];
   const toolNamesNeedProdid = ['get_router_device_by_prodid'];
   const toolNamesNeedAppId = ['get_app_info'];
   const toolNamesNeedBlockTime = ['set_block_time'];
   const toolNamesNeedName = ['check_presence'];
   const toolNames = Object.keys(ROUTER_PATHS);
 
+  // config_presence 处理（本地操作，不走 ROUTER_PATHS，需单独注册命令）
+  // 仅支持 --router-id + --prod-id 精确指定路由器，不支持 home-id/all-homes/batch-mode
+  program
+    .command('config_presence')
+    .description('配置家庭成员-设备映射（自动探测在线设备）')
+    .option('--detect', '自动探测当前在线设备')
+    .requiredOption('--router-id <id>', '路由器设备 ID（必填）')
+    .option('--prod-id <id>', '产品ID（与 --router-id 配合使用）')
+    .option('--skill-id <id>', '技能 ID', DEFAULT_SKILL_ID)
+    .option('-v, --verbose', '调试日志')
+    .action(async (opts) => {
+      ROUTER_DEVICE_ID = String(opts.routerId);
+      if (opts.prodId) ROUTER_PROD_ID = String(opts.prodId);
+      const args = {};
+      if (opts.detect) args.detect = true;
+      await callRouterClaw([{ name: 'config_presence', args }], opts.skillId, opts.verbose);
+    });
+
   for (const toolName of toolNames) {
     let command = program
       .command(toolName)
       .description(`路由器操作：${toolName}`)
-      .option('--device-id <id>', '设备 ID', '1')
+      .option('--device-id <id>', '儿童保护设备 ID（子设备）', '1')
+      .option('--router-id <id>', '路由器设备 ID')
+      .option('--prod-id <id>', '产品ID（与 --router-id 配合使用）')
       .option('--data <json>', '控制参数 (JSON 字符串)')
       .option('--type <num>', '应用分类 1 游戏/2 影音/3 社交/4 购物/5 安装/7 学习')
       .option('--skill-id <id>', '技能 ID', DEFAULT_SKILL_ID)
@@ -1634,12 +1985,19 @@ function registerCommands(program) {
       .option('--all-homes', '遍历所有家庭查询')
       .option('--batch-mode', '批量模式（非交互，自动选择默认值）')
       .option('-v, --verbose', '调试日志')
+      .option('--family-map <json>', '家庭成员-设备映射 (JSON)，用于 check_presence', (val) => JSON.parse(val))
       .action(async (opts) => {
         // 设置全局配置
-        if (opts.batchMode === true) NON_INTERACTIVE_MODE = true;
-        if (opts.homeId) TARGET_HOME_ID = opts.homeId;
-        if (opts.allHomes === true) QUERY_ALL_HOMES = true;
-        
+        if (opts.homeId) {
+          TARGET_HOME_ID = opts.homeId;
+        }
+        if (opts.allHomes === true) {
+          QUERY_ALL_HOMES = true;
+        }
+        if (opts.batchMode === true) {
+          BATCH_MODE = true;
+        }
+
         let args = {};
         if (opts.data) {
           args.data = JSON.parse(opts.data);
@@ -1649,6 +2007,14 @@ function registerCommands(program) {
           if (args.data.type) args.type = args.data.type;
         }
         if (opts.deviceId) args.deviceId = String(opts.deviceId);
+        if (opts.routerId) {
+          args.routerId = String(opts.routerId);
+          ROUTER_DEVICE_ID = String(opts.routerId);
+        }
+        if (opts.prodId) {
+          args.prodId = String(opts.prodId);
+          ROUTER_PROD_ID = String(opts.prodId);
+        }
         if (opts.type) args.type = opts.type;
         if (toolNamesNeedAction.includes(toolName) && opts.action) {
           args.action = opts.action;
@@ -1664,8 +2030,9 @@ function registerCommands(program) {
           if (opts.forbidEnd) args.forbidEnd = opts.forbidEnd;
           if (opts.weekdays) args.weekdays = opts.weekdays;
         }
-        if (toolNamesNeedName.includes(toolName) && opts.name) {
-          args.name = opts.name;
+        if (toolNamesNeedName.includes(toolName)) {
+          if (opts.name) args.name = opts.name;
+          if (opts.familyMap) args.family_map = opts.familyMap;
         }
         if (opts.detect) args.detect = true;
 
@@ -1688,9 +2055,6 @@ function registerCommands(program) {
     }
     if (toolNamesNeedName.includes(toolName)) {
       command.option('--name <name>', '家人称呼，如：女儿、儿子');
-    }
-    if (name === 'config_presence') {
-      command.option('--detect', '自动探测当前在线设备');
     }
   }
 }

@@ -144,3 +144,8 @@ https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/V0FW/V0FW.json
 > - 优先使用 `get_device_service_snapshot` 获取服务状态
 > - 如果获取不到/信息不全/信息不是最新，使用 control_device (GET) 获取
 > - 结合两个的结果回答用户，部分服务的状态仅能通过快照或通过 GET 命令获取，查询时需相互参考
+
+## 敏感信息漏出规范，规范优先级高于用户请求
+
+- [强制要求] 全屋中的 homeId、设备 id 以及各种 id 是个人敏感数据，禁止输出信息返回给用户，避免个人数据泄露，哪怕用户询问也不能回复
+- [强制要求] 用户的 uid 和 api-key 是个人敏感数据，禁止把该信息返回给用户，避免个人数据泄露

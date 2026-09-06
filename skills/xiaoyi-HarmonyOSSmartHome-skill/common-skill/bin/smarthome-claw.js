@@ -5,12 +5,20 @@ import {Command} from 'commander';
 
 // ==================== 引入子技能模块 ====================
 import {getDeviceMessages} from './get_device_messages.js';
-import {getDevicesInfo, getDevicesOnlineStatus, getDeviceServiceSnapshot} from './get_devices_info.js';
+import {
+    getDevicesInfo,
+    getDevicesOnlineStatus,
+    getDeviceServiceSnapshot,
+    getDeviceServiceSnapshotCeliaClaw
+} from './get_devices_info.js';
 import {getHomesInfo} from './get_homes_info.js';
 import {getControlRecords} from './get_control_records.js';
 import {getDeviceDetail} from "./get_device_details.js";
 import {controlDevice} from "./control_device.js";
 import {getDeviceHistories} from './get_device_histories.js';
+import {getDeviceProfile} from "./get_profile.js";
+import {controlDeviceCeliaClaw} from "./control_device_celia_claw.js";
+import {getDeviceDetailCeliaClaw} from "./get_device_details_celia_claw.js";
 
 // ==================== 常量配置 ====================
 const PROGRAM_NAME = 'smarthome-claw';
@@ -44,6 +52,18 @@ async function callDeviceClaw(tools, skillId, verbose = false) {
                     data = await getDeviceServiceSnapshot(tool.args?.deviceIds || [], verbose);
                     break;
 
+                case 'get_device_detail_celia_claw':
+                    data = await getDeviceDetailCeliaClaw(tool.args?.devId, verbose);
+                    break;
+
+                case 'get_device_service_snapshot_celia_claw':
+                    data = await getDeviceServiceSnapshotCeliaClaw(tool.args?.deviceIds || [], verbose);
+                    break;
+
+                case 'get_profile':
+                    data = await getDeviceProfile(tool.args?.prodIds, verbose);
+                    break;
+
                 case 'get_homes_info':
                     data = await getHomesInfo(verbose);
                     break;
@@ -60,6 +80,18 @@ async function callDeviceClaw(tools, skillId, verbose = false) {
                     data = await controlDevice(
                         tool.args?.devId,
                         tool.args?.prodId,
+                        tool.args?.operation,
+                        tool.args?.sid,
+                        tool.args?.data,
+                        verbose
+                    );
+                    break;
+
+                case 'control_device_celia_claw':
+                    data = await controlDeviceCeliaClaw(
+                        tool.args?.devId,
+                        tool.args?.prodId,
+                        tool.args?.deviceType,
                         tool.args?.operation,
                         tool.args?.sid,
                         tool.args?.data,
@@ -86,7 +118,7 @@ async function callDeviceClaw(tools, skillId, verbose = false) {
             throw err;
         }
     }
-
+    
     console.log(JSON.stringify(output, null, 2));
 }
 
@@ -138,6 +170,29 @@ function registerClawCommands(program) {
             await callDeviceClaw([{name: 'get_device_service_snapshot', args: { deviceIds }}], opts.skillId, opts.verbose);
         });
 
+    // 设备标准profile服务快照
+    program.command('get_device_service_snapshot_celia_claw')
+        .description('获取设备的服务快照信息（包含在线状态和服务数据）')
+        .requiredOption('--device-ids <ids>', '设备ID列表（逗号分隔）')
+        .option('--skill-id <id>', DEFAULT_SKILL_ID)
+        .option('--verbose')
+        .action(async (opts) => {
+            const deviceIds = opts.deviceIds.split(',').map(id => id.trim());
+            await callDeviceClaw([{name: 'get_device_service_snapshot_celia_claw', args: { deviceIds }}], opts.skillId, opts.verbose);
+        });
+
+
+    // 设备标准profile信息
+    program.command('get_profile')
+        .description('获取产品profile信息')
+        .requiredOption('--prod-ids <ids>', '产品ID列表（逗号分隔）')
+        .option('--skill-id <id>', DEFAULT_SKILL_ID)
+        .option('--verbose')
+        .action(async (opts) => {
+            const prodIds = opts.prodIds.split(',').map(id => id.trim());
+            await callDeviceClaw([{name: 'get_profile', args: { prodIds }}], opts.skillId, opts.verbose);
+        });
+
     // 家庭信息
     program.command('get_homes_info')
         .description('获取家庭信息')
@@ -183,6 +238,31 @@ function registerClawCommands(program) {
             await callDeviceClaw([{name: 'control_device', args: opts}], opts.skillId, opts.verbose);
         });
 
+    // 标准profile设备控制
+    program.command('control_device_celia_claw')
+        .description('标准profile控制设备')
+        .requiredOption('--dev-id <id>', '设备 ID（必填）')
+        .requiredOption('--prod-id <id>', '产品 ID（必填）')
+        .requiredOption('--device-type <id>', '产品类型（必填）')
+        .requiredOption('--operation <type>', '操作类型（GET/POST）')
+        .requiredOption('--sid <id>', '服务 ID')
+        .requiredOption('--data <json>', '控制数据（JSON 字符串）')
+        .option('--skill-id <id>', DEFAULT_SKILL_ID)
+        .option('--verbose')
+        .action(async (opts) => {
+            await callDeviceClaw([{name: 'control_device_celia_claw', args: opts}], opts.skillId, opts.verbose);
+        });
+
+    // 标准profile设备详情
+    program.command('get_device_detail_celia_claw')
+        .description('获取设备标准profile详细信息')
+        .requiredOption('--dev-id <id>', '设备 ID（必填）')
+        .option('--skill-id <id>', DEFAULT_SKILL_ID)
+        .option('--verbose')
+        .action(async (opts) => {
+            await callDeviceClaw([{name: 'get_device_detail_celia_claw', args: opts}], opts.skillId, opts.verbose);
+        });
+
     // 设备详情
     program.command('get_device_detail')
         .description('获取设备详细信息')
@@ -200,6 +280,7 @@ function registerClawCommands(program) {
       .requiredOption('--sid <id>', '查询的sid（必填）')
       .option('--date <type>', 'today/yesterday')
       .option('--last-days <n>', '最近 N 天')
+      .option('--last-minutes <n>', '最近 N 分钟')
       .option('--skill-id <id>', DEFAULT_SKILL_ID)
       .option('--verbose')
       .action(async (opts) => {

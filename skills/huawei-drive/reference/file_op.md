@@ -46,11 +46,11 @@
 
 1. **检查 Token 状态**：读取 `.xiaoyienv` 文件，检查 Token 是否需要刷新
    - 若 Token 需要刷新，或后续操作返回 `TOKEN_EXPIRED`，请参阅 [Token 刷新指南](./token_refresh.md)
-2. **获取文件路径**：从用户输入或上下文确定文件路径 `{file-path}`
-3. **检查文件大小**：计算文件大小 `{file_size}`
-4. **检查可用空间**：查询云空间剩余可用空间 `{available_space}`
+2. **获取文件路径**：从用户输入或上下文确定文件路径 `{file_path}` 
+3. **确定上传目标文件夹：**从用户输入中确定文件上传的目标文件夹名称`{parent_folder_name}`，若用户未输入目标文件夹名称，则不传递`{parent_folder_name}`参数，默认上传到`小艺Claw`文件夹下。
+4. **检查文件大小**：计算文件大小 `{file_size}`
+5. **检查可用空间**：查询云空间剩余可用空间 `{available_space}`
    - 若 `available_space < file_size`，提示用户升级套餐：[点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)
-5. **确保目录存在**：查询 `小艺Claw` 文件夹，不存在则创建
 6. **检查文件重名**：若文件已存在，询问用户选择：覆盖 / 重命名 / 跳过
    - 重命名规则：在原文件名后添加 `(1)`，如 `test.txt` → `test(1).txt`
 7. **执行上传**：调用 `huawei_drive.py` 完成上传
@@ -104,42 +104,7 @@ huawei_drive.py --command upload --mode rename --path {file_path}
 
 完整命令说明请参阅 [命令快速参考](./huawei_drive_commands.md)。
 
----
-
-## 查询文件列表
-
-### 命令
-
-```bash
-huawei_drive.py --command query --key file_list
-```
-
-### 输出格式
-
-```markdown
-当前查询目录：/我的云盘/小艺Claw，共 5 项，详情如下：
-
-| 类型 | 文件名称   | 文件大小 | 修改时间             |
-| ---- | ---------- | -------- | -------------------- |
-| 目录 | documents  | ——       | 2026-02-20  10:30:00 |
-| 文件 | readme.txt | 1.5MB    | 2026-02-25  15:20:00 |
-| 图片 | abc.jpg    | 256 KB   | 2026-02-26  19:15:00 |
-| 视频 | efg.mp4    | 25 MB    | 2026-02-27  09:15:00 |
-| 音频 | tfg.mp3    | 3 MB     | 2026-02-28  20:17:00 |
-
-[点击前往 文件管理 - 我的云盘 查看文件](superlink://vassistant?startmode=appLink&appLink=filemanager://openDirectory?fileUri=file%3A%2F%2Fcom.huawei.hmos.filemanager%2Fdata%2Fstorage%2Fel2%2Fcloud%2F%E5%B0%8F%E8%89%BAClaw)。
-```
-
-### 数据说明
-
-- **文件大小**：查询结果单位为 Byte，需转换为 GB/MB/KB
-- **文件类型识别**：
-  - 目录：`mimeType` = `application/vnd.huawei-apps.folder`
-  - 其他：按文件后缀识别（图片、视频、音频、文件等）
-
----
-
-## 查询文件是否存在
+## 查询文件/文件夹是否存在
 
 ### 命令
 
@@ -158,6 +123,36 @@ huawei_drive.py --command query --file_name {file_name}
 
 [点击前往 文件管理 - 我的云盘 查看文件](superlink://vassistant?startmode=appLink&appLink=filemanager://openDirectory?fileUri=file%3A%2F%2Fcom.huawei.hmos.filemanager%2Fdata%2Fstorage%2Fel2%2Fcloud%2F%E5%B0%8F%E8%89%BAClaw)
 ```
+
+## 创建文件夹
+
+### 执行流程
+
+1.**检查 Token 状态**：读取 `.xiaoyienv` 文件，检查 Token 是否需要刷新
+
+若 Token 需要刷新，或后续操作返回 `TOKEN_EXPIRED`，请参阅 [Token 刷新指南](./token_refresh.md)
+
+**2.获取参数：**从用户输入中获取需创建的文件夹名称`{folder_name}`及父目录文件夹名称`{parent_folder_name}` ，若用户未传递 `{parent_folder_name}`参数，则默认`{parent_folder_name}`为`小艺Claw`
+
+**3.创建指定文件夹**：执行如下命令创建文件夹
+
+```bash
+huawei_drive.py --command create --folder_name {folder_name} --parent_folder_name {parent_folder_name}
+```
+
+**4、输出结果：**按如下格式输出结果
+
+```markdown
+文件夹上传完成！
+
+| 云盘路径      | 文件夹名称 | 状态    |
+| -------------|--------- | ------ |
+| 小艺Claw/test | test     | ✅ 成功 |
+
+[点击前往 文件管理 - 我的云盘 查看文件](superlink://vassistant?startmode=appLink&appLink=filemanager://openDirectory?fileUri=file%3A%2F%2Fcom.huawei.hmos.filemanager%2Fdata%2Fstorage%2Fel2%2Fcloud%2F%E5%B0%8F%E8%89%BAClaw)。
+```
+
+
 
 ## 下载文件
 
@@ -197,6 +192,51 @@ huawei_drive.py --command download --file_id {file_id} --path {download_path}
 | 小艺Claw/test3.txt | C:/Users/Downloads/test3.txt | 6.0 KB   | ❌ 失败 |
 ```
 
+## 查询文件列表
+
+### 执行流程
+
+**1.检查 Token 状态：**读取 `.xiaoyienv` 文件，检查 Token 是否需要刷新
+
+​    若 Token 需要刷新，或后续操作返回 `TOKEN_EXPIRED`，请参阅 [Token 刷新指南](./token_refresh.md)
+
+**2.查询小艺Claw目录：**若用户为指定查询哪个文件夹下的文件列表，则默认查询`小艺Claw`目录下的文件列表，执行如下命令查询：
+
+```bash
+huawei_drive.py --command query --key file_list
+```
+
+**3、查询指定目录：**若用户指定查询目录的文件夹名称，则首先查询该文件夹是否存在，若文件夹不存在，则返回`文件夹不存在`错误。若文件夹存在，则从查询文件夹是否存在的接口中获取文件夹的`folder_id`后，执行如下命令
+
+```bash
+huawei_drive.py --command query --key file_list --file_id {folder_id}
+```
+
+### 输出格式
+
+**输出结果必须按照文件路径层级显示**
+
+```markdown
+当前查询目录：/我的云盘/小艺Claw，共 5 项，详情如下：
+
+| 类型 | 文件名称   | 文件大小 | 修改时间             |
+| ---- | ---------- | -------- | -------------------- |
+| 目录 | documents  | ——       | 2026-02-20  10:30:00 |
+| 文件 | readme.txt | 1.5MB    | 2026-02-25  15:20:00 |
+| 图片 | abc.jpg    | 256 KB   | 2026-02-26  19:15:00 |
+| 视频 | efg.mp4    | 25 MB    | 2026-02-27  09:15:00 |
+| 音频 | tfg.mp3    | 3 MB     | 2026-02-28  20:17:00 |
+
+[点击前往 文件管理 - 我的云盘 查看文件](superlink://vassistant?startmode=appLink&appLink=filemanager://openDirectory?fileUri=file%3A%2F%2Fcom.huawei.hmos.filemanager%2Fdata%2Fstorage%2Fel2%2Fcloud%2F%E5%B0%8F%E8%89%BAClaw)。
+```
+
+### 数据说明
+
+- **文件大小**：查询结果单位为 Byte，需转换为 GB/MB/KB
+- **文件类型识别**：
+  - 目录：`mimeType` = `application/vnd.huawei-apps.folder`
+  - 其他：按文件后缀识别（图片、视频、音频、文件等）
+
 ## 重命名文件
 
 ### 执行流程
@@ -233,6 +273,30 @@ huawei_drive.py --command rename --file_id {file_id} --file_name {new_file_name}
 | test1.txt | report.txt | 小艺Claw/report.txt | ✅ 成功 |
 
 [点击前往 文件管理 - 我的云盘 查看文件](superlink://vassistant?startmode=appLink&appLink=filemanager://openDirectory?fileUri=file%3A%2F%2Fcom.huawei.hmos.filemanager%2Fdata%2Fstorage%2Fel2%2Fcloud%2F%E5%B0%8F%E8%89%BAClaw)。
+```
+
+## 移动文件
+
+### 执行流程
+
+1.**检查 Token 状态**：读取 `.xiaoyienv` 文件，检查 Token 是否需要刷新
+
+​    若 Token 需要刷新，或后续操作返回 `TOKEN_EXPIRED`，请参阅 [Token 刷新指南](./token_refresh.md)
+
+2.**云盘文件查询**：根据原文件名查询云端文件是否存在，并获取云端文件`{file_id}` ，以及文件当前所在父目录id：`{source_parent_id}`。若文件不存在 则直接终止，返回`云端文件不存在`错误提示。
+
+3、**云盘目的路径查询：**根据用户提供的目标文件夹名称，查询该文件夹云端的id：`{destination_parent_id}`,若文件夹不存在，则直接终止，返回`目标文件夹不存在`错误提示。
+
+4.**重名校验**：若目标文件夹`{destination_parent_id}`下已存在同名文件，则提示用户若继续移动文件夹被重命名。
+
+6.**执行移动**：调用`huawei_drive.py`脚本，传入参数`{file_id}`，`{source_parent_id}`以及`{destination_parent_id}`
+
+7.**输出结果**：输出移动文件结果：成功或失败。
+
+### 命令
+
+```bash
+huawei_drive.py --command move --file_id {file_id} --source_parent_id {source_parent_id} --destination_parent_id {destination_parent_id}
 ```
 
 

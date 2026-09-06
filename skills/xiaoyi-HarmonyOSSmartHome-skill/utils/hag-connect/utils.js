@@ -43,6 +43,19 @@ const OPENCLAW_ENV_FILE = process.env.OPENCLAW_ENV_FILE ||
         ? join(process.env.USERPROFILE || '', '.openclaw', '.xiaoyienv')
         : '/home/sandbox/.openclaw/.xiaoyienv');
 
+// ==================== 商城配置加载 ====================
+const MALL_CONFIG_PATH = path.join(__dirname, '.mallconfig');
+
+/**
+ * 获取商城服务URL（从配置文件读取）
+ * @returns {string} 商城服务URL
+ */
+function getMallServiceUrl() {
+    const content = fs.readFileSync(MALL_CONFIG_PATH, 'utf-8');
+    const line = content.split('\n').find(l => l.trim().startsWith('MALL_SERVICE_URL='));
+    return line.split('=')[1].trim();
+}
+
 /**
  * 加载环境变量文件
  * @param {boolean} verbose - 是否显示详细日志
@@ -62,17 +75,17 @@ function loadOpenclawEnv(verbose = false) {
             env[key] = value;
         }
         if (verbose) {
-            console.error(`[verbose] Loaded env from ${OPENCLAW_ENV_FILE}`);
+            console.error(`[verbose] Loaded env from .xiaoyienv`);
         }
     } catch (err) {
         const code = err.code;
         if (code === 'ENOENT') {
-            if (verbose) console.error(`[verbose] ${OPENCLAW_ENV_FILE} not found, falling back to process.env`);
+            if (verbose) console.error(`[verbose] .xiaoyienv not found, falling back to process.env`);
         } else if (code === 'EACCES') {
-            console.error(`Error: Permission denied reading ${OPENCLAW_ENV_FILE}`);
-            console.error(` Try: chmod 644 ${OPENCLAW_ENV_FILE}`);
+            console.error(`Error: Permission denied reading .xiaoyienv`);
+            console.error(` Try: chmod 644 .xiaoyienv`);
         } else {
-            console.error(`Error: Failed to read ${OPENCLAW_ENV_FILE}: ${err.message}`);
+            console.error(`Error: Failed to read .xiaoyienv: ${err.message}`);
         }
     }
     return env;
@@ -92,9 +105,9 @@ export function getHagConfigFromEnv(verbose = false) {
     const apiKey = fileEnv['PERSONAL-API-KEY'] ?? fileEnv.PERSONAL_API_KEY ?? process.env.PERSONAL_API_KEY;
 
     if (verbose) {
-        console.error(`[verbose] SERVICE_URL = ${serviceUrl ?? '(not set)'}`);
-        console.error(`[verbose] PERSONAL-UID = ${uid ?? '(not set)'}`);
-        console.error(`[verbose] PERSONAL-API-KEY = ${apiKey ? maskSecret(apiKey) : '(not set)'}`);
+        console.error(`[verbose] SERVICE_URL exists: ${!!serviceUrl}`);
+        console.error(`[verbose] PERSONAL-UID exists: ${!!uid}`);
+        console.error(`[verbose] PERSONAL-API-KEY exists: ${!!apiKey}`);
     }
 
     // 如果环境变量中有配置，则使用；否则使用默认配置
@@ -110,7 +123,7 @@ export function getHagConfigFromEnv(verbose = false) {
     }
 
     if (verbose) {
-        console.error(`[verbose] 完整 API URL = ${baseUrl}`);
+        console.error(`[verbose] API URL configured: ${!!baseUrl}`);
     }
 
     const config = {
@@ -177,7 +190,7 @@ function buildHeaders(config, traceId, contentLength) {
     };
 }
 
-function buildMallHeaders(config, traceId, contentLength) {
+function buildMallHeaders(contentLength) {
     return {
         'Content-Type': 'application/json',
         'Content-Length': contentLength
@@ -254,9 +267,84 @@ export async function hagSkillServicePost(commandType, payload = {}, verbose = f
     return makeHttpsRequest(config.baseUrl, headers, postData, verbose);
 }
 
+// ==================== 数据脱敏常量 ====================
+const SENSITIVE_REPLACE_STAR = '*';
+const SENSITIVE_REPLACE_MAX_STAR = '**********';
+const SENSITIVE_LENGTH_THREE = 3;
+const SENSITIVE_LENGTH_FIVE = 5;
+const SENSITIVE_LENGTH_TEN = 10;
+const PHONE_COMMON_LEN = 11;
+const SENSITIVE_LENGTH_EIGHTEEN = 18;
+const SENSITIVE_START_INDEX_ONE = 1;
+const SENSITIVE_START_INDEX_TWO = 2;
+const SENSITIVE_START_INDEX_FOUR = 4;
+const PHONE_START_INDEX = 3;
+const PHONE_END_COUNT = 4;
+const SENSITIVE_START_INDEX_SIX = 6;
+const SENSITIVE_START_INDEX_NINE = 9;
+
+/**
+ * 根据起止位置生成脱敏字符串
+ * @param {string} data - 待处理数据
+ * @param {number} startIndex - 保留前缀长度
+ * @param {number} endCount - 保留后缀长度（0表示不保留后缀）
+ * @returns {string} 脱敏结果
+ */
+function fuzzy(data, startIndex, endCount) {
+    if (!data) return SENSITIVE_REPLACE_STAR;
+    const len = data.length;
+    if (len <= startIndex) {
+        return SENSITIVE_REPLACE_STAR.repeat(len);
+    }
+    const prefix = data.substring(0, startIndex);
+    const suffix = endCount > 0 ? data.substring(len - endCount) : '';
+    const middleLen = len - startIndex - (endCount > 0 ? endCount : 0);
+    const middle = SENSITIVE_REPLACE_STAR.repeat(middleLen > 0 ? middleLen : 1);
+    return prefix + middle + suffix;
+}
+
+/**
+ * ID类字符串匿名化
+ * 匿名化原则，数据长度x按如下方式处理：
+ * x是1位，则全掩码；
+ * x是2-3位，保留前1位，其余的掩码；
+ * x是4-5位，保留前2位，其余的掩码；
+ * x是6-10位，则保留前4个位，其余的掩码；
+ * x是11位，保留前三位和后四位，中间的掩码；
+ * x是12-18位，保留前6位，其余的掩码；
+ * x大于18位，保留前9位，其余的掩码；
+ * 应用在 UserID、OwnerID、昵称、手机号、身份证、邮箱等
+ * @param {string} data - 待处理数据
+ * @returns {string} 脱敏结果
+ */
+function fuzzyData(data) {
+    if (!data) return '';
+    const len = data.length;
+    if (len < 1) {
+        return SENSITIVE_REPLACE_STAR;
+    }
+    if (len <= SENSITIVE_LENGTH_THREE) {
+        return fuzzy(data, SENSITIVE_START_INDEX_ONE, 0);
+    } else if (len <= SENSITIVE_LENGTH_FIVE) {
+        return fuzzy(data, SENSITIVE_START_INDEX_TWO, 0);
+    } else if (len <= SENSITIVE_LENGTH_TEN) {
+        return fuzzy(data, SENSITIVE_START_INDEX_FOUR, 0);
+    } else if (len <= PHONE_COMMON_LEN) {
+        return fuzzy(data, PHONE_START_INDEX, PHONE_END_COUNT);
+    } else if (len <= SENSITIVE_LENGTH_EIGHTEEN) {
+        return fuzzy(data, SENSITIVE_START_INDEX_SIX, 0);
+    } else {
+        return data.substring(0, SENSITIVE_START_INDEX_NINE) + SENSITIVE_REPLACE_MAX_STAR;
+    }
+}
+
+/**
+ * 敏感数据脱敏
+ * @param {string} val - 待脱敏数据
+ * @returns {string} 脱敏结果
+ */
 export function maskSecret(val) {
-    if (!val || val.length <= 8) return '***';
-    return val.slice(0, 4) + '***' + val.slice(-4);
+    return fuzzyData(val);
 }
 
 /**
@@ -314,12 +402,14 @@ export async function hagSkillServicePostBody(body = {}, verbose = false) {
  * @returns {Promise<object>} API 响应
  */
 export async function hagSkillServicePostMall(apiPath, body = {}, verbose = false) {
-    const config = getHagConfigFromEnv(verbose);
-    const traceId = generateTraceId();
-    let serviceUrl = 'https://smarthome.dbankcloud.cn';
-    let baseUrl = serviceUrl + apiPath;
+    const serviceUrl = getMallServiceUrl();
+    const baseUrl = serviceUrl + apiPath;
 
-    const headers = buildMallHeaders(config, traceId, Buffer.byteLength(JSON.stringify(body)));
+    if (verbose) {
+        console.error(`[verbose] 商城 API URL = ${!!baseUrl}`);
+    }
+
+    const headers = buildMallHeaders(Buffer.byteLength(JSON.stringify(body)));
 
     return makeHttpsRequest(baseUrl, headers, JSON.stringify(body), verbose);
 }

@@ -48,7 +48,7 @@ permissions: 发送get请求和post请求的权限、路由器控制操作权限
 3.2 前置必要条件（强制：不能跳过该步骤）
 （1）获取用户要控制的家庭信息，若有多个家庭，都列举出家庭名称，追问用户，让用户自己选择具体的家庭信息；
 （2）在用户选择家庭后，将该家庭下的所有路由名称列出来，追问用户，让用户选择具体要对接的路由，并获取该路由的device id，用于具体对接配置；
-（3）配置ROUTER_DEVID和ROUTER_PRODID环境变量，用于后续发送请求；
+（3）通过--router-id 和 --prod-id 参数指定路由器设备，用于后续发送请求
 
 3.3 路由器控制操作和查询逻辑
 （1）识别用户的具体需求：
@@ -110,6 +110,10 @@ node router-skill/bin/router-claw.js get_game_history
 node router-skill/bin/router-claw.js get_week_report
 
 （2）访客WiFi控制功能
+**【重要】set_guest_wifi的设置结果必须再通过get_guest_wifi查询最新配置来判断，严禁通过errcode判断。若查询无响应或配置不符，则提示用户访客WiFi设置功能暂不可用，严禁提示用户设置失败**
+
+**【重要】访客WiFi仅支持开放网络（无密码），不支持设置密码。若用户要求设置访客WiFi密码，需提示用户："很抱歉，当前不支持设置访客WiFi密码，如需设置密码请到智慧生活App的路由器设置界面进行操作"。**
+
 # 开启访客WiFi（同时开启2.4G和5G），默认有效期为1天
 node router-skill/bin/router-claw.js set_guest_wifi --data '{"enable":true,"ssid":"MyGuestWiFi"}'
 

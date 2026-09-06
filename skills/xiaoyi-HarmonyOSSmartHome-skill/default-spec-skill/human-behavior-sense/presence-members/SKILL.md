@@ -4,7 +4,7 @@ description: "识别在家的家庭成员。当用户询问谁在家、谁在家
 ---
 
 ## ⚠️ 技能介绍（强制规范）
-1. **自动获取家庭信息** -调用get_homes_info
+1. **自动获取家庭信息** -调用get_homes_info获取家庭列表，**当家庭数量>1且用户未明确指定目标家庭时，必须强制询问用户要查询哪个家庭**，禁止跳过此步骤继续后续查询
 2. **自动获取设备列表** -调用get_devices_info，筛选门锁、路由器、传感器，设备不存在时仍使用该技能，参考下方数据缺失处理逻辑
 3. **查看设备记录** -调用get_device_histories，获取有关身份的关键执行记录
 4. **自动分析结果**-按照下面核心算法判断是否有人
@@ -85,39 +85,96 @@ description: "识别在家的家庭成员。当用户询问谁在家、谁在家
 ### 2. 路由器数据
 
 - 查询当前连接家庭网络的设备
-- 匹配家庭成员的手机MAC地址
+- **匹配逻辑**：从 `memberDeviceMap.json` 读取成员-设备列表，遍历成员的所有设备MAC地址进行匹配
+- 支持一个成员对应多个设备（一对多映射）
+
+**设备名自动匹配规则：**
+
+当路由器返回的设备名称中包含成员称呼时（如"妈妈的手机 pura70"、"爸爸的iPhone"），视为**强匹配信号**，应自动建立映射关系：
+
+```
+检测到设备名称中包含成员称呼，已自动绑定：
+- "妈妈的手机 pura70" → 已绑定到 妈妈
+```
+
+**匹配关键字列表：**
+- 家庭称呼：爸爸、妈妈、爷爷、奶奶、哥哥、姐姐、弟弟、妹妹、儿子、女儿、老公、老婆、宝宝、孩子等
+- 自定义昵称（需与 `memberDeviceMap.json` 中注册的成员名称一致）
+
+**禁止行为 - 过度联想：**
+
+> **【严重】绝对禁止通过门锁成员名称联想匹配未知设备**
+>
+> 门锁中录入的成员名称（如"爸爸"、"妈妈"）**仅用于门锁权限识别**，不能作为设备归属的依据。
+>
+> **错误示例：**
+> - 门锁有成员"妈妈"
+> - 路由器有设备"AQUA的手机"
+> - ❌ 禁止自动认为"AQUA"就是"妈妈"或有关联
+>
+> **正确做法：**
+> - 仅通过 `memberDeviceMap.json` 中已配置的映射关系匹配
+> - 或者在设备名称明确包含成员称呼时（如"妈妈的手机"）才自动绑定
+> - 无法匹配时，询问用户确认
 
 ### 3. 传感器数据
 
 - 使用 `get_device_messages` 查询传感器最近消息
 - 需要预先配置成员-房间映射表
 
-### 4. 成员配置（需预先配置）
+### 4. 成员配置（启动时加载）
+
+**配置存储位置：** `memberDeviceMap.json`
+
+**加载时机：** 每次执行成员检测前，必须先从 `memberDeviceMap.json` 读取当前家庭的成员-设备映射关系。
+
+**加载逻辑伪代码：**
 
 ```javascript
-// 成员-房间映射
-const memberRoomMapping = {
+// 获取当前家庭ID
+const homeId = getCurrentHomeId();
 
-};
+// 读取JSON配置
+const config = readJsonFile("memberDeviceMap.json");
 
-// 成员-设备MAC映射
-const memberDeviceMapping = {
+// 获取当前家庭的成员-设备列表
+const memberDeviceList = config[homeId] || {};
 
-};
+// memberDeviceList 结构示例：
+// {
+//   "爸爸": [
+//     { "deviceName": "iPhone 15 Pro", "mac": "XX:XX:XX:XX:XX:XX" },
+//     { "deviceName": "iPad Pro", "mac": "YY:YY:YY:YY:YY:YY" }
+//   ],
+//   "妈妈": [
+//     { "deviceName": "Huawei P50", "mac": "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ" }
+//   ]
+// }
 ```
+
+**配置缺失处理：**
+- 若 `memberDeviceMap.json` 中无当前家庭ID的配置，记录警告但继续执行
+- 后续路由器检测到未知设备时，将引导用户配置映射关系
 
 ### 5. 未匹配设备处理
 
-当路由器查询到已连接的手机，但该设备MAC地址未在 `memberDeviceMapping` 中匹配到家庭成员时：
+当路由器查询到已连接的手机，但该设备信息未在 `memberDeviceMap.json` 中匹配到家庭成员时：
 
-1. 记录该未知设备（设备名、MAC地址）
-2. **终止当前执行**
-3. 返回询问消息给用户：
+1. **检查设备名是否包含成员称呼** - 匹配关键字列表（爸爸、妈妈、爷爷、奶奶等）
+   - 若匹配成功，自动将设备绑定到对应成员，并更新到 `memberDeviceMap.json`
+2. 若不匹配，检查 `memberDeviceMap.json` 中当前家庭是否有任何成员配置
+3. 若该设备名称之前未被询问过，记录该未知设备（设备名、MAC地址）
+4. **终止当前执行**
+5. 返回询问消息给用户：
 
 ```
 检测到家庭网络中有未识别的设备，请问这个设备是哪个家庭成员的？
 - 设备名称：iPhone 15 Pro
 ```
+
+**已配置家庭的后续检测：**
+- 若 `memberDeviceMap.json` 中已有当前家庭的配置，但仍出现未知设备
+- 说明该设备为新接入设备，需要用户确认归属
 
 ### 6. 用户回答设备归属后
 
@@ -125,20 +182,70 @@ const memberDeviceMapping = {
 
 #### 6.1 更新配置
 
-1. 查询路由器获取该设备的 MAC 地址
-2. 将 MAC 地址添加到 `memberDeviceMapping`：
+当用户回答设备归属后（如"iPhone是爸爸的"），按以下流程将配置持久化到 `memberDeviceMap.json` 文件：
+
+1. **获取家庭ID** - 从已获取的家庭信息中获取当前家庭的 `homeId`
+2. **查询路由器获取 MAC** - 调用 `get_devices_info` 获取路由器设备列表，再查询该设备的 MAC 地址
+3. **读取现有配置** - 读取 `memberDeviceMap.json` 文件内容（若文件不存在则为空对象 `{}`）
+4. **更新 JSON 结构** - 将设备信息添加到对应家庭和成员的设备列表中（支持一对多映射）
+
+**memberDeviceMap.json 文件结构：**
+
+```json
+{
+  "familyId_001": {
+    "爸爸": [
+      { "deviceName": "iPhone 15 Pro", "mac": "XX:XX:XX:XX:XX:XX" },
+      { "deviceName": "iPad Pro", "mac": "YY:YY:YY:YY:YY:YY" }
+    ],
+    "妈妈": [
+      { "deviceName": "Huawei P50", "mac": "ZZ:ZZ:ZZ:ZZ:ZZ:ZZ" }
+    ]
+  }
+}
+```
+
+**更新逻辑伪代码：**
 
 ```javascript
 // 用户回答"iPhone 15 Pro是爸爸的"后
-memberDeviceMapping["爸爸"] = "新MAC地址";
+const homeId = getCurrentHomeId();
+const deviceMac = getDeviceMacFromRouter("iPhone 15 Pro");
+
+// 读取现有配置
+let config = readJsonFile("memberDeviceMap.json");
+if (!config[homeId]) {
+  config[homeId] = {};
+}
+if (!config[homeId]["爸爸"]) {
+  config[homeId]["爸爸"] = [];
+}
+
+// 添加新设备（避免重复）
+const existingIndex = config[homeId]["爸爸"].findIndex(d => d.deviceName === "iPhone 15 Pro");
+if (existingIndex === -1) {
+  config[homeId]["爸爸"].push({
+    deviceName: "iPhone 15 Pro",
+    mac: deviceMac
+  });
+}
+
+// 写入文件
+writeJsonFile("memberDeviceMap.json", config);
 ```
+
+**关键约束：**
+- 一个成员可以绑定多部设备（数组形式），MAC 地址必须唯一
+- 若设备名称已存在，则更新其 MAC 地址
+- 每次更新都是完整覆盖写入，保证数据一致性
 
 #### 6.2 重新执行检测
 
 配置更新完成后，自动重新执行成员在家检测：
-1. 使用更新后的 `memberDeviceMapping` 重新匹配路由器设备
-2. 按算法计算每个成员在家概率
-3. 返回最终结果
+1. 从 `memberDeviceMap.json` 读取更新后的家庭成员设备映射
+2. 使用更新后的配置重新匹配路由器设备
+3. 按算法计算每个成员在家概率
+4. 返回最终结果
 
 #### 6.3 返回示例
 
@@ -173,9 +280,10 @@ memberDeviceMapping["爸爸"] = "新MAC地址";
 #### 7.3 处理流程
 
 1. 根据 `deviceName` 查询路由器获取对应 MAC 地址
-2. 将 MAC 地址加入 `memberDeviceMapping[member]`
-3. 重新执行成员在家检测
-4. 返回最终结果
+2. 将设备信息添加到 `memberDeviceMap.json` 对应家庭和成员的设备列表中
+3. 从 `memberDeviceMap.json` 读取更新后的配置
+4. 重新执行成员在家检测
+5. 返回最终结果
 
 ## 数据缺失处理
 
@@ -190,10 +298,11 @@ memberDeviceMapping["爸爸"] = "新MAC地址";
 ## 使用流程
 
 1. 获取家庭成员列表
-2. 对每个成员分别查询三端数据（门锁、路由器、传感器）
-3. 按算法计算每个成员在家概率
-4. 筛选概率≥60%的成员作为在家成员
-5. 生成回复结果
+2. **读取成员配置** - 从 `memberDeviceMap.json` 加载当前家庭的成员-设备映射关系
+3. 对每个成员分别查询三端数据（门锁、路由器、传感器）
+4. 按算法计算每个成员在家概率
+5. 筛选概率≥60%的成员作为在家成员
+6. 生成回复结果
 
 ## 回复格式
 
@@ -238,4 +347,4 @@ memberDeviceMapping["爸爸"] = "新MAC地址";
 2. **不确定性**：当识别不确定性较高时，使用"可能"、"推测"等词语
 3. **数据时效性**：说明识别结果基于的时间范围
 4. **设备要求**：明确说明需要支持的设备才能进行人员识别
-5. **成员配置**：需预先配置成员-房间映射和成员-设备MAC映射
+5. **成员配置**：成员-设备映射关系存储在 `memberDeviceMap.json`，首次配置后后续自动读取

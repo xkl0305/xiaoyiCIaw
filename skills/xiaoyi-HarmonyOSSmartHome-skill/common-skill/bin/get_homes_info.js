@@ -47,7 +47,6 @@ export async function getHomesInfo(verbose = false) {
         if (!Array.isArray(rawHomes)) {
             throw new Error('解析到的家庭数据不是数组格式');
         }
-        const uid = getHagConfigFromEnv(false).uid;
         // 处理家庭列表，验证每个家庭数据
         const homeList = rawHomes.map((item, index) => {
             // 验证每个家庭对象的基本结构
@@ -63,7 +62,6 @@ export async function getHomesInfo(verbose = false) {
                 homeName: item.homeName || item.name || '未命名家庭',
                 name: item.name || '',  // 保留原始 name 字段（HAG API 返回）
                 role: item.role || '成员',
-                ownerUid: item.ownerUid || '',
                 extendRole: item.extendRole || '',
                 memberType: item.memberType || ''
             };

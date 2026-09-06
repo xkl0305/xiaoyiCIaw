@@ -32,9 +32,9 @@ const CONFIG = {
 
 // ==================== 直接导入模块函数 ====================
 import { getHomesInfo } from '../../../common-skill/bin/get_homes_info.js';
-import { getDevicesInfo, getDeviceServiceSnapshot } from '../../../common-skill/bin/get_devices_info.js';
-import { getDeviceMessages } from '../../../common-skill/bin/get_device_messages.js';
+import { getDeviceServiceSnapshot } from '../../../common-skill/bin/get_devices_info.js';
 import { getDeviceHistories } from '../../../common-skill/bin/get_device_histories.js';
+import { hagSkillServicePostBody, hagControl, generateTraceId } from '../../../utils/hag-connect/utils.js';
 
 // 执行命令并返回结果
 async function execCommand(cmd) {
@@ -75,19 +75,6 @@ async function fetchHomesInfo() {
         return result;
     } catch (error) {
         console.log('  [FAIL] 获取家庭信息失败:', error.message);
-        return null;
-    }
-}
-
-// 第二步：获取设备基础信息
-async function fetchDevicesInfo() {
-    console.log('[2/12] 获取设备基础信息...');
-    try {
-        const result = await getDevicesInfo({});
-        console.log('  [OK] 获取设备基础信息成功');
-        return result;
-    } catch (error) {
-        console.log('  [FAIL] 获取设备基础信息失败:', error.message);
         return null;
     }
 }
@@ -141,59 +128,68 @@ async function fetchDevicesDetail(devicesInfo) {
     const flattenedResults = allResults.flat();
     return flattenedResults;
 }
-// 第四步：获取设备消息/告警
-async function fetchDeviceMessages() {
-    console.log('[4/12] 获取设备消息/告警...');
-    try {
-        const result = await getDeviceMessages({ lastDays: 1 });
-        console.log('  [OK] 获取设备消息成功');
-        return result;
-    } catch (error) {
-        console.log('  [FAIL] 获取设备消息失败:', error.message);
-        return null;
-    }
-}
 
-// 第五步：获取儿童上网保护数据
-async function getChildProtectData(devicesInfo) {
-    console.log('[5/11] 获取儿童上网保护数据...');
-
-    if (!devicesInfo || !Array.isArray(devicesInfo)) {
-        console.log('  [SKIP] 设备信息为空，跳过儿童保护数据获取');
+// 获取儿童上网保护数据（接收路由设备列表）
+async function getChildProtectData(routerDevices) {
+    if (!routerDevices || !Array.isArray(routerDevices) || routerDevices.length === 0) {
         return null;
     }
 
-    // 过滤路由设备
-    const routers = devicesInfo.filter(d =>
-        d.category === 'router' ||
-        d.productName?.includes('路由') ||
-        d.model?.includes('router')
-    );
+    // 使用 hagControl API 直接调用
+    const childProtectDataPromises = routerDevices.map(async (router, index) => {
+        const devId = router.devId;
+        const prodId = router.prodId;
 
-    if (routers.length === 0) {
-        console.log('  [SKIP] 未发现路由设备，跳过儿童保护数据获取');
-        return null;
-    }
+        if (!devId || !prodId) {
+            console.log(`  [SKIP] 路由 ${index + 1}/${routerDevices.length} 缺少 devId 或 prodId`);
+            return null;
+        }
 
-    // 注意：router-claw.js 无导出函数，暂无法改造为直接调用
-    // 保留 exec 方式，但需要修复代码逻辑
-    const childProtectDataPromises = routers.map(async (router, index) => {
-        const cmd = `node ${path.join(CONFIG.routerSkillBin, 'router-claw.js')} get_child_protect`;
         try {
-            const result = await execCommand(cmd);
-            if (result.success) {
-                const data = JSON.parse(result.data);
-                console.log(`  [OK] 路由 ${index + 1}/${routers.length} 儿童保护数据获取成功`);
-                return {
-                    routerId: router.devId,
-                    data: data
-                };
-            } else {
-                console.log(`  [FAIL] 路由 ${index + 1}/${routers.length} 获取失败: ${result.error}`);
-                return null;
+            // 调用儿童上网保护接口
+            const res = await hagControl({
+                devId,
+                prodId,
+                mode: 'ACK',
+                operation: 'GET',
+                sid: '.sys/gateway/ntwk/childHomepage'
+            }, false);
+
+            // 解析嵌套响应结构：res.data 是字符串 "{\"payload\":\"[...]\"}"
+            let childDevices = [];
+            try {
+                const innerData = typeof res.data === 'string' ? JSON.parse(res.data) : res.data;
+                const payloadStr = innerData?.payload || '[]';
+                const payloadData = typeof payloadStr === 'string' ? JSON.parse(payloadStr) : payloadStr;
+                childDevices = Array.isArray(payloadData) ? payloadData : [];
+            } catch (parseError) {
+                console.log(`  [WARN] 解析儿童保护数据失败: ${parseError.message}`);
             }
+
+            // 提取每个儿童的今日上网情况
+            const childrenInfo = childDevices.map(child => {
+                const todayTime = child?.today?.time || {};
+                return {
+                    deviceId: child?.device || '',
+                    name: child?.actualName || child?.hostName || '未知设备',
+                    macAddress: child?.address || '',
+                    totalTime: todayTime.total || 0,      // 今日上网总时长（秒）
+                    gameTime: todayTime.game || 0,         // 游戏时长（秒）
+                    videoTime: todayTime.video || 0,       // 视频时长（秒）
+                    studyTime: todayTime.study || 0,       // 学习时长（秒）
+                    socialTime: todayTime.social || 0,     // 社交时长（秒）
+                    otherTime: todayTime.other || 0        // 其他时长（秒）
+                };
+            });
+
+            console.log(`  [OK] 路由 ${index + 1}/${routerDevices.length} 儿童保护数据获取成功`);
+            return {
+                routerId: devId,
+                routerName: router.devName,
+                children: childrenInfo
+            };
         } catch (error) {
-            console.log(`  [FAIL] 路由 ${index + 1}/${routers.length} 获取失败:`, error.message);
+            console.log(`  [FAIL] 路由 ${index + 1}/${routerDevices.length} 获取失败:`, error.message);
             return null;
         }
     });
@@ -204,41 +200,26 @@ async function getChildProtectData(devicesInfo) {
     return childProtectData;
 }
 
-// 第六步：获取门锁历史记录
-async function getLockHistory(devicesInfo) {
-    console.log('[6/11] 获取门锁历史记录...');
-
-    if (!devicesInfo || !Array.isArray(devicesInfo)) {
-        console.log('  [SKIP] 设备信息为空，跳过门锁历史获取');
-        return null;
-    }
-
-    // 过滤门锁设备
-    const locks = devicesInfo.filter(d =>
-        d.category === 'lock' ||
-        d.productName?.includes('门锁') ||
-        d.model?.includes('lock')
-    );
-
-    if (locks.length === 0) {
-        console.log('  [SKIP] 未发现门锁设备，跳过门锁历史获取');
+// 获取门锁历史记录（接收门锁设备列表）
+async function getLockHistory(lockDevices) {
+    if (!lockDevices || !Array.isArray(lockDevices) || lockDevices.length === 0) {
         return null;
     }
 
     // 并行查询所有门锁设备
-    const lockHistoryDataPromises = locks.map(async (lock, index) => {
+    const lockHistoryDataPromises = lockDevices.map(async (lock, index) => {
         const devId = lock.devId || lock.deviceId;
         if (!devId) return null;
 
         try {
             const data = await getDeviceHistories({ devId, sid: 'eventData', date: 'today' });
-            console.log(`  [OK] 门锁 ${index + 1}/${locks.length} 历史记录获取成功`);
+            console.log(`  [OK] 门锁 ${index + 1}/${lockDevices.length} 历史记录获取成功`);
             return {
                 devId: devId,
                 data: data
             };
         } catch (error) {
-            console.log(`  [FAIL] 门锁 ${index + 1}/${locks.length} 获取失败:`, error.message);
+            console.log(`  [FAIL] 门锁 ${index + 1}/${lockDevices.length} 获取失败:`, error.message);
             return null;
         }
     });
@@ -313,62 +294,120 @@ async function main() {
 
     const startTime = Date.now();
 
-    // 第一阶段：并行获取基础数据（不依赖其他数据）
-    console.log('=== 第一阶段：并行获取基础数据 ===');
-    const phase1Promise = Promise.all([
-        fetchHomesInfo(),
-        fetchDevicesInfo(),
-        fetchDeviceMessages()
-    ]);
+    // 第一阶段：获取家庭列表（确定 homeId）
+    console.log('=== 第一阶段：获取家庭列表 ===');
+    const homesInfo = await fetchHomesInfo();
 
-    // 第三阶段：并行获取个人健康数据（不依赖其他数据）
-    console.log('=== 第三阶段：并行获取个人健康数据 ===');
-    const phase3Promise = Promise.all([
+    // 确定要查询的家庭 ID
+    let targetHomeId = specifiedHomeId;
+    if (!targetHomeId && homesInfo?.data?.homes?.length === 1) {
+        targetHomeId = homesInfo.data.homes[0].homeId;
+    }
+
+    // 第二阶段：调用 getFamilyBriefData 获取家庭简报聚合数据
+    console.log('\n=== 第二阶段：获取家庭简报聚合数据 ===');
+    const familyBriefData = await fetchFamilyBriefData(targetHomeId, '');
+
+    // 从 familyBriefData 中提取业务数据对象（兼容多层嵌套 + 字符串化结构）
+    function extractBusinessData(familyBriefData) {
+        try {
+            let current = familyBriefData?.data ?? familyBriefData;
+            // 逐层剥离 {errorCode,errorMsg,data} 包装，并处理字符串化数据
+            for (let i = 0; i < 5; i++) {
+                if (typeof current === 'string') {
+                    current = JSON.parse(current);
+                }
+                if (current && typeof current === 'object' && 'data' in current) {
+                    current = current.data;
+                } else {
+                    break;
+                }
+            }
+            // 若 data 仍为字符串包裹，再尝试解析一次
+            if (typeof current === 'string') {
+                current = JSON.parse(current);
+            }
+            return current || {};
+        } catch (e) {
+            return {};
+        }
+    }
+    const familyBriefBiz = extractBusinessData(familyBriefData) || {};
+
+    // 从 familyBriefData 中提取分类设备
+    const classifiedDevices = familyBriefBiz.classifiedDevices || {};
+    const routerDevices = classifiedDevices['路由设备'] || [];
+    const lockDevices = classifiedDevices['门锁设备'] || [];
+    const envDevices = classifiedDevices['环境设备'] || [];
+
+    // 打印基础索引信息
+    const homeInfo = familyBriefBiz.homeInfo || {};
+    const deviceStatistic = familyBriefBiz.deviceStatistic || {};
+    console.log('\n【基础索引】' + (homeInfo.homeName || '未知') + '，设备' + (deviceStatistic.total || 0) + '台，在线' + (deviceStatistic.onlineCount || 0) + '台，离线' + (deviceStatistic.offlineCount || 0) + '台');
+    console.log('【设备分类】门锁' + lockDevices.length + '台、路由' + routerDevices.length + '台、环境' + envDevices.length + '台');
+    console.log('【事件概况】共' + ((familyBriefBiz.events || []).length) + '条事件');
+
+    // 第三阶段：根据分类设备分别获取详细数据
+    console.log('\n=== 第三阶段：获取分类设备详细数据 ===');
+
+    // 3.1 获取儿童上网保护数据（路由设备）
+    console.log('[3.1] 获取儿童上网保护数据...');
+    let childProtectData = null;
+    if (routerDevices.length > 0) {
+        childProtectData = await getChildProtectData(routerDevices);
+    } else {
+        console.log('  [SKIP] 无路由设备');
+    }
+
+    // 3.2 获取门锁历史记录（门锁设备）
+    console.log('[3.2] 获取门锁历史记录...');
+    let lockHistory = null;
+    if (lockDevices.length > 0) {
+        lockHistory = await getLockHistory(lockDevices);
+    } else {
+        console.log('  [SKIP] 无门锁设备');
+    }
+
+    // 3.3 获取环境设备快照（仅在线的环境设备）
+    console.log('[3.3] 获取环境设备快照...');
+    let envDevicesSnapshot = [];
+    const onlineEnvDevices = envDevices.filter(d => d.online);
+    if (onlineEnvDevices.length > 0) {
+        envDevicesSnapshot = await fetchDevicesDetail(onlineEnvDevices);
+    } else {
+        console.log('  [SKIP] 无在线环境设备');
+    }
+
+    // 第四阶段：并行获取个人健康数据
+    console.log('\n=== 第四阶段：并行获取个人健康数据 ===');
+    const [sleepData, activityData, emotionData] = await Promise.all([
         getSleepData(),
         getActivityData(),
         getEmotionData()
     ]);
 
-    // 等待第一阶段完成
-    const [homesInfo, devicesInfo, deviceMessages] = await phase1Promise;
-
-    // 第二阶段：并行获取设备相关数据（依赖第一阶段的设备信息）
-    console.log('\n=== 第二阶段：并行获取设备相关数据 ===');
-    const devices = devicesInfo?.devices || [];
-    const [devicesDetail, childProtectData, lockHistory] = await Promise.all([
-        fetchDevicesDetail(devices),
-        getChildProtectData(devices),
-        getLockHistory(devices)
-    ]);
-
-    // 等待第三阶段完成
-    const [sleepData, activityData, emotionData] = await phase3Promise;
-
-    // 汇总所有数据到单个文件 (00-09)
+    // 汇总所有数据
     const allData = {
         timestamp: new Date().toISOString(),
         '00_summary': {
             homesInfo: homesInfo !== null,
-            devicesInfo: devicesInfo !== null,
-            devicesDetail: devicesDetail.length > 0,
-            deviceMessages: deviceMessages !== null,
+            familyBriefData: familyBriefData !== null,
             childProtectData: childProtectData !== null,
             lockHistory: lockHistory !== null,
+            envDevicesSnapshot: envDevicesSnapshot.length > 0,
             sleepData: sleepData !== null,
             activityData: activityData !== null,
             emotionData: emotionData !== null
         },
         '01_homes_info': homesInfo,
-        '02_devices_info': devicesInfo,
-        '03_devices_detail': devicesDetail,
-        '04_device_messages': deviceMessages,
-        '05_child_protect': childProtectData,
-        '06_lock_history': lockHistory,
-        '07_sleep_data': sleepData,
-        '08_activity_data': activityData,
-        '09_emotion_data': emotionData
+        '02_family_brief_data': familyBriefData,
+        '03_child_protect': childProtectData,
+        '04_lock_history': lockHistory,
+        '05_env_devices_snapshot': envDevicesSnapshot,
+        '06_sleep_data': sleepData,
+        '07_activity_data': activityData,
+        '08_emotion_data': emotionData
     };
-
 
     const endTime = Date.now();
     const duration = ((endTime - startTime) / 1000).toFixed(2);
@@ -377,19 +416,17 @@ async function main() {
     console.log('  数据收集完成');
     console.log('========================================');
     console.log(`[TIME] 总耗时: ${duration}秒`);
-    // console.log(`📁 输出目录: ${CONFIG.outputDir}`);
-    // console.log(`📊 汇总信息: ${summaryPath}`);
     console.log('\n数据获取统计:');
     const dataSources = allData['00_summary'];
-    console.log(`  [OK] 家庭信息: ${dataSources.homesInfo ? '成功' : '失败'}`);
-    console.log(`  [OK] 设备基础信息: ${dataSources.devicesInfo ? '成功' : '失败'}`);
-    console.log(`  [OK] 设备详细信息: ${dataSources.devicesDetail ? `${devicesDetail.length}个设备` : '失败'}`);
-    console.log(`  [OK] 设备消息: ${dataSources.deviceMessages ? '成功' : '失败'}`);
+    console.log(`  [OK] 家庭列表: ${dataSources.homesInfo ? '成功' : '失败'}`);
+    console.log(`  [OK] 家庭简报聚合数据: ${dataSources.familyBriefData ? '成功' : '失败'}`);
     console.log(`  [OK] 儿童保护: ${childProtectData !== null ? '成功' : '失败/无设备'}`);
     console.log(`  [OK] 门锁历史: ${dataSources.lockHistory ? '成功' : '失败/无设备'}`);
+    console.log(`  [OK] 环境设备快照: ${dataSources.envDevicesSnapshot ? `${envDevicesSnapshot.length}台设备` : '失败/无设备'}`);
     console.log(`  [OK] 睡眠数据: ${dataSources.sleepData ? '成功' : '失败'}`);
     console.log(`  [OK] 活动数据: ${dataSources.activityData ? '成功' : '失败'}`);
     console.log(`  [OK] 情绪数据: ${dataSources.emotionData ? '成功' : '失败'}`);
+
     // 流式JSON输出: 一行一个JSON对象
     console.log('--- START JSON OUTPUT ---');
 
@@ -400,7 +437,7 @@ async function main() {
         dataSources: allData['00_summary']
     }));
 
-    // 输出家庭信息
+    // 输出家庭列表
     if (homesInfo !== null) {
         console.log(JSON.stringify({
             type: 'homes_info',
@@ -408,37 +445,11 @@ async function main() {
         }));
     }
 
-    // 输出设备基础信息
-    if (devicesInfo !== null) {
+    // 输出家庭简报聚合数据
+    if (familyBriefData !== null) {
         console.log(JSON.stringify({
-            type: 'devices_info',
-            data: devicesInfo
-        }));
-    }
-
-    // 输出设备详细信息 - 逐个设备打印
-    if (devicesDetail && devicesDetail.length > 0) {
-        console.log(JSON.stringify({
-            type: 'devices_detail_start',
-            total: devicesDetail.length
-        }));
-        for (const deviceDetail of devicesDetail) {
-            console.log(JSON.stringify({
-                type: 'device_snapshot',
-                data: deviceDetail
-            }));
-        }
-        console.log(JSON.stringify({
-            type: 'devices_detail_end',
-            total: devicesDetail.length
-        }));
-    }
-
-    // 输出设备消息
-    if (deviceMessages !== null) {
-        console.log(JSON.stringify({
-            type: 'device_messages',
-            data: deviceMessages
+            type: 'family_brief_data',
+            data: familyBriefData
         }));
     }
 
@@ -455,6 +466,24 @@ async function main() {
         console.log(JSON.stringify({
             type: 'lock_history',
             data: lockHistory
+        }));
+    }
+
+    // 输出环境设备快照
+    if (envDevicesSnapshot.length > 0) {
+        console.log(JSON.stringify({
+            type: 'env_devices_snapshot_start',
+            total: envDevicesSnapshot.length
+        }));
+        for (const snapshot of envDevicesSnapshot) {
+            console.log(JSON.stringify({
+                type: 'device_snapshot',
+                data: snapshot
+            }));
+        }
+        console.log(JSON.stringify({
+            type: 'env_devices_snapshot_end',
+            total: envDevicesSnapshot.length
         }));
     }
 
@@ -491,11 +520,127 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     main();
 }
 
+// ==================== getFamilyBriefData 接口 ====================
+// 功能：获取家庭简报汇总数据，通过 getFamilyBriefData 聚合接口
+// 参数：homeId 或 homeName（二选一），modules、deviceBlacklist、classifyRules、responseLimit
+// 返回：{ errorCode, errorMsg, data: { homeInfo, classifiedDevices, deviceStatistic, events } }
+export async function getFamilyBriefData(params = {}, verbose = false) {
+    const traceId = generateTraceId();
+    process.stderr.write(`[trace-id] ${traceId}\n`);
+
+    const {
+        homeId,
+        homeName = '',
+        modules = ['deviceStatistic', 'events'],
+        deviceBlacklist = {},
+        classifyRules = {},
+        responseLimit = {}
+    } = params;
+
+    if (!homeId && !homeName) {
+        throw new Error('homeId or homeName is required');
+    }
+
+    try {
+        // 构建实际请求参数
+        const actualParams = {
+            homeName,
+            homeId,
+            modules,
+            deviceBlacklist,
+            classifyRules,
+            responseLimit
+        };
+
+        // 构建双层 payload 格式（根据接口规范）
+        // 外层: { type, payload } - payload 是字符串化的内层 JSON
+        // 内层: { type, payload } - payload 是字符串化的 actualParams
+        const requestBody = {
+            type: 'getFamilyBriefData',
+            payload: JSON.stringify(actualParams)
+        };
+
+        // 使用 hagSkillServicePostBody 直接发送请求
+        const response = await hagSkillServicePostBody(requestBody, verbose);
+
+        const errorCode = response?.errorCode;
+        const errorMsg = response?.errorMsg || '';
+        const data = response?.data || null;
+
+        if (errorCode !== '0') {
+            throw new Error(`API 返回错误: ${errorCode} - ${errorMsg}`);
+        }
+
+        // 按指定格式重组返回数据（与输出报文格式一致）
+        const result = {
+            errorCode,
+            errorMsg,
+            data: data || null
+        };
+
+        if (verbose && result.data) {
+            console.error(`[verbose] 获取家庭简报汇总数据成功`);
+            console.error(`[verbose] 家庭名称: ${result.data.homeInfo?.homeName || '未知'}`);
+            console.error(`[verbose] 设备统计: 总数=${result.data.deviceStatistic?.total || 0}, 在线=${result.data.deviceStatistic?.onlineCount || 0}, 离线=${result.data.deviceStatistic?.offlineCount || 0}`);
+            console.error(`[verbose] 事件数量: ${result.data.events?.length || 0}`);
+            const classified = result.data.classifiedDevices || {};
+            console.error(`[verbose] 分类设备: 门锁${classified['门锁设备']?.length || 0}台, 路由${classified['路由设备']?.length || 0}台, 环境${classified['环境设备']?.length || 0}台`);
+        }
+
+        return result;
+
+    } catch (error) {
+        console.error(`[error] 获取家庭简报汇总数据失败: ${error.message}`);
+        throw error;
+    }
+}
+
+// 预置的黑名单配置（根据文档）
+const DEVICE_BLACKLIST = {
+    prodIds: ['ZG28', 'ZG29', '113X', '113Y', '113Z', '114A', '114B', '114C', '2ABX', '2JTZ', '25EB', '2EWN', '21Z6', 'Y200'],
+    devTypes: ['051', 'A31', '06D', '06E'],
+    prodIdPatterns: [],
+    deviceTypeNamePatterns: ['infrared']
+};
+
+// 预置的设备分类规则（根据文档）
+const CLASSIFY_RULES = {
+    '门锁设备': { devType: 'A0B' },
+    '路由设备': { deviceTypeName: '路由' },
+    '环境设备': { deviceTypeName: '温湿度|空气|净化|加湿|除湿|新风|空调' }
+};
+
+// 预置的响应限制（根据文档）
+const RESPONSE_LIMIT = {
+    maxSizeBytes: 50000,
+    classifiedDevicesPerCategory: 10,
+    offlineTopN: 20,
+    eventLimit: 50
+};
+
+// 获取家庭简报聚合数据（简化调用接口）
+export async function fetchFamilyBriefData(homeId, homeName = '') {
+    console.log('[1/x] 获取家庭简报聚合数据...');
+    try {
+        const result = await getFamilyBriefData({
+            homeId,
+            homeName,
+            modules: ['deviceStatistic', 'events'],
+            deviceBlacklist: DEVICE_BLACKLIST,
+            classifyRules: CLASSIFY_RULES,
+            responseLimit: RESPONSE_LIMIT
+        }, false);
+        console.log('  [OK] 获取家庭简报聚合数据成功');
+        return result;
+    } catch (error) {
+        console.log('  [FAIL] 获取家庭简报聚合数据失败:', error.message);
+        return null;
+    }
+}
+
 export {
     fetchHomesInfo,
-    fetchDevicesInfo,
     fetchDevicesDetail,
-    fetchDeviceMessages,
     getChildProtectData,
     getLockHistory,
     getSleepData,

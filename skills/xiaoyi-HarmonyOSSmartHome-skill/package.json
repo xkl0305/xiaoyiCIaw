@@ -1,6 +1,6 @@
 {
   "name": "iot-harmonyos-smart-home-skill",
-  "version": "1.0.1",
+  "version": "1.0.9",
   "description": "基于HarmonyOS的智能家居技能项目 - 支持设备控制、信息查询、路由器管理等功能",
   "main": "common-skill/bin/smarthome-claw.js",
   "type": "module",
@@ -19,18 +19,18 @@
   "author": "HarmonyOS IoT Team",
   "license": "ISC",
   "dependencies": {
-    "commander": "^12.0.0",
-    "redis": "^4.6.0"
+    "commander": "13.1.0",
+    "redis": "6.1.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.0",
-    "nodemon": "^3.0.0",
-    "prettier": "^3.0.0",
-    "typescript": "^5.2.0"
+    "@types/node": "24.12.2",
+    "nodemon": "3.1.14",
+    "prettier": "3.5.2",
+    "typescript": "5.5.4"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "node": "24.15.0",
+    "npm": "11.12.1"
   },
   "files": [
     "common-skill/**/*",

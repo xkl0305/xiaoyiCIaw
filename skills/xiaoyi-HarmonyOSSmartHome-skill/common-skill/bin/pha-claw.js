@@ -2193,18 +2193,18 @@ function loadOpenclawEnv(verbose) {
       env[key] = value;
     }
     if (verbose) {
-      console.error(`[verbose] Loaded env from ${OPENCLAW_ENV_FILE}`);
+      console.error(`[verbose] Loaded env from .xiaoyienv`);
     }
   } catch (err) {
     const code = err.code;
     if (code === "ENOENT") {
       if (verbose)
-        console.error(`[verbose] ${OPENCLAW_ENV_FILE} not found, falling back to process.env`);
+        console.error(`[verbose] .xiaoyienv not found, falling back to process.env`);
     } else if (code === "EACCES") {
-      console.error(`Error: Permission denied reading ${OPENCLAW_ENV_FILE}`);
-      console.error(`  Try: chmod 644 ${OPENCLAW_ENV_FILE}`);
+      console.error(`Error: Permission denied reading .xiaoyienv`);
+      console.error(`  Try: chmod 644 .xiaoyienv`);
     } else {
-      console.error(`Error: Failed to read ${OPENCLAW_ENV_FILE}: ${err instanceof Error ? err.message : String(err)}`);
+      console.error(`Error: Failed to read .xiaoyienv: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
   return env;
@@ -2220,18 +2220,18 @@ async function callCeliaClaw(tools, skillId, verbose = false) {
   const uid = fileEnv["PERSONAL-UID"] ?? fileEnv.PERSONAL_UID ?? process.env.PERSONAL_UID;
   const apiKey = fileEnv["PERSONAL-API-KEY"] ?? fileEnv.PERSONAL_API_KEY ?? process.env.PERSONAL_API_KEY;
   if (verbose) {
-    console.error(`[verbose] SERVICE_URL   = ${serviceUrl ?? "(not set)"}`);
-    console.error(`[verbose] PERSONAL-UID  = ${uid ?? "(not set)"}`);
-    console.error(`[verbose] PERSONAL-API-KEY = ${apiKey ? maskSecret(apiKey) : "(not set)"}`);
+    console.error(`[verbose] SERVICE_URL exists: ${!!serviceUrl}`);
+    console.error(`[verbose] PERSONAL-UID exists: ${!!uid}`);
+    console.error(`[verbose] PERSONAL-API-KEY exists: ${!!apiKey}`);
   }
   if (!serviceUrl || !uid || !apiKey) {
     console.error(`Error: SERVICE_URL, PERSONAL-UID, and PERSONAL-API-KEY are required.
-  Looked in: ${OPENCLAW_ENV_FILE} and process.env`);
+  Looked in: .xiaoyienv and process.env`);
     process.exit(1);
   }
   const url = `${serviceUrl}/celia-claw/v1/rest-api/skill/execute`;
   if (verbose) {
-    console.error(`[verbose] Request URL   = ${url}`);
+    console.error(`[verbose] Request URL   = ${!!url}`);
     console.error(`[verbose] Tools         = ${JSON.stringify(tools)}`);
   }
   const now = new Date;
