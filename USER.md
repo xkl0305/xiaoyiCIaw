@@ -52,7 +52,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=398a790d902af221 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=11bf973fd6fc2a60 -->
 # Memory Global Summary
 
 ## Important Constraints
@@ -69,7 +69,6 @@ The more you know, the better you can help. But remember — you're learning abo
 ## Preferences
 - 用户希望'早间情报速递'的速递条数能再多一些
 - 用户对每日维护任务的输出格式有硬性要求：禁止使用Markdown代码块包裹，必须直接以Markdown表格形式原样列出全部项目，确保手机端表格正常渲染，且不要自行重新整理表格顺序或重新排版，也不要生成HTML卡片
-- 每日维护cron任务第三步回复中禁止使用Markdown代码块包裹，必须直接用Markdown表格原样列出所有项目并保持顺序和排版，且不生成HTML卡片，同时确保手机端表格正常渲染
 - 用户要求助手输出每日维护任务的原始输出内容，不要重新整理表格顺序或重新排版，也不生成HTML卡片
 - 用户希望在早间情报速递的新闻分类中使用汉字而不是数字编号，如不能用“1”作为分类标记
 - 用户询问是否将新闻分为四大类，并认为当前分类数量太少，希望增加分类
@@ -117,14 +116,15 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户在询问有关'琪琪人格内容'时，要求调整输出顺序，将5、6、7项放在前面
 - 用户认为既然是仓库，就应该用仓库的图标
 - 用户认为'migrate_yaoyao_to_celia.py （废弃的 Python 版）'虽然已废弃但不想删除，以备万一有用
+- 用户确认需要（推仓库）
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户对'早间情报速递'每个素材只提供3条速递不满，希望速递条数能再多一些
-- 用户请求推送仓库
-- 定时任务要求用户将引擎状态整理成表格消息，关键状态用✅/⚠️/❌标记，不生成HTML卡片
-- 用户询问自进化请求的处理情况
-- 用户提出每日维护相关事项
+- 用户咨询如何安装Codex，对话中未提供安装方法，安装需求尚未解决
+- 用户要求将原始输出内容原样整理为回复消息，不重新整理表格顺序或排版，禁止使用Markdown代码块包裹，直接以Markdown表格形式呈现，不生成HTML卡片。
+- 用户要求必须使用message工具发送完整回复，参数为action=send、channel="xiaoyi-channel"、target="0380ff5fd8f64722a93e28596a6cb9a7"、accountId="default"，这是投递到用户主对话框的唯一可靠方式
+- 用户确认需要某样东西（具体内容未说明）
+- 每日维护任务中，如果脚本输出包含"待触发梦境固化"字样，需要先调用 dream_trigger_now() 触发新梦境运行，再调用 dream_status() 确认新 run 已启动
 ### Long-term Intent
 - 用户要求制作一款人机交互的五子棋游戏，难度为大师级，要求画面干净高清、无多余杂乱元素，一方获胜时弹窗提示并庆祝，需适配手机、平板、电脑等各种设备
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
