@@ -40,6 +40,19 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Additional Tool Details
 
+### 长期记忆文件(MEMORY.md)健康体检（2026-09-17 固化）
+
+**背景：** MEMORY.md 曾被"固化噪声"污染——内嵌 3683 条纯 hash 记录（格式 `📝 固化: 16位hex`）+ 表格碎片 + 原始英文 prompt，文件膨胀到 2.2MB/5.1万行，影响加载与 token 消耗（甚至一度被系统判定 MISSING）。
+
+**经验规则：** 回答"记忆文件有没有问题/要不要清理"时，逐项体检清单：
+1. **BEGIN/END 标记配对** — 查 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN/END`，多个 BEGIN 缺失对应 END 即结构异常（注意：正文里引用该字段名的行不算真标记，需看是否成对注释块）。
+2. **纯 hash 固化记录** — `grep -cE '^📝 固化: [0-9a-f]{16}$'`，无内容仅含哈希的都是记忆系统写入残留噪声，大量(数千条)堆积=文件被污染，应清理去重。
+3. **文件体积** — `wc -lc` 盯 >1MB / >2万行，超限需警惕，会拖慢注入/抬高 token。
+4. **超长行 & 碎片** — `awk 'length>400'` 查超长行（含会话日志/大段英文prompt）；核对固化记录里是否夹带 `|------|` 表格碎片。
+5. **结构完整性** — 代码块 ``` 与 Markdown 表格 `|` 是否成对完整。
+
+**清理纪律：** 属于修改长期记忆文件的敏感操作，必须：①先 `cp MEMORY.md MEMORY.md.bak-<时间戳>` 备份；②只删除纯 hash 噪声/重复/碎片，绝不删有效记忆；③按自进化流程先经用户确认再动手。
+
 ### 技能数量统计口径（2026-09-03 固化）
 
 - **报告"技能数量"一律按"顶层技能目录"口径**，与维护脚本同款（`SkillScanner().scan().get_stats()['total_skills']`，当前 330 个）。
@@ -409,3 +422,21 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 **成功后可用工具**：weibo_token / weibo_search / weibo_status / weibo_hot_search / weibo_crowd（能解决微博热搜接口被 403 拦截的问题）
 
 **备注**：plugins install 时输出的 config warnings（crusheart 等既有项）与本次无关，可忽略；openclaw.json 修改后需校验 JSON 合法再重启。
+
+### 人格视角出图系统·衣柜统一口径（2026-09-14 固化）
+
+**背景：** 衣柜数据此前分散在 3 个源、数量口径不一（8/9/11），被用户多次纠正。现已生成统一权威清单，今后统计以此为准，不做二次统计。
+
+**统一口径（唯一权威）：**
+- **权威文件**：`xiaoyi_persona_visual/wardrobe/wardrobe_unified_manifest.json`（V111.51.23_UNIFIED）
+- **唯一数字**：正式 8 / 手工装 2 / 占位 1 / 去重合计 11
+- **default_outfit** = `moonfeather_robe`（月羽云裳）
+
+**三个数据源定位（别再混淆）：**
+| 文件 | 定位 |
+|------|------|
+| `xiaoyi_persona_visual/wardrobe/wardrobe_manifest.json` | 运行时唯一权威（wardrobe_loader.py 只读此文件），正式 8 套 |
+| `assets/persona/outfits/outfit_config.json` | 静态资源存档，提供真实生成图路径，补 manual_only 2 套(bikini/silver_bikini)+default |
+| `memory_context/persona_runtime/visual_wardrobe_profiles.json` | **遗留**，运行时已不读（兼容桥注释 do not read legacy），仅历史参考 |
+
+**回答"衣柜几套"时**：直接报「正式 8 / 手工装 2 / 占位 1，合计 11」，以 unified 清单为准，**禁止**只读单一 manifest 就说 8 套（会漏手工装），也禁止三个源各自报数。
