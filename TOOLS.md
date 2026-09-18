@@ -40,6 +40,19 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Additional Tool Details
 
+### 长期记忆文件(MEMORY.md)健康体检（2026-09-17 固化）
+
+**背景：** MEMORY.md 曾被"固化噪声"污染——内嵌 3683 条纯 hash 记录（格式 `📝 固化: 16位hex`）+ 表格碎片 + 原始英文 prompt，文件膨胀到 2.2MB/5.1万行，影响加载与 token 消耗（甚至一度被系统判定 MISSING）。
+
+**经验规则：** 回答"记忆文件有没有问题/要不要清理"时，逐项体检清单：
+1. **BEGIN/END 标记配对** — 查 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN/END`，多个 BEGIN 缺失对应 END 即结构异常（注意：正文里引用该字段名的行不算真标记，需看是否成对注释块）。
+2. **纯 hash 固化记录** — `grep -cE '^📝 固化: [0-9a-f]{16}$'`，无内容仅含哈希的都是记忆系统写入残留噪声，大量(数千条)堆积=文件被污染，应清理去重。
+3. **文件体积** — `wc -lc` 盯 >1MB / >2万行，超限需警惕，会拖慢注入/抬高 token。
+4. **超长行 & 碎片** — `awk 'length>400'` 查超长行（含会话日志/大段英文prompt）；核对固化记录里是否夹带 `|------|` 表格碎片。
+5. **结构完整性** — 代码块 ``` 与 Markdown 表格 `|` 是否成对完整。
+
+**清理纪律：** 属于修改长期记忆文件的敏感操作，必须：①先 `cp MEMORY.md MEMORY.md.bak-<时间戳>` 备份；②只删除纯 hash 噪声/重复/碎片，绝不删有效记忆；③按自进化流程先经用户确认再动手。
+
 ### 引用来源展示使用要求
 
 - **默认接口**:小艺引用来源展示工具(xiaoyi_append_reference)
