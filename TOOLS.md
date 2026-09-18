@@ -169,11 +169,17 @@ printf '%d\n' $((RANDOM%12*5))
 ### OpenClaw 操作约束
 核心原则
 
-### 技能数量统计口径（2026-09-03 固化）
+### 技能数量统计口径（2026-09-03 固化 · 2026-09-18 补充多口径差异）
 
-- **报告"技能数量"一律按"顶层技能目录"口径**，与维护脚本同款（`SkillScanner().scan().get_stats()['total_skills']`，当前 330 个）。
-- **禁止**用 `find skills -name "SKILL.md" | wc -l`（=474，含嵌套子 SKILL.md 如 xiaoyi-health 下多个，会偏大约 1.4 倍、误导对账）。
-- 仓库同步后两边同数即一致；对比维护报告时差值一般为新增/删除的顶层技能目录数。
+- **报告"技能数量"一律按"顶层技能目录"口径**：`find skills -maxdepth 1 -mindepth 1 -type d | grep -v '^\.' | grep -v '__pycache__'`（当前 329 个）。
+- **git 对账必须用** `git ls-tree -d --name-only HEAD skills/`（只列实际跟踪的顶层目录）。**禁止**用 `git ls-files 'skills/*'`（会因嵌套 SKILL.md/文件数出 33x~4xx 偏差）也**禁止**用 `find skills -name "SKILL.md" | wc -l`（含嵌套子 SKILL.md，偏大约 1.4 倍）。
+- **多口径差异来源**（这些数字都是对的，别因看到不同数字误判"不一致"）：
+  - 329 = 技能目录数（统计技能用这个，与 git 仓库一致）
+  - 332 = 329 + skills/ 顶层 3 个非技能文件（README.md / __init__.py / 残留 .zip 压缩包）
+  - 333 = 332 + 隐藏目录 `.archive`
+  - 328 = 维护报告数字，来自 skill_index 索引缓存（非实时目录数，新建技能未刷新索引会少 1）
+  - 219/150 = OpenClaw 框架加载可用技能数（另一套口径，合并去重插件技能，不反映 skills/ 目录）
+- 仓库同步后两边同数即一致；对比维护报告时差值=新增/删除的顶层技能目录数 或 索引未刷新。
 
 ### Git Push 失败排查规则（2026-08-02）
 
