@@ -52,7 +52,7 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ed5013fa2d2b7817 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ad136d706281b9df -->
 # Memory Global Summary
 
 ## Important Constraints
@@ -120,11 +120,11 @@ The more you know, the better you can help. But remember — you're learning abo
 
 ## Pending Tasks & Intents
 ### Todo
+- 用户要求将引擎初始化脚本的输出整理成一条表格形式的回复消息，展示引擎状态，并用✅/⚠️/❌标记关键状态，且不生成HTML卡片。
+- 用户确认执行长期记忆文件大扫除（删除3683条纯hash记录、去重重复的固化内容、文件瘦身），并批准先备份再清理的操作方案
 - 用户要求对“人格视角出图系统”进行沉淀、记忆、固化与进化
 - 用户在2026-09-15 17:00（北京时间）通过定时任务触发了一次日常维护流程，要求执行脚本 python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
 - 用户提供了安装凭证aeb27977-e3f6-4b3a-b5d6-fbaeb2c1ee94，用于完成"tencent-news"技能的安装
-- cron 任务要求将引擎状态整理成一条回复消息，用表格形式呈现，关键状态用 ✅/⚠️/❌ 标记，不生成 HTML 卡片
-- 用户请求介绍已安装的"web-design-guidelines"skill，并提供一两个快速开始的样例
 ### Long-term Intent
 - 用户要求制作一款人机交互的五子棋游戏，难度为大师级，要求画面干净高清、无多余杂乱元素，一方获胜时弹窗提示并庆祝，需适配手机、平板、电脑等各种设备
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
