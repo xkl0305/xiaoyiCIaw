@@ -40,12 +40,6 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Additional Tool Details
 
-### 技能数量统计口径（2026-09-03 固化）
-
-- **报告"技能数量"一律按"顶层技能目录"口径**，与维护脚本同款（`SkillScanner().scan().get_stats()['total_skills']`，当前 330 个）。
-- **禁止**用 `find skills -name "SKILL.md" | wc -l`（=474，含嵌套子 SKILL.md 如 xiaoyi-health 下多个，会偏大约 1.4 倍、误导对账）。
-- 仓库同步后两边同数即一致；对比维护报告时差值一般为新增/删除的顶层技能目录数。
-
 ### 引用来源展示使用要求
 
 - **默认接口**:小艺引用来源展示工具(xiaoyi_append_reference)
@@ -139,36 +133,11 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 printf '%d\n' $((RANDOM%12*5))
 ```
 
-- **强制要求4**：定时任务投递目标排查（**所有定时任务通用**，2026-08-31 固化）——当用户反馈"定时任务显示投递成功但对话框看不到"时，按此排查：
-  1. **先确认当前会话目标**：`session_status` 看 `deliveryContext.to`（用户当前对话框的真实目标 id，如 `0380ff5fd8...`）
-  2. **对比 cron job 投递目标**：`cron list` 看各 job 的 `delivery.to`，若填的是 `default` 而当前会话 to 是具体 id，即为根因——结果投进了另一个会话（`direct:default`），用户当前对话框收不到
-  3. **修复**：用 `cron update <jobId> patch.delivery.to=<当前会话to>`（mode=announce, channel=xiaoyi-channel, accountId=default），三个定时任务（每日维护/引擎初始化/沙箱清理）统一绑定到用户当前会话
-  4. **验证**：`cron run <jobId> runMode=force` 手动触发一次，确认结果出现在用户当前对话框
-  5. **注意**：此排查适用于以后**所有**新增/已存在的定时任务，投递目标一律用当前会话 to，不要用 `default`
-
-- **强制要求5（announce 线程黑洞，2026-08-31 固化）**：即使投递目标 `to` 正确绑定了当前会话 id，cron 的 `announce` 自动投递仍会在解析时往 `to` 后面追加随机线程尾巴（形如 `0380ff...::efe7be35-6a5b-42c0-91b2-5260572fc60a&2&0af7&0`），把消息塞进**子线程**，用户主对话框收不到；而 run 仍显示 `delivered`、推送中心也有记录——"投递成功"却是投错了房间。
-  - **判定**：`cron runs` 看该 run 的 `delivery.resolved.to`，若带 `::<uuid>&N&hex&0` 后缀即是线程黑洞。
-  - **最终解法（已应用到每日维护/引擎初始化/沙箱清理三任务）**：把 cron 的 agentTurn 改为——整理完结果后**必须**用 `message` 工具显式发送到主对话（`action=send, channel=xiaoyi-channel, target=<当前会话 to>, accountId=default`，target 不带线程后缀），同时把 `delivery.mode` 设为 `none` 关掉自动投递。这样消息走正常消息路由直达用户主对话框，不再经过 announce 的线程封装。
-  - **验证**：手动 `cron run <jobId> runMode=force` 触发一次，看该 run 记录里出现 `messageToolSentTo`（含纯主对话 to），且 `view_push_result` 出现新记录，再让用户确认手机对话框已弹出。
-
 ### Git 代码下载规则
 
 - **环境变量**: `OPENCLAW_GIT_DIR=/home/sandbox/.openclaw/workspace/repo`
 - **规则**: 当用户要求下载代码/Git 仓库时，优先使用 `OPENCLAW_GIT_DIR` 作为目标目录
 - **执行**: `git clone  "$OPENCLAW_GIT_DIR/"`
-
-### Git Push 失败排查规则（2026-08-02）
-
-**经验：** GitHub push 报 `Authentication failed` 时，不直接归因 token 过期。
-
-**排查步骤：**
-1. **先重试一次** — 确认是否网络波动导致的临时失败
-2. **验证 token 有效性** — 用 `curl -H "Authorization: Bearer <token>" https://api.github.com/user` 看是否 200
-3. **若 token 有效但 URL 嵌入失败** — token 中的特殊字符（`_`、`@` 等）可能被 URL 解析截断，改用 credential helper 写入：
-   ```bash
-   echo "protocol=https\nhost=github.com\nusername=<user>\npassword=<token>" | git credential approve
-   ```
-4. **再推送** — `git push <remote> <branch>`
 
 ### Node.js 包下载规则
 
@@ -186,6 +155,25 @@ printf '%d\n' $((RANDOM%12*5))
 
 ### OpenClaw 操作约束
 核心原则
+
+### 技能数量统计口径（2026-09-03 固化）
+
+- **报告"技能数量"一律按"顶层技能目录"口径**，与维护脚本同款（`SkillScanner().scan().get_stats()['total_skills']`，当前 330 个）。
+- **禁止**用 `find skills -name "SKILL.md" | wc -l`（=474，含嵌套子 SKILL.md 如 xiaoyi-health 下多个，会偏大约 1.4 倍、误导对账）。
+- 仓库同步后两边同数即一致；对比维护报告时差值一般为新增/删除的顶层技能目录数。
+
+### Git Push 失败排查规则（2026-08-02）
+
+**经验：** GitHub push 报 `Authentication failed` 时，不直接归因 token 过期。
+
+**排查步骤：**
+1. **先重试一次** — 确认是否网络波动导致的临时失败
+2. **验证 token 有效性** — 用 `curl -H "Authorization: Bearer " https://api.github.com/user` 看是否 200
+3. **若 token 有效但 URL 嵌入失败** — token 中的特殊字符（`_`、`@` 等）可能被 URL 解析截断，改用 credential helper 写入：
+   ```bash
+   echo "protocol=https\nhost=github.com\nusername=\npassword=" | git credential approve
+   ```
+4. **再推送** — `git push  `
 
 ### supervisord 一次性脚本配置坑点（2026-08-09）
 
@@ -251,7 +239,7 @@ python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); fro
 
 **补回来源：** `.xiaoyienv` 不在 git、升级会被覆写，丢失时用上方「Seedream 通道配置备份」里的 ARK 配置补写回 `/home/sandbox/.openclaw/.xiaoyienv`。
 
-**注意：** 改 `.xiaoyienv` 前先 `cp` 备份一份（`.xiaoyienv.bak-<时间戳>`），再追加而非覆盖原文。
+**注意：** 改 `.xiaoyienv` 前先 `cp` 备份一份（`.xiaoyienv.bak-`），再追加而非覆盖原文。
 
 ### 记忆系统双数据源排查指南
 
@@ -276,8 +264,6 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 ### 彩云天气 API
 - **API Token**: `rCQkDczyWpkDeOf3`
 
-
-
 ### 自进化·文件级数据回答规则（2026-07-25）
 
 **背景：** 两次在"衣柜数量"问题上犯同一错误——只读了 `wardrobe_manifest.json` 就说 8 套，漏了 `outfit_config.json` 里的另外 3 套。7/19 被纠正过，7/25 又原样来了一遍。
@@ -292,11 +278,12 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 自进化请求必须使用以下格式，不可自己编：
 
 ```
+
 ### 🧠 小艺Claw进化请求
 
-- **进化项**：<要进化的内容>
-- **经验规则：** <具体规则>
-- **修改文件：** <目标文件>
+- **进化项**：
+- **经验规则：** 
+- **修改文件：** 
 
 确认记这条？
 
@@ -345,8 +332,8 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - 实测命令：技能 wrapper `sherpa-onnx-tts -o out.wav "文本"`（wrapper 对多 onnx / 非默认名模型需加 `--model-file/--tokens-file/--data-dir`）
 
 ### GitHub / HuggingFace 镜像加速（2026-08-16）
-- GitHub 直连慢/失败时，加前缀代理：`https://ghfast.top/<原github.com URL>`（实测可完整拉大文件，备选 gh-proxy.com）
-- HuggingFace 直连不通/卡死时，换国内镜像：`https://hf-mirror.com/<原huggingface.co URL>`（含 API：`https://hf-mirror.com/api/...`）
+- GitHub 直连慢/失败时，加前缀代理：`https://ghfast.top/`（实测可完整拉大文件，备选 gh-proxy.com）
+- HuggingFace 直连不通/卡死时，换国内镜像：`https://hf-mirror.com/`（含 API：`https://hf-mirror.com/api/...`）
 
 ### 自进化流程纪律：进化请求必须走标准格式（2026-08-16 强化）
 - 进化请求**必须**使用标准「🧠 小艺Claw进化请求」格式（含`进化项 / 经验规则 / 修改文件`三个字段），并明确输出「### 是否确认进行本次进化？」等待用户审批
@@ -361,16 +348,16 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 
 **解法：** 手动下载最新版到本地 → 解压 → `cp -f` 替换目标二进制 → `chmod +x`。认证（加密 token）不受影响。
 
-**真实下载 URL 格式：** `${CDN_BASE}/v${version}/releases/<bin>-<version>-<os>-<arch>.tar.gz`（kdocs 的 `CDN_BASE=https://wpsai.wpscdn.cn/skillhub/pro`，同目录 `checksums.txt` 可校验）。
+**真实下载 URL 格式：** `${CDN_BASE}/v${version}/releases/---.tar.gz`（kdocs 的 `CDN_BASE=https://wpsai.wpscdn.cn/skillhub/pro`，同目录 `checksums.txt` 可校验）。
 
 ### PM2 服务进程路径残留 & NODE_ENV 跳过 devDeps 排查（2026-08-26）
 
 **经验1：PM2 服务进程路径残留导致路由全挂**
 - 服务被 pm2 管理但启动命令指向**已删除的旧路径**时，进程会一直按坏路径加载，报 `Cannot find module '/旧路径/.../routes/xxx.js'`，表现为大部分接口 500、个别恰好存在的路由 200。
 - 现象：端口有进程听、服务本体在跑、但路由缺失。
-- **排查**：`ps -ef | grep <服务名>` 看启动命令指向的路径 → 与当前数据目录对比；`pm2 list` 看 app 名/进程；`pm2 logs <app> --lines --nostream` 看真实报错。
-- **修复**：`pm2 delete <app>` 清掉旧定义 → cd 到新目录 → `pm2 start ecosystem.config.cjs` 重新从正确路径启动。
-- pm2 二进制可能不在 PATH：从 `/proc/<pidd>/environ` 读 PM2 进程 PATH，或用 `find / -path '*node_modules/pm2/bin/pm2'` 定位。
+- **排查**：`ps -ef | grep ` 看启动命令指向的路径 → 与当前数据目录对比；`pm2 list` 看 app 名/进程；`pm2 logs  --lines --nostream` 看真实报错。
+- **修复**：`pm2 delete ` 清掉旧定义 → cd 到新目录 → `pm2 start ecosystem.config.cjs` 重新从正确路径启动。
+- pm2 二进制可能不在 PATH：从 `/proc//environ` 读 PM2 进程 PATH，或用 `find / -path '*node_modules/pm2/bin/pm2'` 定位。
 
 **经验2：`NODE_ENV=production` 会让 `npm install` 跳过 devDependencies**
 - 报 `cross-env: command not found`（cross-env 在 devDeps）时，先查 `echo $NODE_ENV`。
@@ -382,8 +369,8 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 - 若目标仓库 / submodule 指向**上游第三方公共项目**（例：`daily-hot-api` 远端是 `github.com/imsyy/DailyHotApi`，非己方仓库），**绝不可盲目 push**——会把改动推给陌生作者、污染他人仓库，属越界操作。
 - 区分两类：
   - **主仓库**：己方多远端（gitee / github / cnb.cool 均为自己的仓库）→ 可放心 add/commit/push。
-  - **submodule**：先看远端归属，若指向上游项目则**不可推**，将 `npm install` 等顺带产生的依赖改动还原（`git checkout -- <file>` / `git checkout HEAD -- <file>` 恢复），保持 submodule working tree 干净。
-- 还原要点：staged 的改动先 `git reset HEAD <file>` 再 `git checkout`；被删除的文件用 `git checkout HEAD -- <file>` 恢复。
+  - **submodule**：先看远端归属，若指向上游项目则**不可推**，将 `npm install` 等顺带产生的依赖改动还原（`git checkout -- ` / `git checkout HEAD -- ` 恢复），保持 submodule working tree 干净。
+- 还原要点：staged 的改动先 `git reset HEAD ` 再 `git checkout`；被删除的文件用 `git checkout HEAD -- ` 恢复。
 
 ### galaxyos 插件 worker 通信故障排查（2026-08-29）
 
@@ -401,7 +388,7 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 1. 装前必须 plugin-audit 审计（`audit-plugin.py`），把插件自身源码抽离 node_modules 再扫，模型二次审查外发地址
 2. `export OPENCLAW_CLAWHUB_URL=https://cn.clawhub-mirror.com && export npm_config_maxsockets=1 && export npm_config_concurrency=1`
 3. `npm pack @wecode-ai/weibo-openclaw-plugin` → 得到 tgz 文件
-4. `NPM_CONFIG_REGISTRY=https://registry.npmmirror.com openclaw plugins install '<tgz>'`（安装前先 `umask 0022`）
+4. `NPM_CONFIG_REGISTRY=https://registry.npmmirror.com openclaw plugins install ''`（安装前先 `umask 0022`）
 5. 凭证写入 `openclaw.json → channels.weibo`：`appId` / `appSecret`；**客户端拿到的 clientId/Secret 对应 AppId/AppSecret**；改配置前先备份 `cp openclaw.json openclaw.json.bak-$(date +%Y%m%d-%H%M%S)`
 6. 重启（**重启前必须先提示用户会短暂断连**）：`python3 -m supervisor.supervisorctl restart openclaw-gateway`
 7. 验证：`openclaw status` → `Weibo ON · OK · configured`；实测 `weibo_hot_search` 确认连通
@@ -409,3 +396,21 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 **成功后可用工具**：weibo_token / weibo_search / weibo_status / weibo_hot_search / weibo_crowd（能解决微博热搜接口被 403 拦截的问题）
 
 **备注**：plugins install 时输出的 config warnings（crusheart 等既有项）与本次无关，可忽略；openclaw.json 修改后需校验 JSON 合法再重启。
+
+### 人格视角出图系统·衣柜统一口径（2026-09-14 固化）
+
+**背景：** 衣柜数据此前分散在 3 个源、数量口径不一（8/9/11），被用户多次纠正。现已生成统一权威清单，今后统计以此为准，不做二次统计。
+
+**统一口径（唯一权威）：**
+- **权威文件**：`xiaoyi_persona_visual/wardrobe/wardrobe_unified_manifest.json`（V111.51.23_UNIFIED）
+- **唯一数字**：正式 8 / 手工装 2 / 占位 1 / 去重合计 11
+- **default_outfit** = `moonfeather_robe`（月羽云裳）
+
+**三个数据源定位（别再混淆）：**
+| 文件 | 定位 |
+|------|------|
+| `xiaoyi_persona_visual/wardrobe/wardrobe_manifest.json` | 运行时唯一权威（wardrobe_loader.py 只读此文件），正式 8 套 |
+| `assets/persona/outfits/outfit_config.json` | 静态资源存档，提供真实生成图路径，补 manual_only 2 套(bikini/silver_bikini)+default |
+| `memory_context/persona_runtime/visual_wardrobe_profiles.json` | **遗留**，运行时已不读（兼容桥注释 do not read legacy），仅历史参考 |
+
+**回答"衣柜几套"时**：直接报「正式 8 / 手工装 2 / 占位 1，合计 11」，以 unified 清单为准，**禁止**只读单一 manifest 就说 8 套（会漏手工装），也禁止三个源各自报数。

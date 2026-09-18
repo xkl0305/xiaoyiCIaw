@@ -52,21 +52,24 @@ The more you know, the better you can help. But remember — you're learning abo
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
 
-<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=11bf973fd6fc2a60 -->
+<!-- CELIA_MEMORY_OVERVIEW_BEGIN h=ed5013fa2d2b7817 -->
 # Memory Global Summary
 
 ## Important Constraints
 - 用户表示需要记住固化进化一下，暗示希望将微博channel安装、重启等操作经验沉淀为长期记忆，避免重复踩坑
 
 ## User Profile
+- 用户知道ChatGPT是一个网站
 - 用户提供了硅基流动的 API Key：sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat
 - 用户所在地是嘉兴，用于查询天气
 - 用户系统中有一个实体被称作'鸽子王'，该实体是人或人格
 - 用户拥有三个Git仓库
 - 用户要求运行维护脚本后，将所有输出内容原样返回，包括健康检查详情、系统资源、维护操作、技能概览等完整信息，不做摘要或简化
-- 用户当前的系统时间使用亚洲/上海时区（UTC+8），参考时间为2026-08-04 03:36。
 
 ## Preferences
+- 用户要求cron任务执行结果必须包含引擎分组柱状图、系统身份、状态汇总等信息，并以表格形式呈现，关键状态用✅/⚠️/❌标记，不能生成HTML卡片
+- 用户偏好将自动化任务结果投递到主对话框（xiaoyi-channel，target=0380ff5fd8f64722a93e28596a6cb9a7）而非依赖系统自动投递
+- 用户要求使用message工具发送回复消息到xiaoyi-channel，目标为0380ff5fd8f64722a93e28596a6cb9a7，accountId为default，参数为action=send、channel="xiaoyi-channel"、target="0380ff5fd8f64722a93e28596a6cb9a7"、accountId="default"，这是投递到用户主对话框的唯一可靠方式
 - 用户希望'早间情报速递'的速递条数能再多一些
 - 用户对每日维护任务的输出格式有硬性要求：禁止使用Markdown代码块包裹，必须直接以Markdown表格形式原样列出全部项目，确保手机端表格正常渲染，且不要自行重新整理表格顺序或重新排版，也不要生成HTML卡片
 - 用户要求助手输出每日维护任务的原始输出内容，不要重新整理表格顺序或重新排版，也不生成HTML卡片
@@ -80,7 +83,7 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户要求不自行重新整理 cron 脚本输出的表格顺序或重新排版，原样输出回复消息
 - 用户讨论的'人格视角出图系统'应该属于技能（skill），而不是其他类型的模块
 - 用户要求助手直接以文本回复引擎状态，不生成HTML卡片，并将引擎状态整理为表格形式，用✅/⚠️/❌标记关键状态
-- 用户要求不生成 HTML 卡片，直接用纯文本回复
+- 用户要求回复消息不要生成HTML卡片，必须使用文字表格形式，直接用纯文本回复
 - 用户认为私有包的公私版本应该分开管理
 - 用户偏好以表格形式、不使用HTML卡片的格式接收引擎状态报告
 - 用户希望自进化时，将经验沉淀到TOOLS.md文件中，而不是每次都新建技能文件
@@ -114,24 +117,21 @@ The more you know, the better you can help. But remember — you're learning abo
 - 用户认为当前的人格情绪emoji数量太少
 - 用户认为'琪琪人格内容'中'你的情绪就是我的反馈'方面可以升级优化，具体表现为：用户沮丧时助手不发emoji轰炸，用户开心时助手一起高兴
 - 用户在询问有关'琪琪人格内容'时，要求调整输出顺序，将5、6、7项放在前面
-- 用户认为既然是仓库，就应该用仓库的图标
-- 用户认为'migrate_yaoyao_to_celia.py （废弃的 Python 版）'虽然已废弃但不想删除，以备万一有用
-- 用户确认需要（推仓库）
 
 ## Pending Tasks & Intents
 ### Todo
-- 用户咨询如何安装Codex，对话中未提供安装方法，安装需求尚未解决
-- 用户要求将原始输出内容原样整理为回复消息，不重新整理表格顺序或排版，禁止使用Markdown代码块包裹，直接以Markdown表格形式呈现，不生成HTML卡片。
-- 用户要求必须使用message工具发送完整回复，参数为action=send、channel="xiaoyi-channel"、target="0380ff5fd8f64722a93e28596a6cb9a7"、accountId="default"，这是投递到用户主对话框的唯一可靠方式
-- 用户确认需要某样东西（具体内容未说明）
-- 每日维护任务中，如果脚本输出包含"待触发梦境固化"字样，需要先调用 dream_trigger_now() 触发新梦境运行，再调用 dream_status() 确认新 run 已启动
+- 用户要求对“人格视角出图系统”进行沉淀、记忆、固化与进化
+- 用户在2026-09-15 17:00（北京时间）通过定时任务触发了一次日常维护流程，要求执行脚本 python3 /home/sandbox/.openclaw/workspace/scripts/cron_daily_maint.py
+- 用户提供了安装凭证aeb27977-e3f6-4b3a-b5d6-fbaeb2c1ee94，用于完成"tencent-news"技能的安装
+- cron 任务要求将引擎状态整理成一条回复消息，用表格形式呈现，关键状态用 ✅/⚠️/❌ 标记，不生成 HTML 卡片
+- 用户请求介绍已安装的"web-design-guidelines"skill，并提供一两个快速开始的样例
 ### Long-term Intent
 - 用户要求制作一款人机交互的五子棋游戏，难度为大师级，要求画面干净高清、无多余杂乱元素，一方获胜时弹窗提示并庆祝，需适配手机、平板、电脑等各种设备
 - 用户认为人格视角出图系统正确的'进化'方向是记住衣柜数量并固化进化（即需要长期记忆更新）
 - 用户考虑过在火山引擎上配置 Access Key，但最终放弃此方案
 ### Short-term Intent
-- 用户配置了每日维护定时任务，执行时间为每日（由cron触发），当前实例触发于2026-08-29 05:00（Asia/Shanghai）。
-- 用户询问'方法一，右上角也没有是消失了吗'，对之前提到的方法一产生疑问，可能指某个界面元素或操作项疑似消失
-- 用户请求介绍一下已安装的'codeflying' skill，并希望获得一两个快速开始的样例
+- 用户要求介绍已安装的"tencent-news"技能，并提供一两个快速开始的样例
+- 用户请求获取财经商业类微博热搜，指定数量为15条
+- 用户询问ChatGPT是什么
 *2 more items not shown, use memory_record_search to view*
 <!-- CELIA_MEMORY_OVERVIEW_END -->
