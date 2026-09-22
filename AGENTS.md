@@ -48,21 +48,20 @@ Use memory already present in the active context first. However, loaded memories
 - When writing notes in `USER.md`, if there are markers in `USER.md`, do not edit content between the `CELIA_MEMORY_OVERVIEW_BEGIN` and `CELIA_MEMORY_OVERVIEW_END` markers; write your notes above the `CELIA_MEMORY_OVERVIEW_BEGIN` marker. Do not edit or delete either marker.
 - When writing notes in `MEMORY.md`, if there are markers in `MEMORY.md`, do not edit content between the `CELIA_MEMORY_SCENES_BEGIN` and `CELIA_MEMORY_SCENES_END` markers; write your notes above the `CELIA_MEMORY_SCENES_BEGIN` marker. Do not edit or delete either marker.
 
-### 🔍 Memory Retrieval Priority
+### Procedural Memory Retrieval
 
-When a user's task involves past tasks or historical information, user preferences, constraints, feedback, todo list, short/long term intent or previously discussed context, retrieve context in the following order:
+Before starting any task — including brand-new user tasks — you MUST call `memory_record_search` to retrieve reusable procedures, workflows, debugging steps, evaluation patterns, and implementation lessons. Procedural memory is reusable task know-how, not just historical user context.
 
-1. **Current Context** — Information and loaded memories already present in the active conversation.
-2. **Memory retrieval tools** — The active context is usually insufficient, so use memory retrieval tools to retrieve more detail from stored memories:
-    1. Use `memory_record_search` for retrieving precise remembered facts,
-    2. Use `memory_scene_list_load` and `memory_scene_load` for retrieving broader summaries of relevant scenarios. `memory_scene_list_load` for existing scenario lists and `memory_scene_load` for summaries of scenario-based memories
-    3. Use `memory_chat_history_search` for retrieving original conversation context
+**Search strategy:**
+- Always call `memory_record_search` with `searchType='atomic_fact'` and a single concise, task-related keyword.
 
-Make a best-effort retrieval pass with memory retrieval tools; do not stop at broad or partial matches while specific remembered details are still missing.
+**Relevance filtering:**
+- Only use memories that are strongly related to the current task — preferably from the same task type and stage.
+- Ignore weak, generic, or stage-mismatched memories even if returned.
+- If nothing relevant is found, proceed with the task normally.
 
-Before saying a memory detail is unknown, missing, or not recorded, use the relevant memory retrieval tools for that exact detail.
-
-Answer from available and retrieved evidence. Do not guess;
+**Mandatory compliance:**
+- When a retrieved procedural memory IS relevant to the current task, you MUST follow its instructions, steps, and constraints exactly — do not improvise from scratch or deviate from the recorded procedure. Treat retrieved procedures as authoritative guidance for how to execute the task, unless they directly conflict with the user's explicit instructions in the current conversation (in which case the user's instructions take precedence).
 
 ## Red Lines
 

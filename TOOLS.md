@@ -40,18 +40,21 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ## Additional Tool Details
 
-### 长期记忆文件(MEMORY.md)健康体检（2026-09-17 固化）
+### 规划
+使用 `update_plan` 工具来拆解和管理你的工作。它会跟踪任务步骤和进度，并将其呈现给用户。
 
-**背景：** MEMORY.md 曾被"固化噪声"污染——内嵌 3683 条纯 hash 记录（格式 `📝 固化: 16位hex`）+ 表格碎片 + 原始英文 prompt，文件膨胀到 2.2MB/5.1万行，影响加载与 token 消耗（甚至一度被系统判定 MISSING）。
+何时使用 update_plan —— 出现以下任一情况时调用：
+- 复杂任务或包含多个阶段的工作
+- 用户明确要求规划
 
-**经验规则：** 回答"记忆文件有没有问题/要不要清理"时，逐项体检清单：
-1. **BEGIN/END 标记配对** — 查 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN/END`，多个 BEGIN 缺失对应 END 即结构异常（注意：正文里引用该字段名的行不算真标记，需看是否成对注释块）。
-2. **纯 hash 固化记录** — `grep -cE '^📝 固化: [0-9a-f]{16}$'`，无内容仅含哈希的都是记忆系统写入残留噪声，大量(数千条)堆积=文件被污染，应清理去重。
-3. **文件体积** — `wc -lc` 盯 >1MB / >2万行，超限需警惕，会拖慢注入/抬高 token。
-4. **超长行 & 碎片** — `awk 'length>400'` 查超长行（含会话日志/大段英文prompt）；核对固化记录里是否夹带 `|------|` 表格碎片。
-5. **结构完整性** — 代码块 ``` 与 Markdown 表格 `|` 是否成对完整。
+何时不使用 update_plan：
+- 可以直接完成或直接回答的简单、单步骤问题
 
-**清理纪律：** 属于修改长期记忆文件的敏感操作，必须：①先 `cp MEMORY.md MEMORY.md.bak-<时间戳>` 备份；②只删除纯 hash 噪声/重复/碎片，绝不删有效记忆；③按自进化流程先经用户确认再动手。
+Plan 管理规则：
+- 好的计划应当把任务拆分成有意义、顺序合理，并且能随着工作推进而逐步验证的步骤
+- 计划不是用来给简单工作填充无意义步骤，或者重复显而易见的事情。计划中不应包含你没有能力执行的操作，例如，不要计划运行你实际上无法运行的测试
+- 调用 update_plan 后，不要再次完整复述计划内容，因为运行环境已经会把计划展示出来。你应该概括这次更新，并指出重要背景或下一步
+- 在调用工具前，考虑前一个step是否已经完成；如果已完成，应先将其标记为`completed`，再进入下一步。有时一次实现过程就会完成计划中的所有step，这种情况下，可以直接把所有计划step标记为`completed`。有时你需要在任务进行过程中修改计划：调用 update_plan 提交更新后的计划，并通过 explanation 说明调整原因
 
 ### 引用来源展示使用要求
 
@@ -61,9 +64,7 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ### 联网搜索场景接口使用要求
 
-- **默认接口**:小艺联网搜索(xiaoyi-web-search)
-- **优势**：中文优化、开箱即用、无需配置秘钥
-- **场景要求**：所有网络搜索任务默认使用小艺联网搜索(xiaoyi-web-search)，除非用户要求使用其他搜索接口进行网络搜索。
+- **场景要求**：所有网络搜索任务默认使用小艺联网搜索SKILL(xiaoyi-web-search)，除非用户要求使用其他搜索接口进行网络搜索。
 
 ### 手机操控(xiaoyi-gui-agent)场景接口使用要求
 
@@ -110,18 +111,15 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 ### 文件回传场景接口使用要求
 
-- **默认接口**: send_file_to_user
-- **核心定位**: 当需要将本地文件或公网文件发送给用户手机时使用
-- **适用场景**:
-  - 用户要求把文件发给他/传到手机
-  - 生成的文档、报告等需要回传给用户
-  - 下载的文件需要发送到用户设备
-- **强制规则**:
-  1. 所有文件回传场景，**必须优先使用 send_file_to_user 工具**
-  2. 支持本地文件路径(fileLocalUrls)和公网URL(fileRemoteUrls)两种方式
-  3. 两种参数可同时使用，会一并处理
-
-- **出图/出文件后回传（2026-08-08 补充）**：用 seedream-image-gen 等技能**生成图片/文件后回传用户**时，**不要用 `MEDIA:路径` 附件方式**——xiaoyi-channel 对话框不渲染 MEDIA 附件，用户看不到。必须改用 `send_file_to_user` 直接推文件到用户设备。
+- 适用场景:
+ - 用户要求把文件发给他/传到手机
+ - 生成、下载的文件等需要发送给用户
+- 强制规则:
+ 1. 所有发送文件给用户文件场景，**默认必须优先使用 send_file_to_user 工具**
+ 2. 若 send_file_to_user 执行失败或不可用，再改用 message 工具发送
+ 3. **严禁使用 `MEDIA:` 指令**发送文件给用户，当前环境不可用，用户无法收到文件
+ 4. 在定时任务场景下，文件回传必须调用get_device_file_tool_schema 工具的save_file_to_file_manager，否则用户无法收到文件，严禁使用
+   send_file_to_user 工具
 
 ### 定时任务 (Cron) 配置规则
 
@@ -133,10 +131,15 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
   ```
 - **原因**: 不指定 channel 会导致定时任务无法正确推送消息到用户
 
-- **强制要求2**: 定时任务创建时需检查是否涉及手机工具调用（例如读写备忘录、日程、图库等），如果涉及在新建定时任务的同时需要告知用户不支持，并且询问用户是否仅新建不包含手机工具操作部分的定时任务
-- **原因**: 定时任务执行时无法调用手机端开放的工具，所有手机工具调用的操作均会执行失败，skill类型工具不影响使用
-- **注意事项**：仅手机工具无法使用，skills均可正常使用执行
-- **示例回复，请严格遵守**：定时任务执行期间不支持xxx工具调用，请您谅解，是否需要帮您把任务修改为yyyyy
+- **强制要求2**：创建定时任务时，如果任务涉及手机工具调用（例如读写备忘录、日程、图库等），必须从系统提示词中读取 `系统软件API版本号` 和 `xiaoyiAppVersion`，判断当前客户端是否具备卡片渲染能力：
+- `系统软件API版本号 >= 26` 且 `xiaoyiAppVersion >= 11.7.7.212`：支持卡片渲染，可以按照用户原始要求创建包含手机工具调用的定时任务。
+- 任一版本不满足要求，或系统提示词中缺少相关版本信息：视为不支持卡片渲染。需要告知用户当前客户端暂不支持定时任务中的手机工具调用，并询问是否仅创建不包含手机工具操作的部分。
+- **原因**：定时任务中的手机工具调用依赖客户端卡片能力。仅当系统软件API版本号和小艺App版本均达到要求时，才能正常使用。
+- **注意事项**：
+    1. 版本判断以系统提示词中的 `系统软件API版本号` 和 `xiaoyiAppVersion` 为准。
+    2. 判断过程及具体版本号不得向用户披露。
+    3. 仅手机工具调用受上述版本条件限制，Skill 类型工具不受影响，可正常使用和执行。
+- **版本不满足时的示例回复，请严格遵守**：当前客户端暂不支持定时任务执行期间的 xxx 工具调用，请您谅解。是否需要帮您将任务修改为 yyyyy？
 
 - **强制要求3**：时间处理决策树，**必须按顺序判断**：
 1. 用户说了“X点”或“X点整”-> 直接设为X：00，禁止随机化
@@ -168,6 +171,32 @@ printf '%d\n' $((RANDOM%12*5))
 
 ### OpenClaw 操作约束
 核心原则
+
+### 长期记忆文件(MEMORY.md)健康体检（2026-09-17 固化）
+
+**背景：** MEMORY.md 曾被"固化噪声"污染——内嵌 3683 条纯 hash 记录（格式 `📝 固化: 16位hex`）+ 表格碎片 + 原始英文 prompt，文件膨胀到 2.2MB/5.1万行，影响加载与 token 消耗（甚至一度被系统判定 MISSING）。
+
+**经验规则：** 回答"记忆文件有没有问题/要不要清理"时，逐项体检清单：
+1. **BEGIN/END 标记配对** — 查 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN/END`，多个 BEGIN 缺失对应 END 即结构异常（注意：正文里引用该字段名的行不算真标记，需看是否成对注释块）。
+2. **纯 hash 固化记录** — `grep -cE '^📝 固化: [0-9a-f]{16}$'`，无内容仅含哈希的都是记忆系统写入残留噪声，大量(数千条)堆积=文件被污染，应清理去重。
+3. **文件体积** — `wc -lc` 盯 >1MB / >2万行，超限需警惕，会拖慢注入/抬高 token。
+4. **超长行 & 碎片** — `awk 'length>400'` 查超长行（含会话日志/大段英文prompt）；核对固化记录里是否夹带 `|------|` 表格碎片。
+5. **结构完整性** — 代码块 ``` 与 Markdown 表格 `|` 是否成对完整。
+
+**清理纪律：** 属于修改长期记忆文件的敏感操作，必须：①先 `cp MEMORY.md MEMORY.md.bak-` 备份；②只删除纯 hash 噪声/重复/碎片，绝不删有效记忆；③按自进化流程先经用户确认再动手。
+
+### message 投递校验（通用，2026-09-19 固化）
+
+**适用于所有主动投递场景（不只 cron）：**
+
+- **触发场景**：任何依赖 message 工具主动投递到用户主对话框的情况——cron 任务、主动推送、任务完成通知、内容补发等。
+- **规则：** 用 message 工具发送后**必须核对返回结果**：只有返回了 `messageId` 且无错误（`result` 无 error）才算投递成功；若返回失败、未返回 messageId、或 `result` 含 error，**必须立即用相同参数重发**，直到确认成功为止，未确认不允许收尾。
+- **判断标准：** 以 message 工具实际返回的 `messageId` 为准，而不是以“我声称已投递”为准。
+- **⚠️ 假成功识别（2026-09-19 强化）：** 不能只看“返回了 messageId”。若返回的 messageId 前缀是 **`cron-swallowed-`**（或不是正常 UUID 格式 8-4-4-4-12 连字符结构），即为**占位符假成功**——消息实际被 cron 框架吞掉、不会到达用户端，必须判定失败并重投。真成功特征：messageId 是标准 UUID（如 `33d63d8e-e6bf-40ae-8b61-05fe056bd2be`）。
+- **原因与坑位：**
+  - isolated/后台会话里 agent 用 message 工具投递偶发 `delivered: false`——脚本跑完、agent 自述已投递，但消息实际没发出去，用户端收不到且无可见报错（2026-09-19 实测：`crusheart-engine-init` 01:00 投递失败，`delivered=false`、`messageToolSentTo` 为空）。
+  - cron isolated 会话投递还可能返回 `cron-swallowed-` 占位 messageId，cron 同时标记 `delivered:true`，造成“假成功”——agent 拿到就上报投递成功，但消息实际被吞（2026-09-19 实测：`crusheart-daily-maintenance` 05:00 返回 `cron-swallowed-1789765230299`，用户端收不到）。
+- **默认执行：** 无论是否 cron，凡 message 主动投递都按此标准；此规则高于“投完就回复”的直觉。
 
 ### 技能数量统计口径（2026-09-03 固化 · 2026-09-18 补充多口径差异）
 
@@ -433,3 +462,83 @@ OpenClaw 同时运行两套记忆系统，数据写在不同库/表中：
 | `memory_context/persona_runtime/visual_wardrobe_profiles.json` | **遗留**，运行时已不读（兼容桥注释 do not read legacy），仅历史参考 |
 
 **回答"衣柜几套"时**：直接报「正式 8 / 手工装 2 / 占位 1，合计 11」，以 unified 清单为准，**禁止**只读单一 manifest 就说 8 套（会漏手工装），也禁止三个源各自报数。
+
+### HTML 图表渲染规则（2026-09-18 固化）
+
+- **生成 HTML 报告/页面的图表，一律用内联 SVG / CSS 自绘**，禁止依赖外部 CDN 脚本（如 Chart.js、bootcdn）。
+- **原因**：外部 CDN 脚本在部分网络环境下加载不出来，导致图表区域空白（本次金价报告实际踩坑：Chart.js 引用后用户反馈"走势总览那块什么也看不见"）。
+- **做法**：用 `` 内联折线/柱状图（含数据点、坐标轴刻度、图例），零外部依赖，任何设备/网络稳定显示。
+
+### 沙箱网络限制与财经数据源（2026-09-18 固化）
+
+- **外网财经/商品源（如 tradingeconomics.com）在沙箱不可达**（报 000/ENOTFOUND）；**国内源可达**（baidu / eastmoney / sina / jin10 均 200）。取财经数据优先用国内接口。
+- **实时金价**（伦敦金/纽约金）用新浪接口：
+  ```bash
+  curl -s -H "Referer: https://finance.sina.com.cn" "https://hq.sinajs.cn/list=hf_XAU,hf_GC"
+  ```
+  返回 GBK 编码（按需 `iconv -f gbk -t utf-8`）；字段顺序：现价/今开/最高/最低/时间/日期/名称（伦敦金 hf_XAU、纽约金 hf_GC）。
+- **东财 push2/push2his kline、新浪期货 getKLineData 等历史 K 线接口在本地不通**（返回空/报错）——勿反复尝试；历史走势可用公开知识关键节点 + 实时价锚定。
+
+### Cron Update 同传 Patch 防覆盖（2026-09-21 固化）
+
+**坑：** 用 cron 工具 `action=update`（或 `openclaw cron edit`）时，**只传单个字段（如只传 `delivery`）会导致未传字段被重置/回退为默认值**。实测：只传 `delivery.to=00000000` 后，`sessionTarget` 从 `current` 被重置回 `isolated`（三处任务全变回来），需二次修复。
+
+**规则：**
+1. 凡是 cron `update`/`edit`，**必须一次同时带上所有相关字段**（典型：`sessionTarget` + `delivery` 一起传），避免互相覆盖。
+2. 改完**务必核对返回结果是预期的字段值**（尤其 `sessionTarget` 是否保持 `current`/`session:` 而非被悄悄变回 `isolated`），发现被重置立即同传修复。
+3. **备份纪律**：改 cron 配置前先 `cp -r ~/.openclaw/cron ~/.openclaw/cron.bak-$(date +%Y%m%d-%H%M%S)`，可回滚。
+
+**背景案例（2026-09-21）：** 三任务（engine-init / daily-maintenance / 沙箱清理）改 `sessionTarget=current`(解析当前ID `00000000`) + `delivery.to=00000000` + `failureDestination=default`。中途只传 delivery 导致 sessionTarget 被重置 isolated，已同传修复；随后实测确认 `current` 不持久回落 `isolated`、后台也解析不出 `00000000`，故**最终结论回归「固定命名会话 `session:` + `delivery.to=0380ff` + `failureDestination=default`」**为最优稳定组合。备份：`~/.openclaw/cron.bak-20260921-070432`。
+
+
+### 小艺Claw 版本分层口径（2026-09-22 固化）
+
+**经验：** 回答"小艺Claw版本 / 小艺版本"时，必须先分清**两个层级**，只答其一会答错对象。
+
+1. **端侧应用（手机端承载小艺Claw）** = **小艺Work**，当前版本 **26.9.1**（升级页面显示"已是最新版本"，无更新可用）。更新亮点：接入 GLM-5.3 / GLM-5.3-Flash、DeepSeek V4.1 Flash；全局记忆优化；长任务稳定性提升。
+2. **后台 OpenClaw 引擎** = **2026.6.6（8c802aa）**，可用最新 **2026.9.5**（latest，update-check.json 可查，当前未升级）。
+
+**注意：小艺Work ≠ 小艺APP**——小艺APP 版本是 11.7.7.404（另有一个语音助手 App），与承载 Claw 的小艺Work 是不同应用。
+
+**判断依据：** user 端截图"小艺Work → 升级 → 已是最新版本（26.9.1）"；后台用 `openclaw --version` 与 `~/.openclaw/update-check.json`。
+
+
+### 技能与仓库一致性对账（2026-09-22 固化）
+
+**场景：** 检查某个本地技能是否与 git 仓库一致（尤其出现"改动又看不出改什么"时）。与「技能数量统计口径」互补：那个讲**数量**怎么数，这条讲**单个技能差异**怎么查、怎么看、怎么处置。
+
+**对账三步命令：**
+```bash
+git status --porcelain <技能目录>    # 看 M(改)/D(删)/??(未跟踪)
+git diff HEAD --stat -- <技能目录>    # 看内容增删行数
+git diff HEAD --summary -- <技能目录> # 看是否 mode change（权限位变化）
+```
+
+**差异解读与处置：**
+1. **status=`M` 但 diff 统计 0 行** → **权限位漂移**（多为 `mode change 100755=>100644`，技能安装/同步流程抹掉执行位），**内容未变**，用 `--summary` 确认后提交归一即可（脚本用 `bash xxx` 调用，644 不受影响）。案例：xiaoyi-docx、xiaoyi-pdf 各 26 文件。
+2. **status=`D`** → 本地删了文件（常见删除 `tests/` 目录），git 标删除。**涉及删除必须先问用户是否有意**，不擅自 commit；保守做法是 `git checkout HEAD -- <dir>` 恢复保留完整性。案例：xiaoyi-pdf 本地删了 tests/ 15 个测试文件，已恢复。
+3. **status=`??`** → 未跟踪的新技能目录，需 `git add` 后纳入仓库。案例：huawei-browser-news。
+4. **status 全空** → 完全一致，无需处理。案例：webapp-testing、web-design-guidelines。
+
+**处置纪律：** 改仓库配置/删除前先备份；权限归一是安全提交；tests 类删除保守恢复；commit 后按需 push 三端（cnb.cool 主远端 + gitee + github）。
+
+
+### MEMORY.md 深度瘦身标准流程（2026-09-22 固化，实战: 2.44MB→14KB）
+
+**适用：** MEMORY.md 等长期记忆文件膨胀（>1MB/数万行）、被历史转储污染需要深度瘦身时。
+
+**步骤（按序执行）：**
+1. **先体检摸清病灶（别急着删）**：
+   - `wc -lc MEMORY.md` 看体积行数
+   - `grep -cE '^📝 ?固化' MEMORY.md` 数固化碎片
+   - `grep -cE '^📝 固化: [0-9a-f]{16}$'` 数纯 hash 噪声
+   - `awk 'length>400' MEMORY.md | wc -l` 找超长行
+   - `grep -nE '<!-- ?CELIA_MEMORY_(OVERVIEW|SCENES)_(BEGIN|END)'` 查标记配对（注意正文里"提到"这些术语的行不是真标记，看 `<!-- ` 注释符）
+2. **三层去噪，由浅入深：**
+   - ① 删纯 hash 噪声行（记忆系统写残）→ 归零
+   - ② 删内容型固化碎片（`^📝 ?固化` 开头的整行日志/报告/表格碎片）+ 压缩连续空行（`>2` 压到 `2`）→ 保留段落间隔
+   - ③ 识别"正式记忆区 vs 历史转储区"：正式区=项目状态/用户偏好/主人锚/记忆引擎等结构化小节；转储区=4万行 `🧠 核心锚点`/每日报告/重复人格副本/obs 链接等对话残留。把转储整块**归档迁移**而非删除
+3. **量字节必须用 `len(s.encode())`，不是 `len(s)`** —— `len()` 数是字符数，中文 UTF-8 每字 3 字节，会严重低估（本次用 `len()` 误判到 1MB，实际 2.4MB）
+4. **归档迁移 > 直接删除**：转储挪到 `memory_dump/MEMORY-history-{日期}.md`，一条不丢、可完全回滚
+5. **归档前先查有没有被外部引用、必须留在 MEMORY.md 的区块** —— 本次差点误删「琪琪人格手册六章合并版」（USER.md 明确规定展示人格内容要用它），从归档找回才补回。所有对 MEMORY.md 有"内容依赖"的文件（USER.md/SOUL.md/TOOLS.md 引用的区块）都要先盘点
+6. **安全纪律**：每次清理前 `cp MEMORY.md MEMORY.md.bak-$(date +%Y%m%d-%H%M%S)`；真正替换前在临时文件里做完整结构验证（SCENES BEGIN/END 配对=1/1、代码块 ``` 偶数、章节标题数 `grep -cE '^#{1,3} '` 不变），全过才 cp 覆盖
