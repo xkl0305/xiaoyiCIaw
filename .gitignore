@@ -110,3 +110,6 @@ MEMORY.md.bak-*
 AGENTS.md.original
 .gitignore.bak-*
 memory_dump/
+
+# 一次性金价报告(不跟踪)
+reports/gold-price-report.html
