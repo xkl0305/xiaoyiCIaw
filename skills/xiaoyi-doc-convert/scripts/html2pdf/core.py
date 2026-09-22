@@ -5,11 +5,14 @@ HTML 转 PDF 工具 - 基于 Playwright
 支持单文件和批量转换
 """
 
+import http.server
 import os
+import socketserver
 import sys
-import urllib
+import threading
+import urllib.parse
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 from playwright.sync_api import sync_playwright, TimeoutError as PlaywrightTimeout
 
 # 导入本地的 PDFMerger
@@ -81,6 +84,60 @@ def build_pdf_options(page_width: str = None, page_height: str = None) -> dict:
     }
 
 
+def _build_http_url_for_html(html_file_path: str) -> Tuple[str, str]:
+    """计算 HTML 文件的 HTTP 服务根目录与相对 URL 路径。
+
+    Args:
+        html_file_path: HTML 文件路径
+
+    Returns:
+        (base_directory, relative_url_path): 服务根目录与相对路径
+    """
+    html_path = Path(html_file_path).resolve()
+    base_dir = html_path.parent
+    rel_path = html_path.relative_to(base_dir).as_posix()
+    encoded_rel = urllib.parse.quote(rel_path, safe='/')
+    return str(base_dir), encoded_rel
+
+
+class _SilentRequestHandler(http.server.SimpleHTTPRequestHandler):
+    """不打印访问日志的静态文件服务处理器。"""
+
+    def __init__(self, *args, directory: Optional[str] = None, **kwargs):
+        super().__init__(*args, directory=directory, **kwargs)
+
+    def log_message(self, fmt, *args):
+        # 静默处理，避免污染 stdout/stderr
+        pass
+
+
+class _ThreadingHTTPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
+    """支持并发请求、可复用地址的临时 HTTP 服务。"""
+
+    allow_reuse_address = True
+    daemon_threads = True
+
+
+def _start_temp_http_server(directory: str) -> Tuple[socketserver.ThreadingMixIn, int]:
+    """在 127.0.0.1 上启动一个临时 HTTP 服务，仅提供指定目录内容。
+
+    Args:
+        directory: 要服务的本地目录
+
+    Returns:
+        (server, port): 服务实例与端口号。调用方须在 finally 中执行
+        server.shutdown() 与 server.server_close()。
+    """
+    server = _ThreadingHTTPServer(
+        ("127.0.0.1", 0),
+        lambda *args, **kwargs: _SilentRequestHandler(*args, directory=directory, **kwargs)
+    )
+    port = server.server_address[1]
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    return server, port
+
+
 def html_to_pdf(html_file_path: str, output_path: str = None,
                 page_width: str = None, page_height: str = None) -> dict:
     """
@@ -106,16 +163,13 @@ def html_to_pdf(html_file_path: str, output_path: str = None,
 
     print(f"[html2pdf] 开始转换: {os.path.basename(html_file_path)}")
 
+    # 使用本地临时 HTTP 服务加载 HTML，避免 file:// 协议带来的任意文件读取风险
+    base_dir, rel_url = _build_http_url_for_html(html_file_path)
+    http_server, http_port = None, None
+
     try:
-        # 转换为绝对路径并构建 file:// URL
-        abs_path = os.path.abspath(html_file_path)
-        # Windows 路径需要特殊处理：C:\path -> /C:/path
-        if sys.platform == 'win32':
-            abs_path = abs_path.replace('\\', '/')
-            if not abs_path.startswith('/'):
-                abs_path = '/' + abs_path
-        encoded_path = urllib.parse.quote(abs_path, safe='/')
-        file_url = f"file://{encoded_path}"
+        http_server, http_port = _start_temp_http_server(base_dir)
+        http_url = f"http://127.0.0.1:{http_port}/{rel_url}"
 
         # 使用 sync_playwright 创建临时浏览器上下文
         with sync_playwright() as p:
@@ -129,7 +183,7 @@ def html_to_pdf(html_file_path: str, output_path: str = None,
                     '--disable-setuid-sandbox',
                     '--disable-dev-shm-usage',
                     '--disable-gpu',
-                    '--disable-web-security',
+                    '--disable-javascript',
                     '--disable-features=IsolateOrigins,site-per-process'
                 ]
             }
@@ -141,14 +195,15 @@ def html_to_pdf(html_file_path: str, output_path: str = None,
 
             # 使用 chromium 浏览器
             browser = p.chromium.launch(**launch_options)
-            context = browser.new_context()
+            # 禁用 JavaScript：纵深防御，阻断基于脚本的本地文件读取与内容外带路径
+            context = browser.new_context(java_script_enabled=False)
 
             try:
                 # 创建新页面
                 page = context.new_page()
 
-                # 加载HTML文件
-                page.goto(file_url, wait_until='networkidle', timeout=PAGE_LOAD_TIMEOUT * 1000)
+                # 加载HTML文件（通过本地 http 源，禁止 file:// 请求）
+                page.goto(http_url, wait_until='networkidle', timeout=PAGE_LOAD_TIMEOUT * 1000)
 
                 # 等待 body 元素加载完成
                 page.wait_for_selector('body', state='attached', timeout=PAGE_LOAD_TIMEOUT * 1000)
@@ -179,6 +234,11 @@ def html_to_pdf(html_file_path: str, output_path: str = None,
     except Exception as e:
         print(f"[html2pdf] 转换失败: {e}")
         raise RuntimeError(f"HTML转PDF失败: {html_file_path}") from e
+    finally:
+        # 关闭本地临时 HTTP 服务
+        if http_server is not None:
+            http_server.shutdown()
+            http_server.server_close()
 
 
 def batch_convert(html_dir: str, output_dir: str = None,
