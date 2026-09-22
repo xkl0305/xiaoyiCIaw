@@ -104,3 +104,9 @@ skills/.archive/
 .archive-backup-*/
 TOOLS.md.bak-*
 EVOLUTION_IDEA.md.bak-*
+
+# 备份/原始文件产物（本机留档, 不同步 git）
+MEMORY.md.bak-*
+AGENTS.md.original
+.gitignore.bak-*
+memory_dump/
