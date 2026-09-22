@@ -88,7 +88,7 @@
 2. `plugins.entries.memory-celia.enabled` → `true`，加回 hooks + config
 3. `plugins.entries.yaoyao-memory.config` → 恢复 celiaBridge 模式
 
-<!-- CELIA_MEMORY_SCENES_BEGIN h=a855719bfa53763d -->
+<!-- CELIA_MEMORY_SCENES_BEGIN h=b01a8293e2aa5c84 -->
 ## SCENE_NAVIGATION
 用户问题与以下一个或多个场景匹配时，提取场景 ID 并调用 MemorySceneLoad(list[sceneIds])。
 
@@ -100,6 +100,6 @@
 格式：`场景ID | 场景类型 | 场景名称 | 场景描述`
 一级场景：
 二级场景：
-7332003488464902 | 信息查询与工具 | *others* | 用户的小艺Claw版本与技能仓库对账经验；小艺Claw版本升级
+7332003488464902 | 信息查询与工具 | *others* | 用户的小艺Claw版本、技能仓库对账与记忆管理经验；小艺Claw版本升级。
 7332003495702535 | general | *others* | 用户（俞哥）对端侧小艺Claw查询方式的询问
 <!-- CELIA_MEMORY_SCENES_END -->
