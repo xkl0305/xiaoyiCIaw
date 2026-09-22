@@ -160,6 +160,7 @@ async function sendRequest(query, numResults, store) {
             query: query,
             num_results: numResults,
             store: store,
+            engines: ["baidu"],
         },
     };
 
