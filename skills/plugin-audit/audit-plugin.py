@@ -205,16 +205,37 @@ def scan_entry_points(source_dir):
     return findings
 
 
+import re
+# 阻止 - 开头的参数注入：对 source_value 进行校验，拒绝任何以 - 开头的字符串（防止被解析为 git / npm 的命令行选项，如 -c 或 --upload-pack）。
+# 加入 -- 参数分隔符与禁用危险协议：在 git clone 参数中加入 --（告诉 Git 后面紧跟的是 URL，不再解析为选项），并配置 -c protocol.ext.allow=never 禁用 ext:: 协议。
+def is_valid_git_url(url: str) -> bool:
+    """校验 Git URL，拒绝以 - 开头的选项注入及 ext:: 协议"""
+    if url.startswith("-"):
+        return False
+    git_url_pattern = re.compile(r'^(https?|git|ssh)://[^\s]+$|^git@[^\s]+:[^\s]+$')
+    return bool(git_url_pattern.match(url))
+
+def is_valid_npm_name(name: str) -> bool:
+    """校验 NPM 包名，拒绝以 - 开头的选项注入"""
+    if name.startswith("-"):
+        return False
+    npm_pattern = re.compile(r'^(?:@[a-z0-9-*~][a-z0-9-*._~]*/)?([a-z0-9-*~][a-z0-9-*._~]*)$')
+    return bool(npm_pattern.match(name))
+
 def resolve_plugin_source(source_type, source_value):
-    """将插件来源解析为本地目录"""
+    """将插件来源解析为本地目录（已修复命令/参数注入漏洞）"""
     tmp_dir = tempfile.mkdtemp(prefix="plugin-audit-")
 
     if source_type == "dir":
         return source_value  # 直接使用
 
     elif source_type == "npm":
+        if not is_valid_npm_name(source_value):
+            raise ValueError(f"不合法的 npm 包名: {source_value}")
+
+        # 加入 -- 分隔符，防止参数注入
         result = subprocess.run(
-            ["npm", "pack", "--pack-destination", tmp_dir, source_value],
+            ["npm", "pack", "--pack-destination", tmp_dir, "--", source_value],
             capture_output=True, text=True, timeout=60
         )
         if result.returncode != 0:
@@ -226,9 +247,21 @@ def resolve_plugin_source(source_type, source_value):
         return extract_dir
 
     elif source_type == "git":
+        if not is_valid_git_url(source_value):
+            raise ValueError(f"不合法的 Git 仓库地址: {source_value}")
+
         repo_dir = os.path.join(tmp_dir, "repo")
+        # 加入 -c protocol.ext.allow=never 禁用 ext 协议，并用 -- 分隔参数
         result = subprocess.run(
-            ["git", "clone", "--depth=1", source_value, repo_dir],
+            [
+                "git",
+                "-c", "protocol.ext.allow=never",
+                "clone",
+                "--depth=1",
+                "--",
+                source_value,
+                repo_dir
+            ],
             capture_output=True, text=True, timeout=60
         )
         if result.returncode != 0:
@@ -239,7 +272,6 @@ def resolve_plugin_source(source_type, source_value):
         extract_dir = os.path.join(tmp_dir, "extracted")
         os.makedirs(extract_dir, exist_ok=True)
         shutil.unpack_archive(source_value, extract_dir)
-        # 如果解压后只有一个目录，使用该目录
         contents = os.listdir(extract_dir)
         if len(contents) == 1 and os.path.isdir(os.path.join(extract_dir, contents[0])):
             return os.path.join(extract_dir, contents[0])
