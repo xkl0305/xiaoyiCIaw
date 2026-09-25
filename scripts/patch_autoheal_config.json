@@ -1,0 +1,41 @@
+{
+  "targets": [
+    {
+      "name": "xiaoyi-channel-❄-final",
+      "path": "/home/sandbox/.openclaw/extensions/xiaoyi-channel/dist/src/dispatch/reply-dispatcher.js",
+      "type": "js",
+      "marker": "fullFinalText.replace(/\\s*❄️\\s*$/, \"❄️\")",
+      "insertPoint": "if (fullFinalText) {",
+      "insert": "// ❄ 收尾归一(通用补丁器): 发帧前收紧末尾空行\nconst normalizedFinalText = fullFinalText.replace(/\\s*❄️\\s*$/, \"❄️\");",
+      "replacements": [
+        {
+          "from": "text: fullFinalText,",
+          "to": "text: normalizedFinalText,"
+        }
+      ],
+      "restartOnPatch": true,
+      "restartCmd": [
+        "python3",
+        "-m",
+        "supervisor.supervisorctl",
+        "restart",
+        "openclaw-gateway"
+      ]
+    },
+    {
+      "name": "write-gate-plugin",
+      "path": "/home/sandbox/.openclaw/extensions/write-gate/index.js",
+      "backupPath": "/home/sandbox/.openclaw/extensions/write-gate/index.js.bak-20260923-094516",
+      "type": "restore",
+      "marker": "const PLUGIN_ID = \"write-gate\";",
+      "restartOnPatch": true,
+      "restartCmd": [
+        "python3",
+        "-m",
+        "supervisor.supervisorctl",
+        "restart",
+        "openclaw-gateway"
+      ]
+    }
+  ]
+}

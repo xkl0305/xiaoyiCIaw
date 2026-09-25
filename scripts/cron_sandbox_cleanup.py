@@ -4,6 +4,7 @@
 import os
 import shutil
 import subprocess
+import sys
 from pathlib import Path
 
 WORKSPACE = os.path.expanduser("~/.openclaw/workspace")
@@ -28,10 +29,13 @@ def dir_size(path):
     except: pass
     return total
 
-def auto_clean():
-    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志"""
+def auto_clean(dry_run=False):
+    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志 + 正式文件旧备份。
+    dry_run=True 时仅预览正式文件旧备份的待删清单，不执行任何实际删除。"""
     freed = 0
     items = []
+    if dry_run:
+        return clean_workspace_backups(True)
 
     # 1. /tmp 编译缓存
     for p in ["/tmp/node-compile-cache", "/tmp/openclaw-compile-cache"]:
@@ -77,7 +81,51 @@ def auto_clean():
                 freed += s
                 items.append(f"🧹 {p} — __pycache__ 已清理 ({size_str(p) if s else '0B'}→0)")
 
+    # 5. workspace 正式文件旧备份（每组保留 BACKUP_KEEP 个，其余删除）
+    bak_items, bak_freed = clean_workspace_backups(dry_run)
+    items.extend(bak_items)
+    freed += bak_freed
+
     return items, freed
+
+# 正式文件备份清理：每组保留最新 BACKUP_KEEP 个，其余淘汰
+PROTECTED_BACKUP_MARKERS = [
+    "AGENTS.md.bak-", "SOUL.md.bak-", "MEMORY.md.bak-",
+    "USER.md.bak-", "IDENTITY.md.bak-", "TOOLS.md.bak-",
+]
+BACKUP_KEEP = 2
+
+def clean_workspace_backups(dry_run=False):
+    """清理正式文件旧备份：每组保留 BACKUP_KEEP 个。dry_run=True 只列出待删，不实删。"""
+    freed = 0
+    items = []
+    removed = 0
+    try:
+        entries = os.listdir(WORKSPACE)
+    except Exception:
+        return items, freed
+    for marker in PROTECTED_BACKUP_MARKERS:
+        files = sorted(
+            [os.path.join(WORKSPACE, f) for f in entries if f.startswith(marker)],
+            key=os.path.getmtime,
+        )
+        if len(files) <= BACKUP_KEEP:
+            continue
+        for f in files[:-BACKUP_KEEP]:
+            try:
+                s = os.path.getsize(f)
+                if not dry_run:
+                    os.remove(f)
+                freed += s
+                removed += 1
+                items.append(f"🧹 {os.path.basename(f)} — {'待删' if dry_run else '已清'} ({size_str(f)})")
+            except Exception:
+                continue
+    if removed:
+        tag = "待删" if dry_run else "已清理"
+        items.insert(0, f"🧹 workspace正式文件旧备份 — {tag} {removed}个/释放 {freed/1024:.1f}KB (每组保留{BACKUP_KEEP}个)")
+    return items, freed
+
 
 def list_large_pending():
     """列出需要用户确认的大文件"""
@@ -129,13 +177,14 @@ def list_large_pending():
 
     return pending
 
-def report():
+def report(dry_run=False):
     print("=" * 50)
-    print("🦞 沙箱清理报告")
+    head = "🦞 沙箱清理报告 (dry-run 预览)" if dry_run else "🦞 沙箱清理报告"
+    print(head)
     print(f"⏱ {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print("=" * 50)
     
-    cleaned, freed = auto_clean()
+    cleaned, freed = auto_clean(dry_run)
     
     if cleaned:
         print(f"\n✅ 自动清理完成 — 释放 {freed/1024:.1f}KB")
@@ -183,4 +232,4 @@ def report():
     print("=" * 50)
 
 if __name__ == "__main__":
-    report()
+    report(dry_run="--dry-run" in sys.argv)

@@ -26,7 +26,7 @@ from config import Config
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 SKILL_EXECUTE_PATH = "/celia-claw/v1/sse-api/skill/execute"
-SKILL_ID = "xiaoyi_office"
+SKILL_ID = "xiaoyi_office_gy"
 
 OFFICE_EXTENSIONS = {
     ".pptx", ".ppt", ".docx", ".doc", ".xlsx", ".xls",

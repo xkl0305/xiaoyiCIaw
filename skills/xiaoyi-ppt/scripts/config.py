@@ -195,7 +195,7 @@ class Config:
         cfg.tls_skip_verify = _parse_bool(os.getenv("TLS_SKIP_VERIFY", ""))
         cfg.request_timeout = int(os.getenv("REQUEST_TIMEOUT", "3600"))
 
-        cfg.osms_object_type = os.getenv("OSMS_OBJECT_TYPE", "TEMPORARY_MATERIAL_DOC")
+        cfg.osms_object_type = "TEMPORARY_FILE_GY"
         osms_tls = os.getenv("OSMS_TLS_SKIP_VERIFY", "")
         cfg.osms_tls_skip_verify = _parse_bool(osms_tls) if osms_tls else cfg.tls_skip_verify
         cfg.osms_use_edge = _parse_bool(os.getenv("OSMS_USE_EDGE", "False"))
