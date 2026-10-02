@@ -1,0 +1,22 @@
+---
+timestamp: 2026-08-06T06:14
+skill: wacx-docx
+old_score: -
+new_score: 86.7
+status: baseline
+dimension: -
+note: v3.0 MD→DOCX 改造后基线（含 2 个真实 bug 修复：删除线丢失、跨 token 标点未规范化）
+eval_mode: full_test
+---
+timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
+2026-06-18T15:58	-	docx-formatter	-	87.2	baseline	-	初始基线评估	dry_run
+2026-06-18T16:05	e1a2b3c	docx-formatter	87.2	87.2	keep	-	首轮优化无实质改动，结构达标	dry_run
+2026-06-18T16:10	f4d5e6f	docx-formatter	87.2	91.2	keep	资源整合度、边界条件	增加references/spec.md引用、修正test-prompts	expected	dry_run
+2026-07-03T08:50	-	docx-formatter	91.2	76.8	baseline	-	v2.1基线（darwin 8维rubric重新评估，标准更严）	dry_run
+2026-07-03T08:52	r1		docx-formatter	76.8	78.3	keep	工作流清晰度	修复步骤5重复编号→步骤6	dry_run
+2026-07-03T08:54	r2		docx-formatter	78.3	79.5	keep	Frontmatter+整体架构	精简optimization_log 10行→3行	dry_run
+2026-07-03T08:56	r3		docx-formatter	79.5	80.5	keep	指令具体性+资源整合度	版本号更新+添加python-docx依赖说明	dry_run
+2026-07-03T08:58	r4		docx-formatter	80.5	84.0	keep	边界条件+实测表现	多编码fallback实现+doc.save错误处理	full_test
+2026-07-03T09:00	r5		docx-formatter	84.0	87.5	keep	整体架构+检查点设计	书名检测通用化+检查点+去作品绑定	full_test
+2026-07-03T09:02	r6		docx-formatter	87.5	88.5	keep	指令具体性	同步references/spec.md+添加退出码表	full_test
+2026-08-06T06:14	-	wacx-docx	-	86.7	baseline	-	v3.0 MD→DOCX 改造后基线（含 2 个真实 bug 修复：删除线丢失、跨 token 标点未规范化）	full_test
