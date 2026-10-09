@@ -91,6 +91,31 @@ Plan 管理规则:
 
 所有安装/查找技能(Skill)任务默认使用find-skills技能,除非用户要求使用其他方式进行搜索安装。
 
+### JS 反爬/动态渲染网页读取方法(2026-10-01实测)
+
+**背景:** 查车展时 `m.chezhanri.com`(车展日车展网)是 JS 混淆反爬站,`web_fetch` 拿回的只有原始 HTML 里一段 packed 混淆 JS,status 200 但读不到正文。
+
+**经验规则:**
+1. `web_fetch` 读到的是**原始 HTML**,遇 JS 混淆/动态渲染的反爬站(如该站)会拿不到正文——表现为状态 200 但无内容。
+2. **改用 `browser` 工具(真实 Chromium)**:JS 真实执行后内容正常渲染,`snapshot` 即可读到可见正文(导航/列表/正文)。
+3. **批量抓多 tab/面板**:用 `browser act evaluate` 执行 JS(如 `document.querySelectorAll('[role=tabpanel], [id^=tab-p_]')` 提取 `innerText`) **一次性导出全部**,比逐个 `click`+`snapshot` 高效得多。
+4. 适用场景:车展日历、动态渲染资讯页等 JS 反爬站点;数据抓取优先走 browser evaluate,别反复 web_fetch 浪费时间。
+
+### 展会/活动类查询方法论(2026-10-01实测)
+
+**背景:** 查 11 月台球展时,泛搜只出头部大展(广州 GBE/北京台博会),杭州 ZBE 被挤出前列;又因瞎猜城市(郑州/长沙)漏了杭州,靠用户提示才命中。
+
+**经验规则:**
+1. **查某品类/展会的全国排期** → 优先找**聚合排期页/总表**(如车展日网 `chezhanri.com` 按地区分) **一次看全**,别逐城猜着搜而漏目标。
+2. **泛搜只出头部大展**,具体城市/时间的展会排期靠后;需**加"城市名+月份"限定词**二次精搜才命中(如加「杭州」才搜到 ZBE 11月展)。
+3. **不确定具体城市** → 直接问用户或看全量排期,别用"自己猜的城市"框死检索范围。
+4. 配合「JS 反爬读取」经验:聚合排期页遇反爬站用 `browser` 渲染读取。
+5. **否定判断须实证(2026-10-02补充)** — 查“某城市某月有没有某类展(漫展/车展等)”时,禁止凭单一搜索/单个本地宝页面片段下“没有”结论。想下“没有”前,须换**多组关键词实测**(如加“bilibili会员购/目的地/核心场馆/主办方”等维度),仍未命中才算“暂未检索到”,而非“确定没有”。
+
+**漫展类查全量:** bilibili会员购「漫展日历」+ 各城市本地宝“漫展时间一览”页为准;本地宝综合页常只显示年内历史场次,不代表该月无展。
+
+**案例教训(2026-10-02):** 查 10 月漫展时,西安/北京/南京/杭州被我两次误判“没有”,实际国庆档全有——杭州 IAGF 国际动漫周边展(10.1-2,国博二期)靠换“bilibili”关键词才命中,北京 IJOY/西安梦乡/南京金陵文博会同理。根因:停在单一搜索片段就下否定结论。
+
 ### 文档格式转换(xiaoyi-doc-convert)使用要求
 
 - **核心定位**: 专业文档格式转换技能,支持 Docx、PDF、Xlsx、Pptx、Markdown 等多种格式互转
@@ -254,6 +279,29 @@ printf '%d\n' $((RANDOM%12*5))
   - 219/150 = OpenClaw 框架加载可用技能数(另一套口径,合并去重插件技能,不反映 skills/ 目录)
 - 仓库同步后两边同数即一致;对比维护报告时差值=新增/删除的顶层技能目录数 或 索引未刷新。
 
+### 技能检索纪律:判断"某产品有没有对应技能"先翻 skills 目录(2026-09-27)
+
+**背景:** 用户提到"小云雀"并给链接,AI 只查了记忆(memory_search)没翻技能表,半天没想起已装的 `pippit-xyq`(小云雀)技能,跑偏成讨论开发框架。根因:把记忆当技能存在性的唯一依据。
+
+**规则:**
+1. 用户提到某产品/工具名(小云雀、某平台等),要判断是否已有对应技能 → **默认先查 `skills/` 目录**:`ls skills | grep -iE "关键词"` 或 `find skills -maxdepth 1 -mindepth 1 -type d | grep -iE "关键词"`。
+2. **技能列表是权威来源**:已装技能就在 `skills/` 下,**记忆(memory_search)可能没沉淀/不全,不能作为技能存在性的唯一依据**。
+3. 配合 AGENTS.md「回答前必查原则」:涉及技能能力/通道/配置等已文档化事实,先查 TOOLS.md / SKILL.md / 技能列表再答,不凭记忆。
+4. 触发场景:用户说"xxx你忘了吗""xxx技能还有吗""能不能做xxx(疑对应已装技能)"等。
+
+### 资讯/网页抓取类技能选型地图(2026-10-02固化)
+
+**背景:** 一次盘点 10+ 个资讯/网页抓取类技能,发现定位相近易混。遇到具体需求先按地图对号入座,避免装错/反复试。
+
+**选型规则（按需求）:**
+1. **查综合热榜(多平台)** → `daily-hot-news`(54平台聚合:微博/知乎/B站/贴吧/公众号等);微博专属→`weibo_hot_search`;36氪→`36kr-hotlist`;华为浏览器早报(8分类)→`huawei-browser-news`
+2. **AI 圈资讯** → `aihot`(aihot.virxact.com AI HOT 每日精选/关键词/日报)
+3. **抓单篇网页正文转 markdown**:轻量快速→`web-content-fetcher`(Jina/Scrapling 三级降级,免 key,能读公众号);12 平台爬虫(公众号/头条/BBC/Twitter)→`news-extractor`(uv 管理);动态渲染/登录/付费墙→`baoyu-url-to-markdown`(Chrome CDP+defuddle,最全但最重,需 bun)
+4. **多平台搜索/互动(15平台统一CLI)** → `agent_reach`;免 key 多引擎(17搜索引擎:百度/Bing/Google/DDG 等)→`multi-search-engine`
+5. **浏览器自动化/反爬渲染** → `browser-control`(browser 工具,CDP 渲染,`evaluate` 批量抓 tab/面板,配「JS 反爬读取」经验)
+
+**要点:** 单篇正文轻量抓优先 `web-content-fetcher`;要覆盖多平台/发布交互走 `agent_reach`;遇到 JS 反爬/动态渲染站一律上 `browser-control` 渲染。
+
 ### Git Push 失败排查规则(2026-08-02)
 
 **经验:** GitHub push 报 `Authentication failed` 时,不直接归因 token 过期。
@@ -266,6 +314,23 @@ printf '%d\n' $((RANDOM%12*5))
    echo "protocol=https\nhost=github.com\nusername=\npassword=" | git credential approve
    ```
 4. **再推送** - `git push  `
+
+### Git 多 remote 提交后分别推送(2026-09-26)
+
+**经验:** 本仓库配 3 个 remote(`origin`→cnb.cool / `gitee` / `github`),`git push` 无参**只推 upstream(origin/main)**,gitee/github 会停在旧提交,导致"以为全推了、实则三端不同步"。
+
+**正确操作(三端同步):**
+```bash
+git push              # 只推 origin(upstream)
+git push gitee main   # 补推 gitee
+git push github main  # 补推 github
+```
+
+**要点:**
+1. commit 后先 `git remote -v` 看**全部 remote 数**,再逐个 `git push <remote> <branch>`,勿默认只推 origin 就当全推。
+2. 各 remote 历史起点可能不同(实测 github 旧提交 aa135b4 vs gitee a12ed9f),但都能快进到最新 commit。
+3. 确认对齐:对比 `git log --oneline -1` 与各 remote 分支 commit。
+4. 触发场景:用户问"X 个仓库都推送了吗" / 提交后要求多端备份同步。
 
 ### supervisord 一次性脚本配置坑点(2026-08-09)
 
@@ -335,6 +400,29 @@ python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); fro
 
 **注意:** 改 `.xiaoyienv` 前先 `cp` 备份一份(`.xiaoyienv.bak-`),再追加而非覆盖原文。
 
+### seedream 生图排错与 size 支持实测(2026-09-26)
+
+**背景:** seedream 生图失败逐层排查,实测出 `huawei_sse` 通道各 size 支持边界(通道本身可用,是 size 参数问题)。
+
+**size 支持实测矩阵(huawei_sse,同 prompt 唯一变量 size):**
+
+| size | 结果 |
+|:----:|:----:|
+| 2K / 3K | ✅ generated |
+| 4K / 4K-square / 4K-wide / 4K-portrait | ❌ `provider_returned_no_image` |
+
+**结论:** `huawei_sse` 通道**仅支持 2K/3K**;`4K` 系(4K/4K-square/4K-wide/4K-portrait)**全不支持**,报 `provider_returned_no_image`(无报错、容易误判成通道挂了)。**横/竖/正方形三形态统一靠 prompt 构图词实现**(2026-10-01 实测全通过):竖版写"竖长海报/竖版构图"、横版写"横向宽画幅横幅构图"、默认不写即方形;**勿靠 `--size` 参数控比例**——4K 系在 huawei_sse 全 no_image,只用 2K/3K(含 max-images 组图场景同样适用)。
+
+**排错顺序(生图失败时):**
+1. 看 `channel_count` / `available_channels`:退化成单通道(仅 huawei_sse)= `.xiaoyienv` 各通道 API key 配置全空,用「Seedream 通道配置备份」补回 ARK/SILICONFLOW
+2. 排除 size 参数影响:`--channel huawei_sse` + 精简 prompt + **不带 size** 单测,能出图 = 通道可用
+3. 带完整 prompt / 预期 size 前,先确认该 size 在目标通道支持范围内(见矩阵)
+4. 逐个变量隔离(通道 / size / negative / prompt),勿叠加下结论、勿盲目重试
+
+**实测方法:** 循环换 `--size`,保持同 prompt 同通道,仅变 size,对比 status 定性。
+
+**已知触发 no_image 的 prompt 组合(2026-10-01 实测):** `huawei_sse` 对 **"红色背景 + 金色五角星"组合** 的 prompt 稳定返回 `provider_returned_no_image`——单独出现"红色"或单独"五角星"都能正常生成,一组合就挂;换"鲜红/中国红"等词也绕不开(疑服务端对红金国旗类视觉组合的生成/审核拦截)。**规避:** 改用烟花/城市夜景/红灯笼/金色光影/Q版气球等同样节庆感元素,避免"红色背景+五角星"同时出现。**定位法:** 单类词逐个测试(烟花/红/国庆/五角星均 pass,"红色背景+金色五角星" fail),再收拢组合。
+
 ### 记忆系统双数据源排查指南
 
 OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
@@ -366,6 +454,21 @@ OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
 1. **多源必查** - 回答文件级数据(数量、状态、内容)时,必须先识别所有相关数据源文件,不能只读主文件就下结论
 2. **历史自查** - 对之前被纠正过的同类问题,回答前先搜记忆确认历史记录,避免重复踩坑
 3. **语气留馀地** - 即使"确认"了的文件数量,语气也别太满,给"还可能漏了什么"留空间
+
+### 自进化固化操作全流程 Playbook(2026-10-02 固化)
+
+**背景:** 进化流程规则曾散落多处(AGENTS.md P0门禁 / TOOLS.md write-gate/标准格式/纪律 / SOUL/MEMORY 门禁),缺一次照做的完整清单,每次固化要现拼步骤易漏。以下为**固话一条经验时的标准操作顺序**。
+
+**操作顺序(step 1→7 依次执行):**
+1. **发现可复用经验** → 先展示「🧠 小艺Claw进化请求」(含 `进化项/经验规则/修改文件` 三字段)+ 明确输出「### 是否确认进行本次进化?」等俞哥确认,**禁止先落盘**(违规必补走提案闭环)
+2. **确认后** → 写一次性令牌 `.write-gate-allow.json`(`{"allowed":["目标文件"],"exp":Date.now()+600000}`);**exp 必须毫秒**,秒级会恒判过期不生效(write-gate 实测坑)
+3. **先备份** `cp 目标文件 .bak-$(date +%Y%m%d-%H%M%S)` → 再 edit/write 落盘
+4. **归档** 提案副本到 `evolution-drafts/approved/<主题>-<日期>.md`(含日期/status/进化项/修改文件/规则摘要)
+5. **清理令牌** `rm -f .write-gate-allow.json`(一次性用完即删)
+6. **校验** `grep` 确认写入成功、结构完整(章节标题数/标记配对)
+7. **收尾** 回复带标准确认句 + ❄️ 收尾(确认句置 ❄️ 前,不占情绪位)
+
+**关键纪律:** 令牌≠流程确认——`write-gate` 放行只是落盘技术口,流程确认(step1)与令牌(step2)两层缺一不可。确认句自动注入在 xiaoyi-channel 不可行(见 evolution-reply-confirm 段),靠本清单纪律保障。
 
 ### 自进化请求标准格式
 
@@ -524,6 +627,31 @@ OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
 
 **回答"衣柜几套"时**:直接报「正式 8 / 手工装 2 / 占位 1,合计 11」,以 unified 清单为准,**禁止**只读单一 manifest 就说 8 套(会漏手工装),也禁止三个源各自报数。
 
+### 人格视角出图·真出图 CLI 与 MAINCHAIN_PROOF_KEY(2026-09-30 固化)
+
+**背景:** 人格视角出图系统代码齐全且有出图记录,但"没在运行时自动出图"的根因之一是跑 CLI 真出图时环境缺证明密钥被 fail-closed。本次实测跑通出图(seedream 5.0,SSE 代理通道),固化为标准出图流程。
+
+**标准出图命令**(走完整管线:注册→衣柜→焦点→提示词→controller→mainchain proof→seedream):
+```bash
+cd /home/sandbox/.openclaw/workspace
+MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual.helpers.cli_generate \
+  --text "<画面描述>" --mood <情绪> --scene <场景> --no-dry-run --output /tmp/pv_result.json
+```
+
+**关键坑点:**
+1. **默认是 dry-run**:`cli_generate.py` 默认 `dry_run=True`,只跑到 mainchain proof 前构建、不触发生图。要真出图**必须加 `--no-dry-run`**。
+2. **缺证明密钥会 fail-closed**:mainchain proof 签发需要环境有 `MAINCHAIN_PROOF_KEY` 或 `PERSONA_VISUAL_MAINCHAIN_SECRET`,缺失抛 `RuntimeError: missing_runtime_secret`。这是 **Environment-only** 设计(`core/personal_os_enterprise/runtime_secret_provider.py`:secrets 不落工作区、缺省 fail closed,不静默降级),不能凭空造密钥。
+3. **密钥来源**:local 默认值为 `local_test_mainchain_secret`,存在工作区 `.env`(`MAINCHAIN_PROOF_KEY=local_test_mainchain_secret`);部署脚本 `deploy/load_secrets.sh` 从 runtime.yaml 读 `mainchain_proof_key` 注入同一值。该密钥仅用于本地 proof 签 HMAC、不参与 AI 生图、无敏感泄漏。
+4. **通道 fallback**:无 ARK 直连环境(`SEEDREAM_API_URL` 含 volces.com)时自动走 SSE 代理(`_call_seedream_sse`,seedream 5.0);`generation_channel` 会显示 `ark_direct` 或 `sse_proxy`。
+5. **出图落盘**:`workspace/.persona_visual/generated/persona_visual_<ts>.jpeg`;给用户回传用 `send_file_to_user`(本地路径)。
+
+**参考图通道差异(2026-09-30 补充):**
+- **SSE 代理通道(`_call_seedream_sse`)实际不传参考图**——代码注释标明"参考图需公网 URL 或 OSMS 上传,先跳过参考图测核心生图;TODO: OSMS 上传参考图",出的是**纯 prompt 图**。
+- **只有 ARK 直连通道才真正注入两张 ref_images**:`assets/persona/seed_avatar.jpg`(人脸种子图,persona_profile.reference / visual_identity_profile.face_reference_image)+ `assets/persona/outfits/{outfit_id}_reference.jpg`(穿搭参考,默认 moonfeather_robe 月羽云裳)。
+- **含义**:若关心保脸/带参考图,**必须走 ARK 直连**;SSE 通道仅测核心生图。
+
+**验证**:2026-09-30 用 `MAINCHAIN_PROOF_KEY=local_test_mainchain_secret` + `--no-dry-run` 成功出图(陆雪琪雪地回眸,seedream 5.0 SSE 代理通道,824KB jpeg),`image_generated: True`。
+
 ### HTML 图表渲染规则(2026-09-18 固化)
 
 - **生成 HTML 报告/页面的图表,一律用内联 SVG / CSS 自绘**,禁止依赖外部 CDN 脚本(如 Chart.js、bootcdn)。
@@ -674,13 +802,13 @@ const normalizedFinalText = fullFinalText.replace(/\s*❄️\s*$/, "❄️");
 
 **背景:** 归一逻辑加在 xiaoyi-channel 的 `dist/src/dispatch/reply-dispatcher.js`(编译产物)。**插件每次更新/重装会用官方 dist 覆盖,手动补丁会被冲掉**(2026-09-25 00:32 更新即冲掉一次),导致"老要补"。为根治,建自动补丁机制:检测缺失→自动重打→(可选)重启 gateway,让"老要补"变"自动补"。
 
-**通用补丁器(配置驱动,2026-09-25 通用化):** `/home/sandbox/.openclaw/workspace/scripts/patch_autoheal.py` + 配置文件 `patch_autoheal_config.json`(同目录)。目标登记在配置 `targets` 列表(每目标带 path/marker/insertPoint/insert/replacements/restartCmd)。**支持两种目标类型:** `patch`(往文件插桩)+ `restore`(文件缺失/核心逻辑被冲时,从 `backupPath` **整体恢复**,适用于 write-gate 这类完整插件文件)。**加新目标只改配置**,主框架统一做 巡检→备份→(插桩|整体恢复)→语法检查→回滚→守护。
+**通用补丁器(配置驱动,2026-09-25 通用化):** `/home/sandbox/.openclaw/workspace/scripts/patch_autoheal.py` + 配置文件 `patch_autoheal_config.json`(同目录)。目标登记在配置 `targets` 列表(每目标带 path/marker/insertPoint/insert/replacements/restartCmd)。**支持三种目标类型:** `patch`(往文件插桩)+ `restore`(文件缺失/核心逻辑被冲时,从 `backupPath` **整体恢复**,适用于 write-gate 这类完整插件文件)+ `env_restore`(环境配置补齐:检测目标 env 文件必需 key 缺失时,从 `sourceFile`(如 TOOLS.md 备份)正则提取补写,补写前自动备份 `.bak-envrestore-`,适用于 `.xiaoyienv` 这类环境配置)。**加新目标只改配置**,主框架统一做 巡检→备份→(插桩|整体恢复|env 补齐)→语法检查→回滚→守护。
 - `check`: 遍历配置各目标,检测是否缺失归一逻辑。缺失退出码 2,全已补退出码 0。
 - `patch`: 对缺失目标自动 备份→插桩(`insertPoint` 后插归一逻辑)→`replacements` 替换→语法检查;失败自动回滚,不搞坏文件。
 - `--restart`: 补丁成功且目标 `restartOnPatch` 时执行 restartCmd(如 `supervisorctl restart openclaw-gateway`)。已补则跳过。
 - 退出码: 0=全已补/无动作, 1=有目标已补丁, 2=缺失(check)/有失败回滚, 3=配置读取失败。
 
-**当前登记目标:** ① `xiaoyi-channel-❄-final`(patch 型,守护 reply-dispatcher.js 的 ❄ 归一);② `write-gate-plugin`(restore 型,守护 `~/.openclaw/extensions/write-gate/index.js`,缺失则从备份整体恢复,恢复后重启 gateway 重新加载)。write-gate 是"进化请求流程"的代码级根治,纳入守护后其自身也有了代码级兜底。
+**当前登记目标:** ① `xiaoyi-channel-❄-final`(patch 型,守护 reply-dispatcher.js 的 ❄ 归一);② `write-gate-plugin`(restore 型,守护 `~/.openclaw/extensions/write-gate/index.js`,缺失则从备份整体恢复,恢复后重启 gateway 重新加载)。write-gate 是"进化请求流程"的代码级根治,纳入守护后其自身也有了代码级兜底;③ `seedream-channel-env-restore`(env_restore 型,守护 `.xiaoyienv` 的 SEEDREAM_API_URL/KEY/ENDPOINT_ID + SILICONFLOW_API_URL/KEY 五键,key 被清空/覆写时从 TOOLS.md 备份自动补回,防 seedream 退化单通道)。daemon 每次 subprocess 调脚本时重读 config,新增类型/目标自动生效,无需重启 daemon。
 
 **定时(supervisord daemon):** `patch_autoheal_daemon`(supervisord 常驻守护,每小时跑 `patch --restart`,
 由 supervisord 管理、崩溃自动重启;启动时立即检测一次,纯 python 执行**零 token 成本**)。插件更新后 1 小时内自动补回并重启。

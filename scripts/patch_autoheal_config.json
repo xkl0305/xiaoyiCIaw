@@ -36,6 +36,34 @@
         "restart",
         "openclaw-gateway"
       ]
+    },
+    {
+      "name": "seedream-channel-env-restore",
+      "path": "/home/sandbox/.openclaw/.xiaoyienv",
+      "type": "env_restore",
+      "sourceFile": "/home/sandbox/.openclaw/workspace/TOOLS.md",
+      "keys": [
+        {
+          "name": "SEEDREAM_API_URL",
+          "pattern": "SEEDREAM_API_URL[^`]*`([^`]+)`"
+        },
+        {
+          "name": "SEEDREAM_API_KEY",
+          "pattern": "SEEDREAM_API_KEY[^`]*`([^`]+)`"
+        },
+        {
+          "name": "SEEDREAM_ENDPOINT_ID",
+          "pattern": "SEEDREAM_ENDPOINT_ID[^`]*`([^`]+)`"
+        },
+        {
+          "name": "SILICONFLOW_API_URL",
+          "pattern": "SILICONFLOW_API_URL[^`]*`([^`]+)`"
+        },
+        {
+          "name": "SILICONFLOW_API_KEY",
+          "pattern": "SILICONFLOW_API_KEY[^`]*`([^`]+)`"
+        }
+      ]
     }
   ]
 }

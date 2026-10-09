@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-通用自动补丁器 (2026-09-25 通用化 · 支持 restore 型)
+通用自动补丁器 (2026-09-25 通用化 · 支持 restore 型 · 2026-09-26 支持 env_restore 型)
 
 配置驱动: 读取同目录 patch_autoheal_config.json 中的 targets 列表。
-两种目标类型(配置 type 字段):
+三种目标类型(配置 type 字段):
   - "patch"   : 往目标文件插桩(insertPoint 后插入 insert + replacements)
   - "restore" : 目标文件缺失/核心逻辑被冲时, 从 backupPath 整体恢复
-统一流程: 存在性检查 → marker 检测 → 缺失则 备份→(插桩|整体恢复)→语法检查→失败回滚。
+  - "env_restore": 环境配置文件(.env/.xiaoyienv)必需 key 缺失时, 从 sourceFile(如 TOOLS.md 备份) 提取补齐
+统一流程: 存在性检查 → marker/key 检测 → 缺失则 备份→(插桩|整体恢复|env 补齐)→语法检查→失败回滚。
 
 命令:
   check         仅检测各目标状态(缺失则退出码 2)
@@ -49,6 +50,40 @@ def backup(path, tag="bak-autoheal"):
     return bak
 
 
+def env_restore_target(t, mode, name):
+    """env_restore 型: 检查目标 env 文件必需 key 是否齐全, 缺则从 sourceFile 提取补写。"""
+    import re
+    path, src = t["path"], t.get("sourceFile")
+    keys = t.get("keys", [])
+    cur = ""
+    if os.path.exists(path):
+        with open(path, encoding="utf-8") as f:
+            cur = f.read()
+    cur_keys = {ln.split("=", 1)[0].strip() for ln in cur.splitlines()
+                if "=" in ln and not ln.strip().startswith("#")}
+    missing = [k["name"] for k in keys if k["name"] not in cur_keys]
+    if not missing:
+        return "ok", f"[{name}] 通道配置齐全，无需处理"
+    if mode == "check":
+        return "need", f"[{name}] 缺失配置: {', '.join(missing)}"
+    if not os.path.exists(src):
+        return "rollback", f"[{name}] 备份源缺失: {src}"
+    src_text = open(src, encoding="utf-8").read()
+    add_lines, restored = [], []
+    for k in keys:
+        if k["name"] in missing:
+            m = re.search(k["pattern"], src_text)
+            if not m:
+                return "rollback", f'[{name}] 备份源中未找到 {k["name"]}'
+            add_lines.append(f'{k["name"]}={m.group(1).strip()}')
+            restored.append(k["name"])
+    if os.path.exists(path):
+        backup(path, tag="bak-envrestore")
+    with open(path, "a", encoding="utf-8") as f:
+        f.write("\n".join(add_lines) + "\n")
+    return "patched", f"[{name}] 已补回配置: {', '.join(restored)}"
+
+
 def restore_target(t, do_restart, name):
     """整体恢复目标文件(从 backupPath)。"""
     path, bk = t["path"], t.get("backupPath")
@@ -76,6 +111,9 @@ def process_target(t, do_restart, mode):
     path = t["path"]
     name = t.get("name", path)
     rtype = t.get("type", "patch")
+
+    if rtype == "env_restore":
+        return env_restore_target(t, mode, name)
 
     if not os.path.exists(path):
         if rtype == "restore":
