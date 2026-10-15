@@ -6,7 +6,7 @@
 - [上传命令](#上传命令)
 - [文件夹命令](#文件夹命令)
 - [下载命令](#下载命令)
-- [重命名命令](#重命名命令)
+- [文件更新命令](#文件更新命令)
 
 ---
 
@@ -34,7 +34,7 @@ huawei_drive.py --command query --key available_space
 huawei_drive.py --command query --key file_list
 ```
 
-**返回**：`小艺Claw` 文件夹下的所有文件列表，包括所有子文件夹下的子文件
+**返回**：`小艺Work` 文件夹下的所有文件列表，包括所有子文件夹下的子文件
 
 ### 递归查询某个文件夹下的文件列表
 
@@ -61,7 +61,7 @@ huawei_drive.py --command query --file_name {file_name}
 
 ### 覆盖上传
 
-1、上传文件到`小艺Claw`文件夹中，文件已存在则覆盖：
+1、上传文件到`小艺Work`文件夹中，文件已存在则覆盖：
 
 ```bash
 huawei_drive.py --command upload --mode overwrite --path {file_path}
@@ -75,7 +75,7 @@ huawei_drive.py --command upload --mode overwrite --path {file_path} --parent_fo
 
 ### 重命名上传
 
-1、上传文件到`小艺Claw`文件夹中，文件已存在则自动重命名（添加 `(1)` 后缀）
+1、上传文件到`小艺Work`文件夹中，文件已存在则自动重命名（添加 `(1)` 后缀）
 
 ```bash
 huawei_drive.py --command upload --mode rename --path {file_path}
@@ -93,13 +93,13 @@ huawei_drive.py --command upload --mode rename --path {file_path} --parent_folde
 
 ### 创建文件夹
 
-1、默认在云盘`root`目录下创建`小艺Claw`文件夹
+1、默认在云盘`root`目录下创建`小艺Work`文件夹
 
 ```bash
-huawei_drive.py --command create --folder_name 小艺Claw
+huawei_drive.py --command create --folder_name 小艺Work
 ```
 
-**说明**：在云盘根路径下创建 `小艺Claw` 文件夹
+**说明**：在云盘根路径下创建 `小艺Work` 文件夹
 
 2、在`{parent_folder_name}`目录下创建`{folder_name}`文件夹
 
@@ -115,11 +115,23 @@ huawei_drive.py --command create --folder_name {folder_name} --parent_folder_nam
 
 ### 下载文件
 
+根据文件名下载云盘文件
+
+```bash
+huawei_drive.py --command download --file_name {file_name} --path {download_path}
+```
+
+**示例：**
+
+```bash
+huawei_drive.py --command download --file_name abc.txt --path /tmp/abc.txt
+```
+
+根据文件Id下载云盘文件
+
 ```bash
 huawei_drive.py --command download --file_id {file_id} --path {download_path}
 ```
-
-**说明**：根据文件ID下载云盘文件到指定本地路径
 
 **示例**：
 
@@ -165,7 +177,7 @@ huawei_drive.py --command move --file_id {file_id} --source_parent_id {source_pa
 | `--file_id` | 文件ID | `abc123def456` |
 | `--mode` | 上传模式 | `overwrite`（覆盖）, `rename`（重命名） |
 | `--path` | 文件路径 | `/path/to/file.txt` |
-| `--folder_name` | 文件夹名称 | `小艺Claw` |
+| `--folder_name` | 文件夹名称 | `小艺Work` |
 | `--source_parent_id` | 原父目录ID |  |
 | `--destination_parent_id` | 目标父目录ID |  |
 

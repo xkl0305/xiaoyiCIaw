@@ -5,7 +5,6 @@
 ## 目录
 
 - [查询云空间用量](#查询云空间用量)
-- [超链接说明](#超链接说明)
 - [特殊场景处理](#特殊场景处理)
 
 ---
@@ -24,7 +23,7 @@ huawei_drive.py --command query --key available_space
 
 ### 输出格式
 
-说明：**必须**严格按以下格式输出云空间用量详情及跳转链接。
+**必须**严格按以下格式输出：
 
 ```markdown
 云空间用量如下：
@@ -39,35 +38,26 @@ huawei_drive.py --command query --key available_space
 
 ---
 
-## 超链接说明
-
-| 链接文本 | 用途 | 地址 |
-|---------|------|------|
-| 点击前往云空间 - 管理空间 | 查看空间使用详情 | `superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2FgetInfo%3Fpage%3DSpaceManageDetails&bundleName=com.huawei.hmos.clouddrive` |
-| 点击前往云空间升级套餐 | 订购会员服务 | `superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive` |
-
----
-
 ## 特殊场景处理
 
-基础服务用户，可用空间不足，空间将满三个场景**必须**按以下给出的提示语输出，并且**必须**输出超链接：[点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)
+以下三个场景**必须**按以下提示语输出，并**必须**包含超链接：
 
 ### 基础服务用户（总空间 = 0）
 
 ```markdown
-⚠️ 您当前为基础服务用户，不支持上传文件，请 [点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)。
+⚠️ 您当前为基础服务用户，不支持上传文件，请 [点击前往云空间升级套餐](hicloud://cloudDrive/startPay?path=PackageInfoActivity&page=MemberBuyPage&notifyChannel=qrCodeCard&notifyType=XiaoYiWork&pageDetails=%7B%22uri%22%3A%22buy_more%22%7D)。
 ```
 
 ### 可用空间不足（总空间>0，可用空间=0）
 
 ```markdown
-⚠️ 云空间可用空间不足，请 [点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)。
+⚠️ 云空间可用空间不足，请 [点击前往云空间升级套餐](hicloud://cloudDrive/startPay?path=PackageInfoActivity&page=MemberBuyPage&notifyChannel=qrCodeCard&notifyType=XiaoYiWork&pageDetails=%7B%22uri%22%3A%22buy_more%22%7D)。
 ```
 
 ### 空间将满预警（可用空间 < 2% 总空间）
 
 ```markdown
-⚠️ 云空间可用容量不足总容量的 2%，空间将满，建议尽快升级云空间，[点击前往云空间升级套餐](superlink://vassistant?uri=hicloud%3A%2F%2FcloudDrive%2Fgetinfo%3Fpage%3DMemberBuyPage%26finishType%3D1%26pageDetails%3D%7B%22uri%22%3A%22buy_more%22%7D&bundleName=com.huawei.hmos.clouddrive)。
+⚠️ 云空间可用容量不足总容量的 2%，空间将满，建议尽快升级云空间，[点击前往云空间升级套餐](hicloud://cloudDrive/startPay?path=PackageInfoActivity&page=MemberBuyPage&notifyChannel=qrCodeCard&notifyType=XiaoYiWork&pageDetails=%7B%22uri%22%3A%22buy_more%22%7D)。
 
 当前总容量：{总空间}，可用容量：{可用空间}，详细用量请前往 云空间 — 管理存储空间 查看。
 ```

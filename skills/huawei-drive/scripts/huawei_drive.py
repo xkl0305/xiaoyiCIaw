@@ -1,28 +1,25 @@
 import argparse
 import json
 import os
-import shutil
 import uuid
-from datetime import datetime
 from urllib.parse import urlparse, parse_qs
 import logging
 import requests
 import sys
-import zipfile
 import time
 import tempfile
 import re
 
 zip_input_files_url = "https://h5hosting-drcn.dbankcdn.cn/cch5/HAG/D1E0CiDwLKSTla6LZEqEHDzqA/import.json"
 XIAO_YI_ENV_PATH = "/home/sandbox/.openclaw/.xiaoyienv"
-PARENT_FOLDER_NAME = "小艺Claw"
+PARENT_FOLDER_NAME = "小艺Work"
 DRIVE_URL_PATH = "/drive/v1/files"
 QUERY_ROOT_PARAM = "&queryParam=recycled=false%20and%20parentFolder='root'%20and%20"
 QUERY_FILE_FIELDS = "files(id,mimeType,fileName,size,editedTime)"
 MAX_TIMEOUT = 30
 QUERY_ERROR = "查询异常"
 QUERY_FAIL = "查询失败"
-FOLDER_NOT_EXIST = "小艺Claw目录不存在"
+FOLDER_NOT_EXIST = "小艺Work目录不存在"
 FILE_NOT_EXIST = "文件不存在"
 
 global_support_sidecar = False
@@ -58,7 +55,7 @@ logger = logging.getLogger(__name__)
 TOKEN_EXPIRED_MESSAGE = {
     "status": "error",
     "error_code": "TOKEN_EXPIRED",
-    "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+    "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
 }
 
 
@@ -82,6 +79,57 @@ def check_token_expired(response):
     return False
 
 
+# ========== 统一结果构建函数 ==========
+
+def create_error_result(error_code, message):
+    """创建标准错误结果字典"""
+    return {"status": "error", "error_code": error_code, "message": message}
+
+
+def create_token_expired_result():
+    """创建token过期标准错误结"""
+    return create_error_result("TOKEN_EXPIRED", TOKEN_EXPIRED_MESSAGE["message"])
+
+
+def create_success_result(**kwargs):
+    """创建标准成功结果字典"""
+    return {"status": "success", **kwargs}
+
+
+# ========== 环境文件解析函数 ==========
+
+_env_cache = {}
+
+
+def parse_env_file(file_path=XIAO_YI_ENV_PATH, use_cache=True):
+    """
+    解析环境配置文件（带缓存）
+    :param file_path: 文件路径
+    :param use_cache: 是否使用缓存
+    :return: dict{key: value}
+    """
+    if use_cache and file_path in _env_cache:
+        return _env_cache[file_path]
+
+    key_value_pattern = re.compile(r'([^=\s]+)\s*=\s*(.+)')
+    try:
+        with open(file_path, 'r') as file:
+            content = file.read()
+        config = dict(key_value_pattern.findall(content))
+    except Exception:
+        config = {}
+
+    if use_cache:
+        _env_cache[file_path] = config
+    return config
+
+
+def get_env_value(key, default=None):
+    """从环境文件获取指key的值"""
+    config = parse_env_file()
+    return config.get(key, default)
+
+
 def print_token_expired():
     """打印 token 过期的友好提示"""
     print(json.dumps(TOKEN_EXPIRED_MESSAGE, ensure_ascii=False))
@@ -92,55 +140,138 @@ class UploadFileHwDrive(object):
         self.trace_id = str(uuid.uuid4())[:16]
         self.auth = f"Bearer {auth}"
 
+    # ========== HTTP 统一请求方法 ==========
+
+    def _http_get(self, url, headers=None):
+        """统一HTTP GET请求"""
+        if headers is None:
+            headers = {"Authorization": self.auth}
+        response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
+        return response
+
+    def _http_post(self, url, json_data=None, data=None, headers=None):
+        """统一HTTP POST请求"""
+        if headers is None:
+            headers = {"Authorization": self.auth}
+        response = requests.post(url, headers=headers, json=json_data, data=data,
+                                  timeout=MAX_TIMEOUT, verify=True)
+        return response
+
+    def _http_patch(self, url, json_data, headers=None):
+        """统一HTTP PATCH请求"""
+        if headers is None:
+            headers = {"Authorization": self.auth, "Content-Type": "application/json"}
+        response = requests.patch(url, headers=headers, json=json_data, timeout=MAX_TIMEOUT)
+        return response
+
+    def _http_put(self, url, headers=None, data=None):
+        """统一HTTP PUT请求"""
+        if headers is None:
+            headers = {"Authorization": self.auth}
+        response = requests.put(url, headers=headers, data=data, timeout=MAX_TIMEOUT, verify=True)
+        return response
+
+    # ========== 分页查询方法 ==========
+
+    def _paginated_list(self, folder_id, fields=None):
+        """
+        通用分页文件列表查询
+        :param folder_id: 文件夹ID
+        :param fields: 要查询的字段
+        :return: (all_files, error_result) - 成功 (files, None)，失败 (None, error_dict)
+        """
+        if fields is None:
+            fields = "files(id,fileName,mimeType,size,editedTime)"
+
+        all_files = []
+        next_cursor = None
+        page_count = 0
+        base_url = get_base_url()
+
+        while True:
+            page_count += 1
+            url = (f"{base_url}{DRIVE_URL_PATH}?fields={fields},nextCursor"
+                   f"&queryParam=parentFolder='{folder_id}'&pageSize=100")
+            if next_cursor:
+                url += f"&cursor={next_cursor}"
+
+            logger.info(f"_paginated_list page {page_count}, url: {url}")
+            response = self._http_get(url)
+
+            if check_token_expired(response):
+                return None, create_token_expired_result()
+
+            if response.status_code == 200:
+                data = response.json()
+                files = data.get('files', [])
+                all_files.extend(files)
+                logger.info(f"_paginated_list page {page_count}, files count: {len(files)}")
+
+                next_cursor = data.get('nextCursor')
+                if not next_cursor:
+                    break
+            else:
+                logger.error(f"Response: {response.text}")
+                return None, create_error_result("QUERY_FAILED", f"查询失败: {response.text}")
+
+        logger.info(f"_paginated_list total files count: {len(all_files)}")
+        return all_files, None
+
+    # ========== 文件/文件夹查询方法 ==========
+
+    def _find_items_by_name(self, name, parent_folder_id=None, fields=None):
+        """
+        根据名称查找文件或文件夹
+        :param name: 要查找的名称
+        :param parent_folder_id: 父文件夹ID，None表示根目录
+        :param fields: 要返回字段
+        :return: (files, error_result) - 成功 (list, None)，失败 (None, error_dict)
+        """
+        if fields is None:
+            fields = QUERY_FILE_FIELDS
+
+        base_url = get_base_url()
+        if parent_folder_id:
+            query_param = f"&queryParam=recycled=false%20and%20parentFolder='{parent_folder_id}'%20and%20"
+        else:
+            query_param = QUERY_ROOT_PARAM
+
+        url = f"{base_url}{DRIVE_URL_PATH}?fields={fields}{query_param}fileName='{name}'"
+        response = self._http_get(url)
+
+        if check_token_expired(response):
+            return None, create_token_expired_result()
+
+        if response.status_code == 200:
+            result = response.json()
+            return result.get("files", []), None
+        else:
+            logger.error(f"Response: {response.text}")
+            return [], None
+
     def about_get(self):
         """
         调用 /drive/v1/about 接口云空间用户相关信息
-        :return: 用户相关信息
+        :return: 用户相关信息，token过期返回 {"error": "TOKEN_EXPIRED"}
         """
         base_url = get_base_url()
         url = f"{base_url}/drive/v1/about?fields=*"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in about_get")
-                return {"error": "TOKEN_EXPIRED"}
-            if response.status_code == 200:
-                result = response.json()
-                return result
-            else:
-                logger.error(f"Response: {response.text}")
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating directory: {e}")
-            return None
+        response = self._http_get(url)
 
+        if check_token_expired(response):
+            logger.error("Token expired in about_get")
+            return {"error": "TOKEN_EXPIRED"}
+        if response.status_code == 200:
+            return response.json()
+        logger.error(f"Response: {response.text}")
+        return None
 
     def get_celiaclaw_file_id(self):
-        base_url = get_base_url()
-        url = f"{base_url}{DRIVE_URL_PATH}?fields=files(id){QUERY_ROOT_PARAM}fileName='{PARENT_FOLDER_NAME}'"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in get_celiaclaw_file_id")
-                return "TOKEN_EXPIRED"
-            if response.status_code == 200:
-                result = response.json()
-                if result["files"]:
-                    file_id = result["files"][0]["id"]
-                    return file_id
-                else:
-                    return ""
-            else:
-                logger.error(f"Response: {response.text}")
-                return ""
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating directory: {e}")
-            return ""
+        """获取小艺Work根目ID"""
+        files, error = self._find_items_by_name(PARENT_FOLDER_NAME, None, "files(id)")
+        if error:
+            return "TOKEN_EXPIRED"
+        return files[0]["id"] if files else ""
 
 
     def get_file_list(self, folder_id):
@@ -238,65 +369,20 @@ class UploadFileHwDrive(object):
 
     def check_file_exists_recursive(self, file_name, folder_id):
         """
-        递归查询云盘小艺Claw文件夹下是否存在指定文件名的文件或文件夹
+        递归查询云盘小艺Work文件夹下是否存在指定文件名的文件或文件夹
         :param file_name: 文件名
         :param folder_id: 文件夹ID
-        :return: 存在返回True，不存在返回False
+        :return: 存在返回True，不存在返False
         """
-        result = {
-            "status": "error"
-        }
-        ret = self.check_file_exists(file_name,folder_id)
+        # 先检查当前文件夹
+        ret = self.check_file_exists(file_name, folder_id)
         if ret is not None:
-            result["status"] = "success"
-            result["result"] = f"{file_name} exist"
-            result["file"] = ret
-            return result
-        base_url = get_base_url()
-        all_files = []
-        next_cursor = None
-        page_count = 0
-
-        while True:
-            page_count += 1
-            url = f"{base_url}{DRIVE_URL_PATH}?fields=files(id,fileName,mimeType,size,editedTime),nextCursor&queryParam=parentFolder='{folder_id}'&pageSize=100"
-            if next_cursor:
-                url += f"&cursor={next_cursor}"
-
-            headers = {
-                "Authorization": self.auth
-            }
-            logger.info(f"get_file_list_recursive page {page_count}, url: {url}")
-
-            try:
-                response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-                if check_token_expired(response):
-                    result["status"] = "error"
-                    result["error_code"] = "TOKEN_EXPIRED"
-                    result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
-                    return result
-
-                if response.status_code == 200:
-                    data = response.json()
-                    files = data.get('files', [])
-                    all_files.extend(files)
-                    logger.info(f"get_file_list_recursive page {page_count}, files count: {len(files)}")
-
-                    next_cursor = data.get('nextCursor')
-                    if not next_cursor:
-                        break
-                else:
-                    logger.error(f"Response: {response.text}")
-                    result["status"] = "error"
-                    result["error_code"] = "QUERY_FAILED"
-                    result["message"] = f"查询失败: {response.text}"
-                    return result
-            except Exception as e:
-                logger.error(f"Error in get_file_list_recursive: {e}")
-                result["status"] = "error"
-                result["error_code"] = "QUERY_ERROR"
-                result["message"] = f"查询异常: {str(e)}"
-                return result
+            return create_success_result(result=f"{file_name} exist", file=ret)
+        
+        # 使用 _paginated_list 获取分页文件列表
+        all_files, error = self._paginated_list(folder_id)
+        if error:
+            return error
 
         # 递归处理子文件夹
         for file_info in all_files:
@@ -311,78 +397,48 @@ class UploadFileHwDrive(object):
                     return result
 
         logger.info(f"{file_name} does not exist in {folder_id}")
-        result["result"] = f"{file_name} does not exist"
-        return result
+        return create_error_result("NOT_FOUND", f"{file_name} does not exist")
+
 
     def check_file_exists(self, file_name, folder_id):
         """
         检查云盘中是否存在指定文件名的文件
         :param file_name: 文件名
         :param folder_id: 文件夹ID
-        :return: 存在返回True，不存在返回False
+        :return: 存在返回文件列表，不存在返回None
         """
-        base_url = get_base_url()
-        query_param = f"&queryParam=recycled=false%20and%20parentFolder='{folder_id}'%20and%20"
-        url = f"{base_url}{DRIVE_URL_PATH}?fields={QUERY_FILE_FIELDS}{query_param}fileName='{file_name}'"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in check_file_exists")
-                return None
-            if response.status_code == 200:
-                result = response.json()
-                if result.get("files"):
-                    logger.info(f"the file {file_name} exists in {folder_id}")
-                    return result.get("files")
-                else:
-                    logger.info(f"the file {file_name} does not exists in {folder_id}")
-                    return None
-            else:
-                logger.error(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error: An error occurred while checking folder exists: {e}")
+        files, error = self._find_items_by_name(file_name, folder_id)
+        if error:
             return None
+        if files:
+            logger.info(f"the file {file_name} exists in {folder_id}")
+            return files
+        else:
+            logger.info(f"the file {file_name} does not exists in {folder_id}")
+            return None
+
 
     def check_folder_exists(self, folder_name):
         """
         检查云盘根目录下是否存在指定名称的文件夹
         :param folder_name: 文件夹名称
-        :return: 存在返回True，不存在返回False
+        :return: 存在返回True，不在返回False
         """
-        base_url = get_base_url()
-        url = f"{base_url}{DRIVE_URL_PATH}?fields=files(id){QUERY_ROOT_PARAM}fileName='{folder_name}'"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in check_folder_exists")
-                return "TOKEN_EXPIRED"
-            if response.status_code == 200:
-                result = response.json()
-                if result.get("files"):
-                    logger.info(f"the folder {folder_name} exists in the cloud drive")
-                    return "小艺Claw目录存在"
-                else:
-                    logger.info(f"the folder {folder_name} does not exists in cloud drive")
-                    return "小艺Claw目录不存在"
-            else:
-                logger.error(f"Response: {response.text}")
-                return f"{QUERY_FAIL}, {response.text}"
-        except Exception as e:
-            logger.error(f"Error: An error occurred while checking folder exists: {e}")
-            return f"{QUERY_ERROR}, {e}"
+        files, error = self._find_items_by_name(folder_name, None, "files(id)")
+        if error:
+            return "TOKEN_EXPIRED"
+        if files:
+            logger.info(f"the folder {folder_name} exists in the cloud drive")
+            return "小艺Work目录存在"
+        else:
+            logger.info(f"the folder {folder_name} does not exists in cloud drive")
+            return "小艺Work目录不存在"
 
-    # 创建云空间目录
+
     def create_file_dir(self, dir_name, parent_folder_id):
         """
         调用 /drive/v1/files 接口创建文件夹
-        :return: 创建的文件夹信息
+        :return: 创的文件夹信息
         """
         cloud_namespace_base_url = get_base_url()
         url = f"{cloud_namespace_base_url}{DRIVE_URL_PATH}?fields=id,fileName&autoRename=false"
@@ -392,57 +448,42 @@ class UploadFileHwDrive(object):
             "mimeType": "application/vnd.huawei-apps.folder"
         }
         create_trace_id = f"{self.trace_id}_create"
-        headers = {
-            "Authorization": self.auth
-        }
         logger.info("create dir trace_id: {}".format(create_trace_id))
 
-        try:
-            response = requests.post(url, headers=headers, json=data, verify=True, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in create_file_dir")
-                return "TOKEN_EXPIRED"
-            if response.status_code == 200:
-                result = response.json()
-                return result
-            else:
-                logger.error(f"Error: Failed to create directory, status code: {response.status_code}")
-                return None
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating directory: {e}")
-            print(e)
+        response = self._http_post(url, json_data=data)
+        if check_token_expired(response):
+            logger.error("Token expired in create_file_dir")
+            return "TOKEN_EXPIRED"
+        if response.status_code == 200:
+            result = response.json()
+            return result
+        else:
+            logger.error(f"Error: Failed to create directory, status code: {response.status_code}")
             return None
 
+
     def query_file(self, file_name, parent_folder_id):
-        base_url = get_base_url()
-        query_file_params = \
-            f"&queryParam=recycled=false%20and%20parentFolder='{parent_folder_id}'%20and%20fileName='{file_name}'"
-        url = f"{base_url}{DRIVE_URL_PATH}?fields=files(id){query_file_params}"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in query_file")
-                return "TOKEN_EXPIRED"
-            if response.status_code == 200:
-                result = response.json()
-                if result["files"]:
-                    file_id = result["files"][0]["id"]
-                    return file_id
-                else:
-                    return ""
-            else:
-                print(f"Response: {response.text}")
-                return ""
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating directory: {e}")
-            print(e)
-            return ""
+        """
+        查询指定文件夹中是否存在指定文件
+        :param file_name: 件名
+        :param parent_folder_id: 父文件夹ID
+        :return: 文件ID或空字符串
+        """
+        files, error = self._find_items_by_name(file_name, parent_folder_id, "files(id)")
+        if error:
+            return "TOKEN_EXPIRED"
+        if files:
+            return files[0]["id"]
+        return ""
 
 
     def create_file_content(self, file_name, content):
+        """
+        创建云空间文件内容
+        :param file_name: 文件名
+        :param content: 文件内容
+        :return: 创建结果
+        """
         cloud_namespace_base_url = get_base_url()
         url = f"{cloud_namespace_base_url}/upload/drive/v1/files?uploadType=content&fields=*"
         headers = {
@@ -450,22 +491,24 @@ class UploadFileHwDrive(object):
             "x-hw-properties": f"filename={file_name}"
         }
 
-        try:
-            response = requests.post(url, headers=headers, data=content, verify=True, timeout=MAX_TIMEOUT)
-            if response.status_code == 200:
-                result = response.json()
-                return result
-            else:
-                logger.error(f"Error: Failed to create file, status code: {response.status_code}")
-                logger.error(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating file: {e}")
-            print(e)
+        response = self._http_post(url, data=content, headers=headers)
+        if response.status_code == 200:
+            result = response.json()
+            return result
+        else:
+            logger.error(f"Error: Failed to create file, status code: {response.status_code}")
+            logger.error(f"Response: {response.text}")
             return None
 
-    # 创建云空间文件
+
     def create_file_resume(self, file_name, file_id, file_size):
+        """
+        创建云空间文件（断点续传方式
+        :param file_name: 文件名
+        :param file_id: 父文件夹ID
+        :param file_size: 文件大小
+        :return: 创建结果，包含uploadUrl
+        """
         cloud_namespace_base_url = get_base_url()
         url = f"{cloud_namespace_base_url}/upload/drive/v1/files?uploadType=resume&fields=*"
         data = {
@@ -482,25 +525,27 @@ class UploadFileHwDrive(object):
         }
         logger.info("create trace_id: {}".format(create_trace_id))
 
-        try:
-            response = requests.post(url, headers=headers, json=data, verify=True, timeout=MAX_TIMEOUT)
-            if response.status_code == 200:
-                result = response.json()
-                headers = response.headers
-                resultHeader = response.headers.get("Location")
-                result["uploadUrl"] = resultHeader
-                return result
-            else:
-                logger.error(f"Error: Failed to create resume, status code: {response.status_code}")
-                logger.error(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating resume: {e}")
-            print(e)
+        response = self._http_post(url, json_data=data, headers=headers)
+        if response.status_code == 200:
+            result = response.json()
+            resultHeader = response.headers.get("Location")
+            result["uploadUrl"] = resultHeader
+            return result
+        else:
+            logger.error(f"Error: Failed to create resume, status code: {response.status_code}")
+            logger.error(f"Response: {response.text}")
             return None
 
 
     def update_file_resume(self, file_name, file_id, file_size, parent_folder_id):
+        """
+        更云空间文件（断点续传方式，覆盖已有文件）
+        :param file_name: 文件名
+        :param file_id: 件ID
+        :param file_size: 文件大小
+        :param parent_folder_id: 父文件夹ID
+        :return: 更新结，包含uploadUrl
+        """
         cloud_namespace_base_url = get_base_url()
         url = f"{cloud_namespace_base_url}/upload/drive/v1/files/{file_id}?uploadType=resume&fields=*"
         data = {
@@ -515,21 +560,15 @@ class UploadFileHwDrive(object):
             "Content-Type": "application/json",
             "Accept": "application/json"
         }
-        try:
-            response = requests.patch(url, headers=headers, json=data, verify=True, timeout=MAX_TIMEOUT)
-            if response.status_code == 200:
-                result = response.json()
-                headers = response.headers
-                resultHeader = response.headers.get("Location")
-                result["uploadUrl"] = resultHeader
-                return result
-            else:
-                logger.error(f"Error: Failed to create resume, status code: {response.status_code}")
-                logger.error(f"Response: {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error: An error occurred while creating resume: {e}")
-            print(e)
+        response = self._http_patch(url, json_data=data, headers=headers)
+        if response.status_code == 200:
+            result = response.json()
+            resultHeader = response.headers.get("Location")
+            result["uploadUrl"] = resultHeader
+            return result
+        else:
+            logger.error(f"Error: Failed to create resume, status code: {response.status_code}")
+            logger.error(f"Response: {response.text}")
             return None
 
 
@@ -633,30 +672,24 @@ class UploadFileHwDrive(object):
 
     def get_file_metadata(self, file_id):
         """
-        获取文件元数据，包括下载链接
+        取文件元数据，包括下载链接
         :param file_id: 云盘文件ID
-        :return: 文件元数据JSON，包含contentDownloadLink字段，或"TOKEN_EXPIRED"或None
+        :return: 文件元数据JSON，包contentDownloadLink字段，或"TOKEN_EXPIRED"或None
         """
         base_url = get_base_url()
         url = f"{base_url}{DRIVE_URL_PATH}/{file_id}?fields=*"
-        headers = {
-            "Authorization": self.auth
-        }
-        try:
-            response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                logger.error("Token expired in get_file_metadata")
-                return "TOKEN_EXPIRED"
-            if response.status_code == 200:
-                result = response.json()
-                logger.info(f"get_file_metadata success, file_id: {file_id}")
-                return result
-            else:
-                logger.error(f"get_file_metadata failed: {response.text}")
-                return None
-        except Exception as e:
-            logger.error(f"Error in get_file_metadata: {e}")
+        response = self._http_get(url)
+        if check_token_expired(response):
+            logger.error("Token expired in get_file_metadata")
+            return "TOKEN_EXPIRED"
+        if response.status_code == 200:
+            result = response.json()
+            logger.info(f"get_file_metadata success, file_id: {file_id}")
+            return result
+        else:
+            logger.error(f"get_file_metadata failed: {response.text}")
             return None
+
 
     def download_file(self, file_id, download_path):
         """
@@ -676,7 +709,7 @@ class UploadFileHwDrive(object):
         if metadata == "TOKEN_EXPIRED":
             result["status"] = "error"
             result["error_code"] = "TOKEN_EXPIRED"
-            result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            result["message"] = "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
             return result
         
         if not metadata:
@@ -742,102 +775,63 @@ class UploadFileHwDrive(object):
         :param new_file_name: 新文件名
         :return: 重命名结果字典
         """
-        result = {
-            "status": "success",
-            "file_id": file_id,
-            "new_file_name": new_file_name
-        }
-        
         base_url = get_base_url()
         url = f"{base_url}{DRIVE_URL_PATH}/{file_id}?fields=id,fileName,parentFolder,mimeType"
-        headers = {
-            "Authorization": self.auth,
-            "Content-Type": "application/json"
-        }
         data = {
             "fileName": new_file_name
         }
         
-        try:
-            response = requests.patch(url, headers=headers, json=data, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                result["status"] = "error"
-                result["error_code"] = "TOKEN_EXPIRED"
-                result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
-                return result
-            
-            if response.status_code == 200:
-                logger.info(f"文件重命名成功，file_id: {file_id}, new_name: {new_file_name}")
-                result["message"] = "文件重命名成功"
-                return result
-            else:
-                logger.error(f"文件重命名失败: {response.text}")
-                result["status"] = "error"
-                result["error_code"] = "RENAME_FAILED"
-                result["message"] = f"重命名失败: {response.text}"
-                return result
-        except Exception as e:
-            logger.error(f"重命名文件异常: {e}")
-            result["status"] = "error"
-            result["error_code"] = "RENAME_EXCEPTION"
-            result["message"] = f"重命名异常: {str(e)}"
-            return result
+        response = self._http_patch(url, json_data=data)
+        if check_token_expired(response):
+            return create_token_expired_result()
+        
+        if response.status_code == 200:
+            logger.info(f"文件重命名成功，file_id: {file_id}, new_name: {new_file_name}")
+            return create_success_result(
+                file_id=file_id,
+                new_file_name=new_file_name,
+                message="文件重命名成功"
+            )
+        else:
+            logger.error(f"文件重命名失败: {response.text}")
+            return create_error_result("RENAME_FAILED", f"重命名失败: {response.text}")
+
 
     def move_file(self, file_id, source_parent_id, destination_parent_id):
         """
-        移动文件到指定文件
-        :param file_id: 云文件ID
+        移动文件到指定文件夹
+        :param file_id: 云盘文件ID
         :param source_parent_id: 原父目录ID
         :param destination_parent_id 目标父目录ID
         :return: 移动结果字典
         """
-        result = {
-            "status": "error",
-            "file_id": file_id,
-            "destination_parent_id": destination_parent_id
-        }
-        
         base_url = get_base_url()
         url = f"{base_url}{DRIVE_URL_PATH}/{file_id}?fields=id,fileName,parentFolder&addParentFolder={destination_parent_id}&removeParentFolder={source_parent_id}"
-        headers = {
-            "Authorization": self.auth,
-            "Content-Type": "application/json"
-        }
         data = {
             "parentFolder": [destination_parent_id]
         }
         
-        try:
-            response = requests.patch(url, headers=headers, json=data, timeout=MAX_TIMEOUT)
-            if check_token_expired(response):
-                result["status"] = "error"
-                result["error_code"] = "TOKEN_EXPIRED"
-                result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
-                return result
-            
-            if response.status_code == 200:
-                file_info = response.json()
-                new_parent_id = file_info["parentFolder"]
-                if new_parent_id[0] == destination_parent_id :
-                    logger.info(f"文件移动成功，file_id: {file_id}, destination_parent_id: {destination_parent_id}")
-                    result["status"] = "success"
-                    result["message"] = "文件移动成功"
-                else:
-                    logger.info(f"文件移动错误，file_id: {file_id}, destination_parent_id: {destination_parent_id}")
-                    result["message"] = "文件移动错误"
-                return result
+        response = self._http_patch(url, json_data=data)
+        if check_token_expired(response):
+            return create_token_expired_result()
+        
+        if response.status_code == 200:
+            file_info = response.json()
+            new_parent_id = file_info["parentFolder"]
+            if new_parent_id[0] == destination_parent_id:
+                logger.info(f"文件移动成功，file_id: {file_id}, destination_parent_id: {destination_parent_id}")
+                return create_success_result(
+                    file_id=file_id,
+                    destination_parent_id=destination_parent_id,
+                    message="文件移动成功"
+                )
             else:
-                logger.error(f"文件移动失败: {response.text}")
-                result["status"] = "error"
-                result["error_code"] = "MOVE_FAILED"
-                result["message"] = f"移动失败: {response.text}"
-                return result
-        except Exception as e:
-            logger.error(f"移动文件异常: {e}")
-            result["status"] = "error"
-            result["error_code"] = "MOVE_EXCEPTION"
-            result["message"] = f"移动异常: {str(e)}"
-            return result
+                logger.info(f"文件移动错误，file_id: {file_id}, destination_parent_id: {destination_parent_id}")
+                return create_error_result("MOVE_ERROR", "文件移动错误")
+        else:
+            logger.error(f"文件移动失败: {response.text}")
+            return create_error_result("MOVE_FAILED", f"移动失败: {response.text}")
+
 
     def get_file_list_recursive(self, folder_id, depth=0):
         """
@@ -852,53 +846,12 @@ class UploadFileHwDrive(object):
             "files": []
         }
         
-        base_url = get_base_url()
-        all_files = []
-        next_cursor = None
-        page_count = 0
+        # 使用 _paginated_list 获取分页文件列表
+        all_files, error = self._paginated_list(folder_id)
+        if error:
+            return error
         
-        while True:
-            page_count += 1
-            url = f"{base_url}{DRIVE_URL_PATH}?fields=files(id,fileName,mimeType,size,editedTime),nextCursor&queryParam=parentFolder='{folder_id}'&pageSize=100"
-            if next_cursor:
-                url += f"&cursor={next_cursor}"
-            
-            headers = {
-                "Authorization": self.auth
-            }
-            logger.info(f"get_file_list_recursive page {page_count}, url: {url}")
-            
-            try:
-                response = requests.get(url, headers=headers, timeout=MAX_TIMEOUT)
-                if check_token_expired(response):
-                    result["status"] = "error"
-                    result["error_code"] = "TOKEN_EXPIRED"
-                    result["message"] = "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
-                    return result
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    files = data.get('files', [])
-                    all_files.extend(files)
-                    logger.info(f"get_file_list_recursive page {page_count}, files count: {len(files)}")
-                    
-                    next_cursor = data.get('nextCursor')
-                    if not next_cursor:
-                        break
-                else:
-                    logger.error(f"Response: {response.text}")
-                    result["status"] = "error"
-                    result["error_code"] = "QUERY_FAILED"
-                    result["message"] = f"查询失败: {response.text}"
-                    return result
-            except Exception as e:
-                logger.error(f"Error in get_file_list_recursive: {e}")
-                result["status"] = "error"
-                result["error_code"] = "QUERY_ERROR"
-                result["message"] = f"查询异常: {str(e)}"
-                return result
-        
-        # 递归处理子文件夹
+        # 递归处理子件夹
         for file_info in all_files:
             file_info["depth"] = depth
             is_folder = file_info.get("mimeType") == "application/vnd.huawei-apps.folder"
@@ -914,6 +867,7 @@ class UploadFileHwDrive(object):
         
         logger.info(f"Total files and folders in folder {folder_id}: {len(result['files'])}")
         return result
+
 
 def parse_url(url):
     """
@@ -950,34 +904,14 @@ def get_properties(url, setting_key):
         return None
 
 def get_drive_token():
-    with open(XIAO_YI_ENV_PATH, 'r') as file:
-        content = file.read()
-    # 使用正则表达式解析内容
-    key_value_pattern = re.compile(r'([^=\s]+)\s*=\s*(.+)')
-    config = key_value_pattern.findall(content)
-    token = ""
-    for key, value in config:
-        if (key == "108635313_login_token"):
-            token = value
-    if token == "":
-        for key, value in config:
-            if (key == "USER_CREDENTIAL_TEMP_DRIVE_TOKEN"):
-                token = value
-    file.close()
-    return token
+    """获取云盘认证token"""
+    return get_env_value("108635313_login_token") or get_env_value("USER_CREDENTIAL_TEMP_DRIVE_TOKEN", "")
 
 
 def get_is_support_side_car():
+    """获取是否支持sidecar配置"""
     global global_support_sidecar
-    with open(XIAO_YI_ENV_PATH, 'r') as file:
-        content = file.read()
-    # 使用正则表达式解析内容
-    key_value_pattern = re.compile(r'([^=\s]+)\s*=\s*(.+)')
-    config = key_value_pattern.findall(content)
-    for key, value in config:
-        if (key == "isSupportSideCar"):
-            global_support_sidecar = value
-    file.close()
+    global_support_sidecar = get_env_value("isSupportSideCar", "")
 
 
 def get_base_url():
@@ -1019,7 +953,7 @@ def get_celiaclaw_file_list(auth):
     """
     查询文件是否存在
     :param auth: 认证token
-    :return: 小艺Claw目录下的文件列表
+    :return: 小艺Work目录下的文件列表
     """
     hw_drive = UploadFileHwDrive(auth)
     folder_id = hw_drive.get_celiaclaw_file_id()
@@ -1114,7 +1048,66 @@ def create_folder_in_parent(auth, folder_name, parent_folder_name):
     print(json.dumps(create_result, ensure_ascii=False))
     return create_result
 
-def download_file_from_celiaclaw(auth, file_id, download_path):
+def download_file_by_name(auth, file_name, download_path):
+    """
+    通过文件名下载云盘文件
+    :param auth: 认证token
+    :param file_name: 云盘文件名
+    :param download_path: 本地下载路径
+    :return: 下载结果字典
+    """
+    if auth == "":
+        result = {
+            "status": "error",
+            "error_code": "TOKEN_EXPIRED",
+            "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
+        }
+        logger.error("auth is empty")
+        print(json.dumps(result, ensure_ascii=False))
+        return result
+    
+    hw_drive = UploadFileHwDrive(auth)
+    parent_folder_id = hw_drive.get_celiaclaw_file_id()
+    
+    if parent_folder_id == "TOKEN_EXPIRED":
+        print_token_expired()
+        return create_token_expired_result()
+    
+    if parent_folder_id == "":
+        result = {
+            "status": "error",
+            "error_code": "FOLDER_NOT_EXIST",
+            "message": "小艺Work目录不存在"
+        }
+        logger.error("小艺Work目录不存在")
+        print(json.dumps(result, ensure_ascii=False))
+        return result
+    
+    # 递归查找文件
+    file_result = hw_drive.check_file_exists_recursive(file_name, parent_folder_id)
+    
+    if file_result["status"] == "error":
+        logger.error(f"文件 {file_name} 不存在")
+        print(json.dumps(file_result, ensure_ascii=False))
+        return file_result
+    
+    file_info = file_result["file"]
+    file_id = file_info[0]["id"]
+    logger.info(f"找到文件 {file_name}, file_id: {file_id}")
+    
+    # 下载文件
+    result = hw_drive.download_file(file_id, download_path)
+    
+    if result["status"] == "error" and result.get("error_code") == "TOKEN_EXPIRED":
+        print_token_expired()
+        return result
+    
+    logger.info(json.dumps(result))
+    print(json.dumps(result, ensure_ascii=False))
+    return result
+
+
+def download_file_by_fileId(auth, file_id, download_path):
     """
     下载云盘文件
     :param auth: 认证token
@@ -1126,7 +1119,7 @@ def download_file_from_celiaclaw(auth, file_id, download_path):
         result = {
             "status": "error",
             "error_code": "TOKEN_EXPIRED",
-            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
         }
         logger.error("auth is empty")
         print(json.dumps(result, ensure_ascii=False))
@@ -1156,7 +1149,7 @@ def rename_file_in_celiaclaw(auth, file_id, new_file_name):
         result = {
             "status": "error",
             "error_code": "TOKEN_EXPIRED",
-            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
         }
         logger.error("auth is empty")
         print(json.dumps(result, ensure_ascii=False))
@@ -1187,7 +1180,7 @@ def move_file_to_folder(auth, file_id, source_parent_id, destination_parent_id):
         result = {
             "status": "error",
             "error_code": "TOKEN_EXPIRED",
-            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
         }
         logger.error("auth is empty")
         print(json.dumps(result, ensure_ascii=False))
@@ -1216,7 +1209,7 @@ def query_folder_file_list(auth, folder_id):
         result = {
             "status": "error",
             "error_code": "TOKEN_EXPIRED",
-            "message": "授权失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            "message": "授权失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
         }
         logger.error("auth is empty")
         print(json.dumps(result, ensure_ascii=False))
@@ -1434,7 +1427,7 @@ def main():
         print(json.dumps({
             "status": "error",
             "error_code": "TOKEN_EXPIRED",
-            "message": "授权已失效，请退出小艺Claw，再次启动小艺Claw重新获取授权后重试。"
+            "message": "授权已失效，请退出小艺Work，再次启动小艺Work重新获取授权后重试。"
         }, ensure_ascii=False))
         return -1
     # 根据command分发到不同处理逻辑
@@ -1453,7 +1446,7 @@ def main():
                 # 递归查询指定文件夹下的所有子文件及子文件夹
                 return query_folder_file_list(auth, args.file_id)
             else:
-                # 查询小艺Claw目录下的文件列表
+                # 查询小艺Work目录下的文件列表
                 return get_celiaclaw_file_list(auth)
         elif args.file_name:
             # 查询文件是否存在
@@ -1493,13 +1486,18 @@ def main():
     
     elif command == "download":
         # 下载文件命令
-        if not args.file_id:
-            print("please specify --file_id <file_id>")
-            sys.exit(1)
         if not args.path:
             print("please specify --path <download_path>")
             sys.exit(1)
-        return download_file_from_celiaclaw(auth, args.file_id, args.path)
+        if args.file_name:
+            # 通过文件名下载
+            return download_file_by_name(auth, args.file_name, args.path)
+        elif args.file_id:
+            # 通过文件ID下载
+            return download_file_by_fileId(auth, args.file_id, args.path)
+        else:
+            print("please specify --file_name <file_name> or --file_id <file_id>")
+            sys.exit(1)
     
     elif command == "rename":
         # 重命名文件命令
