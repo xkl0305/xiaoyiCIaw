@@ -18,3 +18,14 @@ if r.stderr.strip():
     if filtered:
         print("--- stderr ---")
         print("\n".join(filtered).strip())
+
+# 技能目录 git 对账自愈 (2026-10-25): 环境重建丢技能时自动从 git HEAD 补回
+try:
+    h = subprocess.run(
+        [sys.executable, os.path.join(WORKSPACE, "tools/skill_sync_heal.py")],
+        capture_output=True, text=True, timeout=60
+    )
+    if h.stdout.strip():
+        print("\n" + h.stdout.strip())
+except Exception as e:
+    print(f"\n[skill-sync-heal] ⚠️ 自愈脚本异常: {e}")
