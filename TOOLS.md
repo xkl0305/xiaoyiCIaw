@@ -310,10 +310,10 @@ printf '%d\n' $((RANDOM%12*5))
 3. **根因**: init 恢复流程只带回恢复源清单内的技能,当初靠 git 提交保住、不在恢复源里的技能不会被带回;**git 仓库(.git)本身完好**
 
 **自愈机制(已挂每日维护 05:00):**
-- 脚本: `tools/skill_sync_heal.py`,由 `scripts/cron_daily_maint.py` 包装器调用
+- 脚本: `scripts/skill_sync_heal.py`,由 `scripts/cron_daily_maint.py` 包装器调用
 - 逻辑: 以 **git HEAD 为技能唯一准绳**——git 跟踪、工作区缺失(整目录或单文件 D 状态)→ 自动 `git restore` 补回;工作区有、git 无→仅提示不自动 add;日志留痕 `logs/skill_sync_heal.log`
 - 边界: 只处理 `skills/` 目录,其他路径异常状态不碰
-- 手动跑: `python3 tools/skill_sync_heal.py`(退出码 0=一致,2=仍有缺失)
+- 手动跑: `python3 scripts/skill_sync_heal.py`(退出码 0=一致,2=仍有缺失)
 
 **删除纪律:** 想正式删除某技能,必须 `git rm` + commit,否则自愈会拉回——"删了没提交、状态悬空"从此有机制兑底。
 
@@ -896,6 +896,8 @@ const normalizedFinalText = fullFinalText.replace(/\s*❄️\s*$/, "❄️");
 
 **诚实边界:** final 帧归一能否覆盖端侧已渲染的流式内容,取决于端侧是否采用 final 帧整体重绘;因此仍应保留执行层自查(SOUL.md P0 门禁)作双保险,不因有代码兜底而松懈。关联备份:`dist/src/dispatch/reply-dispatcher.js.bak-20260922-2106*`。
 
+**补充·流式 partial 归一(2026-10-25):** 09-22 的 final 帧归一未覆盖端侧流式播放路径——实时对话按流式 partial 帧(append:false 全量替换)逐段渲染,最终帧归一救不回已显示内容。补丁一:reply-dispatcher.js 流式 partial 发送处(行 678-680)同做 `const partialText = fullText.replace(/\s*❄️\s*$/, "❄️")`。补丁二(最终根治):formatter.js 的 `sendA2AResponse()` 公共出口源头统一归一(`bridgedText.replace(/\s*❄️\s*$/, "❄️")`),一条代码覆盖流式+final+conversation-manager 等全部发送路径。改后 `node --check` + `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联备份:`dist/src/formatter.js.bak-20261025-064856`、`dist/src/dispatch/reply-dispatcher.js.bak-20261025-064230`。
+
 ### xiaoyi-channel ❄️ 收尾兜底 · 自动补丁机制(2026-09-25 固化)
 
 **背景:** 归一逻辑加在 xiaoyi-channel 的 `dist/src/dispatch/reply-dispatcher.js`(编译产物)。**插件每次更新/重装会用官方 dist 覆盖,手动补丁会被冲掉**(2026-09-25 00:32 更新即冲掉一次),导致"老要补"。为根治,建自动补丁机制:检测缺失→自动重打→(可选)重启 gateway,让"老要补"变"自动补"。
@@ -1007,3 +1009,36 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 **坑点:** gateway 工具 `config.patch` 会拦截 memory 受保护路径(报 "cannot change protected config paths"),所以必须**直接改 openclaw.json 文件**再重启,不能用 gateway patch。
 
 **要点:** 历史内容不丢--原始记忆在 `memory/celia_memory/celia_memory_v2.db` 数据库 + `memory_dump/MEMORY-history-*.md` 归档里都有,改路径只是"不再自动往主文件灌重复缓存",不影响检索(检索走数据库)。
+
+### 通道文本显示问题的根治方法论（2026-10-25 固化）
+
+**背景：** ❄️ 收尾空行反复修复无效，暴露改文本发送链路的通用排错教训——改错层/改错文件/漏掉发送链路会让修复看似做了却没生效。
+
+**方法论（处理任何"端侧显示异常、需改文本发送链路"问题的固定流程）：**
+1. **确认运行实际加载的文件** — 查插件 `package.json` 的 `main`/`exports` 指向（本例 `./dist/index.js`，dist 即唯一运行代码，无独立 src）。改错文件（如只改了 build 产物却运行时加载源码）等于白改。判断"补丁是否真被加载"：对比进程启动时间 vs 补丁文件 mtime。
+2. **mapping 目标消息走哪条发送链路** — 端侧实时回复不一定走你以为的那条。用 `grep -rln "sendA2AResponse" dist/src` 找出**所有**调用点（本例：reply-dispatcher 之外还有 conversation-manager/bot/monitor 等），确认目标消息实际经哪条。改"调用点"容易漏链路（本例 reply-dispatcher 的 stream+final 两处归一都未覆盖端侧实时路径）。
+3. **后处理放"公共出口源头"，而非逐个调用点** — 所有发送最终都汇聚到 `formatter.js` 的 `sendA2AResponse()`。在**源头**（bridgedText 计算后、push 进 artifact.text 前）统一做文本后处理（本例：`text.replace(/\s*❄️\s*$/, "❄️")`），一条代码覆盖全部发送路径，比分散到多个调用点可靠。
+4. **用端侧截图定性最终效果** — 文本层归一后仍显示异常时，用 `image_reading` 读端侧截图，确认"是不是文本内容里的换行"还是"端侧渲染层自己插的空行"。区分这两者才能决定服务端能否根治，避免盲改。
+
+**配套备份/回滚：** 改 xiaoyi-channel 核心发送代码前后必须 `cp` 备份（`dist/src/formatter.js.bak-*`、`dist/src/dispatch/reply-dispatcher.js.bak-*`），语法检查 `node --check`，重启 `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联本次补丁：formatter.js 源头归一（1025）、reply-dispatcher final（0922）+ 流式 partial（1025）。
+
+### 纯前端 HTML 交互作品制作与验证方法论（2026-10-25 固化，实战：象棋+五子棋 canvas 人机游戏）
+
+**背景：** 制作纯前端 HTML 交互作品（canvas 人机游戏）时多次返工，根因集中在 canvas 渲染、初始化顺序、布局、验证方式。沉淀可复用方法论，避免同类任务反复踩坑。
+
+1. **必须走真实用户交互路径验证** — 真实点击/触摸事件 + 正确坐标换算（`e.clientX→画布交点索引`），勿只调逻辑函数。教训：象棋"点不动"=只测函数调用、漏了 canvas CSS 显示尺寸与内部像素/DPR 错位。
+2. **canvas 显示尺寸用 JS 硬算** — 用 JS 设 `cv.style.width/height`（按目标宽高比算好）+ `cv.width=cssW*dpr`，勿依赖 CSS `width/aspect-ratio`。不同浏览器对 canvas 替换元素缩放处理差异会导致棋盘拉伸变形（aspect 0.9→1.38）。
+3. **初始化顺序坑** — `resize()->draw()` 遍历空数据结构会抛异常，导致后续 `init()/newGame()` 未执行 → 白板无棋子。`draw()` 开头必须加空守卫（`if(!data||!data.length) return`），或先 init 再 resize。
+4. **页面整体布局用高度自适应 + 内容居中** — 卡片/外层用 `height:auto; margin:auto`（body flex 居中），勿 `height:100%` 撑满屏高（竖屏变竖长条）。主内容（棋盘）尺寸用 JS 按 `min(容器宽, innerHeight预留头尾)` 取，保持期望比例。
+5. **逻辑函数与数组下标坐标系保持一致** — 行列/交叉点索引勿颠倒（例：五子棋 `winAt` 写成 `board[col][row]` 而数据是 `board[row][col]`，导致胜利检测/AI 识别五连全部失效）。
+   - **补充 a) 写函数与读函数的数组维度约定必须全局统一** — 五子棋 `place()` 写成 `board[x][y]`，而渲染(draw)/胜负(winAt)/点击换算全用 `board[行][列]`，导致落子、显示、AI `lastMove` 红圈**整体转置错位**，表现为"点了没反应 / 红圈画在空位 / 棋子显示错位"。必须统一 place/undo/判定/渲染的数组维度。
+   - **补充 b) 中心对称坐标会掩盖转置 bug** — (7,7) 这类横竖对称点转置后仍落回原位，中心附近对称测试不易暴露；测试必须用**非对称交叉点**（如 (3,3)/(10,4)）真实点击，且每次核对 AI `lastMove` 是否真落在对应棋盘格上。
+   - **补充 c) 棋子坐标从板索引或显式传参，勿从棋子对象读隐含字段** — 棋子对象只存 {t,side,id}，位置是 board[row][col] 隐含索引。走法生成/AI/判定等逻辑函数必须显式传 (r,c) 或从 board 索引取；若写成 `genMoves(piece)` 内取 `piece.r/piece.c`，棋子没有这些字段会静默返回空走法（redMoves=0、AI决策失败），而 draw() 用 board 索引遍历画面仍正常，属于难察觉的静默 bug。定位：断言"生成走法数>0"，勿因画面正常就放过。（案例：junqi.html 首版）
+   - **补充 d) 运行时脚本中断用 CDP Runtime.exceptionThrown 抓** — canvas 棋盘游戏启动报 ReferenceError（函数未定义如 shuffle、filter 解构漏参）时脚本中断，棋盘空白但 UI 框架正常，易误判"画面没问题"。解法：node 连 CDP 监听 `Runtime.exceptionThrown` + 触发 `Page.reload` 拿具体报错栈，比截图早且准。注意 `node -e new Function(js)` 只抓语法错、抓不到运行时 ReferenceError。（案例：junqi.html boot 启动段）
+6. **验证画面必须亲眼看** — 本地无可视化浏览器时：起接收 POST server（CORS）→ `canvas.toDataURL()` 导出 PNG → `image_reading` 读图定夺"画面是否正常"，勿只看逻辑返回值断言画面 OK。
+
+**验证工具链：** headless chrome（CDP）+ `browser` evaluate 做真实点击/布局几何（aspect / 居中 / 溢出检测）；接收 server `/tmp/recv_srv.py` + `image_reading` 看图。
+
+   - **补充 e) 参考图拓扑复刻** — 参考图驱动的棋盘/网格类作品：用 `image_reading` 带明确坐标指令（"row 从上往下 0 起、col 从左往右 0 起精确列出"）**多次读图**，勿凭一次读数定拓扑；读数与用户口头规格（如"5 列 13 行"）矛盾先对齐、别自行二选一；格内印"兵站/大本营/前线"字样的多是教学示意图，只取拓扑不照抄格内文字；拓扑用坐标常量集中定义（RAIL_ROW/RAIL_COL、CAMP、BASE），**绘制必须动态读常量**，不能硬编码行号（改常量会画错）。（案例：junqi.html 铁路硬编码 [1,5,7,11] 与常量 {4,8} 不一致导致"前线铁路没画"）
+   - **补充 f) 用户"收到旧版"排查** — 用户多轮说"发的还是旧版本"但本地文件是新的 → 根因多为**手机端同名文件缓存未刷新**，非文件内容问题。解法：本地先 `grep` 关键特征（铁路常量/版本徽标文案）确认文件确实是新；换带时间戳**全新文件名**发送避开同名缓存；**页面加带时间戳版本徽标**（`.ver` 徽标如 "v9·…日期"）让用户一秒确认到位、不用比对棋盘细节；仍说旧版则 `image_reading` 读本地已加载页面截图核对徽标显示。（案例：junqi 多轮发同名文件用户一直说旧版）
+   - **补充 g) 超长/竖长 canvas 布局** — 高宽比大的棋盘（如 5×13，高≈宽×2.6）：视口高度自适应 `maxBoardH=innerHeight−固定占位` 限制棋盘高、棋盘用满宽度，**页面允许纵向滚动、按钮靠滚动到达**（底部按钮被挤出屏 ≠ 缺陷，同真实竖长棋 APP 交互）；canvas 尺寸 JS 硬算 `cv.style.width/height + cv.width=cssW*DPR`，draw() 用实际 `canvH` 而非 `cssW×比例`（否则超限时比例错乱）。验证用 fullPage 截图确认内容都在文档流内、可滚动到达。（案例：junqi 5×13 竖长棋盘）
