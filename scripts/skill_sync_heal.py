@@ -13,6 +13,11 @@ calcom-cal.com-web-design-guidelines-1.0.2)工作区丢失。
   - 想正式删除某技能 → 必须 git rm + commit, 否则本脚本会拉回
 边界: 只处理 skills/ 目录, 其他路径的异常状态不碰。
 挂载: scripts/cron_daily_maint.py 每日 05:00 调用; 也可手动运行。
+
+参数:
+  --quiet  安静模式(供 cron 场景): 技能目录一致且未发生自愈时完全静默
+           (仅写日志), 避免每日维护报告重复刷"✅ 一致"行; 只有真实自愈/
+           仍缺失/git 失败等异常才输出。不带该参数时行为不变(手动诊断用)。
 """
 import os
 import subprocess
@@ -73,7 +78,11 @@ def log(msg):
         f.write(f"[{stamp}] {msg}\n")
 
 
-def main():
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    quiet = "--quiet" in argv
+
     tracked = git_tracked_skill_dirs()
     if tracked is None:
         print("[skill-sync-heal] ❌ git ls-tree 失败, 跳过自愈")
@@ -114,14 +123,16 @@ def main():
     ok = not still_missing
 
     n_t, n_w = len(final_tracked), len(final_workspace)
+    # quiet(cron)模式: 一致且未发生自愈时完全静默, 只写日志, 避免重复刷行。
     if restored:
         print(f"[skill-sync-heal] 🔧 已自动恢复 {len(restored)} 项: {', '.join(restored[:10])}"
               + (" ..." if len(restored) > 10 else ""))
-    if untracked_dirs:
+    if untracked_dirs and not quiet:
         print(f"[skill-sync-heal] ℹ️ 未提交新技能 {len(untracked_dirs)} 个(仅提示, 不自动add): "
               f"{', '.join(untracked_dirs[:10])}" + (" ..." if len(untracked_dirs) > 10 else ""))
     if ok:
-        print(f"[skill-sync-heal] ✅ git跟踪 {n_t} | 工作区 {n_w} | 技能目录一致")
+        if not quiet:
+            print(f"[skill-sync-heal] ✅ git跟踪 {n_t} | 工作区 {n_w} | 技能目录一致")
         log(f"consistent: tracked={n_t} workspace={n_w}")
     else:
         print(f"[skill-sync-heal] ⚠️ 仍有缺失 {len(still_missing)} 个: {', '.join(still_missing)}")
