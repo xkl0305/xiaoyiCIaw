@@ -991,7 +991,7 @@ class AutoMemory:
         # MLE 兼容属性（被 force_consolidate/get_preloaded_anchors 等使用）
         self.workspace = WORKSPACE
         self.memory_dir = MEMORY_DIR
-        self.long_term_file = os.path.join(WORKSPACE, "MEMORY.md")
+        self.long_term_file = os.path.join(WORKSPACE, "data", "auto_memory_l3.md")
 
         # C4: 记忆融合配置加载
         self._fusion_config = {"enabled": True, "pre_save_check": {"enabled": True, "level": "normal", "strict_mode": False}, "post_search": {"enabled": True, "attach_confidence_score": True}, "learning_loop": {"enabled": True, "trigger_on_block": True, "tag_prefix": "memory_fusion"}}
@@ -2311,7 +2311,7 @@ class AutoMemory:
             "layers": {
                 "L1_session": "对话上下文中",
                 "L2_daily": len(os.listdir(self.logs_dir)) if os.path.exists(self.logs_dir) else 0,
-                "L3_longterm": "MEMORY.md",
+                "L3_longterm": "data/auto_memory_l3.md",
                 "L4_vector": "TF-IDF增强版"
             },
             "core_anchors": len(CORE_ANCHOR_KEYWORDS),
