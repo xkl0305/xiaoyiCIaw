@@ -109,6 +109,11 @@ Plan 管理规则:
   1. 所有涉及图像理解的场景，**必须优先调用`image_reading`工具**
   2. **禁止**使用 read 工具读取图片
 
+#### 读图失败排查三层法（2026-10-26 固化）
+- **读图遇障勿反复硬试 image_reading**：先分清是哪一层出问题。
+- **三层定位**：①内置 `image_reading`（返回 Premature close/超时 = 工具连接层故障，瞬时或暂不可用）→ ②换 `xiaoyi-image-understanding` 脚本（能上传得到 objectId + SSE 流建立 = 脚本通道通）→ ③小艺 API 端（脚本加 RAW 打印抓原始 SSE，看 `streamContent` 是否一路为空；为空 = 服务端未返回内容，**非脚本/依赖问题**）。
+- **脚本 debug 坑**：在脚本里加 `print(..., file=sys.stderr)` 打原始 SSE 前**务必先 `import sys`**，否则报 `name 'sys' is not defined`、请求异常直接 return null，反而掩盖真实原因。（案例：xiaoyi-image-understanding 排查读图 API 空返回时撞上，已补 import）
+
 ### 文件回传场景接口使用要求
 
 - 适用场景:
@@ -264,6 +269,16 @@ printf '%d\n' $((RANDOM%12*5))
 **清理纪律:** 属于修改长期记忆文件的敏感操作,必须:1先 `cp MEMORY.md MEMORY.md.bak-` 备份;2只删除纯 hash 噪声/重复/碎片,绝不删有效记忆;3按自进化流程先经用户确认再动手。
 
 **改前边界预检(2026-09-24 固化):** 修改含记忆系统标记块的文件(USER.md / MEMORY.md 等,即含 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN...END` 标记)前,先 `grep -n "CELIA_MEMORY_"` 核对标记边界,确认待改行**不在 OVERVIEW/SCENES 禁改块内**;命中禁改块则**不做手动编辑**--该区域由记忆系统自动管理,手改会被重写覆盖且违规,交由记忆系统自行刷新。判断"xx残留是否要改"时,先分辨它属于**正式规则文本**还是**记忆系统快照**,别对快照下手。(案例:2026-09-24 差点去改 USER.md/MEMORY.md 里 9 处'小艺Claw残留',核对后发现全在禁改块内及时收手;真正该统一的 AGENTS/SOUL/TOOLS 已全部为'小艺Work')
+
+### MEMORY.md 污染根因与治本（2026-10-27 固化）
+
+**根因:** MEMORY.md 反复被污染膨胀（本次 1.19MB/2万行）的元凶是 `core/engines/memory/auto_memory.py`——「灵枢/Crusheart」自带固化引擎的 `long_term_file` 原直指 `WORKSPACE/MEMORY.md`(994行)，经**会话运行中 hook**（inbound_signal_score 高分消息自动保存 / self_evolution save_to_memory / consolidate_expiring 批量固化）静默 `append` 写「📝 固化:」/「🧠 核心锚点:」。该系统与当前记忆槽位 `slots.memory=memory-celia`（及 yaoyao）**三者并存**，属残留双写，清完会复发。
+
+**排查定位法:** `grep -rn "📝 固化" "🧠 核心锚点"` 在 workspace/core 搜写入源 → 命中 auto_memory.py:2193/2189 → 看 `long_term_file` 定义(994) 确认落点是 MEMORY.md → 查 hook 触发点(hook_engine/self_evolution_engine) → 用 `slots.memory` 核对当前引擎，识别残留并存的写入者。
+
+**瘦身白名单重建法:** 不要按行删，按「保留清单」重建：①`grep -nE "^#{1,3} "` 列标题 + 扫描非垃圾区间锁**干净正式区边界**（本次 1-362，含项目/偏好/主人锚/人设/记忆引擎/人格手册六章/变更日志，`sed -n '1,362p' | grep -cE '固化|核心锚点|进化请求'` 应为 0 即干净）；②保留 `CELIA_MEMORY_SCENES` 记忆块原样；③`python` 拼接两块写回；④`grep -c` 逐个校验关键锚点（主人锚/四国军棋/六章标题/SCENES_BEGIN/END）不丢；⑤改前 `cp MEMORY.md MEMORY.md.bak-`。
+
+**治本（落点重定向）:** 把 `auto_memory.py` 的 `self.long_term_file` 从 `MEMORY.md` 改为独立文件 `data/auto_memory_l3.md`（994 + 2314 两处），固化能力保留但 MEMORY.md 永不被污染。改后确认 core 无其他直接写 MEMORY.md、`py_compile` 验证、提交、重启 openclaw-gateway 生效。
 
 ### message 投递校验(通用,2026-09-19 固化)
 
@@ -1045,3 +1060,12 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
    - **补充 h) 同一规则严禁双实现漂移** — 同一规则有两个实现（玩家走子 `applyMove` vs AI 搜索 `applyMoveForSearch`）时必须一致，否则真机 bug 藏在 AI 验证之外。本次军旗：搜索函数开局清目标格，玩家走子只在吃军旗时清，导致同归于尽时死子残留在格子。教训：双实现对同一批边界 case 各跑一遍，或抽单一权威实现供双方调用。（案例：junqi.html applyMove vs applyMoveForSearch）
    - **补充 i) 规则判定函数需覆盖所有参战方组合** — 吃子判定 `resolve(att,def)` 只写了"攻击方是炸弹→同归"，漏"防守方是炸弹"分支，导致军长撞炸弹判定成吃掉而非同归。教训：逐 case 表驱动测试，攻/守每个特殊子（炸弹/地雷/军旗）都要双向各验一次，不能只验一个方向。（案例：junqi.html resolve 少 defType==='ZHA'）
    - **补充 j) 同功能多入口必须行为一致** — 同一动作多个入口（页面加载 `startSetup()` vs 按钮 `btnAuto.onclick`）逻辑必须完整一致。本次军旗：加载入口红黑双布 25+25，但按钮入口只布了 RED，导致点自动布阵后 AI 方空白。教训：改动某入口后要核对所有入口；对"两入口产出是否一致"做断言。（案例：junqi.html 自动布阵按钮漏 autoSetup(BLACK)）
+   - **补充 k) 数据变更后必须 draw() 刷新，验证须到 canvas 像素层** — canvas 游戏里，任何修改棋盘/UI 数据的按钮或动作（重新布局/重新开始/重置等），改完数据后**必须显式调用 `draw()`**，否则数据变了画面却不刷新，用户看到"点了没反应/没重布局"。（案例：四国军棋 v5/v6 "重新布阵/重新开始"漏调 draw，用户报"全部没重新布局"）。验证"按钮是否生效"**不能只看逻辑/数据结构返回值**（`changed:true` 也不代表画面变了），**必须对比 canvas 像素**——用 `cv.toDataURL() 前后 !==` 判定画面真实变化，或截图肉眼确认，才算通过。
+   - **补充 l) canvas 高清用 setTransform(DPR)，布局验证以几何测量为准** — ① 高清绘制**必须** `ctx.setTransform(dpr,0,0,dpr,0,0)`+`cv.width=cssW*dpr`，**勿用固定 `ctx.scale(2,2)`+`cv.width=cssW*2`**——后者会让 canvas 替换元素按内部像素缩放，窄视口(手机)下**横向溢出裁切**(案例: 暗棋军旗手机端右侧被切, 根因如此)。② 验证"居中/是否溢出"**以浏览器几何为准**: `getBoundingClientRect()`(canvas中心 vs 容器中心)+`document.body.scrollWidth < innerWidth`；**勿轻信 image_reading 的"偏右/截断"视觉断言**——它多次误报"盘面偏右/文字截断"但实测居中且无溢出，凭视觉险些误修(案例: 暗棋军旗布局, image_reading 连续多报偏右均误判)。
+   - **补充 m) 多设备适配验证用 headless 三宽度截图** — 交付多设备作品，用 `/opt/chrome-linux/chrome --headless=new --disable-gpu --no-sandbox --hide-scrollbars --window-size=375,760/768,900/1280,900 --virtual-time-budget=3500 --screenshot=out.png <url>` **三宽度各截一张**，(配 image_reading)直观确认手机/平板/桌面响应式无溢出无裁切。注意: **合成 `MouseEvent` 的 `dispatchEvent` 在 headless 不触发 canvas 的 click 监听**(端到端点击须用浏览器真实事件/CDP 实点)；跨域 POST 收图需目标 server 加 `Access-Control-Allow-Origin: *`。
+   - **补充 n) 模式切换务必清干净渲染层旧分支** — 从暗棋版改明棋版，只改了布阵，但 `draw()` 里残留“AI方棋子隐藏成暗牌”逻辑（`showType=side==='R'?face:false`），导致明棋版 AI 全黑（用户追问“AI为什么全黑”）。教训：改模式/状态切换时，绘制层所有“按阵营/状态隐藏内容”的分支都要同步排查清掉（案例：明棋军旗 v1 AI黑子不亮兵种）。
+   - **补充 o) 自定义数据常量键名必须与查表严格一致** — 布阵常量用了短键('PAI'/'LIAN'/'GONG')，而系统兵种表用完整键('PAIZHANG'/'LIANZHANG'/'GONGBING')，导致 `PTS[短键].n` 取 undefined 运行时崩溃（`Cannot read properties of undefined (reading 'n')`）。教训：自定义数据键名必须与后续查表字段严格一致，严禁另造缩写（案例：明棋军旗 MING_LAYOUT 短键 vs PTS 完整键）。
+   - **补充 p) 验证必须走真实交互入口，禁止绕过事件处理直接调底层结算函数** — 结算/走子/吃子函数逻辑正确 ≠ 交互能用。本次红棋"吃不了黑棋"真凶是 `tap()` 里 `if(p.side!=='R')return` 把点击黑子拦截(攻击永不触发)，但我用**直接调 `movePiece`/`canEat`** 测结算、三场景全"过"，完全没暴露交互拦截 bug，直到用户实测才报。教训：攻击/走子/吃子/翻子都要**模拟真实点击路径**(先 tap 选子再 tap 目标)断言，不能只调底层函数看返回值；`tap()` 这类交互入口是"拦截所有输入的分发器"，其 `if(不是己方)return` 之类守卫最容易吞掉合法操作（案例：明暗军旗 v7, tap 拦截黑子点击致红棋吃不了黑棋）。
+   - **补充 q) 游戏「双模式切换」实现模式（明棋/暗棋一键切换）** — 用「模式变量 + 切换按钮 + `draw()` 按模式分支」实现两种玩法切换。要点：①全局模式变量(如 `isMing`)；②明/暗切换按钮各自设模式并 `newGame()` 重建；③`draw()` 里按模式决定显隐(`showType = isMing ? true : (ownFace)`，明棋全亮、暗棋敌方隐藏)；④各模式独立布阵(明棋随机但 face:true 全亮 / 暗棋随机 face:false 扣置)与状态栏文案；⑤切换时状态(turn/phase/sel/legal)全重置，防止混串。验证：切明→暗→明、各模式重布阵/重新开始均须正常且无残留（案例：军旗_明暗大师版，isMing 变量+btnMing/btnAn 切换，draw showType 条件化）。
+   - **补充 r) 走子类棋盘游戏三大坑（伪走法解构 / AI undo 索引 / 回调传参）** — 本次中国象棋全踩：①伪走法解构错——`for(const[t]of pseudo(r,c))` 解构出 `t=tr(数字)`，而 pseudo 返回 `[tr,tc]`，导致 `t[0]` 变 undefined、走法静默丢失（genLegal/inCheck 全受影响）；应写 `for(const[tr,tc]of pseudo(r,c))`。②AI 搜索 undo 索引错位——move 为 `[fr,fc,tr,tc]`，undo 必须 `board[m[0]][m[1]]=board[m[2]][m[3]];board[m[2]][m[3]]=q`；写成 `board[m[1]][m[2]]/board[m[3]][m[4]]`（m[4] 是 undefined）会还原错位、污染棋盘（AI 走一次后局面全乱）。③事件回调传参不匹配——点击分发调 `commit(sel[0],sel[1],r,cc)`（4 参全匹配签名），写成 `commit(sel,r,cc)` 会把数组当 fr、参数整体错位。三类都是“索引/解构/参数错位”，验证靠走子后断言棋盘指纹（序列化整盘不变）+ AI 走法在 genLegal 里。（案例：中国象棋 doMove/undo/commit）
+   - **补充 s) 象棋类交叉点落子几何** — 标准中国象棋**棋子圆心在线的交叉点** `(pad+cc*cell, pad+r*cell)`，**不是格子中心** `(+cell/2)`。把格子中心当落点会让所有棋子“坐在表格里不在线上”（用户原话“棋子都在表格里不在线上”），是“看起来能玩但布局全错”的典型。几何：9 列 10 行，可用宽 w → `cell=w/8`（8 个间距、9 个交叉点）、边距 `margin≥棋子半径`（取 cell/2）防边缘棋子出界；画布高 `=2*margin+9*cell`。交互点击用 `Math.round((e.x-margin)/cell)` 取最近交叉点并 clamp。验证：canvas 像素校验“交叉点处有棋 + 格子中央为空”，比 image_reading 视觉判断更可靠（AI 视觉可能被格子背景误导而误报“已在交叉点”）。（案例：中国象棋 v1 全棋落格中心 → v2 改交叉点）
