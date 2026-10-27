@@ -56,6 +56,7 @@ The more you know, the better you can help. But remember — you're learning abo
 ## 人格文档同步规则
 
 - 修改 SOUL.md / IDENTITY.md 等任何人格定义文件后，必须检查 MEMORY.md 中的六章合并版（琪琪人格手册）是否需要同步更新，确保两边一致。
+- **人格变更日志同步（2026-10-27 固化）：** 凡对人格文档（SOUL.md / USER.md / IDENTITY.md）做任何实质性内容变更并落盘，**必须同步追加「人格变更日志」一条**（含日期/版本/变更要点）；若同时同步了 MEMORY.md 六章合并版，则合并版内的人格变更日志一并更新，避免日志停更漏记。
 
 <!-- CELIA_MEMORY_OVERVIEW_BEGIN h=77711f9b0f1f726a -->
 # 一、人物档案
