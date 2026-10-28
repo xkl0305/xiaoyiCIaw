@@ -1134,3 +1134,9 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - **CSS transform 旋转 view 的“虚拟横屏”也不可用**：旋转后 canvas 内部四方方位被整体扭转 90°，北家到物理侧边、左右家到上下，方位错乱（红十全屏横屏版实测）。
 - **结论：手机端要锁横屏的游戏/应用，直接走 App**——鸿蒙用 DevEco Studio 工程：module.json5 的 abilities 配置 `"orientation": "landscape"` 锁横屏 + Index.ets 用 Web 组件 `$rawfile('xx.html')` 加载内置 HTML，App 打开即横屏一步到位。网页横屏只适合用户手动横手机且浏览器支持的场景，交付前先确认目标设备浏览器行为。
 - **工程模板参考**：`workspace/hongshi-app/`（红十大师，2026-10-28，含完整 DevEco 工程结构：AppScope/entry/module.json5/EntryAbility.ets/Index.ets/rawfile 游戏 HTML/图标资源）。
+
+### 补充 v) 五子棋大师级 AI 引擎 + 走子类搜索不污染悔棋栈（2026-10-28 五子棋大师版实战）
+
+- **大师级 AI 五件套**（五子棋/黑白棋等棋类通用）：①**精细棋型分档评估**：五 C5=1e9 / 活四 H4=2.2e7 / 冲四 C4=1.2e6 / 活三 H3=1.1e5 / 眠三 S3=1.1e4 / 活二 H2=1e3 / 眠二 S2=1e2（层级分明，AI 能权衡攻防）；②**四方向线段扫描**：按行/列/两条对角线提取所有线，识别每色连续段，按"长度+两端开放"(双开=活、单开=冲/眠)分档累加，评估=黑分-白分(正=黑优)；③**negamax 迭代加深 + alpha-beta**：轮到白取 `-staticEval()` 统一胜负视角，叶子返回相对当前方分数，一手成五返回 1e13+depth 必杀分；④**启发式排序 + 候选裁剪**：候选按"落子后本方增益+靠近中心偏好+一手成五给 1e8 极高优先"排序，depth>=3 时裁剪候选收窄；⑤**顶层预检 + 时间盒**：AI 一手成五→直接走、挡对手一手成五→必挡，AI_TIME(如 1500ms)时间盒内迭代加深(深度 2→6)。
+- **走子类搜索防污染悔棋栈**：搜索内 place/undo **禁止复用玩家 hist(push/pop) 栈**——复用会导致搜索结果污染悔棋栈，玩家悔棋一步错乱。搜索必须用独立直接读写棋盘的函数(如 `sp(x,y,s)`/`sp(x,y,EMPTY)`)，只有玩家真实落子才走 hist。与补充 r 的"AI undo 索引错位"(undo 数组下标写错导致还原错位)是**不同 bug**，注意区分。
+- **验证标准**：playwright 真实点击自动对弈，AI 每步 ~1.5s 稳定出步、能主动形成五连取胜、无报错；响应式用浏览器几何测量(playwright getBoundingClientRect+scrollWidth)，不轻信 image_reading 视觉断言(375 手机曾误报裁切实为无溢出)。
