@@ -30,12 +30,15 @@ def dir_size(path):
     return total
 
 def auto_clean(dry_run=False):
-    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志 + 正式文件旧备份。
-    dry_run=True 时仅预览正式文件旧备份的待删清单，不执行任何实际删除。"""
+    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志 + 正式文件旧备份 + /tmp验证截图 + 脚本/配置类bak。
+    dry_run=True 时仅预览待删清单，不执行任何实际删除。"""
     freed = 0
     items = []
     if dry_run:
-        return clean_workspace_backups(True)
+        prev_items, prev_freed = clean_workspace_backups(True)
+        misc_items, misc_freed = clean_misc_baks(True)
+        shot_items, shot_freed = clean_tmp_screenshots(True)
+        return prev_items + misc_items + shot_items, prev_freed + misc_freed + shot_freed
 
     # 1. /tmp 编译缓存
     for p in ["/tmp/node-compile-cache", "/tmp/openclaw-compile-cache"]:
@@ -86,6 +89,16 @@ def auto_clean(dry_run=False):
     items.extend(bak_items)
     freed += bak_freed
 
+    # 6. /tmp 验证截图（超过 SCREENSHOT_MAX_AGE_DAYS 天的 png）
+    shot_items, shot_freed = clean_tmp_screenshots(dry_run)
+    items.extend(shot_items)
+    freed += shot_freed
+
+    # 7. workspace 脚本/配置类 bak（每系列保留最新 MISC_BAK_KEEP 个）
+    misc_items, misc_freed = clean_misc_baks(dry_run)
+    items.extend(misc_items)
+    freed += misc_freed
+
     return items, freed
 
 # 正式文件备份清理：每组保留最新 BACKUP_KEEP 个，其余淘汰
@@ -124,6 +137,88 @@ def clean_workspace_backups(dry_run=False):
     if removed:
         tag = "待删" if dry_run else "已清理"
         items.insert(0, f"🧹 workspace正式文件旧备份 — {tag} {removed}个/释放 {freed/1024:.1f}KB (每组保留{BACKUP_KEEP}个)")
+    return items, freed
+
+
+# /tmp 验证截图：超过该天数的 png 自动淘汰
+SCREENSHOT_MAX_AGE_DAYS = 2
+
+def clean_tmp_screenshots(dry_run=False):
+    """清理 /tmp 下超过 SCREENSHOT_MAX_AGE_DAYS 天的 png 验证截图。"""
+    import time
+    freed = 0
+    items = []
+    removed = 0
+    cutoff = time.time() - SCREENSHOT_MAX_AGE_DAYS * 86400
+    if not os.path.isdir("/tmp"):
+        return items, freed
+    for f in os.listdir("/tmp"):
+        if not f.endswith(".png"):
+            continue
+        fp = os.path.join("/tmp", f)
+        try:
+            if not os.path.isfile(fp) or os.path.getmtime(fp) > cutoff:
+                continue
+            s = os.path.getsize(fp)
+            if not dry_run:
+                os.remove(fp)
+            freed += s
+            removed += 1
+            items.append(f"🧹 /tmp/{f} — {'待删' if dry_run else '已清'} ({size_str(fp)})")
+        except Exception:
+            continue
+    if removed:
+        tag = "待删" if dry_run else "已清理"
+        items.insert(0, f"🧹 /tmp验证截图 — {tag} {removed}个/释放 {freed/1024:.1f}KB (超{SCREENSHOT_MAX_AGE_DAYS}天)")
+    return items, freed
+
+
+# 脚本/配置类 bak：每系列保留最新 MISC_BAK_KEEP 个
+MISC_BAK_KEEP = 2
+
+def clean_misc_baks(dry_run=False):
+    """清理 workspace 内脚本/配置类 .bak 备份（六大 md 除外，由 clean_workspace_backups 处理）。
+    按原文件系列分组，每组保留最新 MISC_BAK_KEEP 个，其余淘汰。"""
+    import re as _re
+    from collections import defaultdict
+    freed = 0
+    items = []
+    removed = 0
+    groups = defaultdict(list)
+    for root, dirs, fs in os.walk(WORKSPACE):
+        dirs[:] = [d for d in dirs if d not in (".git", "node_modules")]
+        for f in fs:
+            m = _re.match(r"^(.+?)\.bak(?:[-._].*)?$", f)
+            if not m:
+                continue
+            base = f
+            # 六大 md 备份已由 clean_workspace_backups 处理，跳过避免双计
+            if any(base.startswith(mk) for mk in PROTECTED_BACKUP_MARKERS):
+                continue
+            p = os.path.join(root, f)
+            orig = os.path.join(root, m.group(1))
+            try:
+                groups[orig].append((os.path.getmtime(p), p))
+            except Exception:
+                continue
+    for orig, lst in groups.items():
+        if len(lst) <= MISC_BAK_KEEP:
+            continue
+        lst.sort(reverse=True)  # 最新在前
+        for _, p in lst[MISC_BAK_KEEP:]:
+            try:
+                s = os.path.getsize(p)
+                if not dry_run:
+                    os.remove(p)
+                freed += s
+                removed += 1
+                rel = os.path.relpath(p, WORKSPACE)
+                items.append(f"🧹 {rel} — {'待删' if dry_run else '已清'} ({size_str(p)})")
+            except Exception:
+                continue
+    if removed:
+        tag = "待删" if dry_run else "已清理"
+        items.insert(0, f"🧹 脚本/配置类bak — {tag} {removed}个/释放 {freed/1024:.1f}KB (每系列保留{MISC_BAK_KEEP}个)")
     return items, freed
 
 
