@@ -25,7 +25,7 @@
     {
       "name": "write-gate-plugin",
       "path": "/home/sandbox/.openclaw/extensions/write-gate/index.js",
-      "backupPath": "/home/sandbox/.openclaw/extensions/write-gate/index.js.bak-20260923-094516",
+      "backupPath": "/home/sandbox/.openclaw/extensions/write-gate/index.js.bak-flowwin-20261028-2229",
       "type": "restore",
       "marker": "const PLUGIN_ID = \"write-gate\";",
       "restartOnPatch": true,
