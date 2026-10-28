@@ -1,0 +1,11 @@
+{
+  "name": "entry",
+  "version": "1.0.0",
+  "description": "红十大师 entry 模块",
+  "main": "",
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@ohos/hypium": "1.0.19"
+  }
+}

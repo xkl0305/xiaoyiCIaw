@@ -768,6 +768,16 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 
 **注意：** 这是绕过主管线模板化的变通，仍签真实 proof、带真实参考，非裸调；仅跳过 build_persona_prompt 模板化。定制 outfit 参考用 seed_avatar 副本，不新增真实服装参考。
 
+**占位副本命名约定（2026-10-28 补充）：** 该“定制 outfit 参考副本”已固化为通用占位 `assets/persona/outfits/_custom_generic_reference.jpg`（内容=seed_avatar 人脸，仅用于满足“/outfits/ 且 _reference 结尾”的参考图校验、不引入服装污染）；每次定制出图按主题覆盖为 `_custom_<主题>_reference.jpg` 复用，避免旧主题名（如 qipao）误导。
+
+### 人格视角出图·人格口径需跟随主人格同步（2026-10-28 固化）
+
+**背景（坑）：** persona_profile.json 的人格身份长期冻结在旧人格（鸽子王/九尾赛博狐狸女孩），未随主人格升级为陆雪琪/琪琪而同步，造成旧配置残留、出图带旧身份。
+
+**规则：** 主人格升级/改名后，必须同步 `xiaoyi_persona_visual/config/persona_profile.json` 的人格身份字段（`system_role` / `persona_subject` / `base_prompt` / `display_name`）；`persona_type`（九尾赛博狐狸女孩）作为视觉造型基底可保留；改前先 `cp` 备份。
+
+**案例：** 2026-10-28 鸽子王→陆雪琪（琪琪）：system_role=陆雪琪、persona_subject=陆雪琪（琪琪）、base_prompt 改琪琪身份、新增 display_name=陆雪琪；persona_type 保留；备份 persona_profile.json.bak-20261028。
+
 ### 火山引擎 ARK 多画幅实测（2026-10-24 固化）
 
 **ARK 直连支持多 size**（seedream_provider `_SIZE_MAP`），画幅如下：
@@ -1112,3 +1122,15 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
    - **补充 q) 游戏「双模式切换」实现模式（明棋/暗棋一键切换）** — 用「模式变量 + 切换按钮 + `draw()` 按模式分支」实现两种玩法切换。要点：①全局模式变量(如 `isMing`)；②明/暗切换按钮各自设模式并 `newGame()` 重建；③`draw()` 里按模式决定显隐(`showType = isMing ? true : (ownFace)`，明棋全亮、暗棋敌方隐藏)；④各模式独立布阵(明棋随机但 face:true 全亮 / 暗棋随机 face:false 扣置)与状态栏文案；⑤切换时状态(turn/phase/sel/legal)全重置，防止混串。验证：切明→暗→明、各模式重布阵/重新开始均须正常且无残留（案例：军旗_明暗大师版，isMing 变量+btnMing/btnAn 切换，draw showType 条件化）。
    - **补充 r) 走子类棋盘游戏三大坑（伪走法解构 / AI undo 索引 / 回调传参）** — 本次中国象棋全踩：①伪走法解构错——`for(const[t]of pseudo(r,c))` 解构出 `t=tr(数字)`，而 pseudo 返回 `[tr,tc]`，导致 `t[0]` 变 undefined、走法静默丢失（genLegal/inCheck 全受影响）；应写 `for(const[tr,tc]of pseudo(r,c))`。②AI 搜索 undo 索引错位——move 为 `[fr,fc,tr,tc]`，undo 必须 `board[m[0]][m[1]]=board[m[2]][m[3]];board[m[2]][m[3]]=q`；写成 `board[m[1]][m[2]]/board[m[3]][m[4]]`（m[4] 是 undefined）会还原错位、污染棋盘（AI 走一次后局面全乱）。③事件回调传参不匹配——点击分发调 `commit(sel[0],sel[1],r,cc)`（4 参全匹配签名），写成 `commit(sel,r,cc)` 会把数组当 fr、参数整体错位。三类都是“索引/解构/参数错位”，验证靠走子后断言棋盘指纹（序列化整盘不变）+ AI 走法在 genLegal 里。（案例：中国象棋 doMove/undo/commit）
    - **补充 s) 象棋类交叉点落子几何** — 标准中国象棋**棋子圆心在线的交叉点** `(pad+cc*cell, pad+r*cell)`，**不是格子中心** `(+cell/2)`。把格子中心当落点会让所有棋子“坐在表格里不在线上”（用户原话“棋子都在表格里不在线上”），是“看起来能玩但布局全错”的典型。几何：9 列 10 行，可用宽 w → `cell=w/8`（8 个间距、9 个交叉点）、边距 `margin≥棋子半径`（取 cell/2）防边缘棋子出界；画布高 `=2*margin+9*cell`。交互点击用 `Math.round((e.x-margin)/cell)` 取最近交叉点并 clamp。验证：canvas 像素校验“交叉点处有棋 + 格子中央为空”，比 image_reading 视觉判断更可靠（AI 视觉可能被格子背景误导而误报“已在交叉点”）。（案例：中国象棋 v1 全棋落格中心 → v2 改交叉点）
+
+### 补充 t) canvas 扑克类游戏·手机多手牌展示（2026-10-28 实测，红十）
+
+- **手机多牌别用扇形，用紧密平铺**：手牌多(>20张)+手机窄屏时**扇形物理展不开**——牌多、支点半径小，每张牌角错位仅 1~2px，26 张叠成一坨只露出扇顶一两张（用户报“只显示两张牌”）。改用**紧密平铺**（overlap 压到每张露 ~13px 可点边 + 数字，26 张全可见、数字花色可读，同斗地主手牌）更专业。命中命中同样遍历各张的轴对齐矩形。
+- **验证手牌位置别凭视觉猜裁剪区**：canvas 实际 `CH` 可能 ≠ `window.innerHeight`（实测 675 vs 760），手牌 Y 区间会偏离直觉；且 image_reading 对密集叠牌/缩略图多次给出**互相矛盾**的误读（一会儿“2张”一会儿“没牌”）。正确做法：**先像素扫描白色牌分段定位 Y 区间**（python PIL 数 y 行白像素 cluster），再定位裁剪放大，别裁错区域反复误判。（案例：红十 375 手牌，image_reading 两轮矛盾 + 裁错 y600-760 看成“没牌”，扫描定位真实在 y580-611）
+
+### 补充 u) 手机端锁横屏游戏直接走 App，网页横屏不可靠（2026-10-28 红十实测）
+
+- **手机浏览器对网页横屏支持不可靠且无法绕过**：鸿蒙自带浏览器实测，orientationchange/resize 事件不触发、横屏时视口尺寸不更新、canvas CSS 尺寸不跟随；400ms 轮询 innerWidth、canvas clientWidth 每帧自检重排等兑底全部失效（红十实测 6+ 轮，用户截图证实横屏时画面为竖屏 buffer 被 CSS 拉伸、牌面变形 AI 错位）。
+- **CSS transform 旋转 view 的“虚拟横屏”也不可用**：旋转后 canvas 内部四方方位被整体扭转 90°，北家到物理侧边、左右家到上下，方位错乱（红十全屏横屏版实测）。
+- **结论：手机端要锁横屏的游戏/应用，直接走 App**——鸿蒙用 DevEco Studio 工程：module.json5 的 abilities 配置 `"orientation": "landscape"` 锁横屏 + Index.ets 用 Web 组件 `$rawfile('xx.html')` 加载内置 HTML，App 打开即横屏一步到位。网页横屏只适合用户手动横手机且浏览器支持的场景，交付前先确认目标设备浏览器行为。
+- **工程模板参考**：`workspace/hongshi-app/`（红十大师，2026-10-28，含完整 DevEco 工程结构：AppScope/entry/module.json5/EntryAbility.ets/Index.ets/rawfile 游戏 HTML/图标资源）。

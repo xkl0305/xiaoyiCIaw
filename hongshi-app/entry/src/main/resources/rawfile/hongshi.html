@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>红十 · 大师级</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#0d3b2e; font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif; }
+  #wrap { position:relative; width:100%; height:100%; }
+  #board { display:block; width:100%; height:100%; touch-action:none; }
+  #ctrl { position:absolute; bottom:max(env(safe-area-inset-bottom,0px),12px); left:0; right:0; display:flex; justify-content:center; gap:14px; z-index:10; pointer-events:none; }
+  #ctrl button { pointer-events:auto; border:none; border-radius:22px; padding:10px 26px; font-size:16px; font-weight:700; color:#fff; cursor:pointer; letter-spacing:2px;
+    background:linear-gradient(135deg,#1f8a5d,#0e5c44); box-shadow:0 3px 10px rgba(0,0,0,.35); min-width:96px; }
+  #ctrl button:active { transform:scale(.95); }
+  #ctrl button.primary { background:linear-gradient(135deg,#e8a320,#c97d0e); }
+  #ctrl button:disabled { filter:grayscale(.8); opacity:.5; cursor:not-allowed; }
+  #modal { position:absolute; inset:0; display:none; align-items:center; justify-content:center; background:rgba(6,20,15,.74); z-index:20; backdrop-filter:blur(2px); }
+  #modal.show { display:flex; }
+  .mcard { background:linear-gradient(160deg,#144a39,#0b3a2c); border:2px solid #2fae7a; border-radius:20px; padding:30px 42px; text-align:center;
+    box-shadow:0 12px 40px rgba(0,0,0,.5); min-width:270px; max-width:90vw; }
+  .mcard h2 { color:#ffd36b; font-size:28px; margin-bottom:8px; letter-spacing:3px; }
+  .mcard p { color:#d8f3e8; font-size:15px; margin-bottom:22px; }
+  .mcard button { border:none; border-radius:24px; padding:11px 38px; font-size:17px; font-weight:700; color:#123b2c; cursor:pointer;
+    background:linear-gradient(135deg,#ffd36b,#f0a820); box-shadow:0 4px 14px rgba(0,0,0,.3); }
+  .mcard button:active { transform:scale(.95); }
+  #confetti { position:absolute; inset:0; pointer-events:none; z-index:25; overflow:hidden; }
+  #banner { position:absolute; top:max(env(safe-area-inset-top,0px),8px); left:50%; transform:translateX(-50%); z-index:9;
+    background:rgba(8,32,24,.82); border:1px solid #2fae7a; border-radius:14px; padding:6px 16px; color:#eafff4; font-size:14px; font-weight:600; letter-spacing:1px; white-space:nowrap; pointer-events:none; }
+  #fullBtn { position:absolute; right:12px; top:14px; z-index:40; border:none; border-radius:18px;
+    padding:8px 16px; font-size:12px; font-weight:700; color:#fff; cursor:pointer; letter-spacing:1px;
+    background:linear-gradient(135deg,#2f7ee0,#1d5cb3); box-shadow:0 3px 10px rgba(0,0,0,.35); }
+  #fullBtn:active{ transform:scale(.93); }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <canvas id="board"></canvas>
+  <div id="banner"></div>
+  <div id="rotHint" style="position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:999;background:rgba(0,0,0,0.62);color:#fff;font:600 13px sans-serif;padding:6px 14px;border-radius:20px;display:none;">↻ 请横屏游玩，牌桌更宽</div>
+  <button id="fullBtn" style="display:none;">⛶ 全屏</button>
+  <div id="ctrl">
+    <button id="btnPass">不要</button>
+    <button id="btnPlay" class="primary">出牌</button>
+  </div>
+  <div id="modal">
+    <div class="mcard">
+      <h2 id="mvTitle"></h2>
+      <p id="mvSub"></p>
+      <button id="btnAgain">再来一局</button>
+    </div>
+  </div>
+  <div id="confetti"></div>
+</div>
+
+<script>
+"use strict";
+/* =================== 常量 =================== */
+const SUITS=['S','H','D','C'];
+const RANK_NUM={3:3,4:4,5:5,6:6,7:7,8:8,9:9,10:10,J:11,Q:12,K:13,A:14,2:15};
+const RANK_LABEL={3:'3',4:'4',5:'5',6:'6',7:'7',8:'8',9:'9',10:'10',11:'J',12:'Q',13:'K',14:'A',15:'2'};
+const SUIT_SYM={S:'♠',H:'♥',D:'♦',C:'♣'};
+const SUIT_COLOR={S:'#222',H:'#d5302d',D:'#d5302d',C:'#222'};
+function isHongShi(c){ return c.rank===10&&(c.suit==='H'||c.suit==='D'); }
+
+/* =================== 卡组 =================== */
+function makeDeck(){
+  const d=[];
+  for(let copy=0;copy<2;copy++) for(let si=0;si<4;si++) for(let r=3;r<=15;r++)
+    d.push({suit:SUITS[si],rank:r,id:copy*52+si*13+(r-3)});
+  for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]];}
+  return d;
+}
+function sortHand(h){ h.sort((a,b)=>b.rank-a.rank||SUITS.indexOf(a.suit)-SUITS.indexOf(b.suit)); return h; }
+
+/* =================== 牌型 =================== */
+function parseType(cards){
+  if(!cards||!cards.length) return null;
+  const n=cards.length, r=cards.map(c=>c.rank).sort((a,b)=>a-b);
+  const hong=cards.every(isHongShi);
+  if(n===1) return {type:'single',main:r[0],len:1,hong};
+  if(r.every(x=>x===r[0])){
+    if(n===2) return {type:'pair',main:r[0],len:2,hong};
+    if(n===3) return {type:'triple',main:r[0],len:3,hong};
+    if(n===4) return {type:'bomb',main:r[0],len:4,hong};
+  }
+  if(n>=5){ let ok=true; for(let i=1;i<n;i++) if(r[i]!==r[i-1]+1||r[i]>15){ok=false;break;}
+    if(ok) return {type:'straight',main:r[n-1],len:n,hong:false}; }
+  return null;
+}
+function canBeat(a,b){
+  if(!a||!b) return false;
+  if(a.type==='bomb'&&b.type!=='bomb') return true;
+  if(b.type==='bomb'&&a.type!=='bomb') return false;
+  if(a.type!==b.type) return false;
+  if((a.type==='single'||a.type==='pair')&&(a.hong!==b.hong)) return a.hong;
+  if(a.type==='bomb'||a.type==='triple') return a.main>b.main;
+  if(a.type==='straight') return a.len===b.len&&a.main>b.main;
+  return a.main>b.main;
+}
+/* AI 把牌拆成组合(单/对/三/四) */
+function groupByRank(hand){
+  const m={};
+  hand.forEach(c=>{ (m[c.rank]=m[c.rank]||[]).push(c); });
+  return m;
+}
+
+/* =================== 游戏状态 =================== */
+let players=[], me=0, team=[], lone=null;
+let roundTrick=[[],[],[],[]], trickDone=[false,false,false,false], lead=0, cur=0, lastTrick=[[],[],[],[]], lastLead=0;
+let winnerSofar=[], phase='idle', sel=new Set(), selRef=[];
+const SEAT_NM=['你','北家','西家','东家'];
+function handOf(s){return players[s].hand;}
+function done(s){return players[s].hand.length===0;}
+function activeSeats(){return [0,1,2,3].filter(x=>!done(x));}
+
+function newGame(){
+  const deck=makeDeck();
+  players=[0,1,2,3].map(s=>({seat:s,hand:[]}));
+  deck.forEach((c,i)=>players[i%4].hand.push(c));
+  players.forEach(p=>sortHand(p.hand));
+  // 组队：红桃10/方块10
+  const hs=[];
+  players.forEach(p=>p.hand.forEach(c=>{if(isHongShi(c))hs.push(p.seat);}));
+  const uni=hs.filter((v,i)=>hs.indexOf(v)===i);
+  team=Array(4).fill(1); lone=null;
+  if(uni.length<=1) lone=uni[0];            // 独打(含理论0)
+  else if(uni.length>=2){ team[uni[0]]=0; team[uni[1]]=0; if(uni.length>2){ // 超过两人有红十取最多的两人
+      const cnt=Array(4).fill(0); hs.forEach(s=>cnt[s]++);
+      const rk=[...uni].sort((a,b)=>cnt[b]-cnt[a]);
+      team=Array(4).fill(1); team[rk[0]]=0; team[rk[1]]=0; } }
+  lead=uni.length?uni[0]:0; cur=lead;
+  roundTrick=[[],[],[],[]]; trickDone=[false,false,false,false]; lastTrick=[[],[],[],[]]; lastLead=0; winnerSofar=[]; sel=new Set(); selRef=[];
+  phase='playing';
+  draw(); updateCtrl(); scheduleTurn();
+}
+function seatClock(seat,offset){ return (seat+offset)%4; }
+
+/* AI 组合引擎：把手牌拆成 最佳可用组合列表 */
+function buildCombos(hand){
+  const g=groupByRank(hand), combos=[];
+  // 四张炸弹
+  Object.keys(g).forEach(r=>{ if(g[r].length===4) combos.push({cards:g[r].slice(),weight:100+ (+r)}); });
+  // 三张
+  Object.keys(g).forEach(r=>{ if(g[r].length===3) combos.push({cards:g[r].slice(),weight:30+(+r)}); });
+  const usedPair={}, usedSingle={};
+  Object.keys(g).forEach(r=>{
+    const arr=g[r];
+    if(arr.length>=2) combos.push({cards:arr.slice(0,2),weight:10+(+r)});
+    if(arr.length===1) combos.push({cards:arr.slice(),weight:(+r)});
+  });
+  combos.sort((a,b)=>a.weight-b.weight);
+  return combos;
+}
+/* 检测顺子 */
+function findStraights(hand){
+  const g=groupByRank(hand);
+  const ranks=Object.keys(g).map(Number).filter(r=>g[r].length>=1&&r>=3&&r<=14).sort((a,b)=>a-b);
+  const found=[];
+  for(let start=0;start<ranks.length;start++){
+    let run=[ranks[start]];
+    for(let j=start+1;j<ranks.length;j++){ if(ranks[j]===run[run.length-1]+1){run.push(ranks[j]);} else break; }
+    if(run.length>=5){ found.push(run.slice()); }
+    if(run.length>=5){ // 取每个子区间
+      for(let L=5;L<=run.length;L++) for(let st=0;st+L<=run.length;st++){ found.push(run.slice(st,st+L)); }
+    }
+  }
+  found.sort((a,b)=>b.length-a.length||b[b.length-1]-a[a.length-1]);
+  return found;
+}
+
+/* 领出：大师级——先出小单/小对，藏大牌与炸弹，接近出完冲刺 */
+function aiLead(s){
+  const h=players[s].hand.slice();
+  if(h.length<=4){ // 冲刺，出最大组合尽快清手
+    return bestClear(h);
+  }
+  const st=findStraights(h);
+  // 若有≥5连顺子且非红十独打关键，留最后冲刺；优先出单/对
+  const g=groupByRank(h);
+  const rankKeys=Object.keys(g).map(Number).sort((a,b)=>a-b);
+  // 找最小单(非红十、非2保留)
+  let singleRank=null;
+  for(const r of rankKeys){ const arr=g[r]; if(arr.length===1&&r>=3){ singleRank=r; break; } }
+  if(singleRank===null){ for(const r of rankKeys){ if(g[r].length===1){singleRank=r;break;} } }
+  // 优先出最小单
+  if(singleRank!==null){ return g[singleRank].slice(); }
+  // 无单：出最小对(非红十对)
+  let pairRank=null;
+  for(const r of rankKeys){ if(g[r].length===2&&!(r===10&&g[r].every(isHongShi))){ pairRank=r; break; } }
+  if(pairRank!==null) return g[pairRank].slice();
+  // 有三张可拆对出或出三张
+  for(const r of rankKeys){ if(g[r].length===3){ return g[r].slice(0,2);} }
+  for(const r of rankKeys){ if(g[r].length===3){ return g[r].slice();} }
+  // 炸弹或剩余
+  for(const r of rankKeys){ if(g[r].length===4){ return g[r].slice(); } }
+  // 全对/兜底：出最大
+  return h.slice(0, h.length>=2?2:1);
+}
+/* 清手：出最大能一次出的组合(优先顺子/炸弹/三张,再单对) */
+function bestClear(h){
+  const st=findStraights(h);
+  if(st.length){ const run=st[0]; return h.filter(c=>run.indexOf(c.rank)>=0); }
+  const g=groupByRank(h);
+  const keys=Object.keys(g).map(Number).sort((a,b)=>b-a);
+  // 找最大对/三/四
+  for(const r of keys){ if(g[r].length===4) return g[r].slice(); }
+  for(const r of keys){ if(g[r].length===3) return g[r].slice(); }
+  for(const r of keys){ if(g[r].length===2) return g[r].slice(); }
+  return h.slice(0,1);
+}
+
+/* 跟牌：大师级——能压则压(用最省的大牌)，队友能收则过，压不动过 */
+function aiFollow(s, ref){
+  if(!ref) return null;
+  const h=players[s].hand.slice();
+  const my = lone===s ? null : team[s];
+  // 判断当前最大是否队友(lead者或已出牌最大者是队友)
+  let topSeat=lead;
+  for(let x=0;x<4;x++){ if(roundTrick[x]&&roundTrick[x].length){ const t=parseType(roundTrick[x]); if(t){ topSeat=x; } } }
+  const topIsMate = (my!=null) && team[topSeat]===my && !(lone===topSeat);
+  // 若队友是当前最大且轮未结束，倾向过(不压自己人)
+  if(topIsMate && topSeat!==s){ /* 若队友已最大,让过 */ }
+  // 找能压过的最小组合
+  const combos=buildCombos(h);
+  let choice=null;
+  for(const cb of combos){ if(canBeat(parseType(cb.cards),ref)&&!cb.cards.every(isHongShi)){ choice=cb; break; } }
+  // 顺子优先考虑(若有能压的顺子且值得)
+  if(!choice){
+    const stt=findStraights(h);
+    for(const run of stt){ const cards=run.map(r=>{const arr=groupByRank(h)[r]; return arr[0];}); const t=parseType(cards);
+      if(t&&t.type==='straight'&&canBeat(t,ref)){ choice={cards}; break; } }
+  }
+  // 若没有合适的,但手牌很少(冲刺),炸弹可出
+  if(!choice && h.length<=4){
+    const stt=findStraights(h);
+    if(stt.length){ const run=stt[0]; return h.filter(c=>run.indexOf(c.rank)>=0); }
+    const g=groupByRank(h);
+    for(const k of Object.keys(g).map(Number).sort((a,b)=>b-a)){ if(g[k].length===4) return g[k].slice(); if(g[k].length===3) return g[k].slice(); if(g[k].length===2) return g[k].slice(); }
+  }
+  // 若队友能收且当前自己没必要压(自己已是第二/靠后)，保守过
+  if(topIsMate){ return null; }
+  if(choice){ // 队友最大但自己可压时,仍可能为挡
+    return choice.cards;
+  }
+  return null;
+}
+
+/* =================== 出牌/过 =================== */
+function refType(){ for(let s=0;s<4;s++){ if(roundTrick[s]&&roundTrick[s].length){ const t=parseType(roundTrick[s]); if(t) return t; } } return null; }
+function leadIsEmpty(){ for(let s=0;s<4;s++){ if(roundTrick[s]&&roundTrick[s].length) return false; } return true; }
+
+function tryPlay(s, cards){
+  const t=parseType(cards);
+  if(!t) return false;
+  if(!leadIsEmpty()){ const rf=refType(); if(!rf||!canBeat(t,rf)) return false; }
+  commitPlay(s,cards,t);
+  return true;
+}
+function commitPlay(s,cards,t){
+  cards.forEach(c=>{const i=players[s].hand.indexOf(c); if(i>=0)players[s].hand.splice(i,1);});
+  sortHand(players[s].hand);
+  roundTrick[s]=cards.slice(); trickDone[s]=true;
+  if(done(s)&&winnerSofar.indexOf(s)<0) winnerSofar.push(s);
+  afterPlay(s);
+}
+function commitPass(s){ roundTrick[s]=[]; trickDone[s]=true; afterPlay(s); }
+function afterPlay(s){
+  // 胜利判断
+  if(lone!==null&&done(lone)){
+    const meWin=lone===me;
+    finish(meWin?'🎉 你独打获胜！':'😅 对方获胜', meWin?'你一人对抗三人，率先出完！':'对方独打者率先出完'); return;
+  }
+  const tId=team[s];
+  if(checkTeamWin(tId)){
+    const meWin=team[me]===tId;
+    finish(meWin?'🎉 你方获胜！':'😅 对方获胜', meWin?'你这一队率先出完！':'对方一队率先出完'); return;
+  }
+  advance(s);
+}
+function checkTeamWin(tid){ for(let s=0;s<4;s++){ if(team[s]===tid&&!done(s)) return false; } return true; }
+function advance(s){
+  let nc=null;
+  for(let o=1;o<=3;o++){ const c=(s+o)%4; if(!done(c)){ nc=c; break; } }
+  const act=activeSeats();
+  let notYet=false;
+  for(const x of act){ if(x!==lead && !trickDone[x]){ notYet=true; break; } }
+  if(act.length===1 || !notYet){ roundOver(s); return; }
+  cur=nc; draw(); updateCtrl(); scheduleTurn();
+}
+function roundOver(lastPlayer){
+  let winner=-1;
+  for(let s=0;s<4;s++){ if(!done(s)&&roundTrick[s]&&roundTrick[s].length) winner=s; }
+  if(winner<0) winner=lead;
+  lastTrick=roundTrick.map(t=>t.slice()); lastLead=winner;
+  roundTrick=[[],[],[],[]]; trickDone=[false,false,false,false];
+  lead=winner; cur=winner;
+  // 若赢家已出完,直接跳
+  if(done(winner)){ let nc=null; for(let o=1;o<=3;o++){const c=(winner+o)%4; if(!done(c)){nc=c;break;}} if(nc!==null){cur=nc;} }
+  draw(); updateCtrl(); scheduleTurn();
+}
+
+function scheduleTurn(){
+  if(phase!=='playing') return;
+  if(done(cur)){ advance(cur); return; }
+  if(cur===me){ updateCtrl(); draw(); return; }
+  const delay=500+Math.random()*600;
+  setTimeout(()=>{ if(phase==='playing'&&cur!==me&&!done(cur)){ const s=cur;
+      if(leadIsEmpty()){ const c=aiLead(s); if(c&&c.length){ if(!tryPlay(s,c)) commitPass(s); } else commitPass(s); }
+      else { const rf=refType(); const c=aiFollow(s,rf); if(c&&c.length){ if(!tryPlay(s,c)) commitPass(s); } else commitPass(s); } }
+  }, delay);
+}
+
+/* =================== 结局 =================== */
+function finish(title,sub){
+  phase='over';
+  burst();
+  document.getElementById('mvTitle').textContent=title;
+  document.getElementById('mvSub').textContent=sub;
+  document.getElementById('modal').classList.add('show');
+  draw(); updateCtrl();
+}
+
+/* =================== 交互 =================== */
+function myTurn(){ return phase==='playing'&&cur===me&&!done(me); }
+function toggleSel(idx){
+  if(!myTurn()) return;
+  if(sel.has(idx)) sel.delete(idx); else sel.add(idx);
+  selRef=[...sel];
+  draw();
+}
+function selectedCards(){
+  return [...sel].map(i=>players[me].hand[i]).filter(Boolean);
+}
+document.getElementById('btnPlay').onclick=()=>{
+  if(!myTurn()) return;
+  const cards=selectedCards();
+  if(!cards.length){ flash('请先选择要出的牌'); return; }
+  if(tryPlay(me,cards)){ sel.clear(); selRef=[]; }
+};
+document.getElementById('btnPass').onclick=()=>{
+  if(!myTurn()) return;
+  if(leadIsEmpty()){ flash('你是首家，不能不出'); return; }
+  sel.clear(); selRef=[]; commitPass(me);
+};
+document.getElementById('btnAgain').onclick=()=>{ document.getElementById('modal').classList.remove('show'); clearConfetti(); newGame(); };
+
+/* =================== 渲染 =================== */
+const cv=document.getElementById('board'), ctx=cv.getContext('2d');
+let CW=0,CH=0,DPR=1;
+/* 全屏按钮：仅全屏(配合物理横屏)，不做画面旋转 */
+document.getElementById('fullBtn').addEventListener('click',function(){
+  if(!document.fullscreenElement){ if(document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(()=>{}); }
+  else { if(document.exitFullscreen) document.exitFullscreen().catch(()=>{}); resize(); }
+});
+document.addEventListener('fullscreenchange',()=>{ setTimeout(resize,50); });
+function resize(){
+  DPR=window.devicePixelRatio||1;
+  const phyW=cv.clientWidth||window.innerWidth, phyH=cv.clientHeight||window.innerHeight;
+  CW=phyW; CH=phyH;
+  cv.width=CW*DPR; cv.height=CH*DPR;
+  cv.style.width=CW+'px'; cv.style.height=CH+'px';
+  const rh=document.getElementById('rotHint'); if(rh) rh.style.display= phyW<phyH?'flex':'none';
+  const fb=document.getElementById('fullBtn'); if(fb){ const fs=!!document.fullscreenElement; fb.style.display=(!fs&&phyW<phyH)?'block':'none'; fb.textContent= fs?'⛶ 退出全屏':'⛶ 全屏'; }
+  draw();
+}
+window.addEventListener('resize',resize);
+window.addEventListener('orientationchange',()=>{ setTimeout(resize,150); });
+/* 轮询兑底：不依赖事件，尺寸一变就重排(部分浏览器 file:// 下不触发 resize/orientationchange) */
+let _lw=0,_lh=0;
+setInterval(()=>{ if(window.innerWidth!==_lw||window.innerHeight!==_lh){ _lw=window.innerWidth; _lh=window.innerHeight; resize(); } },400);
+
+function draw(){
+  if(!players||players.length===0) return;   // 防 players 未初始化
+  // 尺寸自检：canvas CSS 尺寸(跟随视口)与当前布局不一致 -> 立即重排(不依赖任何窗口事件)
+  const vw=cv.clientWidth||0, vh=cv.clientHeight||0;
+  if((vw&&Math.abs(vw-CW)>2)||(vh&&Math.abs(vh-CH)>2)){ resize(); return; }
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  ctx.clearRect(0,0,CW,CH);
+  // 桌面背景
+  const bg=ctx.createLinearGradient(0,0,CW,CH); bg.addColorStop(0,'#0f4a36'); bg.addColorStop(1,'#083022');
+  ctx.fillStyle=bg; ctx.fillRect(0,0,CW,CH);
+  // 装饰圆
+  ctx.fillStyle='rgba(255,255,255,0.03)';
+  ctx.beginPath(); ctx.arc(CW/2,CH/2,Math.min(CW,CH)*0.30,0,7); ctx.fill();
+  ctx.strokeStyle='rgba(255,255,255,0.05)'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.arc(CW/2,CH/2,Math.min(CW,CH)*0.42,0,7); ctx.stroke();
+  // 中央"红十"
+  ctx.fillStyle='rgba(255,200,90,0.5)'; ctx.font='bold '+Math.min(CW,CH)*0.06+'px "KaiTi",serif';
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText('红 十',CW/2,CH/2);
+  // 出牌区
+  drawTrick();
+  // AI牌背
+  drawAiBacks();
+  // 我的手牌
+  drawMyHand();
+  // 座位标签 + 当前出牌高亮
+  drawLabels();
+  // banner
+  drawBanner();
+}
+function cardW(){ 
+  if(CW<600) return Math.max(22, Math.min(26, CW*0.055)); // 手机缩小
+  return Math.max(30, Math.min(54, CW*0.055)); 
+}
+function cardH(cw){ return cw*1.42; }
+
+function drawCard(x,y,cw,ch,card,face,sel){
+  const r=4;
+  ctx.fillStyle='#fff'; ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.roundRect(x,y,cw,ch,r); ctx.fill(); ctx.stroke();
+  if(!face){ ctx.fillStyle='#1f8a5d'; ctx.beginPath(); ctx.roundRect(x,y,cw,ch,r); ctx.fill();
+    ctx.fillStyle='rgba(255,255,255,0.9)'; ctx.font='bold '+cw*0.4+'px serif'; ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText('十',x+cw/2,y+ch/2); return; }
+  const col=SUIT_COLOR[card.suit];
+  if(card.hong0||card.highlight){ ctx.fillStyle='#ffe9a8'; ctx.beginPath(); ctx.roundRect(x,y,cw,ch,r); ctx.fill(); ctx.stroke(); }
+  ctx.fillStyle=col; ctx.font='bold '+cw*0.46+'px "Arial"'; ctx.textAlign='left'; ctx.textBaseline='top';
+  ctx.fillText(RANK_LABEL[card.rank],x+cw*0.12,y+ch*0.06);
+  ctx.font=cw*0.40+'px "Arial"';
+  ctx.fillText(SUIT_SYM[card.suit],x+cw*0.12,y+ch*0.38);
+  ctx.font='bold '+cw*0.8+'px "Arial"'; ctx.textAlign='center';
+  ctx.fillText(SUIT_SYM[card.suit],x+cw/2,y+ch*0.72);
+  if(sel){ ctx.strokeStyle='#ffd36b'; ctx.lineWidth=3; ctx.strokeRect(x-1,y-1,cw+2,ch+2); }
+}
+
+/* 我的手牌：手机用扇形, 桌面平铺 */
+let fanGeom=[];
+function drawMyHand(){
+  const h=players[me].hand; if(!h) return;
+  const cw=cardW(), ch=cardH(cw), n=h.length;
+  const BOTTOM_CTRL = CW<600?64:72;
+  // 手机窄屏牌多：紧密平铺保证26张全可见（扇形在手机放不下会叠成一坨）
+  const avail = CW - 12;
+  let overlap; if(n>1) overlap = Math.min(cw*0.92, Math.max(5,(avail-cw)/(n-1))); else overlap=0;
+  const totalW=(n-1)*overlap+cw; const x0=(CW-totalW)/2; const y0=CH-BOTTOM_CTRL-ch;
+  fanGeom=[];
+  for(let i=0;i<n;i++){ const y=sel.has(i)?y0-16:y0; drawCard(x0+i*overlap,y,cw,ch,h[i],true,sel.has(i));
+    fanGeom.push({mode:'flat',x:x0+i*overlap,y,cw,ch,idx:i}); }
+  if(n===0){ ctx.fillStyle='#eafff4'; ctx.font='15px sans-serif'; ctx.textAlign='center'; ctx.fillText('你已出完!',CW/2,CH-30); }
+}
+function drawFan(h,cw,ch,BOTTOM_CTRL){
+  const n=h.length, PX=CW/2;
+  const BASE=6, PY=CH-BOTTOM_CTRL+10; // 扇柄支点
+  const spread=Math.min(64, n*2.2), startA=-spread/2, step=n>1?spread/(n-1):0;
+  // 画序：先两侧后中间，中间牌置顶
+  const order=[]; let lo=0,hi=n-1;
+  while(lo<=hi){ if(lo===hi) order.push(lo); else { order.push(hi); order.push(lo); } lo++; hi--; }
+  order.reverse(); // 使中间最后画(最上)
+  fanGeom=[];
+  for(const k of order){
+    const i=k, a=(startA+i*step)*Math.PI/180;
+    ctx.save(); ctx.translate(PX,PY); ctx.rotate(a);
+    drawCard(-cw/2, -ch, cw, ch, h[i], true, sel.has(i));
+    ctx.restore();
+    fanGeom.push({mode:'fan',a:(startA+i*step),cw,ch,base:BASE,PX,PY,idx:i});
+  }
+  if(n===0){ ctx.fillStyle='#eafff4'; ctx.font='15px sans-serif'; ctx.textAlign='center'; ctx.fillText('你已出完!',CW/2,CH-30); }
+}
+function tryHitCard(x,y){
+  // 从最上层开始命中
+  for(let k=fanGeom.length-1;k>=0;k--){
+    const g=fanGeom[k];
+    if(g.mode==='fan'){
+      const ang=g.a*Math.PI/180, cos=Math.cos(ang), sin=Math.sin(ang);
+      const pts=[[-g.cw/2,-g.ch],[g.cw/2,-g.ch],[g.cw/2,-g.base],[-g.cw/2,-g.base]].map(p=>{
+        return [g.PX+p[0]*cos-p[1]*sin, g.PY+p[0]*sin+p[1]*cos];
+      });
+      if(pointInPoly([x,y],pts)){ return g; }
+    } else {
+      if(x>=g.x&&x<=g.x+g.cw&&y>=g.y&&y<=g.y+g.ch) return g;
+    }
+  }
+  return null;
+}
+function pointInPoly(pt,poly){
+  let inside=false;
+  for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+    const xi=poly[i][0],yi=poly[i][1],xj=poly[j][0],yj=poly[j][1];
+    if(((yi>pt[1])!==(yj>pt[1]))&&(pt[0]<(xj-xi)*(pt[1]-yi)/(yj-yi)+xi)) inside=!inside;
+  }
+  return inside;
+}
+
+function drawAiBacks(){
+  const cw=cardW();
+  const seatPos={
+    1:{x:CW/2, y:10, align:'center'},      // 北
+    2:{x:10, y:CH*0.5, align:'left'},       // 西
+    3:{x:CW-10-cw, y:CH*0.5, align:'left'}  // 东
+  };
+  const w=Math.min(cw*0.8,26);
+  for(let s=1;s<4;s++){
+    const cnt=players[s].hand.length|0;
+    const p=seatPos[s];
+    let label=SEAT_NM[s]+' '+cnt+'张';
+    ctx.fillStyle='#dff5ea'; ctx.font='600 13px sans-serif'; ctx.textAlign=p.align==='center'?'center':'left';
+    ctx.textBaseline='alphabetic';
+    if(p.align==='center'){ ctx.fillText(label,p.x,p.y+6); }
+    else if(s===2){ ctx.save(); ctx.translate(p.x, CH*0.5); ctx.rotate(-Math.PI/2); ctx.fillText(label,0,0); ctx.restore(); }
+    else { ctx.save(); ctx.translate(p.x, CH*0.5); ctx.rotate(Math.PI/2); ctx.textAlign='center'; ctx.fillText(label,0,0); ctx.restore(); }
+    // 牌背堆
+    ctx.fillStyle='#2fae7a'; ctx.strokeStyle='#0a5c44'; ctx.lineWidth=1;
+    for(let k=0;k<cnt&&k<40;k++){ ctx.fillRect(p.x+(s===3?0:cw*0.5) + (k%4)*2, p.y+(s===1?18+k*2:CH*0.5-20+(s===2?-1:1)*(k%5)*2), w,w*1.4); ctx.strokeRect(p.x+(s===3?0:cw*0.5)+ (k%4)*2, p.y+(s===1?18+k*2:CH*0.5-20+(s===2?-1:1)*(k%5)*2), w,w*1.4); }
+  }
+}
+function drawLabels(){
+  const h=players[me].hand?players[me].hand.length:0;
+  const cw=cardW(), ch=cardH(cw);
+  const BOTTOM_CTRL = CW<600?64:72;
+  const myY0 = CH - BOTTOM_CTRL - ch;
+  const turnTag = cur===me?'轮到你出牌 ▶':'轮到'+SEAT_NM[cur];
+  ctx.font='600 13px sans-serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillStyle= cur===me?'#ffd36b':'#cfeade';
+  ctx.fillText(turnTag,CW/2,myY0-12);
+  if(cur!==me){ ctx.fillStyle='rgba(255,220,150,0.95)'; ctx.fillText('AI思考中…',CW/2,myY0-30); }
+}
+function drawBanner(){
+  // 组队信息
+  let txt;
+  if(lone!==null){ txt = lone===me?'你独打（一人对三家）':'对方'+SEAT_NM[lone]+'独打，你们三家一队'; }
+  else { const r10s=[]; for(let s=0;s<4;s++) if(team[s]===0) r10s.push(SEAT_NM[s]); txt='红十队：'+r10s.join('、')+'   🆚   '; }
+  document.getElementById('banner').textContent=txt;
+}
+function drawTrick(){
+  // 中央各位置出牌
+  const pos={
+    0:{x:CW/2, y:CH*0.62},
+    1:{x:CW/2, y:CH*0.30},
+    2:{x:CW*0.30, y:CH*0.46},
+    3:{x:CW*0.70, y:CH*0.46}
+  };
+  const cw=cardW()*0.8;
+  for(let s=0;s<4;s++){
+    const cards=roundTrick[s];
+    if(cards&&cards.length){
+      renderTrickCards(s, cards, pos[s], cw);
+    }
+  }
+}
+function renderTrickCards(s,cards,pos,cw){
+  const n=cards.length, ov=Math.min(cw*0.6,(cw*0.9));
+  const total=(n-1)*ov+cw;
+  const x0=pos.x-total/2;
+  const ch=cardH(cw);
+  for(let i=0;i<n;i++){
+    drawCard(x0+i*ov, pos.y-ch/2, cw, ch, cards[i], true, false);
+  }
+}
+
+/* confetti */
+let cf=null;
+function burst(){
+  clearConfetti();
+  const box=document.getElementById('confetti');
+  cf=[];
+  for(let i=0;i<140;i++){
+    const p=document.createElement('div');
+    const size=6+Math.random()*8;
+    const color=['#ffd36b','#ff6b6b','#6bffb8','#6bc8ff','#ff8bd0','#fff'][Math.floor(Math.random()*6)];
+    p.style.cssText=`position:absolute;left:${Math.random()*100}%;width:${size}px;height:${size*1.4}px;background:${color};opacity:.95;
+      transform:rotate(${Math.random()*360}deg);animation:cf 1+ (${2+Math.random()*2}s) linear forwards;`;
+    p.style.animation=`cf ${1.6+Math.random()*1.6}s linear forwards`;
+    box.appendChild(p);
+  }
+}
+function clearConfetti(){ const b=document.getElementById('confetti'); b.innerHTML=''; }
+const st=document.createElement('style');
+st.textContent='@keyframes cf{0%{transform:translateY(0) rotate(0);opacity:.95}100%{transform:translateY(105vh) rotate(720deg);opacity:0}}';
+document.head.appendChild(st);
+
+/* 提示 */
+let flashT=null;
+function flash(msg){
+  clearTimeout(flashT);
+  const b=document.getElementById('banner'); b.textContent=msg;
+  flashT=setTimeout(draw,1500);
+}
+
+/* =================== 点击/触摸选牌 =================== */
+function clickCard(x,y){
+  if(!myTurn()) return false;
+  const g=tryHitCard(x,y);
+  if(g){ const i = g.idx!==undefined? g.idx : null; if(i===null) return false;
+    toggleSel(i); return true; }
+  return false;
+}
+cv.addEventListener('click',e=>{
+  const rect=cv.getBoundingClientRect();
+  clickCard(e.clientX-rect.left, e.clientY-rect.top);
+});
+cv.addEventListener('touchstart',e=>{
+  const rect=cv.getBoundingClientRect();
+  const t=e.touches[0];
+  if(clickCard(t.clientX-rect.left, t.clientY-rect.top)) e.preventDefault();
+},{passive:false});
+
+function updateCtrl(){
+  const pass=document.getElementById('btnPass'), play=document.getElementById('btnPlay');
+  if(!myTurn()){ pass.disabled=true; play.disabled=true; }
+  else {
+    pass.disabled = leadIsEmpty();
+    play.disabled = false;
+  }
+}
+
+/* 启动 */
+resize();
+newGame();
+setInterval(()=>{ if(phase==='playing') draw(); }, 1500);
+</script>
+</body>
+</html>
