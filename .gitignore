@@ -126,3 +126,6 @@ workspace/.openclaw/workspace-state.json
 *.bak-*
 probe-isolation.txt
 memory/.archive/
+
+# auto_memory 固化引擎落点(运行数据,治本重定向 2026-10-27)
+data/auto_memory_l3.md
