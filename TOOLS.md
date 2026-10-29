@@ -1140,3 +1140,10 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - **大师级 AI 五件套**（五子棋/黑白棋等棋类通用）：①**精细棋型分档评估**：五 C5=1e9 / 活四 H4=2.2e7 / 冲四 C4=1.2e6 / 活三 H3=1.1e5 / 眠三 S3=1.1e4 / 活二 H2=1e3 / 眠二 S2=1e2（层级分明，AI 能权衡攻防）；②**四方向线段扫描**：按行/列/两条对角线提取所有线，识别每色连续段，按"长度+两端开放"(双开=活、单开=冲/眠)分档累加，评估=黑分-白分(正=黑优)；③**negamax 迭代加深 + alpha-beta**：轮到白取 `-staticEval()` 统一胜负视角，叶子返回相对当前方分数，一手成五返回 1e13+depth 必杀分；④**启发式排序 + 候选裁剪**：候选按"落子后本方增益+靠近中心偏好+一手成五给 1e8 极高优先"排序，depth>=3 时裁剪候选收窄；⑤**顶层预检 + 时间盒**：AI 一手成五→直接走、挡对手一手成五→必挡，AI_TIME(如 1500ms)时间盒内迭代加深(深度 2→6)。
 - **走子类搜索防污染悔棋栈**：搜索内 place/undo **禁止复用玩家 hist(push/pop) 栈**——复用会导致搜索结果污染悔棋栈，玩家悔棋一步错乱。搜索必须用独立直接读写棋盘的函数(如 `sp(x,y,s)`/`sp(x,y,EMPTY)`)，只有玩家真实落子才走 hist。与补充 r 的"AI undo 索引错位"(undo 数组下标写错导致还原错位)是**不同 bug**，注意区分。
 - **验证标准**：playwright 真实点击自动对弈，AI 每步 ~1.5s 稳定出步、能主动形成五连取胜、无报错；响应式用浏览器几何测量(playwright getBoundingClientRect+scrollWidth)，不轻信 image_reading 视觉断言(375 手机曾误报裁切实为无溢出)。
+
+### today-task 负一屏推送·source 来源标注维护(2026-10-29 固化)
+
+- **来源标注=技能硬编码**：today-task 负一屏卡片**顶部来源**走推送的 `source` 字段，与正文 `content` 完全独立——正文 content 改成新名，顶部来源不会跟着变（案例：正文改"小艺 Work"但负一屏顶部仍显"小艺 Claw"）。
+- **硬编码位置与修复**：来源写死在技能源码 `scripts/task_pusher.py:92`（`source_value = "小艺 ..."`）+ `scripts/task_push.py:295`（`"source": "小艺 ..."`）；改这两处即统一负一屏来源标注。`version.json` 会登记 source 取值变更历史。改动前先 `cp` 备份。
+- **改后必清 __pycache__**：改源码后必须 `rm -rf scripts/__pycache__`，否则 Python 用旧字节码、改动不生效（本次踩坑：清缓存后重推才真正生效）。
+- **系统名统一**：负一屏推送场景来源也按「小艺 Work」统一，不写"小艺 Claw"（与 USER.md/TOOLS.md 命名分层一致）。
