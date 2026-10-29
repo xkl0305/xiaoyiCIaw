@@ -1147,3 +1147,23 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - **硬编码位置与修复**：来源写死在技能源码 `scripts/task_pusher.py:92`（`source_value = "小艺 ..."`）+ `scripts/task_push.py:295`（`"source": "小艺 ..."`）；改这两处即统一负一屏来源标注。`version.json` 会登记 source 取值变更历史。改动前先 `cp` 备份。
 - **改后必清 __pycache__**：改源码后必须 `rm -rf scripts/__pycache__`，否则 Python 用旧字节码、改动不生效（本次踩坑：清缓存后重推才真正生效）。
 - **系统名统一**：负一屏推送场景来源也按「小艺 Work」统一，不写"小艺 Claw"（与 USER.md/TOOLS.md 命名分层一致）。
+
+### Excel 表格 & Word 文档 核心操作经验(2026-10-29 固化)
+
+**Excel 表格**
+- 基础定位: `Ctrl+方向键`跳数据边缘、`Ctrl+Home/End`首尾、`Ctrl+G`定位条件；行列 `Ctrl+Shift+=`插入/`Ctrl+-`删除/`Ctrl+9/0`隐藏
+- 快速填充: 双击右下角小黑点自动填充到底；`Ctrl+E`智能填充(Excel2013+)
+- 录入: `Tab`横向/`Enter`竖向、`Ctrl+D`下填、`Ctrl+;`日期/`Ctrl+Shift+;`时间、格式刷 `Ctrl+Shift+C/V`
+- 高频函数: `SUM/AVERAGE`、`IF(条件,真,假)`、`VLOOKUP(找谁,区域,列,0)`跨表匹配、`COUNTIF/SUMIF(区域,条件)`、`LEFT/RIGHT/MID`截取、`&`拼接
+- 数据处理: `Ctrl+Shift+L`筛选、数据→排序(多关键字)、数据→删除重复值、数据→分列、视图→冻结首行
+- 数据透视表: 插入→数据透视表→选区域；行/列/值字段拖拽(值字段选求和/计数/平均)；筛选器做子维度
+
+**Word 文档**
+- 基础: `Ctrl+B/I/U`粗斜下划线、`Ctrl+E/L/R`对齐、`Ctrl+1/2`行距、`Ctrl+Space`清格式
+- 样式与大标题(长文档核心): 必用"样式"(标题1/2/正文)而非手动改字号(改样式全篇联动)；大纲视图拖拽章节；**自动目录前提=标题必须用样式**
+- 页面: 插入→页码；双击页眉页脚区进入；`Ctrl+Enter`分页；分节符(独立页码/页眉)
+- 表格: 插入→表格；`Tab`加行；表格/文本互转(布局)；表头跨页重复(布局→重复标题行)
+- 查找替换(批量利器): `Ctrl+H`；高级可替换格式(统一字体/颜色)；勾"使用通配符"正则批量处理
+- 目录引用: 引用→目录(需先建标题样式)；交叉引用；脚注尾注
+
+**配合系统工具**: `excel-analysis`(数据分析)、`xiaoyi-docx`、`document-processor`(文档处理)、`markitdown`(格式转换)
