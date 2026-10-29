@@ -558,6 +558,8 @@ OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
 
 **write-gate 流程窗口机制(2026-10-28 升级·替代批处理用法):** ①**正式文件(五大)仍须事前列明**——落盘前先触发一次占位 edit 拦截登记 pending,俞哥回一条「确认」即授予该文件(保留 TTL 内**不逐次消耗**,同路径可多次写);②命中确认同时开启 10 分钟流程窗口,窗口内 **evolution-drafts/(提案登记/归档)自动放行**,不再反复要求确认;③**同一文件多处改动合并成一次 edit**,不拆多次消耗;④效果:一次进化一条确认全覆盖登记+归档+落盘;⑤安全:无 pending 时确认词零作用(日常"好/嗯"不开窗),正式文件未事前列明仍拦截。
 
+**write-gate 流程窗口机制升级(2026-10-29 inFlow 修复·消除二次确认):** ①原「正式文件需事前列明占位 edit 登记才授予」缺陷——确认命中只把「已登记 pending」的路径转 granted;若只登记 evolution-drafts 而目标正式文件(TOOLS.md)确认前未写尝试登记,确认后它不获授权 → **二次确认**(本次实操踩坑)。②修复: `~/.openclaw/extensions/write-gate/index.js` 其 before_tool_call 正式文件分支新增 `if (inFlow)` 放行并授予——**确认命中开启的流程窗口内,正式文件(含 TOOLS.md)落盘自动放行,无需事前占位,一次确认全覆盖直接落盘**;窗口外仍严格拦截。③备份: `index.js.bak-confirmfix-20261029-2035`。④**gateway.restart 工具是假重启**(只发信号,supervisord 进程 uptime 不变,插件新代码不加载);真重启必须 `python3 -m supervisor.supervisorctl restart openclaw-gateway`,以 **pid 变化 + uptime 短**判断成功。
+
 ### 机制/插件改动后文档同步纪律(2026-10-28 固化)
 
 凡改动插件或底层机制(write-gate、reply-dispatcher.js、seedream 通道等),**必须回查并同步**所有引用该机制的文档段/Playbook/TOOLS 条目,一并更新到位;**禁止"插件改了、说明文档还残留旧流程"**导致新旧矛盾。案例:2026-10-27 改 write-gate 插件未同步 Playbook 旧令牌步骤,10-28 实操照旧流程返工。
