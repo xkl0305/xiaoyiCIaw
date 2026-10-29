@@ -109,11 +109,6 @@ Plan 管理规则:
   1. 所有涉及图像理解的场景，**必须优先调用`image_reading`工具**
   2. **禁止**使用 read 工具读取图片
 
-#### 读图失败排查三层法（2026-10-26 固化）
-- **读图遇障勿反复硬试 image_reading**：先分清是哪一层出问题。
-- **三层定位**：①内置 `image_reading`（返回 Premature close/超时 = 工具连接层故障，瞬时或暂不可用）→ ②换 `xiaoyi-image-understanding` 脚本（能上传得到 objectId + SSE 流建立 = 脚本通道通）→ ③小艺 API 端（脚本加 RAW 打印抓原始 SSE，看 `streamContent` 是否一路为空；为空 = 服务端未返回内容，**非脚本/依赖问题**）。
-- **脚本 debug 坑**：在脚本里加 `print(..., file=sys.stderr)` 打原始 SSE 前**务必先 `import sys`**，否则报 `name 'sys' is not defined`、请求异常直接 return null，反而掩盖真实原因。（案例：xiaoyi-image-understanding 排查读图 API 空返回时撞上，已补 import）
-
 ### 文件回传场景接口使用要求
 
 - 适用场景:
@@ -176,6 +171,11 @@ printf '%d\n' $((RANDOM%12*5))
 
 ### OpenClaw 操作约束
 核心原则
+
+#### 读图失败排查三层法（2026-10-26 固化）
+- **读图遇障勿反复硬试 image_reading**：先分清是哪一层出问题。
+- **三层定位**：①内置 `image_reading`（返回 Premature close/超时 = 工具连接层故障，瞬时或暂不可用）→ ②换 `xiaoyi-image-understanding` 脚本（能上传得到 objectId + SSE 流建立 = 脚本通道通）→ ③小艺 API 端（脚本加 RAW 打印抓原始 SSE，看 `streamContent` 是否一路为空；为空 = 服务端未返回内容，**非脚本/依赖问题**）。
+- **脚本 debug 坑**：在脚本里加 `print(..., file=sys.stderr)` 打原始 SSE 前**务必先 `import sys`**，否则报 `name 'sys' is not defined`、请求异常直接 return null，反而掩盖真实原因。（案例：xiaoyi-image-understanding 排查读图 API 空返回时撞上，已补 import）
 
 #### 手机操控(xiaoyi-gui-agent) 执行规则(必须严格遵守)
 
@@ -386,6 +386,7 @@ git push github main  # 补推 github
 2. 各 remote 历史起点可能不同(实测 github 旧提交 aa135b4 vs gitee a12ed9f),但都能快进到最新 commit。
 3. 确认对齐:对比 `git log --oneline -1` 与各 remote 分支 commit。
 4. 触发场景:用户问"X 个仓库都推送了吗" / 提交后要求多端备份同步。
+5. **github HTTP/2 网络坑(2026-10-30 实测)**: github 推送常报 `HTTP/2 stream 1 was not closed cleanly`(curl 16 / HTTP2 framing layer 错误),是 GitHub 在国内网络的常见毛病;解法: `git -c http.version=HTTP/1.1 push github HEAD:main` 强制 HTTP/1.1 一次成功,以后推 github 默认带此参数。
 
 ### supervisord 一次性脚本配置坑点(2026-08-09)
 
@@ -770,7 +771,7 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 
 **注意：** 这是绕过主管线模板化的变通，仍签真实 proof、带真实参考，非裸调；仅跳过 build_persona_prompt 模板化。定制 outfit 参考用 seed_avatar 副本，不新增真实服装参考。
 
-**占位副本命名约定（2026-10-28 补充）：** 该“定制 outfit 参考副本”已固化为通用占位 `assets/persona/outfits/_custom_generic_reference.jpg`（内容=seed_avatar 人脸，仅用于满足“/outfits/ 且 _reference 结尾”的参考图校验、不引入服装污染）；每次定制出图按主题覆盖为 `_custom_<主题>_reference.jpg` 复用，避免旧主题名（如 qipao）误导。
+**占位副本命名约定（2026-10-28 补充）：** 该“定制 outfit 参考副本”已固化为通用占位 `assets/persona/outfits/_custom_generic_reference.jpg`（内容=seed_avatar 人脸，仅用于满足“/outfits/ 且 _reference 结尾”的参考图校验、不引入服装污染）；每次定制出图按主题覆盖为 `_custom__reference.jpg` 复用，避免旧主题名（如 qipao）误导。
 
 ### 人格视角出图·人格口径需跟随主人格同步（2026-10-28 固化）
 
@@ -1116,8 +1117,7 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
    - **补充 i) 规则判定函数需覆盖所有参战方组合** — 吃子判定 `resolve(att,def)` 只写了"攻击方是炸弹→同归"，漏"防守方是炸弹"分支，导致军长撞炸弹判定成吃掉而非同归。教训：逐 case 表驱动测试，攻/守每个特殊子（炸弹/地雷/军旗）都要双向各验一次，不能只验一个方向。（案例：junqi.html resolve 少 defType==='ZHA'）
    - **补充 j) 同功能多入口必须行为一致** — 同一动作多个入口（页面加载 `startSetup()` vs 按钮 `btnAuto.onclick`）逻辑必须完整一致。本次军旗：加载入口红黑双布 25+25，但按钮入口只布了 RED，导致点自动布阵后 AI 方空白。教训：改动某入口后要核对所有入口；对"两入口产出是否一致"做断言。（案例：junqi.html 自动布阵按钮漏 autoSetup(BLACK)）
    - **补充 k) 数据变更后必须 draw() 刷新，验证须到 canvas 像素层** — canvas 游戏里，任何修改棋盘/UI 数据的按钮或动作（重新布局/重新开始/重置等），改完数据后**必须显式调用 `draw()`**，否则数据变了画面却不刷新，用户看到"点了没反应/没重布局"。（案例：四国军棋 v5/v6 "重新布阵/重新开始"漏调 draw，用户报"全部没重新布局"）。验证"按钮是否生效"**不能只看逻辑/数据结构返回值**（`changed:true` 也不代表画面变了），**必须对比 canvas 像素**——用 `cv.toDataURL() 前后 !==` 判定画面真实变化，或截图肉眼确认，才算通过。
-   - **补充 l) canvas 高清用 setTransform(DPR)，布局验证以几何测量为准** — ① 高清绘制**必须** `ctx.setTransform(dpr,0,0,dpr,0,0)`+`cv.width=cssW*dpr`，**勿用固定 `ctx.scale(2,2)`+`cv.width=cssW*2`**——后者会让 canvas 替换元素按内部像素缩放，窄视口(手机)下**横向溢出裁切**(案例: 暗棋军旗手机端右侧被切, 根因如此)。② 验证"居中/是否溢出"**以浏览器几何为准**: `getBoundingClientRect()`(canvas中心 vs 容器中心)+`document.body.scrollWidth < innerWidth`；**勿轻信 image_reading 的"偏右/截断"视觉断言**——它多次误报"盘面偏右/文字截断"但实测居中且无溢出，凭视觉险些误修(案例: 暗棋军旗布局, image_reading 连续多报偏右均误判)。
-   - **补充 m) 多设备适配验证用 headless 三宽度截图** — 交付多设备作品，用 `/opt/chrome-linux/chrome --headless=new --disable-gpu --no-sandbox --hide-scrollbars --window-size=375,760/768,900/1280,900 --virtual-time-budget=3500 --screenshot=out.png <url>` **三宽度各截一张**，(配 image_reading)直观确认手机/平板/桌面响应式无溢出无裁切。注意: **合成 `MouseEvent` 的 `dispatchEvent` 在 headless 不触发 canvas 的 click 监听**(端到端点击须用浏览器真实事件/CDP 实点)；跨域 POST 收图需目标 server 加 `Access-Control-Allow-Origin: *`。
+   - **补充 l) canvas 高清用 setTransform(DPR)，布局验证以几何测量为准** — ① 高清绘制**必须** `ctx.setTransform(dpr,0,0,dpr,0,0)`+`cv.width=cssW*dpr`，**勿用固定 `ctx.scale(2,2)`+`cv.width=cssW*2`**——后者会让 canvas 替换元素按内部像素缩放，窄视口(手机)下**横向溢出裁切**(案例: 暗棋军旗手机端右侧被切, 根因如此)。② 验证"居中/是否溢出"**以浏览器几何为准**: `getBoundingClientRect()`(canvas中心 vs 容器中心)+`document.body.scrollWidth ` **三宽度各截一张**，(配 image_reading)直观确认手机/平板/桌面响应式无溢出无裁切。注意: **合成 `MouseEvent` 的 `dispatchEvent` 在 headless 不触发 canvas 的 click 监听**(端到端点击须用浏览器真实事件/CDP 实点)；跨域 POST 收图需目标 server 加 `Access-Control-Allow-Origin: *`。
    - **补充 n) 模式切换务必清干净渲染层旧分支** — 从暗棋版改明棋版，只改了布阵，但 `draw()` 里残留“AI方棋子隐藏成暗牌”逻辑（`showType=side==='R'?face:false`），导致明棋版 AI 全黑（用户追问“AI为什么全黑”）。教训：改模式/状态切换时，绘制层所有“按阵营/状态隐藏内容”的分支都要同步排查清掉（案例：明棋军旗 v1 AI黑子不亮兵种）。
    - **补充 o) 自定义数据常量键名必须与查表严格一致** — 布阵常量用了短键('PAI'/'LIAN'/'GONG')，而系统兵种表用完整键('PAIZHANG'/'LIANZHANG'/'GONGBING')，导致 `PTS[短键].n` 取 undefined 运行时崩溃（`Cannot read properties of undefined (reading 'n')`）。教训：自定义数据键名必须与后续查表字段严格一致，严禁另造缩写（案例：明棋军旗 MING_LAYOUT 短键 vs PTS 完整键）。
    - **补充 p) 验证必须走真实交互入口，禁止绕过事件处理直接调底层结算函数** — 结算/走子/吃子函数逻辑正确 ≠ 交互能用。本次红棋"吃不了黑棋"真凶是 `tap()` 里 `if(p.side!=='R')return` 把点击黑子拦截(攻击永不触发)，但我用**直接调 `movePiece`/`canEat`** 测结算、三场景全"过"，完全没暴露交互拦截 bug，直到用户实测才报。教训：攻击/走子/吃子/翻子都要**模拟真实点击路径**(先 tap 选子再 tap 目标)断言，不能只调底层函数看返回值；`tap()` 这类交互入口是"拦截所有输入的分发器"，其 `if(不是己方)return` 之类守卫最容易吞掉合法操作（案例：明暗军旗 v7, tap 拦截黑子点击致红棋吃不了黑棋）。
