@@ -1318,6 +1318,15 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 快捷键: Ctrl+Shift+拖动=等比缩放不位移;Shift=正圆/正方;Ctrl+滚轮=视图缩放
 - 布尔 fallback: 剪除不成功→拆分→删多余→再组合
 
+### Power Query 深度(孙兴华zz 107集·2026-10-30 深化补学·browser实扒111分P)
+- 与 1233 行浅层(步骤式清洗)为深化关系,此为本条目完整版
+- 课程结构: S00基础操作(14集: 合并/追加查询,透视逆透视,分组,转置)/S01 M函数入门(37集: 三大容器,常用函数)/S02 M函数进阶(33集: List/Text/Table/Record深度)/S03 M函数深入(26集: 表全操作,正则,多表合并)
+- 合并查询(Join横向连表)vs追加查询(Append纵向堆叠)=多表汇总核心;多表批量汇总三场景: 同工作簿/不同工作簿/文件夹批量导入(处理N个月报表核武器)
+- 透视(Pivot宽表)与逆透视(Unpivot长表): 宽表↔长表互转,数据分析高频,报表模板关键
+- M语言三大容器: List[]/Record[]/Table[];常用函数系: List(sum/avg/max/Transform/Select/Distinct/Accumulate), Text(Combine/Split/Remove/Contains/PositionOf), Table(Group/Sort/Skip/ColumnNames/SplitColumn/CombineColumns), Number, Record, Date-Time
+- PQ支持正则表达式(第111集): 脏文本清洗(替换/提取/匹配)利器
+- M函数语法: if/else条件+try/otherwise容错;each(_)上下文套娃遍历;自定义函数
+
 ### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
 
 - **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
