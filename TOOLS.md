@@ -1335,6 +1335,14 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 根因: OpenClaw 隔离浏览器无用户 B站 登录 cookie,调不了账号关注接口/进不了关注页
 - ⚠️最靠谱: 让用户直接文字提供目标 UP主名字,逐个 B站 搜索爬代表作,对照已固化知识分析(值得学/已覆盖/独门技巧)
 
+### 技能版本五步排查法(2026-10-30 固化)
+- ①查本机版本: `grep -i version skills/<名>/SKILL.md` 看 metadata.version
+- ②判来源/独立上游: `git ls-files skills/<名>/` 看是否进仓;`cd 技能目录 && git remote -v` 看有无独立上游 remote
+- ③按来源选查新版通道: ClawHub装→`openclaw skills`/ClawHub查在线版本;有独立remote→`git fetch`上游对照;复制的开源技能→看LICENSE/README找版权方→联网(GitHub API)搜原始仓库→拉上游SKILL.md对照version+功能
+- ④对照判断升级: 本地version+功能(路由/任务数) vs 上游;本地≥上游=最新无需升级,上游更高=有新版
+- ⑤钉结论: 结论+附引用来源;本地领先/无上游则钉死"无新版"
+- 案例: xiaoyi-pdf 本地v1.1(Four tasks) vs 上游 cuttino001/minimax-pdf-skills v1.0(Three tasks, 2026-04后停更)→本地领先,无新版
+
 ### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
 
 - **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
