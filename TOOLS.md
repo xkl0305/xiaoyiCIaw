@@ -1327,6 +1327,14 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - PQ支持正则表达式(第111集): 脏文本清洗(替换/提取/匹配)利器
 - M函数语法: if/else条件+try/otherwise容错;each(_)上下文套娃遍历;自定义函数
 
+### B站 账号关注列表抓取(2026-10-30 实测)
+- 场景: 用户给 B站 账号让查关注列表里某类 UP主(如 Excel/Word/PPT)
+- 搜索用户 API 可用: /x/web-interface/search/type?search_type=bili_user&keyword= 拿 mid+粉丝数(实测星空恋love→mid 1392673616)
+- 关注列表 API 需登录: /x/relation/followings?vmid={mid} → 返回 -101 账号未登录
+- space 关注页需登录: space.bilibili.com/{mid}/fans/follow 未登录显示"出错啦"
+- 根因: OpenClaw 隔离浏览器无用户 B站 登录 cookie,调不了账号关注接口/进不了关注页
+- ⚠️最靠谱: 让用户直接文字提供目标 UP主名字,逐个 B站 搜索爬代表作,对照已固化知识分析(值得学/已覆盖/独门技巧)
+
 ### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
 
 - **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
