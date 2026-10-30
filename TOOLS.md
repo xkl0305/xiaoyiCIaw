@@ -1357,6 +1357,13 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 微信正文多通道降级: ①web_fetch/readability 只出标题(正文JS渲染) ②browser/CDP navigate+evaluate+snapshot 全 timeout(微信页卡) ③Jina r.jina.ai 网络不可达 ④**最稳= curl -A 手机UA 抓原始HTML + 正则抽 `<div id="js_content">` 内正文**(一次拿全,原文约3.5MB)
 - 通用: 网页正文 JS 渲染拿不到时,curl 抓原始 HTML 抽正文容器最稳;工具选型见 354 行(web-content-fetcher/baoyu)
 
+### headed-browser-open-v3 首次配置(2026-10-30实测)
+- 前置修整: browser.sh 无执行权限(chmod +x);CRLF坏解释器(sed -i 's/\r$//' browser.sh idle-monitor.sh *.py)
+- 依赖: 缺websocket → `env -u PIP_PREFIX PIP_CONFIG_FILE=/dev/null python3 -m pip install --target /tmp/wsp_deps websocket-client`
+- ⚠️CDP端口冲突核心坑: 默认18800被browser工具占用且其Chrome无--remote-allow-origins → element.py报403;browser.sh自带--remote-allow-origins=*(146行),用独立端口起即可
+- 用法: `CDP_PORT=18810 ./browser.sh start <URL>` + `PYTHONPATH=/tmp/wsp_deps python3 element.py --port 18810 --xxx`
+- 局限: 微信文章对 headed/headless 都弹"环境异常验证码",读不到正文;正文唯一稳妥=curl 抓原始HTML(见1353行)
+
 ### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
 
 - **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
