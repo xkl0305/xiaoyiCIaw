@@ -1350,6 +1350,13 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 正确路径: 要控本地桌面/PS → 小艺Work运行环境从"云电脑"切到本地Windows PC → 对话跑那台后,才能操作其桌面/启动驱动PS
 - 读图佐证: image_reading 多次空/Premature close,改用 xiaoyi-image-understanding 脚本流式读取成功,印证读图三层法"换备用脚本通道"
 
+### 网页正文提取排错 + pip 配置坑(2026-10-30实测)
+- 场景: web-content-fetcher 提取 mp 微信文章(SKILL.md 走 Scrapling 通道)
+- ⚠️pip安装被劫持坑: `~/.config/pip/pip.conf` 强制 `prefix=repo` + 环境变量 `PIP_PREFIX` → `--target`/`--user`/`--home` 全报 `Cannot set --home and --prefix together`;解法=`env -u PIP_PREFIX PIP_CONFIG_FILE=/dev/null python3 -m pip install --target /tmp/xxx xxx`
+- 注意: `scrapling[fetchers]` 含 playwright/patchright 大依赖,下载慢易被杀(SIGTERM)
+- 微信正文多通道降级: ①web_fetch/readability 只出标题(正文JS渲染) ②browser/CDP navigate+evaluate+snapshot 全 timeout(微信页卡) ③Jina r.jina.ai 网络不可达 ④**最稳= curl -A 手机UA 抓原始HTML + 正则抽 `<div id="js_content">` 内正文**(一次拿全,原文约3.5MB)
+- 通用: 网页正文 JS 渲染拿不到时,curl 抓原始 HTML 抽正文容器最稳;工具选型见 354 行(web-content-fetcher/baoyu)
+
 ### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
 
 - **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
