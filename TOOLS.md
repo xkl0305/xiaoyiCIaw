@@ -1524,3 +1524,11 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - **火山引擎 ARK**：独立第三方（多画幅直连实测）
 
 > seedream-image-gen 技能本身固定走小艺 seedream API（x-skill-id: seedream）单通道，与系统级多通道选型是两回事。
+
+### 配置/凭据排查·先读来源源码(2026-11-01 固化)
+
+**排查"缺配置/凭据"时先读 provider 的配置读取函数**,确认完整来源链,再下结论。
+- 来源链完整顺序: **环境变量 → .xiaoyienv → TOOLS.md 兜底**
+- **TOOLS.md 是 git 跟踪的配置兜底备份源**(_read_xiaoyi_env 会从"### Seedream 通道配置"区块补 SEEDREAM_API_* 变量),**必须纳入排查范围**
+- 别只盯主配置文件及其 .bak / 日志 / sqlite;别在穷尽排查前武断下"缺配置/需用户提供"结论
+- 教训(2026-11-01): 查火山ARK key 时漏了 _read_xiaoyi_env 的 TOOLS.md 兜底,误判"key从未配置",实际 key 一直在 TOOLS.md 兜底
