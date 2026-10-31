@@ -1513,3 +1513,14 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 老照片修复: 破损补全(修补+内容识别) + 黑白上色(选区+色相分层:皮肤/衣服/背景) + 模糊清晰化(锐化/高反差保留/智能锐化)
 - 去水印5法: 内容识别填充 / 仿制图章 / 修补工具 / 污点修复画笔 / 套索+填充
 - 原则: 复杂纹理用仿制图章+修补,纯背景用内容识别,修完放大检查边缘
+
+### 生图通道正确分类（2026-11-01 固化）
+
+**SSE 代理通道不是独立通道**：它与华为 seedream 直调本质是**同一通道**（后端均华为 seedream 5.0），仅接入方式不同（直调 huawei_provider API vs SSE 代理转发），不单列。
+
+**系统级生图三通道**：
+- **华为 seedream**：含 SSE 代理 / 直调两种接入方式（同一通道）
+- **硅基流动 SiliconFlow**：独立第三方（含 Kwai-Kolors 等免费生图）
+- **火山引擎 ARK**：独立第三方（多画幅直连实测）
+
+> seedream-image-gen 技能本身固定走小艺 seedream API（x-skill-id: seedream）单通道，与系统级多通道选型是两回事。
