@@ -330,6 +330,8 @@ printf '%d\n' $((RANDOM%12*5))
 - 边界: 只处理 `skills/` 目录,其他路径异常状态不碰
 - 手动跑: `python3 scripts/skill_sync_heal.py`(退出码 0=一致,2=仍有缺失)
 
+**收到「已自动恢复 N 项」通知先定性，别急着处理（2026-11-01 固化）:** 定时任务恢复的文件可能本就是"错误命名/冗余残留"(该删而不该留)。三处排查法:**磁盘** `ls -la <path>` → **index** `git ls-files <path>` → **HEAD** `git ls-tree -r HEAD --name-only | grep <关键词>` + `git log --all -- <path>`。三处均无 = 当前干净，被恢复的是历史残留，保持现状观察明早是否复发，复发则 `git rm`+commit 从 HEAD 移除跟踪根治;HEAD 存在 = 已正式跟踪再判断该不该删。对照同目录正确命名版本(常为少下划线/错目录的变体)可秒判是否残留。(案例:2026-11-01 恢复 getdevicedetails.js/getdevicedetail/SKILL.md,正确版为 get_device_details.js/get_device_* 系列)
+
 **删除纪律:** 想正式删除某技能,必须 `git rm` + commit,否则自愈会拉回——"删了没提交、状态悬空"从此有机制兑底。
 
 **对账口径:** 沿用「技能数量统计口径」(git ls-tree vs find,禁用 ls-files)。
