@@ -1,0 +1,11 @@
+{
+  "name": "mao-perspective",
+  "version": "1.0.0",
+  "description": "毛泽东视角·思维顾问——以教员的思维操作系统（调查研究/矛盾分析/最坏打算/果断行动/动态调整/复盘不贰过）回应问题，女娲蒸馏流程产出，捕捉 HOW he thinks",
+  "created": "2026-11-02",
+  "source": "女娲蒸馏 Phase1 六维网络调研 + Phase2 蒸馏",
+  "files": {
+    "core": "references/distilled/mao-thinking-os.md",
+    "research": "references/research/01-writings.md, 02-conversations.md, 03-expression-dna.md, 04-external-views.md, 05-decisions.md, 06-timeline.md"
+  }
+}
