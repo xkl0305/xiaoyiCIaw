@@ -1,0 +1,14 @@
+{
+  "client_id": "119414417",
+  "base_url": "https://jf-lingxi-huawei-mcp-gw.techgp.cn",
+  "skill_name": "jf-lingxi-investment-research",
+  "package_version": "1.0.0",
+  "tools": [
+    "jf_quant_multifactor_analyze",
+    "jf_peter_lynch_analyze",
+    "jf_graham_analyze",
+    "jf_etf_smart_selector_analyze",
+    "jf_etf_portfolio_allocation_analyze",
+    "jf_fundamental_analyze"
+  ]
+}
