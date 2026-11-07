@@ -1378,8 +1378,9 @@ async function callRouterClaw(tools, skillId, verbose = false, retryCount = 0) {
       };
     } else if (name === 'set_auth_Device') {
       payload.operation = 'POST';
-      // 校验 operFlag 是否在有效范围 [1, 2, 5] 内，不在则默认设置为 1（设备加入授权）
-      const validoperFlags = [1, 2, 5];
+      // 校验 operFlag 是否在有效范围 [0, 1, 2, 3, 4, 5] 内，不在则默认设置为 1（设备加入授权）
+      // operFlag 含义: 0-开启授权接入 1-允许接入 2-禁止接入 3-忽略 4-移除黑名单 5-移除已授权
+      const validoperFlags = [0, 1, 2, 3, 4, 5];
       let operFlag = args.data?.operFlag;
       if (operFlag === undefined || operFlag === null || !validoperFlags.includes(operFlag)) {
         operFlag = 1;

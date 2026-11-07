@@ -41,9 +41,10 @@ description: "智能门锁声音设置技能。当用户要求设置门铃音量
 #### 打开开关门提示音
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"doorPromptSwitch": 1}' \
@@ -53,9 +54,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 关闭开关门提示音
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"doorPromptSwitch": 0}' \
@@ -67,9 +69,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 打开门未关告警
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "alarmEventSetting" \
   --data '{"doorOpenSwitch": 1}' \
@@ -79,9 +82,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 关闭门未关告警
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "alarmEventSetting" \
   --data '{"doorOpenSwitch": 0}' \
@@ -93,9 +97,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置门铃音量（低=30）
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"ringVolume": 30}' \
@@ -105,9 +110,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置提示音音量（中=60）
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"voiceVolume": 60}' \
@@ -117,9 +123,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置告警音音量（静音=0）
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"warningVolume": 0}' \
@@ -129,9 +136,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置留言/天气提醒音量（最大=100）
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "volumeSetting" \
   --data '{"homeGreetVol": 100}' \

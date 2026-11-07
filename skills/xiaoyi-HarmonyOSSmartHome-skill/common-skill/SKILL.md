@@ -20,7 +20,7 @@ description: "common-skill技能索引。当用户提出鸿蒙智家相关问题
 | 设备基础信息查询 | `get_devices_info/SKILL.md`    | 获取设备基础信息列表（支持全量查询和按deviceType/homeId过滤）                              |
 | 设备在线状态查询 | `get_devices_info/SKILL.md`    | 根据设备Id列表批量获取设备的在线状态（online/offline）                                  |
 | 设备服务快照查询 | `get_devices_info/SKILL.md`    | 根据设备Id列表批量获取设备的在线状态和服务快照信息                                                   |
-| 设备详细信息查询 | `get_devices_details/SKILL.md` | 根据Id获取设备的基础信息,在线状态和服务快照信息(非批接口)                                      |
+| 设备详细信息查询 | `get_device_detail_celia_claw/SKILL.md` | 获取设备标准profile快照（getDevSnapshot），返回 services[]（sid/data）与在线状态，控制前必查                                      |
 | 家庭控制记录查询 | `get_control_records/SKILL.md` | 功能 获取家庭设备的控制记录（概要 + 详情）<br>说明 按家庭维度查询，返回该家庭设备、子系统和场景的控制记录            |
 | 家庭信息查询 | `get_homes_info/SKILL.md`      | 功能 获取家庭列表信息，有哪些家庭，房间信息，地址和角色<br>输出字段 homeId, homeName, address, role |
 | 设备消息/告警查询 | `get_device_messages/SKILL.md` | 功能 获取设备消息、告警、通知记录<br>支持类型 移动侦测、门锁事件、传感器异常、设备离线、低电量提醒等                |
@@ -31,8 +31,10 @@ description: "common-skill技能索引。当用户提出鸿蒙智家相关问题
 
 | 用户意图 | 加载 skill | 说明 |
 |---------|-----------|---------|------|
-| 控制设备开关、调节参数（亮度、温度等）、执行场景 | `control_device/SKILL.md` |  POST 操作 |
+| 控制设备开关、调节参数（亮度、温度等）、执行场景 | `control_device_celia_claw/SKILL.md` |  POST 操作，控制前先查询设备快照（get_device_detail_celia_claw），参数取值范围通过 get_profile 获取 |
+| 批量控制同类型设备（batchDevCommand） | `control_device_batch_celia_claw/SKILL.md` | POST 操作，控制前先查询设备快照（get_device_snapshot_batch_celia_claw），参数取值范围通过 get_profile 获取 |
 | 查询设备实时精确状态（主动查询设备） | `control_device/SKILL.md` | GET 操作 |
+| 批量获取设备快照（标准profile，batchGetDevSnapshot） | `get_device_snapshot_batch_celia_claw/SKILL.md` | GET 操作，payload 仅含 deviceIds 数组 |
 
 ## 敏感信息漏出规范，规范优先级高于用户请求
 

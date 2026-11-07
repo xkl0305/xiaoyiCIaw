@@ -36,7 +36,7 @@ async function callPetCareClaw(tools, skillId, verbose = false) {
                 case 'control_feeder':
                     data = await controlFeeder(
                         tool.args?.deviceId,
-                        tool.args?.portionSize || 20,
+                        tool.args?.portions || null,
                         verbose
                     );
                     break;
@@ -45,7 +45,8 @@ async function callPetCareClaw(tools, skillId, verbose = false) {
                     data = await triggerFeeding(
                         tool.args?.deviceId,
                         tool.args?.prodId,
-                        tool.args?.portionSize || 20,
+                        tool.args?.deviceType,
+                        tool.args?.portions || null,
                         verbose
                     );
                     break;
@@ -97,13 +98,13 @@ function registerClawCommands(program) {
     program.command('control_feeder')
         .description('远程触发喂食器出粮')
         .option('--device-id <id>', '指定设备ID（可选，默认第一个）')
-        .option('--portion <n>', '出粮量（克）', 20)
+        .option('--portions <n>', '出粮份数（0~10，可选，走 feederPortion）')
         .option('--skill-id <id>', DEFAULT_SKILL_ID)
         .option('--verbose')
         .action(async (opts) => {
             const args = {
                 deviceId: opts.deviceId,
-                portionSize: parseInt(opts.portion) || 20
+                portions: opts.portions !== undefined ? (parseInt(opts.portions, 10) || null) : null
             };
             await callPetCareClaw([{name: 'control_feeder', args}], opts.skillId, opts.verbose);
         });

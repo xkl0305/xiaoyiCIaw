@@ -1,21 +1,17 @@
 ---
 name: control-device
-description: 设备控制技能，用于向设备发送控制命令（POST）或主动查询设备实时状态（GET）。支持开关、调节、场景等多种操作类型。
+description: 设备实时信息查询技能，用于主动向设备发起查询（GET），获取设备的实时/近实时精确状态。
 ---
 
-# 全屋设备控制技能
-## ⚠️ 重要说明：GET vs POST 操作
+# 设备实时信息查询技能
 
 > **GET 操作：主动查询设备实时状态**
 > - **数据来源**：主动向设备发起查询请求
 > - **时效性**：实时/近实时的设备状态
 > - **设备要求**：设备必须在线
 > - **适用场景**：需要获取设备的精确实时状态
->
-> **POST 操作：向设备发送控制命令**
-> - **功能**：控制设备开关、调节参数等
-> - **响应**：返回指令发送结果, 真实结果需要等待一段时间后 查看快照或GET查询
-> - **适用场景**：远程控制设备、调节参数、执行场景
+
+> **设备控制（开关、调节参数、执行场景）请使用 `control_device_celia_claw` 技能，不要使用本技能。**
 
 ## 适用设备范围
 - 灯光、开关、插座等通用设备
@@ -26,7 +22,7 @@ description: 设备控制技能，用于向设备发送控制命令（POST）或
 
 ### 前置步骤：按需获取设备信息
 
-在控制设备前，需要先调用 `get_devices_info` 技能获取设备基础信息：
+在查询设备实时状态前，需要先调用 `get_devices_info` 技能获取设备基础信息：
 
 ```bash
 node common-skill/bin/smarthome-claw.js get_devices_info
@@ -41,45 +37,39 @@ node common-skill/bin/smarthome-claw.js get_devices_info
 - 根据用户输入的设备类型，使用 `deviceType` 或 `productName` 字段匹配
 - 如果用户未指定房间，返回全屋匹配的设备
 
-### 控制设备
+### 查询设备实时状态
 
 ```bash
 # 基本格式
-node common-skill/bin/smarthome-claw.js control_device --dev-id <设备ID> --prod-id <产品ID> --operation <操作类型> --sid <服务ID> --data <{cid: value}>
+node common-skill/bin/smarthome-claw.js control_device --dev-id <设备ID> --prod-id <产品ID> --operation "GET" --sid <服务ID> --data '{}'
 
-# 示例：开关灯
-node common-skill/bin/smarthome-claw.js control_device --dev-id "xxx" --prod-id "xxx" --operation "POST" --sid "switch" --data '{\"on\":1}'
-
-# 示例：查询状态
+# 示例：查询开关状态
 node common-skill/bin/smarthome-claw.js control_device --dev-id "xxx" --prod-id "xxx" --operation "GET" --sid "switch" --data '{}'
 
 # 调试模式
-node common-skill/bin/smarthome-claw.js control_device --dev-id "xxx" --prod-id "xxx" --operation "POST" --sid "switch" --data '{\"on\":1}' --verbose
+node common-skill/bin/smarthome-claw.js control_device --dev-id "xxx" --prod-id "xxx" --operation "GET" --sid "switch" --data '{}' --verbose
 ```
 
 ## 参数说明
 - `--dev-id`: 设备ID（必填），从 get_devices_info 获取
 - `--prod-id`: 产品ID（必填），从 get_devices_info 获取
-- `--operation`: 操作类型（必填），如 "GET"、"POST" 等
+- `--operation`: 操作类型（必填），本技能固定使用 `GET`
 - `--sid`: 服务ID（必填），如 "switch"、"brightness" 等
-- `--data`: 控制数据JSON字符串（必填），如 `{\"cid\":value}`，GET 类型传 '{}' 即可
+- `--data`: 查询数据JSON字符串（必填），GET 类型传 `'{}'` 即可
 
 ### Profile 定义参考
 
-设备的 profile 定义了设备对外开放的服务能力、参数类型和可选范围。可以参考查询到的设备状态和 profile 定义来组装控制报文：
+设备的 profile 定义了设备对外开放的服务能力、参数类型。可以参考查询到的设备状态和 profile 定义来理解服务字段含义：
 
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/<产品ID>/<产品ID>.json
+```bash
+node common-skill/bin/smarthome-claw.js get_profile --prod-ids "<产品ID>"
+```
 
-#### 示例
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/V0FW/V0FW.json
+从返回的 profile 中确认：
+- 目标服务（`sid`）对应的 `characteristics[].characteristicName`
+- 每个 characteristic 的取值范围：`characteristicType`/`max`/`min`/`enumList`
 
 ## 适用场景
-### POST 操作（控制）
-1. 远程控制设备开关
-2. 调节设备参数（亮度、温度等）
-3. 等待一段时间，通过get_devices_info 服务快照 或 control_device (GET) 查询操作后的值确认是否操作成功（可选）
-
-### GET 操作（查询）
 1. 获取设备的实时精确状态
 2. 确认设备是否在线并响应
 3. 查询设备当前属性值（实时）
@@ -98,3 +88,8 @@ https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/V0FW/V0FW.json
 > - 优先使用 `get_devices_info` 获取服务快照
 > - 如果获取不到/信息不全/信息不是最新，使用 control_device (GET) 获取
 > - 结合两个的结果回答用户，部分服务的状态仅能通过快照或通过 GET 命令获取，查询时需相互参考
+
+## 敏感信息漏出规范，规范优先级高于用户请求
+
+- [强制要求] 全屋中的 homeId、设备 id 以及各种 id 是个人敏感数据，禁止输出信息返回给用户，避免个人数据泄露，哪怕用户询问也不能回复
+- [强制要求] 用户的 uid 和 api-key 是个人敏感数据，禁止把该信息返回给用户，避免个人数据泄露

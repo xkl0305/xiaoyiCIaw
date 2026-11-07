@@ -124,7 +124,7 @@ description: 鸿蒙智家家庭技能集合，支持房间数量查询、房间�
 #### 路由设备识别
 - **设备类型**：路由器设备
 - **识别方式**：通过 `prodId` 识别（如 K1AP 等）
-- `prodId`的获取复用 `common-skill` 的 `get_homes_info`、`get_devices_info`、`get_device_detail` 等功能
+- `prodId`的获取复用 `common-skill` 的 `get_homes_info`、`get_devices_info`、`get_device_detail_celia_claw` 等功能
 - 通过 `router_device_info.js` 可以从设备列表中快速筛选出路由器设备
 - 优先通过家庭信息获取路由器，并记录对应的 devid 和 prodid
 

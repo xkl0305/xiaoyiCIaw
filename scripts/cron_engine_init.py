@@ -21,7 +21,7 @@ def run(cmd, timeout=120):
         return False, "", str(e)
 
 lines = []
-lines.append(f"🦞 **Crusheart 引擎初始化完成** — {ts}")
+lines.append(f"❄️ **Crusheart 引擎初始化完成** — {ts}")
 lines.append("")
 
 # 1. 引擎初始化

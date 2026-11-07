@@ -43,9 +43,10 @@ description: "智能门锁猫眼设置技能。用于设置智慧猫眼相关功
 
 #### 打开猫眼开关
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"peepholeEnableSwitch": 1}' \
@@ -54,9 +55,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 关闭猫眼开关
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"peepholeEnableSwitch": 0}' \
@@ -67,9 +69,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 打开逗留抓拍
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"staySnapshotSwitch": 1}' \
@@ -78,9 +81,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 关闭逗留抓拍
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"staySnapshotSwitch": 0}' \
@@ -94,9 +98,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 > **【注意】提示用户实时视频开启会明显增加门锁耗电**
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"liveVideoSwitch": 1, "liveVideoDuration":0, "callValidPeriod":	0}' \
@@ -105,9 +110,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 关闭实时视频
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"liveVideoSwitch": 2}' \
@@ -118,9 +124,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 打开畸变矫正
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"distortionCorrectionSwitch": 1}' \
@@ -129,9 +136,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 关闭畸变矫正
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"distortionCorrectionSwitch": 0}' \
@@ -142,9 +150,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 打开按门铃亮内屏开关
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"autoPowerScreen": 1}' \
@@ -153,9 +162,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 关闭按门铃亮内屏开关
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"autoPowerScreen": 0}' \
@@ -202,9 +212,10 @@ the `stayDuration` 参数值与实际秒数不是一一对应的，必须使用�
 
 #### 设置二代门锁逗留时长为15秒（参数值12）
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"stayDuration": 12}' \
@@ -221,9 +232,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 设置录像模式为节能模式
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"takeSnapshotSwitch": 0}' \
@@ -232,9 +244,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 #### 设置录像模式为极致模式
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"takeSnapshotSwitch": 1}' \

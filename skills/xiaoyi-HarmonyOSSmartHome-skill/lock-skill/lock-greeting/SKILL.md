@@ -21,7 +21,7 @@ description: "智能门锁出门/回家留言设置技能。当用户提到出�
 | `uid` | 用户ID | 回家:用户ID/"all"/"1,3,5", 出门:空字符串"" |
 | `rpt` | 重复类型 | 0=仅一次, 1=每天, 2=每周, 3=每月, 4=每年, 5=指定日期 |
 | `rd` | 周期 | 与rpt配合：每天=""，按周="1,2,3,4,5,6,7"，每月="21"，每年="1,2" |
-| `ve` | 留言内容 | 自定义文本 |
+| `ve` | 留言内容 | 自定义文本，**最多20个字符（含标点）** |
 | `tb` | 音色 | 0=小艺女声, 1=小艺少女, 3=小艺童声, 4=小艺男声 |
 | `st/et` | 时间范围 | 格式HH:mm，24小时制 |
 | `type` | 语料类型 | 1=文字留言, 2=录音留言 |
@@ -29,6 +29,7 @@ description: "智能门锁出门/回家留言设置技能。当用户提到出�
 
 ### 重要说明
 - 回家留言和出门留言是不同的功能，执行时注意根据用户要求区分
+- **留言内容（`ve`）最多 20 个字符（含标点符号）**，超过 20 字符时需主动提示用户精简或确认后截断，禁止静默截断或超长下发
 - 留言的音量大小可以在音量设置-留言/天气提醒音量中进行设置
 - 修改留言后，会在下次【门锁在线】时生效，以下任一情况会让【门锁在线】：
   1. 开关门
@@ -64,7 +65,8 @@ description: "智能门锁出门/回家留言设置技能。当用户提到出�
 3. 确定目标用户 → 回家可指定用户/全部，出门的uid必为空
 4. 确定重复规则 → rpt + rd 参数组合
 5. 选择音色 → tb参数（默认0小艺女声）
-6. 构造data发送 → 无需用户确认直接执行
+6. 校验留言内容 → `ve` 不超过20个字符（含标点），超长则提示用户精简或确认后截断
+7. 构造data发送 → 无需用户确认直接执行
 ```
 
 ### 3.2 删除留言流程 (act=1)
@@ -89,9 +91,10 @@ description: "智能门锁出门/回家留言设置技能。当用户提到出�
 ## 4. 命令格式
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "设备ID" \
   --prod-id "产品ID" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{留言配置}],"ts":"时间戳"}' \
@@ -109,9 +112,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":2,"fid":"","uid":"3","st":"07:00","rd":"","act":0,"rpt":1,"type":1,"tb":0,"switch":1,"et":"24:00","ve":"宝贝，回家后记得写作业"}],"ts":"20260621T160722Z576"}' \
@@ -128,9 +132,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":2,"fid":"","uid":"all","st":"07:00","rd":"1,2,3,4,5,6,7","act":0,"rpt":1,"type":1,"tb":0,"switch":1,"et":"24:00","ve":"开好运，迎新年"}],"ts":"20260621T160722Z576"}' \
@@ -149,9 +154,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":3,"fid":"","uid":"3","st":"07:00","rd":"21","act":0,"rpt":3,"type":1,"tb":3,"switch":1,"et":"24:00","ve":"财运旺，万事顺"}],"ts":"20260621T160739Z891"}' \
@@ -167,9 +173,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":3,"uid":"2,3","st":"07:00","rd":"1,2,3","act":2,"rpt":2,"type":1,"tb":1,"switch":1,"et":"24:00","ve":"展宏图，开新局"}],"ts":"20260621T160804Z354"}' \
@@ -188,9 +195,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":52,"uid":"","st":"07:00","rd":"21","act":2,"rpt":3,"type":1,"tb":4,"switch":1,"et":"24:00","ve":"月上柳梢头，人约黄昏后"}],"ts":"20260621T160836Z518"}' \
@@ -207,9 +215,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":2,"uid":"all","st":"07:00","rd":"1,2,3,4,5,6,7","act":1,"rpt":1,"type":1,"tb":0,"switch":1,"et":"24:00","ve":"开好运，迎新年"}],"ts":"20260621T160716Z585"}' \
@@ -226,9 +235,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **执行命令：**
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":51,"uid":"","st":"07:00","rd":"","act":1,"rpt":1,"type":1,"tb":0,"switch":1,"et":"24:00","ve":"今天比较冷，出门多穿点"}],"ts":"20260621T160853Z781"}' \
@@ -248,6 +258,7 @@ node common-skill/bin/smarthome-claw.js control_device \
    - 回家-部分用户：`"1,4,5"`
    - 出门留言 → **固定空字符串 `""`**
 5. **删除命令特点**：系统仅依据vid识别删除目标，其他字段可任意值
+6. **留言内容长度**：`ve` 最多 20 个字符（含标点），超长时需先询问用户精简，不得静默截断或超长下发
 
 ## 7. 注意事项
 

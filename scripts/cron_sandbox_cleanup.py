@@ -30,7 +30,7 @@ def dir_size(path):
     return total
 
 def auto_clean(dry_run=False):
-    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志 + 正式文件旧备份 + /tmp验证截图 + 脚本/配置类bak。
+    """自动清理：/tmp 编译缓存 + __pycache__ + openclaw日志 + 正式文件旧备份 + /tmp验证截图 + 脚本/配置类bak + /tmp任务产物(超7天)。
     dry_run=True 时仅预览待删清单，不执行任何实际删除。"""
     freed = 0
     items = []
@@ -38,7 +38,8 @@ def auto_clean(dry_run=False):
         prev_items, prev_freed = clean_workspace_backups(True)
         misc_items, misc_freed = clean_misc_baks(True)
         shot_items, shot_freed = clean_tmp_screenshots(True)
-        return prev_items + misc_items + shot_items, prev_freed + misc_freed + shot_freed
+        task_items, task_freed = clean_task_artifacts(True)
+        return prev_items + misc_items + shot_items + task_items, prev_freed + misc_freed + shot_freed + task_freed
 
     # 1. /tmp 编译缓存
     for p in ["/tmp/node-compile-cache", "/tmp/openclaw-compile-cache"]:
@@ -98,6 +99,11 @@ def auto_clean(dry_run=False):
     misc_items, misc_freed = clean_misc_baks(dry_run)
     items.extend(misc_items)
     freed += misc_freed
+
+    # 8. /tmp 任务产物（超 TASK_ARTIFACT_MAX_AGE_DAYS 天：xiaoyi_ppt会话/调研目录/根下html）
+    task_items, task_freed = clean_task_artifacts(dry_run)
+    items.extend(task_items)
+    freed += task_freed
 
     return items, freed
 
@@ -170,6 +176,115 @@ def clean_tmp_screenshots(dry_run=False):
     if removed:
         tag = "待删" if dry_run else "已清理"
         items.insert(0, f"🧹 /tmp验证截图 — {tag} {removed}个/释放 {freed/1024:.1f}KB (超{SCREENSHOT_MAX_AGE_DAYS}天)")
+    return items, freed
+
+
+# /tmp 任务产物：超过该天数未动的自动淘汰（2026-11-06 俞哥确认纳入沙箱清理）
+TASK_ARTIFACT_MAX_AGE_DAYS = 7
+# 已知任务产物目录（PPT会话/调研快照等）
+TASK_ARTIFACT_DIRS = ["/tmp/xiaoyi_ppt", "/tmp/mao"]
+
+def clean_task_artifacts(dry_run=False):
+    """清理 /tmp 任务产物：xiaoyi_ppt 会话目录、调研目录、/tmp 根下超龄 html、/tmp 下超龄 Office 成品与媒体文件、workspace/tmp 超龄文件。
+    按 mtime 年龄 > TASK_ARTIFACT_MAX_AGE_DAYS 天才清；dry_run=True 只列出待删，不实删。"""
+    import time
+    freed = 0
+    items = []
+    removed = 0
+    cutoff = time.time() - TASK_ARTIFACT_MAX_AGE_DAYS * 86400
+
+    def _expired(p):
+        try:
+            return os.path.getmtime(p) < cutoff
+        except Exception:
+            return False
+
+    # 1) 任务产物目录下的子项（会话目录/调研文件），超龄整删
+    for d in TASK_ARTIFACT_DIRS:
+        if not os.path.isdir(d):
+            continue
+        for name in os.listdir(d):
+            fp = os.path.join(d, name)
+            if not _expired(fp):
+                continue
+            try:
+                s = dir_size(fp) if os.path.isdir(fp) else (os.path.getsize(fp) if os.path.isfile(fp) else 0)
+                if not dry_run:
+                    if os.path.isdir(fp):
+                        shutil.rmtree(fp, ignore_errors=True)
+                    elif os.path.isfile(fp):
+                        os.remove(fp)
+                freed += s
+                removed += 1
+                items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp) if s else '0B'}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天)")
+            except Exception:
+                continue
+
+    # 2) /tmp 根下超龄 html（调研/搜索缓存）
+    if os.path.isdir("/tmp"):
+        for f in os.listdir("/tmp"):
+            if not f.endswith(".html"):
+                continue
+            fp = os.path.join("/tmp", f)
+            try:
+                if not os.path.isfile(fp) or not _expired(fp):
+                    continue
+                s = os.path.getsize(fp)
+                if not dry_run:
+                    os.remove(fp)
+                freed += s
+                removed += 1
+                items.append(f"🧹 /tmp/{f} — {'待删' if dry_run else '已清'} ({size_str(fp)}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天)")
+            except Exception:
+                continue
+
+    # 3) /tmp 下超龄 Office 成品与媒体文件（不限目录；TASK_ARTIFACT_DIRS 下的走目录级规则避免双计）
+    artifact_exts = (".xlsx", ".docx", ".pptx", ".jpg", ".jpeg", ".png", ".webp", ".gif",
+                     ".mp4", ".m4a", ".mp3", ".wav", ".mov")
+    for root, dirs, fs in os.walk("/tmp"):
+        # 跳过已由目录级规则覆盖的任务产物目录
+        if any(root == d or root.startswith(d + os.sep) for d in TASK_ARTIFACT_DIRS):
+            dirs[:] = []
+            continue
+        for f in fs:
+            if not f.lower().endswith(artifact_exts):
+                continue
+            fp = os.path.join(root, f)
+            try:
+                if not os.path.isfile(fp) or not _expired(fp):
+                    continue
+                s = os.path.getsize(fp)
+                if not dry_run:
+                    os.remove(fp)
+                freed += s
+                removed += 1
+                items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp)}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天Office/媒体成品)")
+            except Exception:
+                continue
+
+    # 4) workspace/tmp/ 下超龄文件（任务脚本产物，如 .bas VBA 导出）
+    ws_tmp = os.path.join(WORKSPACE, "tmp")
+    if os.path.isdir(ws_tmp):
+        for name in os.listdir(ws_tmp):
+            fp = os.path.join(ws_tmp, name)
+            if not _expired(fp):
+                continue
+            try:
+                s = dir_size(fp) if os.path.isdir(fp) else (os.path.getsize(fp) if os.path.isfile(fp) else 0)
+                if not dry_run:
+                    if os.path.isdir(fp):
+                        shutil.rmtree(fp, ignore_errors=True)
+                    elif os.path.isfile(fp):
+                        os.remove(fp)
+                freed += s
+                removed += 1
+                items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp) if s else '0B'}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天workspace/tmp)")
+            except Exception:
+                continue
+
+    if removed:
+        tag = "待删" if dry_run else "已清理"
+        items.insert(0, f"🧹 /tmp任务产物 — {tag} {removed}项/释放 {freed/1024:.1f}KB (超{TASK_ARTIFACT_MAX_AGE_DAYS}天: xiaoyi_ppt会话/调研目录/根下html/Office与媒体成品/workspace-tmp)")
     return items, freed
 
 
@@ -274,7 +389,7 @@ def list_large_pending():
 
 def report(dry_run=False):
     print("=" * 50)
-    head = "🦞 沙箱清理报告 (dry-run 预览)" if dry_run else "🦞 沙箱清理报告"
+    head = "❄️ 沙箱清理报告 (dry-run 预览)" if dry_run else "❄️ 沙箱清理报告"
     print(head)
     print(f"⏱ {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M')}")
     print("=" * 50)

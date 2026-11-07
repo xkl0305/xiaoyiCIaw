@@ -42,6 +42,21 @@
       "version": "1.0.0",
       "installedAt": 1789121852071,
       "ownerHandle": "ivangdavila"
+    },
+    "hunyuan-image": {
+      "version": "1.0.3",
+      "installedAt": 1793594319673,
+      "ownerHandle": "wszhhx"
+    },
+    "text-to-video-hunyuan": {
+      "version": "1.0.0",
+      "installedAt": 1793594717881,
+      "ownerHandle": "mory128"
+    },
+    "image-to-video-hunyuan": {
+      "version": "1.0.0",
+      "installedAt": 1793594720209,
+      "ownerHandle": "dsewell-583h0"
     }
   }
 }

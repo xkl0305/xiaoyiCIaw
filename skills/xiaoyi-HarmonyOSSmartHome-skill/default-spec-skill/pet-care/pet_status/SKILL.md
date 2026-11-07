@@ -90,24 +90,24 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 
 | 字段 | 服务SID | 数据字段 | 说明 |
 |------|---------|----------|------|
-| status | boxState | state | 0=待机, 1=空闲, 2=忙碌 |
+| status | boxState | state | 集便箱余量：1=充足, 2=将满, 3=已满, 100=未安装, 101=有异物, 102=未套袋 |
 | cleanCount | data | cleanCount | 今日清理次数 |
 | excretedCount | data | excretedCount | 今日如厕次数 |
 | lastUseTime | data | excretedTime | 最后使用时间（时间戳） |
-| catStatus | catStatus | status | 0=无猫, 1=检测中, 2=使用中, 3=离开 |
-| alarm | alarm | type | 0=正常, 1=过流保护, 2=压力保护, 3=异常状态 |
+| catStatus | catStatus | status | 1=猫咪进入, 2=猫咪离开 |
 | online | - | - | 设备 status === 'online' |
 
 #### 喂食器 (feeder)
 
 | 字段 | 服务SID | 数据字段 | 说明 |
 |------|---------|----------|------|
-| status | status | status | 1=空闲, 2=运行中, 0=待机 |
-| foodLevel1 | food1 | Hopper01 | 粮仓1余粮百分比 |
-| foodLevel2 | food2 | Hopper02 | 粮仓2余粮百分比 |
-| portions | feederPortion | FeederPortion01 + FeederPortion02 | 每次出粮份数 |
-| feedTime | feedTime | hour + min | 定时喂食时间 |
-| faultStatus | faultInfo | code | 0=有粮, 1=无粮, 2=缺粮, 3=卡粮 |
+| status | status | status | 设备状态：0=正常, 1=出粮中, 2=不足, 3=1号仓缺粮, 4=2号仓缺粮, 5=故障 |
+| eatingStatus | petStatus | status | 进食状态：0=离开, 1=进食 |
+| foodLevel1 | food1 | Hopper01 | 1仓余粮状态：0=不足, 1=偏少, 2=充足 |
+| foodLevel2 | food2 | Hopper02 | 2仓余粮状态：0=不足, 1=偏少, 2=充足 |
+| portions | feederPortion | FeederPortion01 + FeederPortion02 | 1仓/2仓每次出粮份数（0~10份） |
+| battery | battery | level | 电池剩余电量（0~100%） |
+| powerSource | powerSource | PowerSource | 电源：0=交流电源, 1=电池模式 |
 | todayFeedCount | controlRecords | - | 从控制记录筛选今日"出粮"记录数量 |
 | lastFeedTime | controlRecords | - | 从控制记录获取最新一条出粮记录时间 |
 | online | - | - | 设备 status === 'online' |
@@ -174,7 +174,7 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 
 【设备状态列表】
 🧹 猫砂盆 · 今日使用 X 次 · 最后 HH:MM
-🍽️ 喂食器 · 今日喂食 X 次 · 最近 HH:MM · 有粮
+🍽️ 喂食器 · 今日喂食 X 次 · 最近 HH:MM · 1仓{充足/偏少/不足} 2仓{充足/偏少/不足}
 🌡️ 环境 · 温度 XX°C · 湿度 XX% · 适宜/偏高/偏低
 📍 摄像头 · 在线/离线
 
@@ -190,7 +190,7 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 🐱 宠物状态
 
 🧹 猫砂盆 · 今日使用 3 次 · 最后 14:30
-🍽️ 喂食器 · 今日喂食 2 次 · 最近 08:00 · 有粮
+🍽️ 喂食器 · 今日喂食 2 次 · 最近 08:00 · 1仓充足 2仓充足
 🌡️ 环境 · 温度 25°C · 湿度 60% · 适宜
 📍 摄像头 · 在线
 ```
@@ -215,7 +215,7 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 🐱 宠物状态
 
 🧹 猫砂盆 · 今日使用 3 次 · 最后 14:30
-🍽️ 喂食器 · 今日喂食 2 次 · 最近 08:00 · 有粮
+🍽️ 喂食器 · 今日喂食 2 次 · 最近 08:00 · 1仓充足 2仓充足
 🌡️ 环境 · 温度 28.5°C · 湿度 65% · 偏高
 
 ⚠️ 室内温度28.5°C，超过26°C，宝贝可能觉得热了

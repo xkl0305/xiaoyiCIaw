@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Xiaoyi Image Generator - Helper Script
 
@@ -6,7 +6,7 @@ This is a script for batch generation or CLI usage.
 The main skill workflow is defined in SKILL.md.
 
 Usage:
-    python generate_seedream.py "prompt" --image https://example.com/photo.png --max-images 3
+    python generate_seedream.py "prompt" --image https://example.com/photo.png
 """
 
 import argparse
@@ -27,6 +27,9 @@ import requests
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
+from config import Config
+from claw_pipe_http import PipeHttpError
 
 # MIME类型映射
 _MIME_TYPE_MAP = {
@@ -98,7 +101,7 @@ def calculate_sha256(file_path):
     return sha256.hexdigest()
 
 
-def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
+def upload_file(file_path, cfg, object_type="TEMPORARY_MATERIAL_DOC"):
     """
     将本地文件上传到小艺文件存储服务（三阶段上传：prepare → upload → complete）
 
@@ -115,64 +118,28 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
             print(f'❌ 文件不存在：{file_path}')
             return None
 
-        # 读取并校验配置
-        config = read_xiaoyienv()
-
-        required_keys = ['PERSONAL-API-KEY', 'PERSONAL-UID']
-        check_result = True
-
-        for key in required_keys:
-            if key not in config:
-                print(f'❌ key "{key}" 不存在：失败...')
-                check_result = False
-
-        if not check_result:
-            return None
-
         # 准备文件信息
         file_name = os.path.basename(file_path)
         file_size = os.path.getsize(file_path)
         file_sha256 = calculate_sha256(file_path)
-        uid = config['PERSONAL-UID']
-        base_url = config.get('SERVICE_URL', '')
-
-        # 公共请求头
-        common_headers = {
-            'Content-Type': 'application/json',
-            'x-uid': uid,
-            'x-api-key': config['PERSONAL-API-KEY'],
-            'x-request-from': 'openclaw',
-        }
 
         # ── 阶段 1: Prepare ──────────────────────────────────────────────────────
-        prepare_url = f'{base_url}/osms/v1/file/manager/prepare'
-
         prepare_payload = {
             'objectType': object_type,
             'fileName': file_name,
             'fileSha256': file_sha256,
             'fileSize': file_size,
-            'fileOwnerInfo': {
-                'uid': uid,
-                'teamId': uid,
-            },
+            **({'fileOwnerInfo': {'uid': cfg.personal_uid, 'teamId': cfg.personal_uid}}
+               if cfg.personal_uid else {}),
             'useEdge': False,
         }
 
-        prepare_resp = requests.post(
-            prepare_url,
-            headers=common_headers,
-            json=prepare_payload,
-            timeout=30,
-            verify=False
-        )
-
-        if prepare_resp.status_code != 200:
-            print(f'❌ Prepare 请求失败: HTTP {prepare_resp.status_code}')
-            print(f'❌ 响应内容: {prepare_resp.text}')
-            return None
-
-        prepare_data = prepare_resp.json()
+        with cfg.skill_post('/osms/v1/file/manager/prepare', prepare_payload, headers={'x-request-from': 'openclaw'}) as prepare_resp:
+            if prepare_resp.status_code != 200:
+                print(f'\u274c Prepare \u8bf7\u6c42\u5931\u8d25: HTTP {prepare_resp.status_code}')
+                print(f'\u274c \u54cd\u5e94\u5185\u5bb9: {prepare_resp.text}')
+                return None
+            prepare_data = prepare_resp.json()
 
         # 部分服务器返回 code 字段，"0" 为成功
         if 'code' in prepare_data and prepare_data['code'] != '0':
@@ -209,26 +176,16 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
             return None
 
         # ── 阶段 3: Complete ─────────────────────────────────────────────────────
-        complete_url = f'{base_url}/osms/v1/file/manager/completeAndQuery'
-
         complete_payload = {
             'objectId': object_id,
             'draftId': draft_id,
         }
 
-        complete_resp = requests.post(
-            complete_url,
-            headers=common_headers,
-            json=complete_payload,
-            timeout=30,
-            verify=False
-        )
-
-        if complete_resp.status_code != 200:
-            print(f'❌ Complete 请求失败: HTTP {complete_resp.status_code}')
-            return None
-
-        complete_data = complete_resp.json()
+        with cfg.skill_post('/osms/v1/file/manager/completeAndQuery', complete_payload, headers={'x-request-from': 'openclaw'}) as complete_resp:
+            if complete_resp.status_code != 200:
+                print(f'\u274c Complete \u8bf7\u6c42\u5931\u8d25: HTTP {complete_resp.status_code}')
+                return None
+            complete_data = complete_resp.json()
 
         # 从 completeAndQuery 响应中直接获取文件下载 URL
         file_url = complete_data.get('fileDetailInfo', {}).get('url', '')
@@ -238,7 +195,7 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
     except requests.exceptions.Timeout:
         print('❌ 请求超时')
         return None
-    except requests.exceptions.ConnectionError as e:
+    except (requests.exceptions.ConnectionError, PipeHttpError) as e:
         print(f'❌ 连接失败: {e}')
         return None
     except Exception as e:
@@ -248,14 +205,14 @@ def upload_file(file_path, object_type="TEMPORARY_MATERIAL_DOC"):
         return None
 
 
-def _process_image_input(image):
+def _process_image_input(image, cfg):
     """处理图片输入：验证并转换本地文件为URL，远程URL保持不变。"""
     def _validate_and_convert(item):
         """验证单个图片项并返回处理后的结果。"""
         if _is_remote_url(item):
             return item
         elif _is_local_file(item):
-            result = upload_file(item)
+            result = upload_file(item, cfg)
             if result is None:
                 raise ValueError(f"Failed to upload local file: {item}")
             return result
@@ -274,17 +231,17 @@ def calculate_cost(model, size, input_image_count=0, output_image_count=1):
     """计算单次调用的扣点数。
 
     Args:
-        model: "Lite" 或 "Pro"
+        model: "Flash" 或 "Pro"
         size: "1K" 或 "2K"
         input_image_count: 输入参考图数量
-        output_image_count: 输出图片数量（Lite 组图时可能 >1, Pro 恒为 1）
+        output_image_count: 输出图片数量（两个模型均仅单图, 恒为 1）
 
     Returns:
         (cost, detail_str): 扣点数和计算明细字符串
     """
-    if model == "Lite":
-        cost = 3 * output_image_count
-        detail = f"Lite {output_image_count}张 × 3点/张 = {cost}点"
+    if model == "Flash":
+        cost = 2.5 * output_image_count
+        detail = f"Flash {output_image_count}张 × 2.5点/张 = {cost}点"
         return cost, detail
     else:  # Pro
         input_cost = 0.4 * max(input_image_count - 1, 0)  # 首张0点, 第二张起每张0.4点
@@ -294,63 +251,51 @@ def calculate_cost(model, size, input_image_count=0, output_image_count=1):
         return cost, detail
 
 
+
+def _build_trace_id(cfg):
+    """Generate x-hag-trace-id."""
+    uid = cfg.personal_uid
+    if uid:
+        return f"{hashlib.sha256(uid.encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    return str(uuid.uuid4())
+
+
 def generate_image(
-    prompt, 
+    prompt,
     input_image=None,
     size=None,
     watermark=True,
-    max_images=None,
-    model="Lite",
-    optimize_prompt_mode="fast"):
+    model="Flash",
+    optimize_prompt_mode="fast",
+    cfg: Config = None):
     """Call the Xiaoyi image generation API.
-    
+
     Args:
-        model: "Lite" or "Pro". "Lite" supports multiple-image-generation(组图), 
-               "Pro" only supports single-image-generation(单图生成) but with higher quality.
-        optimize_prompt_mode: Prompt optimization mode, "fast" (default, Lite auto-maps to "disabled" internally), or "standard".
+        model: "Flash" or "Pro". Both only support single-image-generation(单图生成);
+               "Pro" has higher quality but is slower, "Flash" is faster and cheaper.
+        optimize_prompt_mode: Prompt optimization mode, "fast" (default, Flash auto-maps to "disabled" internally), or "standard".
     """
-    
-    # Check environment variables
-    required_env = ['PERSONAL-API-KEY', 'PERSONAL-UID', 'SERVICE_URL']
 
-    env_dict = read_xiaoyienv()
-    SERVICE_URL = env_dict.get('SERVICE_URL', '')
-    UID = env_dict.get('PERSONAL-UID', '')
-    API_KEY = env_dict.get('PERSONAL-API-KEY', '')
+    if cfg is None:
+        cfg = Config.load()
+    trace_id = _build_trace_id(cfg)
 
-    missing = [k for k in required_env if not env_dict.get(k)]
-    if missing:
-        print(f"❌ Missing environment variables: {', '.join(missing)}")
-        sys.exit(1)
-    
-    # Configuration
-    trace_id = str(uuid.uuid4())
-    api_url = f'{SERVICE_URL}/celia-claw/v1/sse-api/skill/execute'
-    
-    # Build request
+    # Build request headers (auth injected by skill_post)
     headers = {
-        'Content-Type': 'application/json',
         'x-skill-id': 'seedream',
         'x-hag-trace-id': trace_id,
-        'x-uid': UID,
-        'x-api-key': API_KEY,
         'x-request-from': 'openclaw',
     }
-    
+
     # ── Model capability conflict detection and auto-switch ────────────────────
-    # Pro does not support batch generation (max_images > 1) and supports at most 10 reference images
-    # In batch scenarios, Pro can only request one image at a time; multiple independent calls
-    # cause visual inconsistency between images, so Lite must be used When a conflict is detected, auto-switch to Lite and print a warning
+    # Flash/Pro both support at most 10 reference images
     if model == "Pro":
-        if max_images is not None and max_images > 1:
-            print(f"⚠️  模型冲突：组图生成（--max-images > 1）必须使用 Lite，pro 单张多次请求会导致前后画面不一致，已自动切换到 Lite")
-            model = "Lite"
-        elif input_image is not None and len(input_image) > 10:
-            print(f"⚠️  模型冲突：pro 最多仅支持10张参考图（当前 {len(input_image)} 张），已自动切换到 Lite")
-            model = "Lite"
+        if input_image is not None and len(input_image) > 10:
+            print(f"⚠️  模型冲突：pro 最多仅支持10张参考图（当前 {len(input_image)} 张），已自动切换到 Flash")
+            model = "Flash"
 
     # ── Resolution default based on model ─────────────────────────────────────
-    # Lite defaults to 2K, Pro defaults to 1K; user-specified --size takes precedence
+    # Flash defaults to 2K, Pro defaults to 1K; user-specified --size takes precedence
     # fast 模式下 size 参数无效，强制使用默认值
     if optimize_prompt_mode == "fast":
         size = "1K" if model == "Pro" else "2K"
@@ -358,13 +303,13 @@ def generate_image(
     elif size is None:
         size = "1K" if model == "Pro" else "2K"
 
-    # ── Lite 不支持 fast 模式，自动映射为 disabled ────────────────────────────
-    if model == "Lite" and optimize_prompt_mode == "fast":
-        print(f"ℹ️  Lite 不支持 fast 模式，已自动切换为 disabled")
+    # ── Flash 不支持 fast 模式，自动映射为 disabled ────────────────────────────
+    if model == "Flash" and optimize_prompt_mode == "fast":
+        print(f"ℹ️  Flash 不支持 fast 模式，已自动切换为 disabled")
 
     # ── Set skillId and actionName based on model ──────────────────────────────
-    # Lite: skillId=seedream, actionName=seedreamBatch5
-    # Pro:  skillId=seedreamPro, actionName=SeedreamPro_5
+    # Flash: skillId=seedream, actionName=seedreamBatch5
+    # Pro:   skillId=seedreamPro, actionName=SeedreamPro_5
     if model == "Pro":
         headers['x-skill-id'] = 'seedreamPro'
         action_name = 'SeedreamPro_5'
@@ -373,8 +318,8 @@ def generate_image(
         action_name = 'seedreamBatch5'
 
     # 定义 content 字段，便于后续扩展
-    # Lite 不支持 fast 模式，已映射为 disabled
-    _effective_mode = "disabled" if (model == "Lite" and optimize_prompt_mode == "fast") else optimize_prompt_mode
+    # Flash 不支持 fast 模式，已映射为 disabled
+    _effective_mode = "disabled" if (model == "Flash" and optimize_prompt_mode == "fast") else optimize_prompt_mode
     content = {
         "prompt": prompt,
         "size": size,
@@ -383,20 +328,16 @@ def generate_image(
     }
     if _effective_mode == "standard":
         content["optimize_prompt_options"] = {"mode": "standard"}
-    else:
-        content["thinking"] = False
+
         # {"mode":"fast","thinking":"disabled"} 和 {"mode":"fast"}, {"thinking":"disabled"}区别不大
         # if _effective_mode == "fast":
         #     content["optimize_prompt_options"] = {"mode": "fast"}
     
     # 处理图片输入并添加到 content 中
     if input_image is not None:
-        input_image = _process_image_input(input_image)
+        input_image = _process_image_input(input_image, cfg)
         content["reference_images"] = input_image
 
-    if max_images is not None:
-        content["max_images"] = max_images
-    
     payload = {
         "actions": [
             {
@@ -438,7 +379,7 @@ def generate_image(
     try:
         start_time = time.time()
         # Use stream to handle multiple responses (heartbeat packets)
-        response = requests.post(api_url, headers=headers, json=payload, timeout=120, stream=True, verify=False)
+        response = cfg.skill_post('/celia-claw/v1/sse-api/skill/execute', payload, headers=headers, stream=True)
         response.raise_for_status()
         
         # Read streaming responses until we get the final result
@@ -580,34 +521,38 @@ def main():
         type=validate_image_input,
         help="Remote image URL (HTTP/HTTPS) or local file path. Repeat for multiple images."
     )
-    parser.add_argument("--size", default=None, choices=["1K", "2K"], help="Output image size (default: Lite=2K, Pro=1K)")
-    parser.add_argument("--output", default='~/.openclaw/workspace/generated-images', help="Output file path")
+    parser.add_argument("--size", default=None, choices=["1K", "2K"], help="Output image size (default: Flash=2K, Pro=1K)")
+    parser.add_argument("--output-path", default='.', help="Output file path")
     parser.add_argument("--watermark", action=argparse.BooleanOptionalAction, default=True,
                     help="Add watermark to generated image")
-    parser.add_argument("--max-images", type=int, help="Maximum number of images to generate")
-    parser.add_argument("--model", default="Lite", choices=["Lite", "Pro"],
-                    help="Model to use: 'Lite' (supports multiple-image-generation) or 'Pro' (higher quality, single image only). Default: Lite")
+    parser.add_argument("--model", default="Flash", choices=["Flash", "Pro"],
+                    help="Model to use: 'Flash' (faster, cheaper, single image only) or 'Pro' (higher quality, single image only). Default: Flash")
     parser.add_argument("--optimize-prompt-mode", default="fast", choices=["fast", "standard"],
-                    help="Prompt optimization mode: 'fast' (default, Lite auto-maps to 'disabled'), or 'standard' (higher quality)")
+                    help="Prompt optimization mode: 'fast' (default, Flash auto-maps to 'disabled'), or 'standard' (higher quality)")
     
     args = parser.parse_args()
     
     # Generate images
+    cfg = Config.load()
+    if not cfg.pipe_mode and (not cfg.personal_uid or not cfg.personal_api_key):
+        print("Sandbox mode requires PERSONAL_API_KEY / PERSONAL_UID in .xiaoyienv")
+        sys.exit(1)
+
     image_urls = generate_image(
         prompt=args.prompt,
         input_image=args.image,
         size=args.size,
         watermark=args.watermark,
-        max_images=args.max_images,
         model=args.model,
-        optimize_prompt_mode=args.optimize_prompt_mode
+        optimize_prompt_mode=args.optimize_prompt_mode,
+        cfg=cfg,
     )
     
     if not image_urls:
         sys.exit(1)
     
     # Determine output directory
-    output_dir = Path(args.output).expanduser()
+    output_dir = Path(args.output_path).expanduser()
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Download all images

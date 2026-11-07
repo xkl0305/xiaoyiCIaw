@@ -72,7 +72,14 @@ function extractFeederStatus(feeder) {
     online: feeder.online,
     feedCount: feeder.feedCount,
     lastFeedTime: feeder.lastFeedTime,
-    portionSize: feeder.portionSize
+    status: feeder.status,
+    eatingStatus: feeder.eatingStatus,
+    foodLevel1: feeder.foodLevel1,
+    foodLevel2: feeder.foodLevel2,
+    portion01: feeder.portion01,
+    portion02: feeder.portion02,
+    battery: feeder.battery,
+    powerSource: feeder.powerSource
   };
 }
 

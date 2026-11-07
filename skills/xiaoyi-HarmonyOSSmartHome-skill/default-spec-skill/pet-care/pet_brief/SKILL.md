@@ -90,23 +90,23 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 
 | 字段 | 服务SID | 数据字段 | 说明 |
 |------|---------|----------|------|
-| status | boxState | state | 0=待机, 1=空闲, 2=忙碌 |
+| status | boxState | state | 集便箱余量：1=充足, 2=将满, 3=已满, 100=未安装, 101=有异物, 102=未套袋 |
 | cleanCount | data | cleanCount | 今日清理次数 |
 | excretedCount | data | excretedCount | 今日如厕次数 |
-| catStatus | catStatus | status | 0=无猫, 1=检测中, 2=使用中, 3=离开 |
-| alarm | alarm | type | 0=正常, 1=过流保护, 2=压力保护, 3=异常状态 |
+| catStatus | catStatus | status | 1=猫咪进入, 2=猫咪离开 |
 | online | - | - | 设备 status === 'online' |
 
 #### 喂食器 (feeder)
 
 | 字段 | 服务SID | 数据字段 | 说明 |
 |------|---------|----------|------|
-| status | status | status | 1=空闲, 2=运行中, 0=待机 |
-| foodLevel1 | food1 | Hopper01 | 粮仓1余粮百分比 |
-| foodLevel2 | food2 | Hopper02 | 粮仓2余粮百分比 |
-| portions | feederPortion | FeederPortion01 + FeederPortion02 | 每次出粮份数 |
-| battery | battery | level | 电量百分比 |
-| faultStatus | faultInfo | code | 0=有粮, 1=无粮, 2=缺粮, 3=卡粮 |
+| status | status | status | 设备状态：0=正常, 1=出粮中, 2=不足, 3=1号仓缺粮, 4=2号仓缺粮, 5=故障 |
+| eatingStatus | petStatus | status | 进食状态：0=离开, 1=进食 |
+| foodLevel1 | food1 | Hopper01 | 1仓余粮状态：0=不足, 1=偏少, 2=充足 |
+| foodLevel2 | food2 | Hopper02 | 2仓余粮状态：0=不足, 1=偏少, 2=充足 |
+| portions | feederPortion | FeederPortion01 + FeederPortion02 | 1仓/2仓每次出粮份数（0~10份） |
+| battery | battery | level | 电池剩余电量（0~100%） |
+| powerSource | powerSource | PowerSource | 电源：0=交流电源, 1=电池模式 |
 | online | - | - | 设备 status === 'online' |
 
 #### 温湿度传感器 (tempHumiditySensor)
@@ -219,14 +219,14 @@ consuming layer 需根据以下规则从原始快照中提取数据：
 #### 5. 🤖 宠物状态总览
 
 - 🧹 猫砂盆：{status}，在线
-- 🍽️ 喂食器：{faultStatus}，在线，粮仓1剩余{foodLevel1}%，粮仓2剩余{foodLevel2}%
+- 🍽️ 喂食器：{status}，在线，1仓{foodLevel1}，2仓{foodLevel2}
 - 🌡️ 环境：温度{value}°C，湿度{humidity}%，{适宜/偏高/偏低}
 - 📍 摄像头：毛孩子现在被摄像头监控中
 
 #### 6. ✨ 温情提示
 
 - 基于温度异常：建议开启空调，设置温度26°C，让毛孩子凉快些
-- 基于喂食器缺粮：喂食器粮食快见底了，记得及时补充，别让宝贝饿着
+- 基于喂食器余粮不足（food1/food2 为 0不足 或 1偏少）：喂食器粮食快见底了，记得及时补充，别让宝贝饿着
 - 基于正常状态：毛孩子今天状态不错，放心出门吧~
 
 ---

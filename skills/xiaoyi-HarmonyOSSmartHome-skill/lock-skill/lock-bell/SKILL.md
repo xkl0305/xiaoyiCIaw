@@ -61,7 +61,7 @@ https://smartlife-sandbox-drcn.things.dbankcloud.cn:8443/device/guide/smartlock/
 
 ### 查询门铃状态
 
-1. 调用 `get_device_detail` 获取设备详细信息
+1. 调用 `get_device_detail_celia_claw` 获取设备快照
 2. 根据 `bellType` 判断当前铃声种类
 3. 向用户展示：
    - 默认铃声：`"您当前的铃声为默认铃声"`
@@ -76,9 +76,10 @@ https://smartlife-sandbox-drcn.things.dbankcloud.cn:8443/device/guide/smartlock/
 ### 5.1 设置默认铃声
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "lockCommonSetting" \
   --data '{"devCfg":[{"bellType":0,"ts":"20260427T162906Z713"}]}' \
@@ -90,9 +91,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 当用户选择某个创意门铃后（如"访客提醒-1"）：
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "lockCommonSetting" \
   --data '{"devCfg":[{"bellType":20,"bellName":"访客提醒-1","bellFileName":"fktx1_1231.mp3","ts":"20260427T162932Z105"}]}' \
@@ -109,15 +111,16 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **步骤3**：查询现有配置
 ```bash
-node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
+node common-skill/bin/smarthome-claw.js get_device_detail_celia_claw --dev-id "xxx"
 ```
-从返回结果中提取 `vid=110` 的配置，保留 `rpt`、`rd` 等参数不变。
+从返回结果的快照 `services` 中提取 `vid=110` 的配置，保留 `rpt`、`rd` 等参数不变。
 
 **步骤4**：设置文字内容
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "homeGreeting" \
   --data '{"cfg":[{"vid":110,"fid":"","uid":"all","st":"00:00","rd":"1,2,3,4,5,6,7","act":2,"rpt":0,"type":1,"tb":用户选择的音色,"switch":1,"et":"24:00","ve":"用户输入的文字"}],"ts":"20260427T163147Z862"}' \
@@ -126,9 +129,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 **步骤5**：设置文字铃声模式
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "lockCommonSetting" \
   --data '{"devCfg":[{"bellType":10,"ts":"20260427T163148Z004"}]}' \

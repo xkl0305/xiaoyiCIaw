@@ -150,8 +150,8 @@ metadata:
 | 操作 | 依赖技能 | 说明 |
 |------|---------|------|
 | 获取设备列表 | `get_devices_info` | 查询账号下所有设备，通过 devType='A0B' 筛选智能门锁 |
-| 获取设备详情 | `get_device_detail` | 获取智能门锁的详细状态和属性信息 |
-| 执行控制命令 | `control_device` | 使用功能skill提供的 sid 和参数执行控制 |
+| 获取设备详情 | `get_device_detail_celia_claw` | 获取智能门锁的标准profile快照（services[] 服务状态与在线状态） |
+| 执行控制命令 | `control_device_celia_claw` | 使用功能skill提供的 sid 和参数执行控制（门锁 device-type 固定 A0B） |
 | 获取历史记录 | `get_device_histories` | 查询门锁历史记录事件 |
 
 ## 6. 使用流程（强制执行）
@@ -169,7 +169,7 @@ node common-skill/bin/smarthome-claw.js get_devices_info
 1️⃣ **单锁直接使用**—— 如果只有1把门锁，直接使用，跳过后续步骤。
 
 2️⃣ **匹配用户提及的家人** —— 如果用户提到了家人称呼（儿子/女儿/老婆/老公/爸爸/妈妈等）：
-   - 对各把门锁调用 `get_device_detail`，从 `userList`（`ul=2` 的成员）中查找匹配的用户名
+   - 对各把门锁调用 `get_device_detail_celia_claw`，从快照 `services` 中 `users` 服务的 `userList`（`ul=2` 的成员）中查找匹配的用户名
    - 若某把锁的成员列表匹配用户提到的称呼 → 优先使用该锁
    - 若有多把锁都匹配同一家人，进入第3步
 
@@ -184,19 +184,19 @@ node common-skill/bin/smarthome-claw.js get_devices_info
 ### 步骤2：路由到功能 Skill（禁止跳过）
 - **根据用户关键词，在路由表中找到对应的功能 skill**
 - **必须加载对应功能 skill 的完整内容**
-- **❌ 严禁直接使用 common-skill 的 get_device_detail**
+- **✅ 快照查询使用 common-skill 的 get_device_detail_celia_claw**
 
 ### 步骤3：获取设备详情和能力集
 ```bash
-node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
+node common-skill/bin/smarthome-claw.js get_device_detail_celia_claw --dev-id "xxx"
 ```
-- 从返回结果中提取 `privacyPolicy` 能力集
+- 从返回结果的快照 `services` 中提取 `privacyPolicy` 能力集
 - 根据能力集对照表作为唯一标准判断设备支持哪些功能
 - **禁止输出设备不支持的功能信息**
 
 ### 步骤4：按功能 Skill 要求执行操作
 - 查询类：调用 `get_device_histories` 等查询命令
-- 控制类：调用 `control_device` 执行控制命令
+- 控制类：调用 `control_device_celia_claw` 执行控制命令（门锁 device-type 固定 A0B）
 
 ### 步骤5：按功能 Skill 规范输出结果
 - **严格按照功能 skill 中定义的输出格式展示**
@@ -208,7 +208,7 @@ node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
 ❌ **错误做法**：
 ```
 用户："查询门锁状态"
-→ 直接调用 get_device_detail
+→ 直接调用 get_device_detail_celia_claw
 → 输出所有云侧返回的信息（包括在线状态、WiFi信号、设备版本等）
 ```
 
@@ -217,7 +217,7 @@ node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
 用户："查询门锁状态"
 → 步骤1：路由到 lock-info/SKILL.md
 → 步骤2：加载 lock-info/SKILL.md 完整内容
-→ 步骤3：调用 get_device_detail 获取能力和状态
+→ 步骤3：调用 get_device_detail_celia_claw 获取能力和状态
 → 步骤4：调用 get_device_histories 获取今日记录
 → 步骤5：按 lock-info 的精简版格式输出（仅展示：名称、位置、状态、电量、今日记录、用户录入情况）
 ```
@@ -268,16 +268,16 @@ node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
 - [ ] ❌ **严禁跳过功能 skill 直接调用 common-skill**
 
 **第二步：能力集检查**
-- [ ] 是否已调用 `get_device_detail` 获取设备详情？
-- [ ] 是否已从返回结果中提取 `privacyPolicy` 字段？
+- [ ] 是否已调用 `get_device_detail_celia_claw` 获取设备快照？
+- [ ] 是否已从返回结果的快照 `services` 中提取 `privacyPolicy` 字段？
 - [ ] 是否已根据能力集对照表判断设备支持的功能？
 - [ ] ❌ **严禁输出能力集中标记为不支持的功能**
 
 **第三步：数据完整性检查**
 - [ ] 是否已根据功能 skill 要求调用所有必要的查询命令？
-  - 门锁状态查询：需要调用 `get_device_detail` + `get_device_histories`
+  - 门锁状态查询：需要调用 `get_device_detail_celia_claw` + `get_device_histories`
   - 历史记录查询：需要调用 `get_device_histories`
-  - 配置查询：需要调用 `get_device_detail`
+  - 配置查询：需要调用 `get_device_detail_celia_claw`
 - [ ] ❌ **严禁遗漏必要的查询步骤**
 
 **第四步：输出格式检查**
@@ -302,12 +302,11 @@ node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
 
 ## 8. Profile 定义参考
 
-如需了解智能门锁的完整服务能力定义，可参考：
-```
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/<产品ID>/<产品ID>.json
+如需了解智能门锁的完整服务能力定义，可通过 `get_profile` 获取：
+```bash
+node common-skill/bin/smarthome-claw.js get_profile --prod-ids "<产品ID>"
 ```
 
-示例：
-```
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/KW5L/KW5L.json
-```
+从返回的 profile 中确认：
+- 目标服务（`sid`）对应的 `characteristics[].characteristicName`
+- 每个 characteristic 的取值范围：`characteristicType`/`max`/`min`/`enumList`

@@ -299,12 +299,17 @@ def generate(text: str, mood: str = "", scene: str = "", dry_run: bool = True,
         # 通道 A: 火山引擎 ARK 直连（seedream_provider.generate_image）
         # 通道 B: SSE 代理（_call_seedream_sse）— 兜底
         if not dry_run:
-            from memory_context.persona_runtime.providers.seedream_provider import generate_image, provider_env
+            from memory_context.persona_runtime.providers.seedream_provider import generate_image, provider_env, _load_all_channel_configs
 
             resolved_avatar = _resolve(AVATAR_PATH)
             pv_env = provider_env(input_image=resolved_avatar, reference_images=ref_images)
             pv_debug = pv_env.get("_debug", {})
-            has_ark = bool(pv_env.get("url", "") and pv_env.get("api_key", "")) and "volces.com" in pv_env.get("url", "")
+            # 修复(2026-10-24): 原判断检查第一通道(华为SSE)的url,ARK永不命中;改为直接查 ark 通道配置
+            has_ark = any(
+                c.get("name") == "ark" and c.get("url") and c.get("api_key")
+                and ("volces.com" in c.get("url", ""))
+                for c in _load_all_channel_configs()
+            )
 
             if has_ark and not dry_run:
                 # 通道 A: 火山方舟 ARK 直连
@@ -316,6 +321,7 @@ def generate(text: str, mood: str = "", scene: str = "", dry_run: bool = True,
                     persona_visual_context=persona_visual_context,
                     size="2K",
                     reference_weight=100,
+                    channel="ark",  # 修复(2026-10-24): 显式指定 ARK,避免 generate_image 内部全通道又从华为SSE开始
                 )
                 result["generation"] = gen
                 result["generation_channel"] = "ark_direct"

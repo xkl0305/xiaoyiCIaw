@@ -17,6 +17,7 @@ import ssl
 import hashlib
 import argparse
 import tempfile
+import sys
 import requests
 import urllib3
 from PIL import Image
@@ -379,6 +380,7 @@ def image_understanding(image_urls, text, config):
                 if not data_content or data_content == "[DONE]":
                     continue
 
+                print('RAW>>', data_content[:800], file=sys.stderr)
                 try:
                     data_json = json.loads(data_content)
 

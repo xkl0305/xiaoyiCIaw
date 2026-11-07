@@ -38,9 +38,9 @@ metadata:
 | 操作 | 依赖技能 | 说明 |
 |------|---------|------|
 | 获取设备列表 | `get_devices_info` | 查询账号下所有设备，筛选可用于存在检测的设备 |
-| 获取设备详情 | `get_device_detail` | 获取设备的详细状态和属性信息 |
+| 获取设备详情 | `get_device_detail_celia_claw` | 获取设备标准profile快照（services[] 服务状态与在线状态） |
 | 获取历史记录 | `get_device_histories` | 查询设备历史记录，用于分析人员活动 |
-| 执行控制命令 | `control_device` | 控制设备进行状态查询等操作 |
+| 执行控制命令 | `control_device` | 通过 GET 查询设备实时状态（如门窗传感器、人体传感器状态），用于存在检测分析 |
 
 
 ## 4. 注意事项
@@ -67,9 +67,9 @@ metadata:
 
 ## 5. Profile 定义参考
 
-家庭存在检测依赖的各设备Profile定义，可参考：
-```
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/<产品ID>/<产品ID>.json
+家庭存在检测依赖的各设备Profile定义，可通过 `get_profile` 获取：
+```bash
+node common-skill/bin/smarthome-claw.js get_profile --prod-ids "<产品ID>"
 ```
 
 常见设备类型：

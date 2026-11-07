@@ -151,7 +151,7 @@ node router-skill/bin/router-claw.js set_user_behavior --data '{"Enable":true}'
 # 关闭用户体验计划
 node router-skill/bin/router-claw.js set_user_behavior --data '{"Enable":false}'
 
-（6）WiFi功率模式控制功能
+（6）WiFi功率模式控制功能（wifi信号强度模式）
 # 设置睡眠模式
 node router-skill/bin/router-claw.js set_power_mode --data '{"PowerMode":0}'
 # 设置一般模式
@@ -186,8 +186,22 @@ node router-skill/bin/router-claw.js get_lan_host
 # 故障日志上报(注意：先查询主路由MAC地址，然后把DiagnoseTags填充32个随机和随机字母组成的字符串，DiagnoseMac填充主路由mac地址)
 node router-skill/bin/router-claw.js set_upload_log --data '{"CrashAction":"BetaClubFeedBack","DiagnoseTag":"","DiagnoseMac":""}'
 
-（11）Hota升级检测
+（11）HOTA 升级功能
+# 检查是否有新版本（UpdateAction=1：版本检测）
 node router-skill/bin/router-claw.js set_online_upg --action check --data '{"UpdateAction":1,"DevId":"all"}'
+
+# 执行升级（UpdateAction=2：对指定设备执行升级；DevId 为设备 MAC 地址，填 "all" 表示所有子设备）
+node router-skill/bin/router-claw.js set_online_upg --action check --data '{"UpdateAction":2,"DevId":"all"}'
+
+**【重要】UpdateAction 参数说明：**
+| UpdateAction | 功能 | 说明 |
+|---|---|---|
+| 1 | 版本检测 | 检查路由器及子设备是否有新版本可用 |
+| 2 | 执行升级 | 对指定设备执行 HOTA 升级，DevId 为设备 MAC（"all"=全部设备） |
+
+**【注意】**
+- 自动升级开关功能暂不支持
+- 执行升级前建议先调用 UpdateAction=1 检测是否有新版本
 
 （12）路由语音重启
 node router-skill/bin/router-claw.js set_reboot --action update --data '{"request":""}'
@@ -201,8 +215,8 @@ node router-skill/bin/router-claw.js set_homesec_abfa --data '{"AbfaEnable":true
 node router-skill/bin/router-claw.js set_homesec_abfa --data '{"AbfaEnable":false}'
 # 设置设备加入黑名单，如果当前不是黑名单模式也无需切换到黑名单模式
 node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag":2,"mac":""}'
-# 设置设备移除黑名单
-node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag"1,"mac":""}'
+# 设置设备移除黑名单（operFlag=4：从黑名单中移除设备）
+node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag":4,"mac":""}'
 
 # 设置授权接入（授权模式）
 node router-skill/bin/router-claw.js set_antisteal_mode --data '{"StealNetModel":1}'
@@ -216,7 +230,7 @@ node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag":5,"mac"
 # 设置白名单接入（白名单模式）
 node router-skill/bin/router-claw.js set_antisteal_mode --data '{"StealNetModel":2}'
 # 设置设备加入白名单
-node router-skill/bin/router-claw.js set_auth_De vice --data '{"operFlag":1,"mac":""}'
+node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag":1,"mac":""}'
 # 设置设备移除白名单
 node router-skill/bin/router-claw.js set_auth_Device --data '{"operFlag":5,"mac":""}'
 
@@ -228,7 +242,7 @@ node router-skill/bin/router-claw.js set_Device_ratelimit --action update --data
 # 设置设备网速无限制（MACAddress填充设备的MAC地址，HostName填充设备名称，注意：不要遗漏参数）
 node router-skill/bin/router-claw.js set_Device_ratelimit --action update --data '{"HostName":"","MACAddress":"","DeviceMaxDownLoadRate":300000,"ClassQueue":-1,"ActualName":"","DeviceDownRateEnable":false,"ID":"InternetGatewayDevice.LANDevice.1.Hosts.Host.10.","QosclassID":"InternetGatewayDevice.QueueManagement.Classification.3.","PolicerID":"InternetGatewayDevice.QueueManagement.Policer.2.","DeviceMaxUpLoadRate":200000}'
 
-（15）路由LED灯控制
+（15）路由LED指示灯控制
 # 打开路由LED灯（Mac填充指定路由的MAC地址）
 node router-skill/bin/router-claw.js set_led_status --data '{"Action":1,"Mac":""}'
 # 关闭路由LED灯（Mac填充指定路由的MAC地址）

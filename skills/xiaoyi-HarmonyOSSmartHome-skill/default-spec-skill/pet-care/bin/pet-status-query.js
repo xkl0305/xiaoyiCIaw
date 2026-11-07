@@ -47,7 +47,14 @@ const ERROR_CODES = {
  * @property {string} roomName - 房间名称
  * @property {number|null} feedCount - 今日出粮次数
  * @property {string|null} lastFeedTime - 最后出粮时间
- * @property {number|null} portionSize - 每次出粮量
+ * @property {number|null} status - 设备状态：0=正常,1=出粮中,2=不足,3=1号仓缺粮,4=2号仓缺粮,5=故障
+ * @property {number|null} eatingStatus - 进食状态：0=离开,1=进食
+ * @property {number|null} foodLevel1 - 1仓余粮状态：0=不足,1=偏少,2=充足
+ * @property {number|null} foodLevel2 - 2仓余粮状态：0=不足,1=偏少,2=充足
+ * @property {number|null} portion01 - 1仓每次出粮份数（0~10）
+ * @property {number|null} portion02 - 2仓每次出粮份数（0~10）
+ * @property {number|null} battery - 电池剩余电量（0~100%）
+ * @property {number|null} powerSource - 电源：0=交流电源,1=电池模式
  * @property {boolean} online - 是否在线
  */
 
@@ -152,7 +159,14 @@ export function generatePetStatusResult(petDevices, snapshots, tempResult) {
       roomName: feeder.roomName,
       feedCount: feeder.feedCount,
       lastFeedTime: formatTime(feeder.lastFeedTime),
-      portionSize: feeder.portionSize,
+      status: feeder.status,
+      eatingStatus: feeder.eatingStatus,
+      foodLevel1: feeder.foodLevel1,
+      foodLevel2: feeder.foodLevel2,
+      portion01: feeder.portion01,
+      portion02: feeder.portion02,
+      battery: feeder.battery,
+      powerSource: feeder.powerSource,
       online: feeder.online
     };
     if (!feeder.online) offlineCount++;

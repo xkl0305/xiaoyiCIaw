@@ -292,7 +292,7 @@ def generate_push_data(task_data):
             "summary": task_data['task_name'],
             "result": task_data['task_result'],
             "content": task_data['task_content'],
-            "source": "小艺 Claw",
+            "source": "小艺 Work",
             "taskFinishTime": int(time.time())
         }]
     }

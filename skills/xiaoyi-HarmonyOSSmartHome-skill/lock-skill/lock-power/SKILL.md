@@ -44,9 +44,10 @@ description: "智能门锁电源管理设置技能。当用户要求设置AI省�
 #### 打开AI省电
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "lockCommonSetting" \
   --data '{"devCfg":[{"aiEco":1,"ts":"20260427T174607Z878"}]}' \
@@ -56,9 +57,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 关闭AI省电
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "lockCommonSetting" \
   --data '{"devCfg":[{"aiEco":0,"ts":"20260427T174607Z878"}]}' \
@@ -78,36 +80,40 @@ node common-skill/bin/smarthome-claw.js control_device \
 
 ```bash
 # 关闭猫眼开关
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "catEyeSetting" \
   --data '{"peepholeEnableSwitch":0}' \
   --verbose
 
 # 设置人脸识别为手动模式
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceDetectMode":0}' \
   --verbose
 
 # 设置掌静脉识别为手动模式
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"palmDetectMode":0}' \
   --verbose
 
 # 开启超级省电
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "batteryManager" \
   --data '{"lpmStatus":1}' \

@@ -36,9 +36,10 @@ description: "智能门锁天气提醒设置技能。当用户要求设置出门
 ### 4.1 打开天气提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "weatherReminder" \
   --data '{
@@ -56,9 +57,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 ### 4.2 关闭天气提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "weatherReminder" \
   --data '{

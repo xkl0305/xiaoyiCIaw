@@ -54,8 +54,8 @@ node common-skill/bin/smarthome-claw.js get_homes_info
 # 获取所有设备信息，包括device id和prodid
 node common-skill/bin/smarthome-claw.js get_devices_info
 
-# 查询设备详细信息
-node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
+# 查询设备快照
+node common-skill/bin/smarthome-claw.js get_device_detail_celia_claw --dev-id "xxx"
 ```
 
 #### 4.1.2 根据privacy判断当前门锁支持哪些能力，禁止输出门锁不支持的能力
@@ -84,19 +84,19 @@ node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
 
 #### 步骤1：路由检查
 - 确认已加载本 skill（lock-info/SKILL.md）
-- ❌ **严禁直接调用 common-skill 的 get_device_detail**
+- ✅ 快照查询使用 common-skill 的 **get_device_detail_celia_claw**
 
 #### 步骤2：获取设备信息
 ```bash
 # 获取设备列表
 node common-skill/bin/smarthome-claw.js get_devices_info
 
-# 获取设备详情（包含能力集）
-node common-skill/bin/smarthome-claw.js get_device_detail --dev-id "xxx"
+# 获取设备快照（包含能力集）
+node common-skill/bin/smarthome-claw.js get_device_detail_celia_claw --dev-id "xxx"
 ```
 
 #### 步骤3：能力集过滤
-- 从 `privacyPolicy` 中提取能力集
+- 从快照 `services` 中的 `privacyPolicy` 提取能力集
 - 根据能力集对照表判断设备支持的功能
 - ❌ **严禁输出能力集中标记为不支持的功能**
 

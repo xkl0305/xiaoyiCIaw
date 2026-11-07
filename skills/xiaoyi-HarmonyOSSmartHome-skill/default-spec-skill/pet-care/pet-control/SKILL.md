@@ -70,10 +70,10 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 ### 步骤一：获取设备服务快照
 
 ```
-调用 common-skill 的 get_device_service_snapshot
+调用 common-skill 的 get_device_service_snapshot_celia_claw
 ```
 
-**目的**：获取设备服务快照，包含设备支持的能力 sid 信息
+**目的**：获取设备服务快照（标准profile接口，getDevSnapshot），包含设备支持的能力 sid 信息
 
 **返回数据**：
 - deviceId：设备ID
@@ -89,15 +89,86 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 ### 步骤二：设备控制
 
 ```
-调用 common-skill 的 control-device
+调用 common-skill 的 control_device_celia_claw
 ```
 
-**目的**：通过设备控制指令操作宠物设备
+**目的**：通过设备控制指令操作宠物设备（控制使用新标准profile接口，需携带 deviceType）
 
 **控制参数**：
 - deviceId：目标设备ID
 - serviceId：要调用的服务ID
 - serviceData：服务数据（如出粮量、温度设置等）
+
+### 控制动作调用示例
+
+**完整流程：先查后控**
+
+1. **获取设备信息**（提取 deviceId / prodId / deviceType）：
+   ```bash
+   node common-skill/bin/smarthome-claw.js get_devices_info
+   ```
+2. **查询设备服务快照**（标准profile，确认设备支持的控制 sid）：
+   ```bash
+   node common-skill/bin/smarthome-claw.js get_device_service_snapshot_celia_claw --device-ids "xxx"
+   ```
+3. **获取参数取值范围**（必选，确认字段合法）：
+   ```bash
+   node common-skill/bin/smarthome-claw.js get_profile --prod-ids "xxx"
+   ```
+4. **发送控制命令**（POST）：
+
+   **喂食器（prodId: A3C4）出粮（action 服务）：**
+   ```bash
+   node common-skill/bin/smarthome-claw.js control_device_celia_claw \
+     --dev-id "xxx" \
+     --prod-id "A3C4" \
+     --device-type "xxx" \
+     --operation "POST" \
+     --sid "action" \
+     --data '{"action":1}' \
+     --verbose
+   ```
+
+   **设置出粮份数（feederPortion 服务，0~10份）：**
+   ```bash
+   node common-skill/bin/smarthome-claw.js control_device_celia_claw \
+     --dev-id "xxx" \
+     --prod-id "A3C4" \
+     --device-type "xxx" \
+     --operation "POST" \
+     --sid "feederPortion" \
+     --data '{"FeederPortion01":2,"FeederPortion02":1}' \
+     --verbose
+   ```
+
+   **猫砂盆（prodId: A3BN）远程清理（clean 服务）：**
+   ```bash
+   node common-skill/bin/smarthome-claw.js control_device_celia_claw \
+     --dev-id "xxx" \
+     --prod-id "A3BN" \
+     --device-type "xxx" \
+     --operation "POST" \
+     --sid "clean" \
+     --data '{"action":1}' \
+     --verbose
+   ```
+
+   **猫砂盆（prodId: A3BN）清理模式（cleanMode 服务，1手动/2感应/3定时/4软便）：**
+   ```bash
+   node common-skill/bin/smarthome-claw.js control_device_celia_claw \
+     --dev-id "xxx" \
+     --prod-id "A3BN" \
+     --device-type "xxx" \
+     --operation "POST" \
+     --sid "cleanMode" \
+     --data '{"mode":2}' \
+     --verbose
+   ```
+
+**控制注意点**：
+- `--device-type` 必填：标准profile控制接口 `control_device_celia_claw` 必须携带 deviceType，从 get_devices_info 获取
+- sid 按快照确认：先查快照确认实际 sid；喂食器（A3C4）出粮走 action、份数走 feederPortion（FeederPortion01/FeederPortion02）；猫砂盆（A3BN）远程清理走 clean（action:1）、清理模式走 cleanMode（mode，1手动/2感应/3定时/4软便）
+- 离线保护：设备离线时不能执行控制，需先提醒用户
 
 ---
 
@@ -113,7 +184,7 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 |----------|----------------|------|
 | 智能喂食器 | 出粮、设置份量、查询余粮 | 远程手动喂食 |
 | 智能饮水机 | 开关控制、水量查询 | 控制饮水供应 |
-| 智能猫砂盆 | 清理、清洁模式、重置 | 远程触发清洁 |
+| 智能猫砂盆 | 远程清理、清理模式、童锁 | 远程触发清洁 |
 | 扫地机器人 | 启动清扫、暂停、回充、设置模式 | 地面清洁控制 |
 
 ### 触发示例
@@ -122,7 +193,7 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 - "喂一下猫"
 - "给毛孩子出粮"
 - "远程喂食"
-- "出50克猫粮"
+- "出2份猫粮"（出粮份数由 feederPortion 的 FeederPortion01/FeederPortion02 控制，单位是份）
 
 **饮水相关**：
 - "打开饮水机"
@@ -137,9 +208,12 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 
 | 设备 | 指令 | 参数 |
 |------|------|------|
-| 智能喂食器 | 出粮 | portions（份数）、amount（克数） |
+| 智能喂食器 | 出粮 | action（action:1） |
+| 智能喂食器 | 设置出粮份数 | feederPortion（FeederPortion01/FeederPortion02，0~10份） |
 | 智能饮水机 | 开关 | switch（on/off） |
-| 智能猫砂盆 | 清理 | mode（快速/深度） |
+| 智能猫砂盆 | 远程清理 | clean（action:1） |
+| 智能猫砂盆 | 清理模式 | cleanMode（1手动/2感应/3定时/4软便） |
+| 智能猫砂盆 | 童锁 | childLock（1未锁/2锁定） |
 | 扫地机器人 | 清扫 | mode（标准/强力/静音）、room（区域） |
 
 ---
@@ -236,7 +310,7 @@ description: "宠物设备控制技能。当用户想要喂养宠物、清洁猫
 ✅ 操作成功
 设备：智能双子星喂食器（客厅）
 操作：出粮
-份量：20克
+份量：2份
 时间：15:00
 毛孩子马上就能享用美食啦～
 ```

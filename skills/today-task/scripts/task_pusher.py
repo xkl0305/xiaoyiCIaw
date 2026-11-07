@@ -89,7 +89,7 @@ class TaskPusher:
         task_name = task_data.get('task_name', '未命名任务')
         
         # 确定source值
-        source_value = "小艺 Claw"  # 默认值
+        source_value = "小艺 Work"  # 默认值
         
         # 预处理内容文本
         raw_content = task_data.get('task_content', '')
@@ -109,7 +109,7 @@ class TaskPusher:
             "summary": task_name,                # 任务摘要
             "result": task_data.get('task_result', self.config.default_result),
             "content": processed_content,        # 预处理后的内容
-            "source": source_value,              # 来源：小艺 Claw
+            "source": source_value,              # 来源：小艺 Work
             "taskFinishTime": task_finish_time   # 任务完成时间戳（秒）
         }
         

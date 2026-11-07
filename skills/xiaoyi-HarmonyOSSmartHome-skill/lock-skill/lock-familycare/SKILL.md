@@ -36,9 +36,10 @@ description: "智能门锁回家提醒设置技能。当用户要求设置回家
 ### 4.1 打开回家提醒（默认用户、默认提醒时段）
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "familyCare" \
   --data '{"bSwitch":1,"uList":[],"ts":"20260408T150936Z905"}' \
@@ -50,9 +51,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 uid根据查询用户信息获取。
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "familyCare" \
   --data '{"bSwitch":0,"uList":[{"uSwitch":1,"uid":1,"rd":"1,2,3,4,5,6,7","tList":[{"st":"12:00","et":"14:00"},{"st":"06:00","et":"08:00"}]}],"ts":"20260408T150936Z905"}' \
@@ -62,9 +64,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 ### 4.3 关闭回家提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "familyCare" \
   --data '{"bSwitch":0,"uList":[""],"ts":"20260408T150936Z905"}' \
@@ -74,9 +77,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 ### 4.4 关闭单用户的回家提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "familyCare" \
   --data '{"bSwitch":1,"uList":["uSwitch":0,"uid":1],"ts":"20260408T150936Z905"}' \

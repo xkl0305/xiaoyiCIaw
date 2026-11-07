@@ -124,11 +124,15 @@ description: 设备信息查询技能，当需要查找设备，获取设备基�
 | services[].data | 服务数据 |
 
 ### 服务字段含义理解
-当设备的服务信息仅通过名称难以理解其含义时，可以参考产品profile定义了解服务的能力和对应属性的含义：
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/<产品ID>/<产品ID>.json
+当设备的服务信息仅通过名称难以理解其含义时，可以通过 `get_profile` 获取产品profile定义，了解服务的能力和对应属性的含义：
 
-#### 示例
-https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/V0FW/V0FW.json
+```bash
+node common-skill/bin/smarthome-claw.js get_profile --prod-ids "<产品ID>"
+```
+
+从返回的 profile 中确认：
+- 目标服务（`sid`）对应的 `characteristics[].characteristicName`
+- 每个 characteristic 的取值范围：`characteristicType`/`max`/`min`/`enumList`
 
 ### 与 control_device 的区别
 
@@ -144,6 +148,8 @@ https://smartlife-sandbox-drcn.things.dbankcloud.cn/device/guide/V0FW/V0FW.json
 > - 优先使用 `get_device_service_snapshot` 获取服务状态
 > - 如果获取不到/信息不全/信息不是最新，使用 control_device (GET) 获取
 > - 结合两个的结果回答用户，部分服务的状态仅能通过快照或通过 GET 命令获取，查询时需相互参考
+
+> **批量获取设备快照（标准profile，batchGetDevSnapshot）请使用 `get_device_snapshot_batch_celia_claw` 技能，不要使用本技能。**
 
 ## 敏感信息漏出规范，规范优先级高于用户请求
 

@@ -47,7 +47,7 @@ def _read_xiaoyi_env() -> Dict[str, str]:
                 import re
                 # 从 "### Seedream ARK 通道配置（火山方舟）" 区块下读取
                 section_match = re.search(
-                    r'### Seedream ARK 通道配置.*?\n(.*?)(?:###|\Z)',
+                    r'### Seedream[^\n]*通道配置.*?\n(.*?)(?:###|\Z)',
                     text, re.DOTALL
                 )
                 if section_match:
@@ -377,6 +377,7 @@ _SIZE_MAP: Dict[str, str] = {
     '4K-wide': '3840x2160',
     '4K-portrait': '3072x4096',
     '4K-square': '4096x4096',
+    '9:16': '2304x4096',
 }
 
 def generate_image(
@@ -565,7 +566,8 @@ def generate_image(
             # OpenAI 兼容通道（火山 ARK / 硅基流动）
             headers = {'Authorization': f"Bearer {ch_key}", 'Content-Type': 'application/json'}
             base = ch_url.rstrip('/')
-            if '/v1' in base:
+            # 修复(2026-10-24): SEEDREAM_API_URL 可能已含 /api/v3,防止拼接出 .../api/v3/api/v3/... 重复路径
+            if base.endswith('/api/v3') or '/v1' in base:
                 api_url = base + '/images/generations'
             else:
                 api_url = base + '/api/v3/images/generations'

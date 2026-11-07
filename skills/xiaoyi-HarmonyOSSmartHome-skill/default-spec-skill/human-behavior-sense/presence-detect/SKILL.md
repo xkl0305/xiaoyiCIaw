@@ -85,15 +85,15 @@ description: "只检测家庭是否有人。当用户询问家里有人吗、是
 
 #### 1、AI传感器检测
 
-- **路由路径**：`common-skill/get_device_detail/SKILL.md`
+- **路由路径**：`common-skill/get_device_detail_celia_claw/SKILL.md`
 
 - **底层 JS 脚本命令**：
 
   ```bash
-  node common-skill/bin/smarthome-claw.js get_device_detail --dev-id {传感器设备ID}
+  node common-skill/bin/smarthome-claw.js get_device_detail_celia_claw --dev-id {传感器设备ID}
   ```
 
-- **功能**：查询当前实时传感器的状态
+- **功能**：查询当前实时传感器的状态快照
 
 - **数据解析说明**：从返回的结果中看 `basicFenceEvent.data.existent` 字段，1表示有人，0代表无人。
 

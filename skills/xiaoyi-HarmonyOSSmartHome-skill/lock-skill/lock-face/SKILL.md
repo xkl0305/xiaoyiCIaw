@@ -37,9 +37,10 @@ description: "智能门锁人脸识别设置技能。当用户要求设置人脸
 #### 打开人脸识别开锁
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceIdentifySwitch": 1}' \
@@ -49,9 +50,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 关闭人脸识别开锁
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceIdentifySwitch": 0}' \
@@ -63,9 +65,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置为手动模式
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceDetectMode": 0}' \
@@ -75,9 +78,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置为自动模式
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceDetectMode": 1}' \
@@ -89,9 +93,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 打开人脸语音提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceVoiceSwitch": 1}' \
@@ -101,9 +106,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 关闭人脸语音提醒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceVoiceSwitch": 0}' \
@@ -115,9 +121,10 @@ node common-skill/bin/smarthome-claw.js control_device \
 #### 设置回头防误开时长为30秒
 
 ```bash
-node common-skill/bin/smarthome-claw.js control_device \
+node common-skill/bin/smarthome-claw.js control_device_celia_claw \
   --dev-id "xxx" \
   --prod-id "xxx" \
+  --device-type "A0B" \
   --operation "POST" \
   --sid "securitySetting" \
   --data '{"faceSleepTime": 30}' \

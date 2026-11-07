@@ -20,7 +20,7 @@ def main() -> None:
     ap = argparse.ArgumentParser(description='seedream-image-gen: 三通道图像生成')
     ap.add_argument('--prompt', required=True, help='提示词')
     ap.add_argument('--input-image', default='', help='输入图片路径')
-    ap.add_argument('--size', default='2K', choices=['2K', '3K', '4K', '4K-wide', '4K-portrait', '4K-square'])
+    ap.add_argument('--size', default='2K', choices=['2K', '3K', '4K', '4K-wide', '4K-portrait', '4K-square', '9:16'])
     ap.add_argument('--max-images', type=int, default=1)
     ap.add_argument('--reference-weight', type=int, default=100)
     ap.add_argument('--negative-prompt', default='')

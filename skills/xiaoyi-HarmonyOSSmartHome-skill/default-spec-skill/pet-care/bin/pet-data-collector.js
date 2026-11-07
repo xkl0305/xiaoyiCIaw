@@ -35,12 +35,21 @@ const CAT_LITTER_FIELDS = {
  * 喂食器服务数据字段映射
  */
 const FEEDER_FIELDS = {
-  // 实际API返回: serviceId="food1"/"food2", data={"Hopper01": 2} — 粮仓余量
-  // serviceId="feederPortion", data={"FeederPortion01": 2, "FeederPortion02": 1} — 每次出粮量
-  // 注意: 此API没有直接给出"今日出粮次数"，需通过"出粮"action记录或状态变化推算
+  // 标准profile(A3C4) 实际API返回:
+  //   serviceId="food1"/"food2", data={"Hopper01": 2} — 余粮状态枚举: 0=不足, 1=偏少, 2=充足
+  //   serviceId="status", data={"status": 0} — 设备状态: 0=正常,1=出粮中,2=不足,3=1号仓缺粮,4=2号仓缺粮,5=故障
+  //   serviceId="petStatus", data={"status": 0} — 进食状态: 0=离开,1=进食
+  //   serviceId="feederPortion", data={"FeederPortion01": 2, "FeederPortion02": 1} — 每次出粮份数(0~10)
+  //   serviceId="battery", data={"level": 80} — 电池剩余电量(%)
+  //   serviceId="powerSource", data={"PowerSource": 0} — 电源: 0=交流电源,1=电池模式
+  // 注意: 此API没有直接给出"今日出粮次数"，需通过"出粮"action记录或控制记录推算
   feedCount: ['feedCount', 'feed_count', 'feedTimes', 'feed_times', 'portionCount', 'totalFeed', 'todayFeed'],
   lastFeedTime: ['lastFeedTime', 'last_feed_time', 'lastFeed', 'last_feed', 'lastMealTime', 'last_meal_time'],
-  portionSize: ['portionSize', 'portion_size', 'portion', 'singlePortion', 'feedAmount', 'amount', 'FeederPortion01', 'FeederPortion02']
+  foodLevel1: ['Hopper01'],
+  foodLevel2: ['Hopper02'],
+  status: ['status'],
+  battery: ['level'],
+  powerSource: ['PowerSource', 'powerSource']
 };
 
 /**
@@ -115,7 +124,14 @@ function normalizeHumidity(rawValue) {
  * @property {string} roomName - 房间名称
  * @property {number|null} feedCount - 今日出粮次数
  * @property {string|null} lastFeedTime - 最后出粮时间
- * @property {number|null} portionSize - 每次出粮量（克）
+ * @property {number|null} status - 设备状态：0=正常,1=出粮中,2=不足,3=1号仓缺粮,4=2号仓缺粮,5=故障
+ * @property {number|null} eatingStatus - 进食状态：0=离开,1=进食
+ * @property {number|null} foodLevel1 - 1仓余粮状态：0=不足,1=偏少,2=充足
+ * @property {number|null} foodLevel2 - 2仓余粮状态：0=不足,1=偏少,2=充足
+ * @property {number|null} portion01 - 1仓每次出粮份数（0~10）
+ * @property {number|null} portion02 - 2仓每次出粮份数（0~10）
+ * @property {number|null} battery - 电池剩余电量（0~100%）
+ * @property {number|null} powerSource - 电源：0=交流电源,1=电池模式
  * @property {boolean} online - 是否在线
  */
 
@@ -207,22 +223,63 @@ function parseFeederData(snapshot, deviceInfo) {
     roomName: deviceInfo?.roomName || '未分类',
     feedCount: null,
     lastFeedTime: null,
-    portionSize: null,
+    status: null,
+    eatingStatus: null,
+    foodLevel1: null,
+    foodLevel2: null,
+    portion01: null,
+    portion02: null,
+    battery: null,
+    powerSource: null,
     online: snapshot.status === 'online'
   };
 
-  // 遍历服务列表查找喂食器相关服务
+  // 遍历服务列表，按标准profile(A3C4)的 sid 精确匹配解析
   for (const service of snapshot.services || []) {
     const serviceData = service.data || {};
     const serviceId = (service.serviceId || '').toLowerCase();
 
-    // 检查是否是喂食器相关的服务
-    if (serviceId.includes('feed') || serviceId.includes('food') || serviceId.includes('粮') || serviceId === 'feederportion') {
-      result.feedCount = extractFieldValue(serviceData, FEEDER_FIELDS.feedCount);
-      result.lastFeedTime = extractFieldValue(serviceData, FEEDER_FIELDS.lastFeedTime);
-      result.portionSize = extractFieldValue(serviceData, FEEDER_FIELDS.portionSize);
-      // 如果找到了出粮量就 break，否则继续找
-      if (result.portionSize !== null) break;
+    switch (serviceId) {
+      case 'status':
+        // 设备状态: 0=正常,1=出粮中,2=不足,3=1号仓缺粮,4=2号仓缺粮,5=故障
+        result.status = extractFieldValue(serviceData, FEEDER_FIELDS.status);
+        break;
+      case 'petstatus':
+        // 进食状态: 0=离开,1=进食
+        result.eatingStatus = extractFieldValue(serviceData, FEEDER_FIELDS.status);
+        break;
+      case 'food1':
+        // 1仓余粮状态: 0=不足,1=偏少,2=充足
+        result.foodLevel1 = extractFieldValue(serviceData, FEEDER_FIELDS.foodLevel1);
+        break;
+      case 'food2':
+        // 2仓余粮状态: 0=不足,1=偏少,2=充足
+        result.foodLevel2 = extractFieldValue(serviceData, FEEDER_FIELDS.foodLevel2);
+        break;
+      case 'feederportion':
+        // 每次出粮份数(0~10)，1仓/2仓
+        result.portion01 = extractFieldValue(serviceData, ['FeederPortion01', 'portion01']);
+        result.portion02 = extractFieldValue(serviceData, ['FeederPortion02', 'portion02']);
+        break;
+      case 'battery':
+        // 电池剩余电量(%)
+        result.battery = extractFieldValue(serviceData, FEEDER_FIELDS.battery);
+        break;
+      case 'powersource':
+        // 电源: 0=交流电源,1=电池模式
+        result.powerSource = extractFieldValue(serviceData, FEEDER_FIELDS.powerSource);
+        break;
+      default:
+        // 历史兼容：非标准sid下尝试从 feed/food/粮 相关服务中提取出粮次数与最后出粮时间
+        if (serviceId.includes('feed') || serviceId.includes('food') || serviceId.includes('粮')) {
+          if (result.feedCount === null) {
+            result.feedCount = extractFieldValue(serviceData, FEEDER_FIELDS.feedCount);
+          }
+          if (result.lastFeedTime === null) {
+            result.lastFeedTime = extractFieldValue(serviceData, FEEDER_FIELDS.lastFeedTime);
+          }
+        }
+        break;
     }
   }
 
@@ -556,7 +613,11 @@ function printCollectedData(snapshots) {
       console.log(`  ${data.deviceName} (${data.roomName}):`);
       console.log(`    出粮次数: ${data.feedCount ?? '未知'}`);
       console.log(`    最后出粮: ${data.lastFeedTime ?? '未知'}`);
-      console.log(`    出粮量: ${data.portionSize ?? '未知'}克`);
+      console.log(`    设备状态: ${data.status ?? '未知'}（0=正常,1=出粮中,2=不足,3=1号仓缺粮,4=2号仓缺粮,5=故障）`);
+      console.log(`    1仓余粮: ${data.foodLevel1 ?? '未知'}（0=不足,1=偏少,2=充足）`);
+      console.log(`    2仓余粮: ${data.foodLevel2 ?? '未知'}（0=不足,1=偏少,2=充足）`);
+      console.log(`    出粮份数: 1仓${data.portion01 ?? '未知'}份, 2仓${data.portion02 ?? '未知'}份`);
+      console.log(`    电池电量: ${data.battery ?? '未知'}%`);
       console.log(`    在线状态: ${data.online ? '在线' : '离线'}`);
     }
   }

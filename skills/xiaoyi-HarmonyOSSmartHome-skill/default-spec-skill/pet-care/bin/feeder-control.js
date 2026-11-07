@@ -37,28 +37,27 @@ const COMMON_SKILL_BIN = path.resolve(__dirname, '../../../common-skill/bin');
  */
 /**
  * 喂食器控制服务ID（按优先级排序）
- * 双子星喂食器可视版1 (prodId: A3C4) 实际控制入口为 "action"
+ * 双子星喂食器可视版1 (prodId: A3C4) 标准profile实际控制入口为 "action"，出粮份数走 "feederPortion"
  * 注意: 此设备为共享设备，需确认控制权限
  */
 const FEEDER_SERVICE_IDS = [
-  'action',         // ← 实际控制入口（双子星喂食器 A3C4）
-  'feed',           // 通用喂食器
-  'food',           // 食物相关
-  'portion',        // 出粮量
-  'dispense',       // 分发
-  'feeder',         // 喂食器
-  'petFeeder'       // 宠物喂食器
+  'action',         // ← 实际控制入口（双子星喂食器 A3C4，标准profile）
+  'feederPortion',  // 出粮份数（标准profile，0~10份）
+  'feed',           // 通用喂食器（历史兼容）
+  'food',           // 食物相关（历史兼容）
+  'dispense',       // 分发（历史兼容）
+  'feeder',         // 喂食器（历史兼容）
+  'petFeeder'       // 宠物喂食器（历史兼容）
 ];
 
 /**
- * 喂食器控制命令（常见字段名）
+ * 喂食器控制命令（常见字段名，标准profile不再使用克数 portion/amount）
  */
 const FEED_COMMANDS = [
   'feed',           // 立即喂食
   'start',          // 开始
   'dispense',       // 分发
-  'trigger',        // 触发
-  'portion'         // 出粮
+  'trigger'         // 触发
 ];
 
 /**
@@ -82,7 +81,7 @@ const ERROR_CODES = {
  * @property {string} roomName - 房间名称
  * @property {boolean} success - 是否成功
  * @property {string|null} feedTime - 喂食时间
- * @property {number|null} portionSize - 出粮量
+ * @property {number|null} portions - 出粮份数（0~10，可选，走 feederPortion）
  * @property {boolean} online - 是否在线
  */
 
@@ -90,13 +89,17 @@ const ERROR_CODES = {
  * 执行设备控制命令
  * @param {string} deviceId - 设备ID
  * @param {string} prodId - 产品ID
+ * @param {string} deviceType - 设备类型ID（POST控制必需）
  * @param {string} serviceId - 服务ID
  * @param {object} commandData - 控制命令数据
  * @param {string} operation - 操作类型 (POST/GET)
  * @returns {Promise<object>} 命令执行结果
  */
-async function executeControlCommand(deviceId, prodId, serviceId, commandData, operation = 'POST') {
-  const cmd = `node ${path.join(COMMON_SKILL_BIN, 'smarthome-claw.js')} control_device --dev-id "${deviceId}" --prod-id "${prodId}" --operation "${operation}" --sid "${serviceId}" --data '${JSON.stringify(commandData)}'`;
+async function executeControlCommand(deviceId, prodId, deviceType, serviceId, commandData, operation = 'POST') {
+  // 查询（GET）使用老接口 control_device；控制（POST）使用新标准profile接口 control_device_celia_claw（需 deviceType）
+  const commandName = operation === 'GET' ? 'control_device' : 'control_device_celia_claw';
+  const deviceTypeArg = operation === 'POST' ? ` --device-type "${deviceType}"` : '';
+  const cmd = `node ${path.join(COMMON_SKILL_BIN, 'smarthome-claw.js')} ${commandName} --dev-id "${deviceId}" --prod-id "${prodId}"${deviceTypeArg} --operation "${operation}" --sid "${serviceId}" --data '${JSON.stringify(commandData)}'`;
 
   try {
     const { stdout, stderr } = await execAsync(cmd, {
@@ -175,10 +178,25 @@ function findFeederDevice(petDevices, deviceId) {
  * 触发喂食器出粮
  * @param {string} deviceId - 设备ID
  * @param {string} prodId - 产品ID
- * @param {number} portionSize - 出粮量（克）
+ * @param {string} deviceType - 设备类型ID
+ * @param {number} portions - 出粮份数（0~10，可选，走 feederPortion）
  * @returns {Promise<FeederControlResult>} 控制结果
  */
-async function triggerFeeding(deviceId, prodId, portionSize = 20) {
+async function triggerFeeding(deviceId, prodId, deviceType, portions = null) {
+  // 标准profile控制接口 control_device_celia_claw 必需 deviceType，未提供时从设备列表解析
+  if (!deviceType) {
+    try {
+      const { getDevicesInfo } = await import('../../../common-skill/bin/get_devices_info.js');
+      const devicesInfo = await getDevicesInfo({});
+      const deviceDetail = devicesInfo.devices.find(d =>
+        (d.deviceId || d.devId) === deviceId
+      );
+      deviceType = deviceDetail?.deviceType || '';
+    } catch (e) {
+      // 解析失败则交给控制接口校验
+    }
+  }
+
   const result = {
     code: ERROR_CODES.SUCCESS,
     message: '喂食器已出粮',
@@ -187,25 +205,34 @@ async function triggerFeeding(deviceId, prodId, portionSize = 20) {
     roomName: '',
     success: true,
     feedTime: new Date().toISOString(),
-    portionSize: portionSize,
+    portions: portions,
     online: true
   };
 
   // 生成控制命令组合（按优先级）
-  // 精确匹配优先：sid=action, data={"action":1}
-  // 再降级尝试通用组合
+  // 标准profile精确匹配优先：sid=action, data={"action":1}（出粮动作）
+  // 若指定份数，先通过 feederPortion 设置份数（FeederPortion01/FeederPortion02）
+  // 再降级尝试通用组合（历史兼容）
   const commandCombinations = [];
+
+  // 设置出粮份数（标准profile，0~10份）
+  if (portions !== null && portions !== undefined) {
+    commandCombinations.push({
+      sid: 'feederPortion',
+      command: { FeederPortion01: portions, FeederPortion02: portions }
+    });
+  }
 
   for (const sid of FEEDER_SERVICE_IDS) {
     // 对于 action 服务，正确的命令是 {"action": 1}
     if (sid === 'action') {
       commandCombinations.push({ sid, command: { action: 1 } });
-      commandCombinations.push({ sid, command: { action: 1, portion: portionSize } });
+    } else if (sid === 'feederPortion') {
+      // 已在上方处理，跳过
+      continue;
     } else {
       for (const cmd of FEED_COMMANDS) {
-        commandCombinations.push({ sid, command: { [cmd]: 1, portion: portionSize } });
         commandCombinations.push({ sid, command: { [cmd]: 1 } });
-        commandCombinations.push({ sid, command: { feed: 1, amount: portionSize } });
       }
     }
   }
@@ -213,17 +240,16 @@ async function triggerFeeding(deviceId, prodId, portionSize = 20) {
   // 添加一些通用的组合
   commandCombinations.push({ sid: 'feeder', command: { feed: 1 } });
   commandCombinations.push({ sid: 'feed', command: { on: 1 } });
-  commandCombinations.push({ sid: 'dispense', command: { dispense: 1, amount: portionSize } });
 
   let lastError = null;
 
   for (const { sid, command } of commandCombinations) {
     try {
-      const execResult = await executeControlCommand(deviceId, prodId, sid, command, 'POST');
+      const execResult = await executeControlCommand(deviceId, prodId, deviceType, sid, command, 'POST');
 
       if (execResult.success) {
         result.code = ERROR_CODES.SUCCESS;
-        result.message = `喂食器已出粮${portionSize}克`;
+        result.message = (portions !== null && portions !== undefined) ? `喂食器已出粮${portions}份` : '喂食器已出粮';
         return result;
       } else {
         lastError = execResult.error;
@@ -245,13 +271,14 @@ async function triggerFeeding(deviceId, prodId, portionSize = 20) {
  * 获取喂食器状态
  * @param {string} deviceId - 设备ID
  * @param {string} prodId - 产品ID
+ * @param {string} deviceType - 设备类型ID
  * @returns {Promise<object>} 喂食器状态
  */
-async function getFeederStatus(deviceId, prodId) {
+async function getFeederStatus(deviceId, prodId, deviceType) {
   // 尝试 GET 操作获取状态
   for (const sid of FEEDER_SERVICE_IDS) {
     try {
-      const execResult = await executeControlCommand(deviceId, prodId, sid, {}, 'GET');
+      const execResult = await executeControlCommand(deviceId, prodId, deviceType, sid, {}, 'GET');
 
       if (execResult.success && execResult.data) {
         return {
@@ -275,10 +302,10 @@ async function getFeederStatus(deviceId, prodId) {
 /**
  * 执行喂食控制
  * @param {string} deviceId - 指定的设备ID（可选）
- * @param {number} portionSize - 出粮量（克）
+ * @param {number|null} portions - 出粮份数（0~10，可选，走 feederPortion）
  * @returns {Promise<FeederControlResult>} 控制结果
  */
-async function controlFeeder(deviceId = null, portionSize = 20) {
+async function controlFeeder(deviceId = null, portions = null) {
   // 获取宠物设备列表
   const petDevices = await fetchPetDevices();
 
@@ -294,7 +321,7 @@ async function controlFeeder(deviceId = null, portionSize = 20) {
       roomName: '',
       success: false,
       feedTime: null,
-      portionSize: null,
+      portions: null,
       online: false
     };
   }
@@ -307,6 +334,7 @@ async function controlFeeder(deviceId = null, portionSize = 20) {
   );
 
   const prodId = deviceDetail?.prodId || feederDevice.prodId || '';
+  const deviceType = deviceDetail?.deviceType || feederDevice.deviceType || '';
 
   // 检查设备在线状态
   const snapshots = await fetchPetDeviceSnapshots(petDevices);
@@ -321,13 +349,13 @@ async function controlFeeder(deviceId = null, portionSize = 20) {
       roomName: feederDevice.roomName,
       success: false,
       feedTime: null,
-      portionSize: null,
+      portions: null,
       online: false
     };
   }
 
   // 触发喂食
-  const feedResult = await triggerFeeding(feederDevice.deviceId, prodId, portionSize);
+  const feedResult = await triggerFeeding(feederDevice.deviceId, prodId, deviceType, portions);
   // 补充设备名称和房间信息
   feedResult.deviceName = feederDevice.deviceName;
   feedResult.roomName = feederDevice.roomName;
@@ -351,7 +379,7 @@ function printFeederControlResult(result) {
   } else if (result.success) {
     console.log('状态: ✅ 喂食成功');
     console.log(`设备: ${result.deviceName} (${result.roomName})`);
-    console.log(`出粮量: ${result.portionSize}克`);
+    console.log(`出粮份数: ${result.portions ?? '默认'}份`);
     console.log(`时间: ${result.feedTime ? new Date(result.feedTime).toLocaleString('zh-CN') : '未知'}`);
   } else {
     console.log('状态: ❌ 喂食失败');
@@ -369,14 +397,15 @@ async function main() {
 
   // 解析命令行参数
   let deviceId = null;
-  let portionSize = 20;
+  let portions = null;
   let shouldFeed = false;
 
   for (let i = 0; i < args.length; i++) {
     if (args[i] === '--device-id' && args[i + 1]) {
       deviceId = args[i + 1];
-    } else if (args[i] === '--portion' && args[i + 1]) {
-      portionSize = parseInt(args[i + 1], 10) || 20;
+    } else if (args[i] === '--portions' && args[i + 1]) {
+      const parsed = parseInt(args[i + 1], 10);
+      portions = (!isNaN(parsed) && parsed >= 0 && parsed <= 10) ? parsed : null;
     } else if (args[i] === '--feed') {
       shouldFeed = true;
     }
@@ -388,8 +417,8 @@ async function main() {
   }
 
   if (shouldFeed) {
-    console.log(`[info] 正在触发喂食 (出粮量: ${portionSize}克)...`);
-    const result = await controlFeeder(deviceId, portionSize);
+    console.log(`[info] 正在触发喂食 (出粮份数: ${portions ?? '默认'})...`);
+    const result = await controlFeeder(deviceId, portions);
     printFeederControlResult(result);
 
     // 输出 JSON 格式结果
