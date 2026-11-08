@@ -354,6 +354,30 @@ def clean_task_artifacts(dry_run=False):
             except Exception:
                 continue
 
+    # 8) workspace 根下产物目录超龄清理（30天保守档：generated-videos 成品副本/ chrome-headed-v3-data 浏览器任务数据）
+    WS_ARTIFACT_MAX_AGE_DAYS = 30
+    ws_cutoff = time.time() - WS_ARTIFACT_MAX_AGE_DAYS * 86400
+    for d in ("generated-videos", "chrome-headed-v3-data"):
+        dp = os.path.join(WORKSPACE, d)
+        if not os.path.isdir(dp):
+            continue
+        for name in os.listdir(dp):
+            fp = os.path.join(dp, name)
+            try:
+                if os.path.getmtime(fp) >= ws_cutoff:
+                    continue
+                sz = dir_size(fp) if os.path.isdir(fp) else os.path.getsize(fp)
+                if not dry_run:
+                    if os.path.isdir(fp):
+                        shutil.rmtree(fp, ignore_errors=True)
+                    else:
+                        os.remove(fp)
+                freed += sz
+                removed += 1
+                items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp) if sz else '0B'}, 超{WS_ARTIFACT_MAX_AGE_DAYS}天workspace产物)")
+            except Exception:
+                continue
+
     if removed:
         tag = "待删" if dry_run else "已清理"
         items.insert(0, f"🧹 /tmp任务产物 — {tag} {removed}项/释放 {freed/1024:.1f}KB (超{TASK_ARTIFACT_MAX_AGE_DAYS}天: xiaoyi_ppt会话/调研目录/根下html/Office与媒体成品/workspace-tmp)")
