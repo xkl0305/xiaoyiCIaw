@@ -179,6 +179,20 @@ def _download_image(url: str) -> Optional[str]:
     try:
         resp = requests.get(url, timeout=60, verify=False)
         resp.raise_for_status()
+        content = resp.content
+        # 防"SSE假成功"(2026-11-08): 仅凭 HTTP 200 下载到空/占位/非图片内容也报 generated 落盘为假成功。
+        # 强校验内容: ①非空且大于最小字节 ②前几字节为真实图片魔数(JPEG/PNG/WEBP/GIF),
+        # 拒绝 HTML 错误页 / 文本占位伪装成图。不满足一律视为下载失败(返回 None)。
+        if not content or len(content) < 500:
+            return None
+        _magic_ok = (
+            content[:3] == b'\xff\xd8\xff'                 # JPEG
+            or content[:8] == b'\x89PNG\r\n\x1a\n'       # PNG
+            or (content[:4] == b'RIFF' and content[8:12] == b'WEBP')  # WEBP
+            or content[:4] in (b'GIF8', b'gif8')            # GIF
+        )
+        if not _magic_ok:
+            return None
         path_lower = url.lower().split("?")[0]
         if path_lower.endswith(".jpg") or path_lower.endswith(".jpeg"):
             ext = ".jpg"
@@ -191,7 +205,7 @@ def _download_image(url: str) -> Optional[str]:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S_%f")[:19]
         rand = "".join(random.choices(string.ascii_letters + string.digits, k=2))
         out = _OUT_DIR / f"huawei_{ts}_{rand}{ext}"
-        out.write_bytes(resp.content)
+        out.write_bytes(content)
         return str(out)
     except Exception:
         return None

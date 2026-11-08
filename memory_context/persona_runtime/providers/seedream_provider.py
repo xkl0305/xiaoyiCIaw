@@ -556,6 +556,16 @@ def generate_image(
                     reference_weight=reference_weight,
                 )
                 if hw_result.get('status') in ('generated',) and hw_result.get('generated_image_path'):
+                    # 兜底防"SSE假成功"(2026-11-08): huawei_provider 虽已源头校验下载内容,
+                    # 这里再强校验文件真实存在且为本轮新生成(与 openai 分支同标准), 双保险。
+                    _hw_out = str(hw_result.get('generated_image_path') or '')
+                    _hw_valid = _validate_output_image(_hw_out, _gen_start).get('send_ok') if _hw_out else False
+                    if not _hw_valid:
+                        hw_result['status'] = 'provider_returned_no_image'
+                        hw_result['blocked_send'] = True
+                        hw_result['blocked_reason'] = 'sse_fake_success_no_valid_image'
+                        _last_error = f'{ch_name}: SSE假成功(无有效落盘图)'
+                        continue
                     _channel_used = ch_name
                     hw_result['channel_used'] = ch_name
                     hw_result['channels_available'] = [c['name'] for c in channels]
