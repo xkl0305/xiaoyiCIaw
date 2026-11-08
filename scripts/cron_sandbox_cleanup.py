@@ -313,6 +313,27 @@ def clean_task_artifacts(dry_run=False):
             except Exception:
                 continue
 
+    # 7) /tmp 根下超龄任务脚本与结果文件（.json/.py/.sh/.mjs，仅根目录不递归）+ 无扩展名测试文件名单
+    root_script_exts = (".json", ".py", ".sh", ".mjs")
+    misc_test_names = ("rci_ensure_marker", "rci_inject_marker", "4000", "5000", "wtest")
+    if os.path.isdir("/tmp"):
+        for f in os.listdir("/tmp"):
+            fp = os.path.join("/tmp", f)
+            is_target = (f.lower().endswith(root_script_exts) or f in misc_test_names)
+            if not is_target:
+                continue
+            try:
+                if not os.path.isfile(fp) or not _expired(fp):
+                    continue
+                sz = os.path.getsize(fp)
+                if not dry_run:
+                    os.remove(fp)
+                freed += sz
+                removed += 1
+                items.append(f"🧹 /tmp/{f} — {'待删' if dry_run else '已清'} ({size_str(fp)}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天根目录脚本/结果)")
+            except Exception:
+                continue
+
     # 4) workspace/tmp/ 下超龄文件（任务脚本产物，如 .bas VBA 导出）
     ws_tmp = os.path.join(WORKSPACE, "tmp")
     if os.path.isdir(ws_tmp):
