@@ -188,6 +188,7 @@ def clean_task_artifacts(dry_run=False):
     """清理 /tmp 任务产物：xiaoyi_ppt 会话目录、调研目录、/tmp 根下超龄 html、/tmp 下超龄 Office 成品与媒体文件、workspace/tmp 超龄文件。
     按 mtime 年龄 > TASK_ARTIFACT_MAX_AGE_DAYS 天才清；dry_run=True 只列出待删，不实删。"""
     import time
+    import glob as _glob
     freed = 0
     items = []
     removed = 0
@@ -242,9 +243,8 @@ def clean_task_artifacts(dry_run=False):
     artifact_exts = (".xlsx", ".docx", ".pptx", ".jpg", ".jpeg", ".png", ".webp", ".gif",
                      ".mp4", ".m4a", ".mp3", ".wav", ".mov",
                      ".pdf", ".tgz", ".zip", ".txt")
-    # 运行时/依赖目录保护：不参与清理（环境依赖，删了会挂）
-    PROTECTED_DIRS = ("/tmp/openclaw", "/tmp/jiti", "/tmp/xy_channel",
-                      "/tmp/node_modules", "/tmp/pip-", "/tmp/systemd-")
+    # 运行时目录保护：仅真正运行中的环境目录，删了会挂
+    PROTECTED_DIRS = ("/tmp/openclaw", "/tmp/systemd-")
     for root, dirs, fs in os.walk("/tmp"):
         # 跳过运行时/依赖保护目录
         if any(root == p or root.startswith(p.rstrip('/') + os.sep) or root.startswith(p) for p in PROTECTED_DIRS):
@@ -252,6 +252,10 @@ def clean_task_artifacts(dry_run=False):
             continue
         # 跳过已由目录级规则覆盖的任务产物目录
         if any(root == d or root.startswith(d + os.sep) for d in TASK_ARTIFACT_DIRS):
+            dirs[:] = []
+            continue
+        # 跳过已由编译缓存规则覆盖的目录（避免文件级重复计）
+        if any(root == cp or root.startswith(cp + os.sep) for cp in _glob.glob("/tmp/pip-*") + _glob.glob("/tmp/.org.chromium.Chromium.*") + ["/tmp/jiti"]):
             dirs[:] = []
             continue
         for f in fs:
@@ -267,6 +271,45 @@ def clean_task_artifacts(dry_run=False):
                 freed += s
                 removed += 1
                 items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp)}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天Office/媒体成品)")
+            except Exception:
+                continue
+
+    # 5) 编译/构建缓存清理：pip-*/jiti/.org.chromium.*/v8-compile-cache/tsx-*/esbuild-*/playwright-*/puppeteer-*/npm-*（超龄整删）
+    cache_patterns = ["/tmp/pip-*", "/tmp/jiti", "/tmp/.org.chromium.Chromium.*",
+                      "/tmp/v8-compile-cache*", "/tmp/tsx-*", "/tmp/esbuild-*",
+                      "/tmp/playwright-*", "/tmp/puppeteer-*", "/tmp/npm-*"]
+    for pat in cache_patterns:
+        for fp in _glob.glob(pat):
+            if not _expired(fp):
+                continue
+            try:
+                sz = dir_size(fp) if os.path.isdir(fp) else os.path.getsize(fp)
+                if not dry_run:
+                    if os.path.isdir(fp):
+                        shutil.rmtree(fp, ignore_errors=True)
+                    else:
+                        os.remove(fp)
+                freed += sz
+                removed += 1
+                items.append(f"🧹 {fp} — {'待删' if dry_run else '已清'} ({size_str(fp) if sz else '0B'}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天编译缓存)")
+            except Exception:
+                continue
+
+    # 6) /tmp 根下超龄日志文件（*.log）
+    if os.path.isdir("/tmp"):
+        for f in os.listdir("/tmp"):
+            if not f.endswith(".log"):
+                continue
+            fp = os.path.join("/tmp", f)
+            try:
+                if not os.path.isfile(fp) or not _expired(fp):
+                    continue
+                sz = os.path.getsize(fp)
+                if not dry_run:
+                    os.remove(fp)
+                freed += sz
+                removed += 1
+                items.append(f"🧹 /tmp/{f} — {'待删' if dry_run else '已清'} ({size_str(fp)}, 超{TASK_ARTIFACT_MAX_AGE_DAYS}天日志)")
             except Exception:
                 continue
 
