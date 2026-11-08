@@ -182,7 +182,7 @@ def clean_tmp_screenshots(dry_run=False):
 # /tmp 任务产物：超过该天数未动的自动淘汰（2026-11-06 俞哥确认纳入沙箱清理）
 TASK_ARTIFACT_MAX_AGE_DAYS = 7
 # 已知任务产物目录（PPT会话/调研快照等）
-TASK_ARTIFACT_DIRS = ["/tmp/xiaoyi_ppt", "/tmp/mao"]
+TASK_ARTIFACT_DIRS = ["/tmp/xiaoyi_ppt", "/tmp/mao", "/tmp/ppt_check", "/tmp/ppt_fix", "/tmp/ppt_fix2", "/tmp/ppt_check3", "/tmp/ppt_check_png", "/tmp/vec_redraw", "/tmp/faw_q3", "/tmp/q3_report", "/tmp/qqbot_audit", "/tmp/ai_trend", "/tmp/wsp_deps"]
 
 def clean_task_artifacts(dry_run=False):
     """清理 /tmp 任务产物：xiaoyi_ppt 会话目录、调研目录、/tmp 根下超龄 html、/tmp 下超龄 Office 成品与媒体文件、workspace/tmp 超龄文件。
@@ -240,8 +240,16 @@ def clean_task_artifacts(dry_run=False):
 
     # 3) /tmp 下超龄 Office 成品与媒体文件（不限目录；TASK_ARTIFACT_DIRS 下的走目录级规则避免双计）
     artifact_exts = (".xlsx", ".docx", ".pptx", ".jpg", ".jpeg", ".png", ".webp", ".gif",
-                     ".mp4", ".m4a", ".mp3", ".wav", ".mov")
+                     ".mp4", ".m4a", ".mp3", ".wav", ".mov",
+                     ".pdf", ".tgz", ".zip", ".txt")
+    # 运行时/依赖目录保护：不参与清理（环境依赖，删了会挂）
+    PROTECTED_DIRS = ("/tmp/openclaw", "/tmp/jiti", "/tmp/xy_channel",
+                      "/tmp/node_modules", "/tmp/pip-", "/tmp/systemd-")
     for root, dirs, fs in os.walk("/tmp"):
+        # 跳过运行时/依赖保护目录
+        if any(root == p or root.startswith(p.rstrip('/') + os.sep) or root.startswith(p) for p in PROTECTED_DIRS):
+            dirs[:] = []
+            continue
         # 跳过已由目录级规则覆盖的任务产物目录
         if any(root == d or root.startswith(d + os.sep) for d in TASK_ARTIFACT_DIRS):
             dirs[:] = []
