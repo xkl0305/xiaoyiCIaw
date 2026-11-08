@@ -1827,3 +1827,27 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 生成后**逐字核验字形**：用 xiaoyi-image-understanding 脚本通道读图核实文字是否准确（image_reading 易截断，脚本通道拉全文更可靠）
 - 确认无错字/缺笔才交付用户；有错则该张重生成
 - 适用：所有含中文文字的生图任务（签名/海报/手写字/标题等）
+
+### Seedance 生视频实战经验（2026-11-08 固化）
+
+**背景:** 蜘蛛侠自拍三段分镜（1.5s+5.13s+3.37s → 实际 4s+5s+4s）生成，累计约 290 点，段1/段2 成功、段3 连续 3 次失败后换机位成功。
+
+**经验条目:**
+1. **时长硬限 4–15 秒**：`generate_video.py` 对 duration<4 直接 `ValueError` 拒绝（"视频时长 X 秒超出限制 (4-15秒)"）。分段规划每段最少 4 秒，1.5s/3s 这类细分不可行，必须拉长到 4s。
+2. **2 分钟创建间隔限制**：脚本内置 `check_recent_tasks`，2 分钟内只允许创建 1 个视频任务，串行多段必须 `sleep 150` 以上间隔，否则被跳过（报"2分钟内创建过视频生成任务"）。
+3. **「广角低机位 + 手部动作」是高失败组合**：实测段3（广角低机位仰拍+蛛丝手势/挥手）连续 3 次 failed（精确手势→简化手势→仍失败），换**平视中景**一次成功；段1（中近景+托下颌）、段2（平视特写+托脸）均稳定成功。→ 生视频优先中近景/平视机位，避开广角+手部特写组合。
+4. **failed 无详细原因**：云端返回 status=failed 且 message/desc 为空，脚本只能打印 "failed"，拿不到根因；排查靠对比成功案例（同人物/场景/服装下哪个机位或动作不同）。
+5. **ffmpeg concat 必须保留音轨**：concat filter 里写 `a=0` 会静默丢掉音频（第一版合集无声事故）；正确做法是视频 `concat=n=3:v=1:a=0` 后再 `[0:a][1:a][2:a]concat=n=3:v=0:a=1` 单独拼音频并 `-map`，或直接 `v=1:a=1`；合成后必须 `ffprobe -select_streams a` 校验音频流存在。
+6. **shell 重定向顺序坑**：`2>&1 >> LOG` 是错的（stderr 指向重定向前 stdout 丢失），正确 `>> LOG 2>&1`；后台脚本日志必须能收 stderr，否则失败原因全丢（本次段1/段3 首轮错误即因此看不到，误判为秒退）。
+7. **参考图缺失时改写 prompt**：无参考图时须删掉所有「按参考图/@图片N」表述，改为主体的完整文字描述（发型/服装/配色/纹样逐项写清），否则脚本引用不到素材。
+
+### seedream 华为SSE假成功·根因与双层修复（2026-11-08 固化）
+
+**根因：** `huawei_provider._download_image` 仅校验 HTTP 200，把下载到的 HTML 错误页/占位文本/空内容也 `write_bytes` 落盘并返回 path，导致 SSE 返回 status=generated 但图是垃圾文件——假成功。seedream_provider 的 SSE 分支只查 `generated_image_path` 非空，未像 openai 分支那样用 `_validate_output_image` 强校验。
+
+**双层修复：**
+1. **源头 - huawei_provider._download_image**：下载后强校验内容——①非空且 ≥500 字节 ②前几字节为真实图片魔数（JPEG `FFD8FF` / PNG `89504E47` / WEBP `RIFF…WEBP` / GIF `GIF8`），不达标返回 None → paths 空 → 状态 `provider_returned_no_image`，杜绝垃圾文件报成功
+2. **兜底 - seedream_provider SSE 分支**：status in ('generated',) 且路径非空时，再调 `_validate_output_image(path, _gen_start)` 强校验文件真实存在且为本轮新生成（与 openai 分支同标准），不通过则标 status='provider_returned_no_image' + blocked_send=fake_success，continue 尝试下一通道
+
+**验证：** 单测 9 场景全过（HTML错误页/空/占位→拒；PNG/JPEG/WEBP/GIF→过；新生成文件→有效、陈旧→拒）；py_compile 通过；已提交 git b74c4eb；备份 .bak-ssefix-20261108
+**判断教训：** 排查“图没落盘”先确认 OUT_DIR 实际路径（`.persona_visual/generated/`，非 `generated-images/`），避免查错目录误判；SSE 假成功判断以落盘文件内容有效为准，不看 status。
