@@ -1815,6 +1815,18 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 别只盯主配置文件及其 .bak / 日志 / sqlite;别在穷尽排查前武断下"缺配置/需用户提供"结论
 - 教训(2026-11-01): 查火山ARK key 时漏了 _read_xiaoyi_env 的 TOOLS.md 兜底,误判"key从未配置",实际 key 一直在 TOOLS.md 兜底
 
+### 插件加载·global裸插件完整重启失效坑（2026-11-09 固化，实测排查）
+
+**背景：** write-gate 正式文件写保护在 gateway 完整重启后失效（真实 edit 直接写入正式文件没被拦），排查挖出 OpenClaw 插件加载机制坑。
+
+**坑点：**
+1. **global: 裸插件（无 package.json 的 index.js）依赖 extensions 自动发现，但完整重启后不挂 hook**——CLI `openclaw plugins list` 仍显示 enabled，但 `before_tool_call` 等 hook 不触发（write-gate 连每 5 分钟的 sweep 日志都停）。判断插件是否真在跑：看它自己的日志有没有周期性/事件记录（如 write-gate.log 的 sweep），无新记录=没跑起来。
+2. **正规加载靠 `plugins.load.paths`**：把插件目录加进 openclaw.json 的 `plugins.load.paths` 后完整重启，插件才真正加载 hook（实测 write-gate 拦截恢复、source 从 `global:xx/index.js` 变 `~/.openclaw/extensions/xx/index.js`）。
+3. **改插件代码必须完整重启进程才生效**：gateway 进程由 supervisord 管理（`python3 -m supervisor.supervisord -c ~/supervisord.conf`），改插件后要 `supervisorctl restart openclaw-gateway`；之前用的 gateway 工具 restart 返回 SIGUSR1 只是 emit hooks（`"mode":"emit","emitHooksQueued":true`），**不重新 import 插件**——旧进程 7 天未重启，磁盘上的新代码一直没加载（11-08 改的 write-gate TTL、evolution-reply-confirm 确认句归一都因此一直是假象）。
+4. **`evolution-reply-confirm` 曾 enabled=false + 进程未重启**：宣称的「确认句位置归一」从没真正跑过；本次一并加 load.paths + enabled=true 才真正启用。
+
+**修复标准流程：** ①备份 `openclaw.json` ②`plugins.load.paths` 加插件目录 + 必要时 `plugins.entries.<id>.enabled=true` ③`supervisorctl restart openclaw-gateway` ④`openclaw plugins list` 确认 source 变成插件绝对路径 ⑤实测插件功能（如 write-gate 对正式文件真实 edit 是否被拦）。
+
 ### seedream 出图「SSE 假成功」与 9:16 竖屏档（2026-11-06 固化）
 
 1. **SSE 假成功排错**：`seedream-image-gen` 走 `huawei_sse` 通道时，返回 `status=generated` 但图可能没落盘（`.persona_visual/generated/` 或 `generated-images/` 目录为空）——属假成功。**判断标准以落盘文件为准**，不看 status；SSE 假成功时切 ARK 通道（`--channel ark`）可真实出图+落盘。**通道顺序关联**：人格视角出图桥接层本就 ARK 优先（`channel="ark,huawei_sse"`，fallback ark→huawei_sse）；seedream-image-gen skill 默认不传时按 huawei_sse→ark→siliconflow（见「seedream-provider 多通道调用规则」），此处的“切ark”即回到人格视角系统第一顺位主通道。
