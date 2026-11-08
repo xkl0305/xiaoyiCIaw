@@ -71,7 +71,8 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 **任务产物清理（7天规则）：**
 - `scripts/cron_sandbox_cleanup.py` 新增 clean_task_artifacts 清理项（#8），按 mtime 超 7 天淘汰：①`/tmp/xiaoyi_ppt/` 下各会话目录（pptx/大纲/图片）②`/tmp/mao/` 调研快照目录 ③`/tmp` 根下超龄调研/搜索缓存 html ④`/tmp` 下（含子目录）超龄 Office+媒体成品一律清（xlsx/docx/pptx/jpg/jpeg/png/webp/gif/mp4/m4a/mp3/wav/mov，不限目录，跳过已覆盖目录避免双计）⑤`workspace/tmp/` 下超龄文件清（含 .bas VBA 导出等任务脚本产物；2026-11-06 选项B二次扩展）
-- txt 类暂未纳入；workspace 的 generated-images/.persona_visual 仍走"待确认大文件"不自动删
+- **2026-11-08 补齐遗漏（实测）：** 目录白名单从 2 个扩至 **13 个**——新增 `ppt_check/ppt_fix/ppt_fix2/ppt_check3/ppt_check_png/vec_redraw/faw_q3/q3_report/qqbot_audit/ai_trend/wsp_deps`（PPT 检查修复中间产物、Q3 报告 docx/pdf、qqbot 审计包、调研 txt 快照、pip 依赖目录）；后缀兜底补 **.pdf/.tgz/.zip/.txt**（原先 pdf/tgz/txt 全漏）；新增运行时保护黑名单 `openclaw/jiti/xy_channel/node_modules/pip-*/systemd-*` 不参与清理。验证方式：造 10 天前超龄文件跑 dry_run 确认命中
+- txt 类仅任务目录内清（根目录 txt 不碰）；workspace 的 generated-images/.persona_visual 仍走"待确认大文件"不自动删
 - 已备份 `.bak-20261106` / `.bak-20261106-2` / `.bak-20261106-3`；dry_run 预览模式兼容；cron 无需重启，每周日 12:00 随现有任务生效
 - 7 天保护期内产物一律不动；已发用户的成品不受影响
 
