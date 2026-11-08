@@ -1819,6 +1819,7 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 1. **SSE 假成功排错**：`seedream-image-gen` 走 `huawei_sse` 通道时，返回 `status=generated` 但图可能没落盘（`.persona_visual/generated/` 或 `generated-images/` 目录为空）——属假成功。**判断标准以落盘文件为准**，不看 status；SSE 假成功时切 ARK 通道（`--channel ark`）可真实出图+落盘。**通道顺序关联**：人格视角出图桥接层本就 ARK 优先（`channel="ark,huawei_sse"`，fallback ark→huawei_sse）；seedream-image-gen skill 默认不传时按 huawei_sse→ark→siliconflow（见「seedream-provider 多通道调用规则」），此处的“切ark”即回到人格视角系统第一顺位主通道。
 2. **9:16 竖屏尺寸档**：原 `--size` 枚举无精确 9:16（最接近 4K-portrait=3072×4096=3:4、2K/3K=1:2）。已给 `seedream_provider._SIZE_MAP` 补 `'9:16':'2304x4096'`，`generate_seedream.py --size` 增 `'9:16'` 选项，备份 `.bak-20261106`。用 `--size 9:16 --channel ark` 可出严格 9:16（2304×4096）。
+3. **active_channel 非执行态（2026-11-09 固化，实测坑点）**：返回日志里的 `active_channel`/`url_source` 是**配置描述函数**输出，总是把第一配置（华为主）标为 active，**与本次实际执行通道无关**——不能据此判断走了哪家。判定实际通道要看：①channel 参数会把通道列表裁剪为仅指定名（`--channel ark`→channels=[ark]，for 循环根本走不到 huawei SSE 分支）②生成文件名里的 ch_name（`seedream_ark_*`=ARK、`huawei_*`=华为主）。实测：`--channel ark` 出图文件名 seedream_ark_* 但日志 active_channel 显示 huawei_sse，以此为准坐实 ARK。
 
 ### AI 生图含汉字文字·字形核验纪律(2026-11-06 固化)
 **背景:** seedream 等文生图模型对汉字/中文姓名渲染不可靠，艺术签名/海报文字/标题等含中文文字场景高发错字、缺笔、笔画混乱（案例：某某某四张艺术签名，每张生成后需逐字核验）。
