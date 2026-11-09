@@ -571,6 +571,10 @@ def generate_image(
                     hw_result['channels_available'] = [c['name'] for c in channels]
                     return hw_result
                 _last_error = f'{ch_name}: {hw_result.get("status", "unknown")}'
+                _hw_code = hw_result.get('provider_code') or ''
+                _hw_msg = hw_result.get('provider_message') or ''
+                if _hw_code or _hw_msg:
+                    _last_error += f' [{_hw_code}] {_hw_msg}'[:300]
                 continue
 
             # OpenAI 兼容通道（火山 ARK / 硅基流动）
@@ -621,7 +625,10 @@ def generate_image(
                 else:
                     result['status'] = 'provider_returned_no_image'
                 return result
+            _err_body = (response_raw_preview or '').replace('\n', ' ').strip()
             _last_error = f'{ch_name}: HTTP {response_status_code}'
+            if _err_body:
+                _last_error += f' {_err_body[:300]}'
             continue
         except Exception as e:
             _last_error = f'{ch_name}: {str(e)}'

@@ -349,6 +349,8 @@ def generate_image(
     }
 
     image_urls: List[str] = []
+    final_code: str = ""
+    final_desc: str = ""
     try:
         response = requests.post(api_url, headers=headers, json=payload, timeout=180, verify=False, stream=True)
         response.raise_for_status()
@@ -376,15 +378,24 @@ def generate_image(
             stream_info = reply.get("streamInfo", {})
             if stream_info.get("streamType") != "final":
                 continue
+            # 修复(2026-11-09): 透传华为服务端 final 的 code/desc，
+            # 否则内容审核拒绝(OutputImageSensitiveContentDetected)会被统一误归为 provider_returned_no_image，
+            # 看起来像通道故障，无法区分“审核拒”与“真失败”。
+            final_code = str(reply.get("code") or "")
+            final_desc = str(reply.get("desc") or "")
             items = reply.get("items", [])
             if items:
                 image_urls = items
             break
 
         if not image_urls:
+            _reason = "sensitive_content" if "Sensitive" in final_code else (final_code or "no_image")
             return {
                 "status": "provider_returned_no_image",
                 "provider": "huawei_xiaoyi",
+                "reason": _reason,
+                "provider_code": final_code,
+                "provider_message": final_desc,
                 "generated_image_path": None,
                 "generated_image_paths": [],
             }
