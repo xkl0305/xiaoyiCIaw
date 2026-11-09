@@ -1881,6 +1881,13 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 用法：用户要换视角时，按目标效果推荐对应机位并说明效果差异；换机位=重新生成一版，仍走完整参数确认流程。
 
+### 视频参考图真人风控实测与降级路径（2026-11-09 固化）
+
+1. **写实真人参考图被 Seedance 内容安全硬拒**：用 seedream 生成的写实真人图（双人近景/人物裙身）做 --reference-images，创建任务直接报错 `The request failed because of the input image 'content[1]' may contain real person`；**单图排除法诊断**（逐张试，失败任务未到生成阶段不扣点）确认所有写实真人图均拒——平台硬限制，不可绕过。SKILL.md 预警“原则上不支持真人人脸参考图”实锤。
+2. **降级路径**：真人参考被拒 → 改纯文字生成（人物外貌/服装/场景全文字化），过审正常可一次出片；多人互动/三镜分镜均适用。
+3. **seedance 人物外观/姿势描述有效词规律**：身材类用直白具体词（如 身材丰满/胸部饱满挺拔/腰细臀翘）比抽象词（曲线优雅）控制力强（两轮迭代实测）；姿势同理，具体身体语言（侧身前送/腰背弧线/肩线拉开）优于笼统词（上身前送）。
+4. **自造参考图流程与边界**：用户无图时可用 seedream 先生成参考图（图1锁脸/图2锁服装）再走视频参考流程；但写实人脸图必被风控拒，仅风格化/非真人图可行。
+
 ### seedream 华为SSE假成功·根因与双层修复（2026-11-08 固化）
 
 **根因：** `huawei_provider._download_image` 仅校验 HTTP 200，把下载到的 HTML 错误页/占位文本/空内容也 `write_bytes` 落盘并返回 path，导致 SSE 返回 status=generated 但图是垃圾文件——假成功。seedream_provider 的 SSE 分支只查 `generated_image_path` 非空，未像 openai 分支那样用 `_validate_output_image` 强校验。
