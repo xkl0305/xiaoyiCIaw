@@ -109,16 +109,30 @@
 
 ## 错误响应
 
-CLI 错误统一输出到 stderr：
+CLI 错误统一输出到 stderr。`keyRequired: true` 表示需刷新凭证后重试。鉴权来源：小艺为 `authSource=xiaoyi`；SSO 为 `authSource=device_flow`。
+
+**小艺模式（`authSource=xiaoyi`）常见示例：**
 
 ```json
-{"status": 401, "message": "未登录，请先执行 kuaidi100-cli auth login", "keyRequired": true}
+{"status": 401, "message": "未找到小艺凭证文件: ...，请先调用 huawei_id_tool 刷新凭证", "keyRequired": true}
 ```
+
+**SSO（`authSource=device_flow`）示例：**
+
+```json
+{"status": 401, "message": "未登录，请先执行 kuaidi100-cli auth login（浏览器 SSO 授权）", "keyRequired": true}
+```
+
+**401 / keyRequired 处理顺序：**
+
+1. 调用一次 `huawei_id_tool`（clientId=118539227，skillName=kuaidi100-user）
+2. 执行 `kd100 auth import-xiaoyi`，确认 `hasKey: true` 且 `authSource=xiaoyi`
+3. 仍失败再 `kd100 auth login --open`（SSO 兜底；成功后 `authSource=device_flow`）
 
 | status | 说明 |
 |--------|------|
 | 400 | 参数错误 |
-| 401 | 未登录或登录已失效，提示 `kd100 auth login --open` 重新登录 |
+| 401 | 凭证无效：优先 `huawei_id_tool` → `auth import-xiaoyi`；失败再 `auth login --open`（SSO 兜底） |
 | 404 | 资源不存在 |
 | 429 | 请求频率超限 |
 | 500 | 系统异常 |

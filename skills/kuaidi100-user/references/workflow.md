@@ -25,12 +25,12 @@
 ### 1. 确认 CLI 已安装
 
 ```bash
-kd100 
+kd100 --version
 ```
 
 | 结果 | 处理 |
 |------|------|
-| 输出版本号（如 `0.0.1`） | 已安装，进入下一步 |
+| 输出版本号（需 ≥ `1.2.5`） | 已安装，进入下一步 |
 | 命令不存在 / 无法执行 | **停止流程**，引导用户执行 `npm install -g @kuaidi100-user/cli` 安装，安装后重新验证 |
 
 安装命令：
@@ -45,12 +45,30 @@ npm i -g @kuaidi100-user/cli
 kd100 auth status
 ```
 
+`hasKey` 表示本地 `config.json` 是否已有有效 `apiKey`（小艺导入与 SSO 登录均写入 `apiKey`）。鉴权来源看 `authSource`：
+- 华为一键：`authSource=xiaoyi`
+- SSO 兜底：`authSource=device_flow`
+
+业务请求统一 HTTP 头 **`token`**（与 form `api_key`）；`.xiaoyienv` 仅作导入源。
+
 | 结果 | 处理 |
 |------|------|
 | `hasKey: true` | 已进入登录模式，继续业务流程 |
-| `hasKey: false` | 需要登录，执行 SSO 授权（见下方） |
+| `hasKey: false` | 需要登录：优先华为一键，失败再 SSO（见下方） |
 
-**未登录时发起 SSO 授权：**
+> **统一释义**：下文业务章节凡写「重新登录 / 刷新凭证 / 提示重新登录」，均指：优先调用一次 `huawei_id_tool` → `kd100 auth import-xiaoyi`；失败再 `kd100 auth login --open`（SSO 兜底）。
+
+**未登录时优先华为一键授权（主）：**
+
+调用一次 `huawei_id_tool`（clientId=118539227，skillName=kuaidi100-user）刷新凭证，**仅一次不可重复**。
+1. 若用户从未授权，小艺会弹出华为账号授权卡，引导点击"同意并绑定"完成一键授权；已授权仅过期则无感刷新
+2. 刷新成功后执行 `kd100 auth import-xiaoyi`（校验 `.xiaoyienv` 中的 `118539227_login_token`，**写入**本地加密 `apiKey`，标记 `authSource=xiaoyi`）
+3. 再执行 `kd100 auth status` 确认 `hasKey: true` 且 `authSource: xiaoyi` 后重新执行原命令
+4. **授权成功前不得执行任何其他业务命令**（寄件、查单、物流等）
+
+**SSO 兜底（仅华为一键授权失败时）：**
+
+若 `huawei_id_tool` 不可用/刷新失败/用户拒绝，先向用户展示失败原因，再回退 SSO。成功后标记 `authSource=device_flow`。
 
 ```bash
 kd100 auth login --open
@@ -82,7 +100,7 @@ kd100 auth status
 | 结果 | 处理 |
 |------|------|
 | `hasKey: true` | 进入寄件流程，**仅使用服务端** `kd100 sender` / `kd100 receiver` |
-| `hasKey: false` | **停止寄件流程**，执行 SSO 授权登录；**禁止**读取 `kd100 data sender` / `kd100 data receivers` 本地缓存 |
+| `hasKey: false` | **停止寄件流程**，优先 `huawei_id_tool` → `auth import-xiaoyi`（失败则 SSO 兜底）；**禁止**读取 `kd100 data sender` / `kd100 data receivers` 本地缓存 |
 
 ---
 
@@ -136,8 +154,8 @@ kd100 auth status
 | 物品重量 | 调用 `kd100 weight <物品>` 推荐参考值，用户可改 | 服务端 |
 | 快递公司 | 默认推荐最便宜的，用户可换 | 服务端 |
 
-> **寄快递禁止本地缓存**：寄件流程中不得使用 `kd100 data sender` / `kd100 data receivers`。未登录须先 SSO 授权。
-> **服务端查无数据**：`kd100 sender` / `kd100 receiver` / `kd100 order list` / `kd100 order track` 失败或空时，**不得展示本地缓存**，提示 `kd100 auth login --open` 重新登录并重试。
+> **寄快递禁止本地缓存**：寄件流程中不得使用 `kd100 data sender` / `kd100 data receivers`。未登录须先登录（见前置检查 §2 统一释义）。
+> **服务端查无数据**：`kd100 sender` / `kd100 receiver` / `kd100 order list` / `kd100 order track` 失败或空时，**不得展示本地缓存**，提示重新登录并重试。
 
 ### 必须询问用户
 
@@ -170,7 +188,7 @@ Level 1: kd100 sender (服务端)
     ↓ 成功 → 直接使用，跳过询问
     ↓ 失败 / 无数据 (401/404/空/网络异常)
     → 禁止读取或展示 kd100 data sender 本地缓存
-    → 提示用户执行 `kd100 auth login --open` 重新登录
+    → 提示用户重新登录（见前置检查 §2）
     → 重新登录成功后重试 kd100 sender
     ↓ 重试仍无数据
 Level 2: 手动询问
@@ -202,7 +220,7 @@ kd100 data sender --set '{"name":"张三","phone":"13800138000","province":"广�
 2. 命中?
    ├── 1条 → 直接展示，让用户确认
    ├── 多条 → 列表展示，让用户选择
-   └── 0条 / 失败(401/404/空) → 不展示本地缓存，提示 `kd100 auth login --open` 重新登录并重试；重试仍无匹配 → 走分支 C
+   └── 0条 / 失败(401/404/空) → 不展示本地缓存，提示重新登录并重试；重试仍无匹配 → 走分支 C
 ```
 
 ### 分支 B：用户提供姓名 + 部分地址信息
@@ -298,10 +316,10 @@ kd100 data sender --set '{"name":"张三","phone":"13800138000","province":"广�
 
 ## 五、完整下单流程总览
 
-> **Step 0**：`kd100 auth status`，未登录则 SSO 授权，**禁止本地缓存**。
+> **Step 0**：`kd100 auth status`，未登录则按前置检查 §2 登录，**禁止本地缓存**。
 
 ```
-0. [门禁] 确认已登录 → 未登录则 `kd100 auth login --open`
+0. [门禁] 确认已登录 → 未登录则优先华为一键（失败再 SSO）
        |
        v
 1. [服务端] 获取寄件人
@@ -376,7 +394,7 @@ data.markdownInfo            → Markdown 格式信息（可直接展示给用�
 ```
 用户要查物流?
 ├── 有运单号 → kd100 order track <运单号>
-│   └── 查不到 / 401/404 → 不展示本地缓存，提示 `kd100 auth login --open` 重新登录
+│   └── 查不到 / 401/404 → 不展示本地缓存，提示重新登录
 └── 无运单号 → 仅查服务端 kd100 order list
     ├── 有数据 → 展示服务端订单列表
     └── 无数据 / 失败 → 不展示本地 kd100 data orders，提示重新登录并重试
@@ -406,7 +424,7 @@ data.markdownInfo            → Markdown 格式信息（可直接展示给用�
 
 | 命令 | 异常场景 | 未登录模式降级 | 登录模式降级 |
 |------|---------|--------------|-------------|
-| kd100 sender | 401/404 / 空 / 网络错误 | ❌ 无此命令 | 不查本地 → 提示 `kd100 auth login --open` 重新登录并重试 → 仍无则手动询问 |
+| kd100 sender | 401/404 / 空 / 网络错误 | ❌ 无此命令 | 不查本地 → 提示重新登录并重试 → 仍无则手动询问 |
 | kd100 receiver | 401/404 / 空列表 / 网络错误 | ❌ 无此命令 | 不查本地 → 提示重新登录并重试 → 仍无则手动输入 |
 | kd100 order list | 401/404 / 空列表 / 网络错误 | ❌ 无此命令 | 不展示本地 orders → 提示重新登录并重试 |
 | kd100 order track | 401/404 / 查不到 | ❌ 无此命令 | 不展示本地 orders → 提示重新登录并重试 |
@@ -415,7 +433,7 @@ data.markdownInfo            → Markdown 格式信息（可直接展示给用�
 | kd100 weight | 404 / 未识别 | 询问用户手动输入重量 | 询问用户手动输入重量 |
 | kd100 address | 404 / 解析失败 | 提示用户检查地址 | 提示用户检查地址 |
 | kd100 companies | 404 / 空列表 | 提示暂无可用快递 | 提示暂无可用快递 |
-| kd100 order create | 401 未登录 | 引导 SSO 登录，禁止本地缓存寄件 | 检查必填字段，提示补充 |
+| kd100 order create | 401 未登录 | 引导登录（见前置检查 §2），禁止本地缓存寄件 | 检查必填字段，提示补充 |
 
 **原则**：
 - **寄快递**：必须先登录，禁止 `data sender` / `data receivers` 本地缓存
