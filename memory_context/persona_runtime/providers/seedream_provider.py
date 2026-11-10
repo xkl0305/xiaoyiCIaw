@@ -286,7 +286,15 @@ def _image_path_from_payload(data: Dict[str, Any], max_images: int) -> Dict[str,
             elif isinstance(item, str) and len(item) > 200:
                 paths.append(_write_base64_image(item))
             elif isinstance(item, dict) and item.get('url'):
-                paths.append(str(item.get('url')))
+                _u = str(item.get('url'))
+                _c = _http_download(_u)
+                if _c:
+                    OUT_DIR.mkdir(parents=True, exist_ok=True)
+                    _o = OUT_DIR / f'seedream_sf_{int(time.time() * 1000)}_{len(paths)}.png'
+                    _o.write_bytes(_c)
+                    paths.append(str(_o))
+                else:
+                    paths.append(_u)
         if paths:
             return {'output_path': paths[0], 'generated_image_path': paths[0], 'generated_image_paths': paths}
     if data.get('output_path') or data.get('generated_image_path'):
@@ -376,6 +384,10 @@ _SIZE_MAP: Dict[str, str] = {
     '1024x1024': '1024x1024',
     '1920x1080': '1920x1080',
     '1080x1920': '1080x1920',
+    '4:5': '1080x1350',
+    '1080x1350': '1080x1350',
+    '1920x2400': '1920x2400',
+    '2700x3600': '2700x3600',
     '2K': '1440x2880',
     '3K': '1920x3840',
     '4K': '4096x3072',
@@ -383,6 +395,18 @@ _SIZE_MAP: Dict[str, str] = {
     '4K-portrait': '3072x4096',
     '4K-square': '4096x4096',
     '9:16': '2304x4096',
+}
+
+# 硅基流动(Kolors 等)自家尺寸档：只认 1024x1024/720x1440/1440x720 等
+_SF_SIZE_MAP: Dict[str, str] = {
+    '1K': '1024x1024', '1024': '1024x1024', '1024x1024': '1024x1024',
+    '4:5': '1024x1024', '1080x1350': '1024x1024',
+    '1920x1080': '1440x720', '4K': '1440x720', '4K-wide': '1440x720',
+    '4096x3072': '1440x720', '3840x2160': '1440x720',
+    '2K': '720x1440', '3K': '720x1440', '9:16': '720x1440',
+    '1080x1920': '720x1440', '1920x2400': '720x1440', '2700x3600': '720x1440',
+    '1920x3840': '720x1440', '2304x4096': '720x1440', '3072x4096': '720x1440',
+    '4K-square': '1024x1024', '4096x4096': '1024x1024',
 }
 
 def generate_image(
@@ -531,6 +555,8 @@ def generate_image(
     _file_env2 = _read_xiaoyi_env()
     endpoint_id = os.environ.get('SEEDREAM_ENDPOINT_ID') or _file_env2.get('SEEDREAM_ENDPOINT_ID') or ''
     ark_model = endpoint_id or MODEL_ID
+    # 硅基流动用自家模型名(火山 doubao-* 在硅基流动不存在会 404)
+    sf_model = os.environ.get('SILICONFLOW_MODEL') or _file_env2.get('SILICONFLOW_MODEL') or 'Kwai-Kolors/Kolors'
 
     for ch_cfg in channels:
         ch_name = ch_cfg['name']
@@ -540,11 +566,16 @@ def generate_image(
 
         try:
             ark_payload: Dict[str, Any] = {
-                'model': ark_model if ch_mode == 'openai' else MODEL_ID,
+                'model': sf_model if ch_name == 'siliconflow' else (ark_model if ch_mode == 'openai' else MODEL_ID),
                 'prompt': prompt,
                 'n': max_images or 1,
-                'size': _SIZE_MAP.get(size, '1440x2880'),
             }
+            if ch_name == 'siliconflow':
+                # 硅基流动参数名是 image_size，且只认自家尺寸档
+                _sf_size = _SF_SIZE_MAP.get(size, '1024x1024')
+                ark_payload['image_size'] = _sf_size
+            else:
+                ark_payload['size'] = _SIZE_MAP.get(size, '1440x2880')
             if negative_prompt:
                 ark_payload['negative_prompt'] = negative_prompt
             encoded_refs = _encode_reference_images(ref_paths)
@@ -586,7 +617,9 @@ def generate_image(
             headers = {'Authorization': f"Bearer {ch_key}", 'Content-Type': 'application/json'}
             base = ch_url.rstrip('/')
             # 修复(2026-10-24): SEEDREAM_API_URL 可能已含 /api/v3,防止拼接出 .../api/v3/api/v3/... 重复路径
-            if base.endswith('/api/v3') or '/v1' in base:
+            if base.endswith('/images/generations'):
+                api_url = base
+            elif base.endswith('/api/v3') or '/v1' in base:
                 api_url = base + '/images/generations'
             else:
                 api_url = base + '/api/v3/images/generations'
