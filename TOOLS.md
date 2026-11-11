@@ -2028,6 +2028,25 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 7. **家具空间关系四要素**：参考图还原家具时只写“坐在沙发上”没用，要写全：①位置（画面哪一部分）②朝向（斜向/横向、靠背贴哪条边）③座垫延伸方向（从哪到哪形成对角线）④人物头位高低。缺一项就会位置错（实测沙发位置错三版）。
 8. **分层核验法**：核验分四层独立查，不混着问——姿态层（躺/坐/夹角）→位置层（身体/腿在不在家具内）→左右层（哪条腿在上）→手部层。“姿态对但腿出界”“腿对但左右反”都是分层才发现的，混着问会漏。
 
+### 参考视频→Seedance 提示词拆解链（video2seedance 路径 C，2026-11-12 07:23 固化）
+
+**仓库**：`/home/sandbox/video2seedance/`（workspace 外防环境重置；skill-scope 扫描 ACCEPT；浅克隆快照，更新需手动 `git -C /home/sandbox/video2seedance pull`；源 https://github.com/MapleShaw/video2seedance）
+
+**工作流（路径 C·Agent 对话内，零 API Key）**：
+1. 抽帧：`cd /home/sandbox/video2seedance/src && python3 frame_analyzer.py <视频> --out-dir <输出>/frames --max-frames 8`（仅依赖 ffmpeg）
+2. 琪琪用 `image_reading` 逐帧读图，按 `src/schema.py` 结构写 `analysis.json`（11 区块：meta/summary/timeline/visual_language/rhythm_structure/camera_language/emotion_and_psychology/viral_mechanics/transferable_pattern/seedance_translation/next_step_assets）
+3. 生成 A/B/C 三版提示词（prompts.md）
+
+**schema 关键设计**：timeline 逐镜头含起止时间/视觉事件/主体动作/镜头动作/音频事件/叙事功能（hook→setup→build→twist→payoff→ending 六段式）/注意力等级 1-5；viral_mechanics 拆“为什么抓人”；transferable_pattern 拆“哪些结构可迁移到别的题材”
+
+**提示词范式（示例 case 实战水平）**：
+- 参考图分工：图1锁脸、图2锁服装体积，两张均不当首帧（与 seedream 锁脸/锁服装实践一致）
+- “对标 frame_XXXX”锚定法：每段提示词锚定到具体抽帧，画质/构图照帧写
+- 逐 Shot 拆解：每镜写足动作细节 + 单镜禁止项 + 全局禁止（禁升格/慢动作/慢镜头/字幕水印/8K4K/HDR）
+- A/B/C 三版：A 原片造型 / B 只换妆造 / C 换场景，一次拆解出三套可对比方案
+
+**触发场景**：俞哥发参考视频（链接或本地文件）要拆解/仿拍/提取提示词模板时走此链
+
 ### 内容尺度与意图路由补充（2026-11-09 下午实测）
 
 1. **内容尺度边界实测**：文字直出的泳装/内衣时尚内容（泳池比基尼含“聚拢托胸设计”、蕾丝内衣含“吊袜带+过膝丝袜”等款式细节词）均正常过审——平台风控卡的是“写实真人参考图”，不卡“文字描述的合规时尚尺度”；合规时尚摄影类需求无需畏手畏脚，但描述保持克制（“避免低俗过度暴露”尾缀可挂）。
