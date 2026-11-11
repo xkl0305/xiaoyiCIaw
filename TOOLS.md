@@ -472,6 +472,7 @@ printf '%d\n' $((RANDOM%12*5))
 - 逻辑: 以 **git HEAD 为技能唯一准绳**——git 跟踪、工作区缺失(整目录或单文件 D 状态)→ 自动 `git restore` 补回;工作区有、git 无→仅提示不自动 add;日志留痕 `logs/skill_sync_heal.log`
 - 边界: 只处理 `skills/` 目录,其他路径异常状态不碰
 - 手动跑: `python3 scripts/skill_sync_heal.py`(退出码 0=一致,2=仍有缺失)
+- **环境重建后自动 heal（2026-11-12 05:26 固化）**：会话启动/被网关 ping 时（环境重建信号，重建必伴随网关重启），先跑 `git status --porcelain skills/` 检查，发现 D 状态（文件缺失）立即执行 `python3 scripts/skill_sync_heal.py` 恢复并报告；一致则静默跳过。替代高频定时任务方案（已删，每2小时巡检烧 token 被俞哥否决），零 token 常驻消耗；与每日 05:00 例行检查并存（例行+重建触发双路径）
 
 **收到「已自动恢复 N 项」通知先定性，别急着处理（2026-11-01 固化）:** 定时任务恢复的文件可能本就是"错误命名/冗余残留"(该删而不该留)。三处排查法:**磁盘** `ls -la <path>` → **index** `git ls-files <path>` → **HEAD** `git ls-tree -r HEAD --name-only | grep <关键词>` + `git log --all -- <path>`。三处均无 = 当前干净，被恢复的是历史残留，保持现状观察明早是否复发，复发则 `git rm`+commit 从 HEAD 移除跟踪根治;HEAD 存在 = 已正式跟踪再判断该不该删。对照同目录正确命名版本(常为少下划线/错目录的变体)可秒判是否残留。(案例:2026-11-01 恢复 getdevicedetails.js/getdevicedetail/SKILL.md,正确版为 get_device_details.js/get_device_* 系列)
 
