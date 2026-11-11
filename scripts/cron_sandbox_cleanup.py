@@ -39,7 +39,8 @@ def auto_clean(dry_run=False):
         misc_items, misc_freed = clean_misc_baks(True)
         shot_items, shot_freed = clean_tmp_screenshots(True)
         task_items, task_freed = clean_task_artifacts(True)
-        return prev_items + misc_items + shot_items + task_items, prev_freed + misc_freed + shot_freed + task_freed
+        gen_items, gen_freed = clean_generated_images(True)
+        return prev_items + misc_items + shot_items + task_items + gen_items, prev_freed + misc_freed + shot_freed + task_freed + gen_freed
 
     # 1. /tmp 编译缓存
     for p in ["/tmp/node-compile-cache", "/tmp/openclaw-compile-cache"]:
@@ -104,6 +105,11 @@ def auto_clean(dry_run=False):
     task_items, task_freed = clean_task_artifacts(dry_run)
     items.extend(task_items)
     freed += task_freed
+
+    # 9. generated-images/ AI出图缓存（超7天自动清）
+    gen_items, gen_freed = clean_generated_images(dry_run)
+    items.extend(gen_items)
+    freed += gen_freed
 
     return items, freed
 
@@ -433,22 +439,36 @@ def clean_misc_baks(dry_run=False):
     return items, freed
 
 
+def clean_generated_images(dry_run=False):
+    """generated-images/ AI出图缓存（超 TASK_ARTIFACT_MAX_AGE_DAYS 天自动清，保护期内不动）"""
+    import time
+    img_dir = os.path.join(WORKSPACE, "generated-images")
+    items, freed = [], 0
+    if not os.path.isdir(img_dir):
+        return items, freed
+    cutoff = time.time() - TASK_ARTIFACT_MAX_AGE_DAYS * 86400
+    removed = 0
+    for f in sorted(os.listdir(img_dir)):
+        fp = os.path.join(img_dir, f)
+        try:
+            if os.path.isfile(fp) and os.path.getmtime(fp) < cutoff:
+                s = os.path.getsize(fp)
+                if not dry_run:
+                    os.remove(fp)
+                freed += s
+                removed += 1
+        except Exception:
+            continue
+    if removed:
+        tag = "待删" if dry_run else "已清"
+        items.append(f"🧹 generated-images/ — {tag} {removed}个/释放 {freed/1024:.1f}KB (超{TASK_ARTIFACT_MAX_AGE_DAYS}天)")
+    return items, freed
+
+
 def list_large_pending():
     """列出需要用户确认的大文件"""
     pending = []
     
-    # generated-images
-    img_dir = os.path.join(WORKSPACE, "generated-images")
-    if os.path.isdir(img_dir):
-        total = dir_size(img_dir)
-        files = sorted(os.listdir(img_dir))
-        pending.append({
-            "path": "generated-images/",
-            "size": size_str(img_dir) if total else "0B",
-            "files": len(files),
-            "note": "AI出图缓存"
-        })
-
     # assets
     assets_dir = os.path.join(WORKSPACE, "assets")
     if os.path.isdir(assets_dir):
