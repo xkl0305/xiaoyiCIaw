@@ -15,6 +15,8 @@
 
 ## 技能信息
 
+- **技能删留定论（2026-11-12 05:35 固化）**: excel-analysis 与 xiaoyi-file-upload 两个技能**保留不删**（俞哥 05:34 定论），skill-sync-heal 继续护着；原“是否正式删除待确认”悬置状态已终结，勿再重复询问。
+
 - **技能名称**: 🦊鸽子王
 - **版本**: 10.9.0
 - **ClawHub**: xiaoyi-claw-omega-final
