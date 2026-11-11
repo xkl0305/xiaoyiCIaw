@@ -1962,6 +1962,7 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 4. **自造参考图流程与边界**：用户无图时可用 seedream 先生成参考图（图1锁脸/图2锁服装）再走视频参考流程；但写实人脸图必被风控拒，仅风格化/非真人图可行。
 5. **白模姿势参考 → seedream 图生图链路可行（2026-11-11 09:04 固化）**：ai-pose-gallery-zh 仓库（`repo/ai-pose-gallery-zh/`，2.3G，9 个姿势/服装/人像 Agent 技能包）的白模姿势图可当 seedream 参考图。链路：`references/catalog.csv` 按「姿势名+角度」grep 取图（图片列相对技能根 `../../img/xxx.png`，白模 900×1200=3:4）→ `--input-image` 传该图 → prompt 注明「仅参考姿势，不参考服装发型」→ 用 `960x1280`（3:4 匹配白模比例，华为✓稳定）→ 生成后用 `xiaoyi-image-understanding` 验证姿势还原。**白模非真人 → 不触发真人风控拒**（区别于写实真人参考图被全入口封锁，见上方第1点）。实测：站立双手叉腰白模出图识图确认站立+叉腰+正面，姿势还原准确。
 6. **ai-pose-gallery 9 技能包已全量适配安装（2026-11-11 09:10 固化）**：仓库 `repo/ai-pose-gallery-zh/`（2.3G）已 clone，**9 个技能包已全部装到 `skills/`**：`pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`。适配要点：①技能包 catalog 图片列 `../../img/` 相对路径在 openclaw skills/ 下失效，须 **sed 改绝对路径指向 `repo/ai-pose-gallery-zh/img/`**（技能依赖 repo 存在，删 repo 会断图）②`costume-reference-anime` 走**原站在线 URL 不重存图**（按作者 LICENSE）③2.3G 图片目录已在 `.gitignore` 忽略，只提交技能文本（SKILL.md+catalog.csv）④8 个新装包全部 skill-scope 扫描 ACCEPT ⑤成人向 3 包（sexy/couple/sexy）已装但**默认安全模式、仅个人合规学习参考**，不主动用于生成违规内容。
+7. **ai-pose-gallery 仓库维护状态（2026-11-11 09:13 固化）**：`repo/ai-pose-gallery-zh/` 为**一次性浅克隆快照（--depth 1），非自动维护**：作者发新版不自动同步，需手动 `git pull`（在仓库目录）；2.3G 常住云端沙箱、已 .gitignore 不被日常维护动它；技能包 catalog 绝对路径依赖仓库存在，**删仓库会断图**；后续要跟新版就手动 pull。
 
 ### 内容尺度与意图路由补充（2026-11-09 下午实测）
 
