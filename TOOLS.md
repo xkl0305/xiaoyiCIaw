@@ -1998,6 +1998,7 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 6. **ai-pose-gallery 9 技能包已全量适配安装（2026-11-11 09:10 固化 · 11:56 路径更新）**：仓库已迁至 **`/home/sandbox/pose-gallery/`（2.3G，workspace 外，防环境重置清空）**，**9 个技能包已全部装到 `skills/`**：`pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`。适配要点：①技能包 catalog 图片列 `../../img/` 相对路径在 openclaw skills/ 下失效，须 **sed 改绝对路径指向 `/home/sandbox/pose-gallery/img/`**（技能依赖图库存在，删图库会断图）②`costume-reference-anime` 走**原站在线 URL 不重存图**（按作者 LICENSE）③只提交技能文本（SKILL.md+catalog.csv），图库不涉 git ④8 个新装包全部 skill-scope 扫描 ACCEPT ⑤成人向 3 包（sexy/couple/sexy）已装但**默认安全模式、仅个人合规学习参考**，不主动用于生成违规内容。**⚠️ 环境重置会清 workspace 内未跟踪目录（2026-11-11 09:28 init 实测清空 repo/ 致技能断图），图库必须放 workspace 外**。
 7. **ai-pose-gallery 仓库维护状态（2026-11-11 09:13 固化 · 11:56 路径更新）**：**`/home/sandbox/pose-gallery/`** 为**一次性浅克隆快照（--depth 1），非自动维护**：作者发新版不自动同步，需手动 `git pull`（在仓库目录）；2.3G 常住沙箱 workspace 外（防环境重置清空）；技能包 catalog 绝对路径依赖图库存在，**删图库会断图**；后续要跟新版就手动 pull。
 8. **ai-pose-gallery 源地址与更新命令（2026-11-11 09:15 固化 · 11:56 路径更新）**：原始仓库 **https://github.com/anhao/ai-pose-gallery-zh**；手动更新命令：`git -C /home/sandbox/pose-gallery pull`。
+9. **姿势参考使用策略（2026-11-11 17:25 固化）**：**姿势库有精确匹配才传白模参考图**（`--input-image` / `--pose-ref`）；**无精确匹配就直接文生图**（纯文字把姿势细节写足：坐实/腿位/手位/朝向），**不为用图而硬凑不匹配的白模**（不匹配的姿势图反而干扰出图效果）。判据：catalog 按「姿势名称」能对上语义才用，近似但不同（如用户要“一腿前伸一腿折”库里只有“双腿斜伸”）时优先文生图。
 
 ### 内容尺度与意图路由补充（2026-11-09 下午实测）
 
