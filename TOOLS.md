@@ -286,6 +286,16 @@ printf '%d\n' $((RANDOM%12*5))
 - **规则**: 当用户要求下载代码/Git 仓库时,优先使用 `OPENCLAW_GIT_DIR` 作为目标目录
 - **执行**: `git clone  "$OPENCLAW_GIT_DIR/"`
 
+### Git 提交历史整理·合并相邻提交（2026-11-11 09:45 固化）
+
+用于把两条相邻提交合成一条（如分步装的技能合并）。**流程：**
+1. **前置安全**：`git remote -v` + `git branch -vv`，确认目标提交**未推送远端**（本地 ahead 才安全，rebase 重写未推送历史不影响远端）
+2. **工作区有未暂存改动会中止 rebase**：须先 `git stash push -u`（含未跟踪）再操作，完成后 `git stash pop` 恢复，勿丢改动
+3. **合并相邻两条**：`git rebase -i <父提交>` + `GIT_SEQUENCE_EDITOR="sed -i 'Ns/^pick/fixup/'"`（N=要并入行的行号，从旧到新数）；fixup 保留前一条 message
+4. **改 message**：fixup 后信息不准确时用 reword——`GIT_SEQUENCE_EDITOR="sed -i '1s/^pick/reword/'"` + `GIT_EDITOR="sed -i '1c 新信息'"`；中文括号 message 可行
+5. **校验**：提交数=合并前-1；`git show <新提交> --name-only` 验证文件完整（勿只信状态面板）
+6. **⚠️ 提交前务必 `git diff --stat` 看变更规模**：若行数远超本次编辑量，说明把工作区遗留改动/旧版本一并 add 了（会误删 HEAD 里大量内容）——须 `git checkout HEAD -- <文件>` 恢复后重新改，勿盲目 `git add <整文件>`
+
 ### Node.js 包下载规则
 
 - **目标目录**: `$OPENCLAW_GIT_DIR/node_modules` 或 `$OPENCLAW_GIT_DIR/`
