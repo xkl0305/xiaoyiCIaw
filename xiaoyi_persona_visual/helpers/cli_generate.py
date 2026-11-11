@@ -190,7 +190,7 @@ def _call_seedream_sse(prompt: str, negative_prompt: str, ref_images: List[str])
 
 
 def generate(text: str, mood: str = "", scene: str = "", dry_run: bool = True,
-             request_id: str = "", outfit_id_override: str = "") -> Dict[str, Any]:
+             request_id: str = "", outfit_id_override: str = "", pose_ref: str = "") -> Dict[str, Any]:
     rid = request_id or f"pv_{uuid.uuid4().hex[:12]}"
     result: Dict[str, Any] = {
         "request_id": rid,
@@ -235,11 +235,40 @@ def generate(text: str, mood: str = "", scene: str = "", dry_run: bool = True,
         from xiaoyi_persona_visual.controller.persona_visual_controller import PersonaVisualController
         controller = PersonaVisualController()
         final_prompt = controller.build_pipeline_prompt(prompt)
+        if pose_ref:
+            # 从 catalog 反查姿势名称(自动带姿势语义进 prompt,解决文字被模板淹没)
+            pose_name = ""
+            try:
+                import glob as _g
+                _base = _resolve(pose_ref)
+                for _csv in _g.glob(os.path.join(WORKSPACE, "skills", "pose-reference-*", "references", "catalog.csv")):
+                    with open(_csv, encoding="utf-8") as _f:
+                        for _line in _f:
+                            if _base in _line:
+                                _cols = _line.strip().split(",")
+                                if len(_cols) >= 5:
+                                    pose_name = _cols[4]
+                                break
+                    if pose_name:
+                        break
+            except Exception:
+                pass
+            if pose_name:
+                result["pose_name"] = pose_name
+                final_prompt = final_prompt + f"\n【姿势强制】人物姿势必须严格为「{pose_name}」：手臂、手部、腿部与身体朝向按此姿势精确摆放，覆盖前文任何笼统站姿描述。"
+            final_prompt = final_prompt + "\n【姿势参考】最后一张参考图是人体姿势白模图：仅参考其人体姿态、动作、肢体位置与朝向，严禁参考其白色模型材质、五官、发型与服装；人物形象、面部、发型、服装必须严格保持前两张参考图一致。"
         result["controller_prompt"] = final_prompt
 
         # ── 6. 参考图路径 ──
         outfit_ref = f"assets/persona/outfits/{outfit_id}_reference.jpg"
         ref_images: List[str] = [_resolve(AVATAR_PATH), _resolve(outfit_ref)]
+        pose_ref_path = ""
+        if pose_ref:
+            pose_ref_path = _resolve(pose_ref)
+            if not os.path.isfile(pose_ref_path):
+                return {**result, "status": "error", "error": f"pose_ref not found: {pose_ref_path}"}
+            ref_images.append(pose_ref_path)
+            result["pose_ref"] = pose_ref_path
 
         # ── 7. 签发 mainchain proof ──
         from xiaoyi_persona_visual.policy.mainchain_proof import issue_mainchain_proof
@@ -378,6 +407,7 @@ def main():
     parser.add_argument("--no-dry-run", action="store_true", default=False)
     parser.add_argument("--request-id", default="")
     parser.add_argument("--output", default="", help="输出文件路径")
+    parser.add_argument("--pose-ref", default="", help="姿势参考图路径(白模图,仅参考姿势)")
 
     args = parser.parse_args()
     dry_run = not args.no_dry_run if args.no_dry_run else args.dry_run
@@ -389,6 +419,7 @@ def main():
         dry_run=dry_run,
         request_id=args.request_id,
         outfit_id_override=args.outfit,
+        pose_ref=args.pose_ref,
     )
 
     output = json.dumps(result, ensure_ascii=False, indent=2)
