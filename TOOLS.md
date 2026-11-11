@@ -931,6 +931,28 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 
 **注意:** 备份 `.bak-arkfix`。siliconflow 的 url 配置带完整 `/v1/images/gen` 路径,同样会拼出重复 `/images/generations`(原有问题,不在 ARK 本次范围)。
 
+### 人格视角出图·支持姿势参考（--pose-ref，2026-11-11 14:57 固化）
+
+**背景：** 人格形象需要摆特定姿势时，原 CLI 只有 text/mood/scene/outfit，无参考图参数，接不上姿势图库。已改造支持。
+
+**改造内容（`xiaoyi_persona_visual/helpers/cli_generate.py`，备份 `.bak-20261111`）：**
+1. 新增 `--pose-ref <白模图>` 参数；姿势图作**第 3 张参考图**：`ref_images=[seed_avatar, outfit_ref, pose_ref]`（ARK 直连才真正注入）
+2. **自动从 catalog 反查姿势名**：glob `skills/pose-reference-*/references/catalog.csv`，按图片绝对路径匹配，取第 5 列「姿势名称」
+3. prompt 末尾追加两条：【姿势强制】人物姿势必须严格为「X」，覆盖前文笼统站姿描述；【姿势参考】最后一张是白模图，仅参考姿态/肢体位置，严禁参考白色材质/五官/发型/服装，人物形象保持前两张一致
+
+**两个坑（实测踩过）：**
+1. **提示词模板会淹没用户 text 的姿势描述**：模板固定写「站姿自然舒展」，用户 text 的「双手叉腰」根本进不了最终 prompt → 必须显式追加姿势强制指令，光靠 text + 参考图不够（首测只站立不叉腰）
+2. **反查变量作用域 bug**：反查用 `pose_ref_path` 但该变量在后面第 6 步才定义 → NameError 被 except 吞 → pose_name 空；须改用 `_resolve(pose_ref)`
+
+**实测结果：** `--pose-ref full_single_P018_front.png`（站立·双手扶腰）→ ARK 直连出图，识图确认**叉腰+站立**还原，银发蓝眼九尾二次元形象完整保留。
+
+**标准命令：**
+```bash
+cd /home/sandbox/.openclaw/workspace
+MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual.helpers.cli_generate \
+  --text "琪琪站在窗前" --pose-ref /home/sandbox/pose-gallery/img/full_single_P018_front.png --no-dry-run
+```
+
 ### 人格视角出图·定制 prompt 绕过主管线覆盖（2026-10-24 固化）
 
 **背景（坑）：** 用户给定制化完整造型 prompt（如月白旗袍+太极束发冠+仙门背景）走 cli_generate 主管线时，`build_persona_prompt` 会把用户主体文本**整个丢弃**，强换成固定的“九尾蓝眼少女展示模板”（outfit=gown），定制服装/背景不保留。且安全 guard（`persona_visual_request_guard`）强制走主管线（`reference_images_count≥2`、`prompt_builder_used=persona_image_prompt_builder`、controller/wardrobe 全 True），禁止手工伪造 PVC 后裸调 provider；另有一层校验必须**同时带真实头像参考 + 衣柜参考**（`missing_required_reference_images`）。
