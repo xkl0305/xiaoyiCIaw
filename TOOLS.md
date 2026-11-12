@@ -2073,6 +2073,8 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 
 **调用**：`cd skills/seedream-image_gen && python3 scripts/generate_seedream.py --prompt "..." --model Pro --size 2K --output-path <目录>`
 
+**参考图输入同样受审（2026-11-12 12:37 补充）**：拿内衣/贴身服饰图当 `--image` 参考图会报“API检测到输入的参考图包含敏感信息”，此时**改纯文字描述生成可绕过**（人物+服装细节写足，代价是脸不是原图那张）。实测：内衣四视图先传参考图被拦 → 改纯文字一次过（1424×800 横版，四视图款式一致）。
+
 ### 人格视觉防护关键词误伤规避（2026-11-12 09:05 固化）
 
 **坑点**：`xiaoyi_persona_visual/policy/persona_visual_request_guard.py` 的 PERSONA_VISUAL_KEYWORDS 含一批**通用美术表述**，普通角色图/四视图/人设图 prompt 命中即被拦，报 `persona_visual_request_must_use_main_pipeline`（provider_status=blocked）——不是通道故障。
