@@ -243,10 +243,71 @@ def _pro_output_dir() -> str:
     return base
 
 
+def _pro_upload_file(service_url: str, api_key: str, uid: str, file_path: str) -> Optional[str]:
+    """直连版参考图上传（三阶段 prepare→upload→complete），返回 fileUrl。合并自 seedream_image_gen 的 upload_file。"""
+    if not os.path.isfile(file_path):
+        return None
+    if not _check_requests_available():
+        return None
+    import requests  # noqa: WPS433
+
+    base = service_url.rstrip('/')
+    hdr = {
+        'x-request-from': 'openclaw',
+        'x-uid': uid,
+        'x-api-key': api_key,
+        'Content-Type': 'application/json',
+    }
+    fname = os.path.basename(file_path)
+    fsize = os.path.getsize(file_path)
+    try:
+        with open(file_path, 'rb') as f:
+            fsha = hashlib.sha256(f.read()).hexdigest()
+        # 阶段1 Prepare
+        pp = {
+            'objectType': 'TEMPORARY_MATERIAL_DOC',
+            'fileName': fname,
+            'fileSha256': fsha,
+            'fileSize': fsize,
+            'fileOwnerInfo': {'uid': uid, 'teamId': uid},
+            'useEdge': False,
+        }
+        r = requests.post(base + '/osms/v1/file/manager/prepare', json=pp, headers=hdr, timeout=120, verify=False)
+        if r.status_code != 200:
+            return None
+        pd = r.json()
+        if pd.get('code') not in (None, '', '0'):
+            return None
+        oid, did = pd.get('objectId'), pd.get('draftId')
+        ui = (pd.get('uploadInfos') or [{}])[0]
+        up_url = ui.get('url')
+        up_method = (ui.get('method') or 'PUT').upper()
+        up_hdr = ui.get('headers') or {}
+        if not (oid and did and up_url):
+            return None
+        # 阶段2 直传
+        with open(file_path, 'rb') as f:
+            blob = f.read()
+        u = requests.request(up_method, up_url, headers=up_hdr, data=blob, timeout=120, verify=False)
+        if u.status_code not in (200, 204):
+            return None
+        # 阶段3 CompleteAndQuery
+        c = requests.post(base + '/osms/v1/file/manager/completeAndQuery', json={'objectId': oid, 'draftId': did},
+                          headers=hdr, timeout=120, verify=False)
+        if c.status_code != 200:
+            return None
+        cd = c.json()
+        url = (cd.get('fileDetailInfo') or {}).get('url', '')
+        return url or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _generate_via_xiaoyi_pro(
     prompt: str,
     size: str = '1K',
     max_images: int = 1,
+    ref_paths: Optional[List[str]] = None,
     service_url: str = '',
     api_key: str = '',
     uid: str = '',
@@ -259,16 +320,27 @@ def _generate_via_xiaoyi_pro(
     import requests  # noqa: WPS433
 
     _size = _pro_size_from_size(size)
+    content = {
+        'prompt': prompt,
+        'size': _size,
+        'watermark': False,
+        'response_format': 'url',
+    }
+    if ref_paths:
+        _ref_urls = []
+        for _rp in ref_paths:
+            _u = _pro_upload_file(service_url, api_key, uid, str(_rp))
+            if _u:
+                _ref_urls.append(_u)
+        if not _ref_urls:
+            _ref_urls = None
+        if _ref_urls:
+            content['reference_images'] = _ref_urls
     payload = {
         'actions': [{
             'actionExecutorTask': {
                 'actionName': _PRO_ACTION_NAME,
-                'content': {
-                    'prompt': prompt,
-                    'size': _size,
-                    'watermark': False,
-                    'response_format': 'url',
-                },
+                'content': content,
                 'pluginId': _PRO_PLUGIN_ID,
                 'replyCard': False,
             },
@@ -797,6 +869,7 @@ def generate_image(
                     prompt=prompt,
                     size=size,
                     max_images=max_images,
+                    ref_paths=ref_paths,
                     service_url=ch_url,
                     api_key=ch_key,
                     uid=str(ch_cfg.get('uid') or ''),
