@@ -2236,3 +2236,15 @@ PYTHONPATH=. python3 skills/seedream-image_gen/scripts/generate_seedream.py \
 **效果实测（2026-11-12）：** 发现总数 280→435，可用 220→371，本地未加载 155→0；顺带救回 `qiqing-liuyu`（人格技能）、`mao-perspective`、`tokui-dsl-renderer`、`pose-reference-*` 等此前完全不可见的技能。
 
 **注意：** `maxSkillsPromptChars`（默认 30000）才是真正控 token 的阀门，别为了「全加载」去提它；加载 ≠ 进提示词，提示词仍按字符预算裁剪。
+
+### 技能数字三口径区分（2026-11-13 固化）
+
+**每日维护报告 / `skills check` 报的数不同，是两个口径不是数字变了：**
+
+| 口径 | 当前值 | 含义 |
+|---|---|---|
+| 每日维护报告 `daily_maintenance.py --report` | **358** | 本地 `skills/` 目录总数（遍历 os.listdir，不含 `.`开头/`.archive`）；含 SKILL.md 即计入可用，缺 SKILL.md 计缺依赖 |
+| `skills check` Eligible/Visible | **371** | 全源可加载（本地 skills/ + plugin-skills + core_skills + node_modules 非本地源）|
+| `skills check` Total | **435** | 发现总数（比 Eligible 多出的为缺依赖/不满足）|
+
+**关键事实：** 本地目录总数一直是 358，三口径不冲突。之前报“371 全源/337 本地”易误导——337 实为补 frontmatter 前的“有 SKILL.md”子集，337+21(missing)=358。技能索引整理补 21 个 frontmatter 后 daily 报“可用 358/缺依赖 0”。以后答技能数：看本地→358，看全源→371，看清 user 问哪头。
