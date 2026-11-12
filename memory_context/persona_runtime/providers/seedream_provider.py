@@ -1,10 +1,13 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import os
+import re
 import time
 import warnings
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -193,7 +196,211 @@ def _load_all_channel_configs() -> List[Dict[str, Any]]:
     if c_url and c_key:
         channels.append({'name': 'siliconflow', 'url': c_url, 'api_key': c_key, 'uid': '', 'mode': 'openai'})
 
+    # 通道 D: 小艺云端 Seedream Pro（skill-execute 协议，复用 huawei_sse 的域名与凭证）
+    # 2026-11-12 新增：Pro 是独立后端 skill（x-skill-id: seedreamPro / SeedreamPro_5），
+    # 与 huawei_sse 同域名同凭证，但协议不同（skill-execute SSE 而非图片直连）。
+    # 排在最后作为兜底：前面通道（含审核拦截）失败时自动切 Pro（6 点/张），
+    # 也可显式指定 --channel xiaoyi_pro 直连。
+    if a_url and a_key and a_uid:
+        channels.append({'name': 'xiaoyi_pro', 'url': a_url, 'api_key': a_key, 'uid': a_uid, 'mode': 'pro'})
+
     return channels
+
+
+# ── 小艺云端 Seedream Pro（skill-execute 协议）────────────────────────────────
+# 2026-11-12 新增。Pro 与 huawei_sse 同域名同凭证，但走 skill-execute SSE：
+#   POST {SERVICE_URL}/celia-claw/v1/sse-api/skill/execute
+#   headers: x-skill-id=seedreamPro, x-uid, x-api-key
+#   actionName=SeedreamPro_5，pluginId 固定
+# 仅支持纯文生图（参考图需先上传换取 URL，暂不在此实现）。
+_PRO_SKILL_ID = 'seedreamPro'
+_PRO_ACTION_NAME = 'SeedreamPro_5'
+_PRO_PLUGIN_ID = 'abf9388fed6b4df89daac71be85fc62c'
+_PRO_ACTION_SN = '81ef5ac1b5e74e85b90832503ea34a07'
+_PRO_EXECUTE_PATH = '/celia-claw/v1/sse-api/skill/execute'
+
+
+def _pro_size_from_size(size: str = '') -> str:
+    """Pro 只接受 1K / 2K；其它尺寸按面积粗映射（>=200 万像素走 2K）。"""
+    s = str(size or '').strip()
+    if s in ('1K', '2K'):
+        return s
+    m = re.match(r'^(\d+)\s*[xX*]\s*(\d+)$', s)
+    if m:
+        px = int(m.group(1)) * int(m.group(2))
+        return '2K' if px >= 2000000 else '1K'
+    return '1K'
+
+
+def _pro_output_dir() -> str:
+    if os.environ.get('SEEDREAM_OUTPUT_DIR'):
+        base = os.environ['SEEDREAM_OUTPUT_DIR']
+    else:
+        # 固定落到 workspace/generated-images（provider 位于 workspace/memory_context/persona_runtime/providers/）
+        _ws = Path(__file__).resolve().parents[3]
+        base = str(_ws / 'generated-images')
+    os.makedirs(base, exist_ok=True)
+    return base
+
+
+def _generate_via_xiaoyi_pro(
+    prompt: str,
+    size: str = '1K',
+    max_images: int = 1,
+    service_url: str = '',
+    api_key: str = '',
+    uid: str = '',
+    timeout: int = 240,
+) -> Dict[str, Any]:
+    """调用小艺云端 Seedream Pro。返回标准 provider 结果字典。"""
+    if not _check_requests_available():
+        return {'status': 'provider_failed_no_current_image', 'provider_status': 'requests_unavailable',
+                'provider_error': 'requests_not_available', 'generated_image_path': None}
+    import requests  # noqa: WPS433
+
+    _size = _pro_size_from_size(size)
+    payload = {
+        'actions': [{
+            'actionExecutorTask': {
+                'actionName': _PRO_ACTION_NAME,
+                'content': {
+                    'prompt': prompt,
+                    'size': _size,
+                    'watermark': False,
+                    'response_format': 'url',
+                },
+                'pluginId': _PRO_PLUGIN_ID,
+                'replyCard': False,
+            },
+            'actionSn': _PRO_ACTION_SN,
+        }],
+        'endpoint': {
+            'countryCode': '',
+            'device': {'deviceId': '5682d99dbb90973b775b7e9bf774ff9f', 'phoneType': '2in1', 'prdVer': '11.6.2.202'},
+        },
+        'session': {'interactionId': '0', 'isNew': False, 'sessionId': 'xxx'},
+        'utterance': {'original': '', 'type': 'text'},
+        'version': '1.0',
+    }
+    headers = {
+        'Content-Type': 'application/json',
+        'x-skill-id': _PRO_SKILL_ID,
+        'x-request-from': 'openclaw',
+        'x-hag-trace-id': f"{hashlib.sha256(str(uid).encode('utf-8')).hexdigest()[:32]}-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+        'x-uid': uid,
+        'x-api-key': api_key,
+    }
+    url = service_url.rstrip('/') + _PRO_EXECUTE_PATH
+    image_urls: Optional[List[str]] = None
+    last_err = ''
+    try:
+        resp = requests.post(url, json=payload, headers=headers, stream=True, timeout=timeout, verify=False)
+        resp.raise_for_status()
+        for raw in resp.iter_lines():
+            if not raw:
+                continue
+            line = raw.decode('utf-8', errors='ignore') if isinstance(raw, bytes) else str(raw)
+            if not line.startswith('data:'):
+                continue
+            body = line[5:].strip()
+            if not body:
+                continue
+            try:
+                result = json.loads(body)
+            except Exception:
+                continue
+            code = result.get('code', '')
+            if code and str(code) not in ('0', '200'):
+                last_err = f"[{code}] {result.get('desc', 'unknown')}"
+                continue
+            infos = result.get('abilityInfos') or []
+            if not infos:
+                continue
+            aer = infos[0].get('actionExecutorResult') or {}
+            if aer.get('code') not in (None, '', '0'):
+                last_err = str(aer.get('desc') or 'actionExecutorResult_error')
+                continue
+            reply = aer.get('reply') or {}
+            rcode = reply.get('code', '')
+            if rcode and str(rcode) != '0':
+                last_err = f"[{rcode}] {reply.get('desc', 'unknown')}"
+                continue
+            if (reply.get('streamInfo') or {}).get('streamType') == 'final':
+                items = reply.get('items') or []
+                if items:
+                    image_urls = items
+                    break
+    except Exception as exc:  # noqa: BLE001
+        return {
+            'status': 'provider_failed_no_current_image',
+            'provider_status': 'pro_request_failed',
+            'provider_error': f'{type(exc).__name__}: {exc}',
+            'provider_code': '',
+            'provider_message': str(exc)[:300],
+            'generated_image_path': None,
+            'output_path': None,
+            'generated_image_paths': [],
+            'pro_size': _size,
+        }
+
+    if not image_urls:
+        return {
+            'status': 'provider_returned_no_image',
+            'provider_status': 'pro_no_image',
+            'provider_error': last_err or 'no_final_items',
+            'provider_code': '',
+            'provider_message': last_err[:300],
+            'generated_image_path': None,
+            'output_path': None,
+            'generated_image_paths': [],
+            'pro_size': _size,
+        }
+
+    out_dir = _pro_output_dir()
+    saved: List[str] = []
+    now = datetime.now()
+    for idx, item in enumerate(image_urls[: max(1, max_images)]):
+        img_url = item if isinstance(item, str) else (item.get('url') or item.get('imageUrl') or '')
+        if not img_url:
+            continue
+        blob = _http_download(img_url, timeout=90)
+        if not blob or len(blob) < 500:
+            continue
+        if blob[:3] == b'\xff\xd8\xff':
+            ext = '.jpg'
+        elif blob[:8] == b'\x89PNG\r\n\x1a\n':
+            ext = '.png'
+        elif blob[:4] == b'RIFF':
+            ext = '.webp'
+        else:
+            ext = '.jpg'
+        fname = f"pro_{now.strftime('%Y%m%d_%H%M%S')}_{now.strftime('%f')[:3]}_{idx}{ext}"
+        fpath = os.path.join(out_dir, fname)
+        with open(fpath, 'wb') as fh:
+            fh.write(blob)
+        saved.append(fpath)
+
+    if not saved:
+        return {
+            'status': 'provider_returned_no_image',
+            'provider_status': 'pro_download_failed',
+            'provider_error': 'download_failed',
+            'generated_image_path': None,
+            'output_path': None,
+            'generated_image_paths': [],
+            'pro_size': _size,
+        }
+
+    return {
+        'status': 'generated',
+        'provider_status': 'ok',
+        'generated_image_path': saved[0],
+        'output_path': saved[0],
+        'generated_image_paths': saved,
+        'pro_size': _size,
+        'provider_code': '',
+        'provider_message': '',
+    }
 
 
 def provider_env(input_image: str = '', reference_images: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -583,6 +790,40 @@ def generate_image(
             encoded_refs = _encode_reference_images(ref_paths)
             if encoded_refs:
                 ark_payload['reference_images'] = encoded_refs
+
+            # 通道 D: 小艺云端 Seedream Pro（skill-execute 协议，纯文生图）
+            if ch_mode == 'pro':
+                pro_result = _generate_via_xiaoyi_pro(
+                    prompt=prompt,
+                    size=size,
+                    max_images=max_images,
+                    service_url=ch_url,
+                    api_key=ch_key,
+                    uid=str(ch_cfg.get('uid') or ''),
+                )
+                if pro_result.get('status') == 'generated' and pro_result.get('generated_image_path'):
+                    _pro_out = str(pro_result.get('generated_image_path') or '')
+                    _pro_valid = _validate_output_image(_pro_out, _gen_start).get('send_ok') if _pro_out else False
+                    if not _pro_valid:
+                        _last_error = f'{ch_name}: pro假成功(无有效落盘图)'
+                        continue
+                    pro_result.update({
+                        'channel_used': ch_name,
+                        'channels_available': [c['name'] for c in channels],
+                        'provider_status': 'ok',
+                        'provider_env_debug': debug,
+                        'model': 'SeedreamPro_5',
+                        'payload_mode': debug.get('payload_mode'),
+                        'reference_images_count': len(ref_paths),
+                        'reference_image_paths': ref_paths,
+                        'persona_subject': PERSONA_SUBJECT if persona_visual_context else None,
+                        'http_client_used': 'requests',
+                        'requests_available': HTTP_CLIENT_AVAILABLE,
+                        'generation_start_time': _gen_start,
+                    })
+                    return pro_result
+                _last_error = f'{ch_name}: {pro_result.get("provider_error") or pro_result.get("status")}'
+                continue
 
             if ch_mode == 'sse':
                 # 华为云 SSE 走 generate_seedream 的华为 provider 逻辑

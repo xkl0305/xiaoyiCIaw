@@ -25,8 +25,8 @@ def main() -> None:
     ap.add_argument('--reference-weight', type=int, default=100)
     ap.add_argument('--negative-prompt', default='')
     ap.add_argument('--channel', default='',
-                    choices=['', 'huawei_sse', 'ark', 'siliconflow'],
-                    help='指定通道: huawei_sse(华为云) / ark(火山引擎AR) / siliconflow(硅基流动)')
+                    choices=['', 'huawei_sse', 'ark', 'siliconflow', 'xiaoyi_pro'],
+                    help='指定通道: huawei_sse(华为云) / ark(火山引擎ARK) / siliconflow(硅基流动) / xiaoyi_pro(小艺云端Seedream Pro)')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
 
