@@ -594,8 +594,10 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 | payload | `actions[0].actionExecutorTask{actionName: SeedreamPro_5, content{prompt,size,watermark:false,response_format:url}, pluginId}` |
 | 响应解析 | SSE `data:` 行 → `abilityInfos[0].actionExecutorResult.reply.items`（图片 URL 列表），`streamInfo.streamType == 'final'` 时取 |
 | 尺寸 | **只支持 1K / 2K**；其它尺寸按面积映射（≥200 万像素 → 2K） |
-| 参考图 | **暂不支持**（需先上传换 URL，未实现） |
+| 参考图 | ✅ **支持**（2026-11-12 18:48 合并 B 版能力，直连三阶段 prepare→upload→complete 上传换 URL；`--input-image` 可传） |
 | 费用 | 6 点/张（比 Flash 贵） |
+
+**2026-11-12 18:48 合并 B 版能力（唯一 Pro 入口）：** xiaoyi_pro 已合并原 `seedream_image_gen`（B 版，573 行）的参考图能力，成为**唯一 Pro 入口**；B 版已标记停用（`user-invocable: false`，保留兼容）。统一用法：`seedream-image-gen --channel xiaoyi_pro [--input-image 图] --size 2K`。**注意边界：** 参考图对内衣/贴身服饰图**依然会被拦**（与 B 版同一后端 seedreamPro 审核），合并解决的是入口统一，不是审核放行。
 
 **鉴权坑（首次 401）：** 只传 `x-skill-id`+`x-uid`+`x-api-key` 会 401；必须补 `x-request-from: openclaw` 和 `x-hag-trace-id`（`sha256(uid)[:32] + 时间戳`）。
 
@@ -610,7 +612,7 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 | 目录 | SKILL.md name | 是什么 | 怎么用 | 行数 |
 |---|---|---|---|---|
 | `seedream-image-gen` | `seedream-image-gen` | 四通道 API 直连版，日常主用 | `--channel huawei_sse/ark/siliconflow/xiaoyi_pro` | 64 |
-| `seedream-image_gen` | **`seedream-pro`**（2026-11-12 由同名改为独立名） | Flash/Pro 档位版，走小艺云端 skill-execute | `--model Flash/Pro`，含提示词优化与扣点 | 573 |
+| `seedream-image_gen` | **`seedream-pro`**（2026-11-12 由同名改为独立名；**18:48 已合并停用**） | Flash/Pro 档位版，走小艺云端 skill-execute | [已停用] 能力并入四通道 xiaoyi_pro，统一入口：`seedream-image-gen --channel xiaoyi_pro` | 573 |
 | `seedream_image_gen` | `seedream_image_gen` | Python import 兼容壳，无 CLI | 仅供老代码/tests import，勿直接用 | 3 |
 
 **命名差别：** ①与②差一个下划线（`image-gen` vs `image_gen`）；②与③差连字符位置（`seedream-image_gen` vs `seedream_image_gen`）。
@@ -626,7 +628,7 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - ③兼容壳：被 `tests/test_v111_52_non_persona_foundation.py` import
 - ②的目录名不改（只改 SKILL.md name）：`orchestration/INTEGRATION_REGISTRY.json` 的 `seedream_image_gen` id 指向 provider，与目录无关
 
-**选型口诀：** 要通道控制/免扣点 → ①；要 Pro 效果或 Flash/Pro 档位（含提示词优化）→ ②；③别碰。
+**选型口诀：** 普通出图免扣点 → ①（留空走 huawei_sse）；要 Pro 或参考图+Pro → ① `--channel xiaoyi_pro`；②已停用；③别碰。
 
 **加新通道时**:在 `_load_all_channel_configs()` 里加配置即可,各调用方的默认优先级通过改其传的 channel 值控制,不需要动 provider 内部。
 
