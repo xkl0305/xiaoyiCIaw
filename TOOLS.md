@@ -2248,3 +2248,16 @@ PYTHONPATH=. python3 skills/seedream-image_gen/scripts/generate_seedream.py \
 | `skills check` Total | **435** | 发现总数（比 Eligible 多出的为缺依赖/不满足）|
 
 **关键事实：** 本地目录总数一直是 358，三口径不冲突。之前报“371 全源/337 本地”易误导——337 实为补 frontmatter 前的“有 SKILL.md”子集，337+21(missing)=358。技能索引整理补 21 个 frontmatter 后 daily 报“可用 358/缺依赖 0”。以后答技能数：看本地→358，看全源→371，看清 user 问哪头。
+
+**371 来源构成（2026-11-13 补充）：** “全源”= 5 类来源可加载总和，配置入口 `skills.load.extraDirs`（本机是 workspace/skills + core_skills，其余为引擎内置自动扫描）：
+
+| 来源 | 路径 | 目录数 |
+|---|---|---|
+| 本地技能库 | `~/.openclaw/workspace/skills/` | 358 |
+| 插件技能 | `~/.openclaw/plugin-skills/` | 18 |
+| 核心技能 | `~/core_skills/` | 6 |
+| agents 技能 | `~/.agents/skills/` | 3 |
+| 内置技能 | `~/openclaw/node_modules/openclaw/skills/` | 57 |
+| 合计候选 | | ≈442 |
+
+Eligible 371 = 442 候选中满足加载条件的（其余为缺依赖/不满足）；`check` Total 435 为发现总数。
