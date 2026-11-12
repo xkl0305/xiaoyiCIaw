@@ -1,6 +1,7 @@
 ﻿---
 name: seedream-pro
-description: 小艺图像创作（Flash/Pro 档位版，目录名 seedream-image_gen）。基于 Seedream 5.0 的云端生图，支持 --model Flash/Pro 切换、提示词优化、参考图输入、扣点查询。与四通道直连版 seedream-image-gen 是不同技能。触发词：生成图片、画图、图像创作、小艺图像、Pro 生图、照片修复、文生图、编辑图片。
+description: [已停用] 小艺图像创作 Flash/Pro 版。能力已于 2026-11-12 合并至四通道 seedream-image-gen 的 xiaoyi_pro 通道（现支持参考图+Pro）。统一入口：seedream-image-gen --channel xiaoyi_pro。本技能停用，保留仅作兼容。
+user-invocable: false
 ---
 
 ## 核心能力
