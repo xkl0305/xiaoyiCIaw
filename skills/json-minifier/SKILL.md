@@ -1,3 +1,8 @@
+---
+name: json-minifier
+description: 压缩JSON去除空白
+---
+
 # JSON压缩
 
 压缩JSON去除空白

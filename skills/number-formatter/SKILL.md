@@ -1,3 +1,8 @@
+---
+name: number-formatter
+description: 格式化数字显示
+---
+
 # 数字格式化
 
 格式化数字显示

@@ -1,3 +1,8 @@
+---
+name: ip-lookup
+description: 查询IP地址信息
+---
+
 # IP查询
 
 查询IP地址信息

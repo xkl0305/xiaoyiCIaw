@@ -1,3 +1,8 @@
+---
+name: text-counter
+description: 统计文本字数、字符数、行数
+---
+
 # 文本计数器
 
 统计文本字数、字符数、行数

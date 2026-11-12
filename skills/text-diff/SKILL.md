@@ -1,3 +1,8 @@
+---
+name: text-diff
+description: 对比两段文本的差异
+---
+
 # 文本对比
 
 对比两段文本的差异

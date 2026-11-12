@@ -1,3 +1,8 @@
+---
+name: json-formatter
+description: 美化和格式化JSON数据
+---
+
 # JSON格式化
 
 美化和格式化JSON数据

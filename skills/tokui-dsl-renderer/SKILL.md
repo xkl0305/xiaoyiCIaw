@@ -1,3 +1,8 @@
+---
+name: tokui-dsl-renderer
+description: TokUI DSL 是小艺通道端侧（手机侧）的原生 UI 渲染语言。本技能提供完整的组件手册查询和 DSL 代码生成能力，使 AI 回复能以丰富 UI 组件呈现，而非纯文本。
+---
+
 # TokUI DSL Renderer 技能
 
 ## 简介

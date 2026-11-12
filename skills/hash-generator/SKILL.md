@@ -1,3 +1,8 @@
+---
+name: hash-generator
+description: 生成MD5、SHA哈希值
+---
+
 # 哈希生成器
 
 生成MD5、SHA哈希值

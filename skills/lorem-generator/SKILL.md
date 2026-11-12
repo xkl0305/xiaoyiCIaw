@@ -1,3 +1,8 @@
+---
+name: lorem-generator
+description: 生成占位文本
+---
+
 # Lorem生成
 
 生成占位文本

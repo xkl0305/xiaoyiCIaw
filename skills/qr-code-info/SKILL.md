@@ -1,3 +1,8 @@
+---
+name: qr-code-info
+description: 解析二维码内容
+---
+
 # 二维码信息
 
 解析二维码内容

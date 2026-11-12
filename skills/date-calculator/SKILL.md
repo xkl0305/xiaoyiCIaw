@@ -1,3 +1,8 @@
+---
+name: date-calculator
+description: 计算日期差和加减
+---
+
 # 日期计算
 
 计算日期差和加减

@@ -1,6 +1,6 @@
 ---
 name: voice-synthesis
-discription: 支持文本转语音,多种中文语音,可转换为飞书原生 opus 格式
+description: 支持文本转语音,多种中文语音,可转换为飞书原生 opus 格式
 ---
 
 # Voice Synthesis Skill

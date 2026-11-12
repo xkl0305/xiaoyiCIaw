@@ -1,3 +1,8 @@
+---
+name: user-agent-parser
+description: 解析User-Agent字符串
+---
+
 # UA解析
 
 解析User-Agent字符串

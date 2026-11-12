@@ -1,3 +1,8 @@
+---
+name: text-trimmer
+description: 去除多余空格和换行
+---
+
 # 文本修剪
 
 去除多余空格和换行

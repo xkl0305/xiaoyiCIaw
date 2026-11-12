@@ -1,6 +1,6 @@
 ---
 name: qcc-agent-skill
-discription: 企业信息查询, 覆盖企业工商、风险、知识产权、经营信息。
+description: 企业信息查询, 覆盖企业工商、风险、知识产权、经营信息。
 ---
 
 # QCC Agent CLI - 企查查智能体数据平台

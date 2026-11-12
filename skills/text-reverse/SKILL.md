@@ -1,3 +1,8 @@
+---
+name: text-reverse
+description: 反转文本顺序
+---
+
 # 文本反转
 
 反转文本顺序

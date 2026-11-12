@@ -1,3 +1,8 @@
+---
+name: text-case-converter
+description: 转换文本大小写格式
+---
+
 # 大小写转换
 
 转换文本大小写格式

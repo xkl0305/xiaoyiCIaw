@@ -1,3 +1,8 @@
+---
+name: barcode-info
+description: 解析条形码内容
+---
+
 # 条形码信息
 
 解析条形码内容

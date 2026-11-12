@@ -1,3 +1,8 @@
+---
+name: uuid-generator
+description: 生成唯一标识符
+---
+
 # UUID生成器
 
 生成唯一标识符

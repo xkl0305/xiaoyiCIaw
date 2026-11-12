@@ -1,3 +1,8 @@
+---
+name: mime-type-lookup
+description: 查询文件MIME类型
+---
+
 # MIME查询
 
 查询文件MIME类型

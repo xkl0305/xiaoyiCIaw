@@ -1,3 +1,8 @@
+---
+name: percentage-calculator
+description: 计算百分比和比例
+---
+
 # 百分比计算
 
 计算百分比和比例
