@@ -1,6 +1,6 @@
 ﻿---
-name: seedream-image-gen
-description: 小艺图像创作，基于Seedream5的AI图片生成，支持文本、单图、多图多种输入方式，可实现多图融合、图像编辑等创作功能。触发词：生成图片、画图、创作图像、小艺图像、照片修复、文生图、编辑图片等。
+name: seedream-pro
+description: 小艺图像创作（Flash/Pro 档位版，目录名 seedream-image_gen）。基于 Seedream 5.0 的云端生图，支持 --model Flash/Pro 切换、提示词优化、参考图输入、扣点查询。与四通道直连版 seedream-image-gen 是不同技能。触发词：生成图片、画图、图像创作、小艺图像、Pro 生图、照片修复、文生图、编辑图片。
 ---
 
 ## 核心能力

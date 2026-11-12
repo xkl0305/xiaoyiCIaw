@@ -11,17 +11,18 @@ description: 小艺图像创作，基于Seedream5的AI图像生成能力，支�
 
 ## 使用示例
 
-## 三通道切换
+## 四通道切换
 
-支持三个图像生成通道，默认自动选择（A → B → C），也可手动切换：
+支持四个图像生成通道，默认自动降级（A → B → C → D），也可手动切换：
 
 | 通道 | 名称 | 说明 |
 |:----:|------|------|
 | A | `huawei_sse` | 华为云 SSE（默认优先） |
 | B | `ark` | 火山引擎 ARK |
 | C | `siliconflow` | 硅基流动 |
+| D | `xiaoyi_pro` | 小艺云端 Seedream Pro（最后兜底，6 点/张，仅 1K/2K，不支持参考图） |
 
-**手动指定通道**（不指定则自动走 A）：
+**手动指定通道**（不指定则自动走 A，失败依次降级）：
 
 ```bash
 # 用华为云
@@ -32,7 +33,18 @@ python3 scripts/generate_seedream.py --prompt "..." --channel ark
 
 # 用硅基流动
 python3 scripts/generate_seedream.py --prompt "..." --channel siliconflow
+
+# 用 Pro（审核宽松，内衣/贴身服饰类可直连）
+python3 scripts/generate_seedream.py --prompt "..." --channel xiaoyi_pro
 ```
+
+**同目录三个相似技能辨析（勿搞混）：**
+
+| 目录 | 是什么 | 用什么 |
+|---|---|---|
+| `seedream-image-gen`（本目录） | 四通道 API 直连版，日常主用 | `--channel` 选通道 |
+| `seedream-image_gen` | Flash/Pro 档位版（云端 skill-execute） | `--model Flash/Pro`，有提示词优化与扣点 |
+| `seedream_image_gen` | Python import 兼容壳 | 无 CLI，勿直接用 |
 
 ```bash
 # Text-to-image (默认通道 A 华为云)

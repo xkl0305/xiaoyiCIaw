@@ -18,7 +18,7 @@ def main() -> None:
         sys.path.insert(0, str(wd))
 
     ap = argparse.ArgumentParser(description='seedream-image-gen: 三通道图像生成')
-    ap.add_argument('--prompt', required=True, help='提示词')
+    ap.add_argument('--prompt', default='', help='提示词（--dry-run 时可省略）')
     ap.add_argument('--input-image', default='', help='输入图片路径')
     ap.add_argument('--size', default='2K', choices=['1K', '1024x1024', '4:5', '1080x1350', '768x1024', '1024x768', '960x1280', '1280x960', '1920x2400', '2700x3600', '1920x1080', '1080x1920', '2K', '3K', '4K', '4K-wide', '4K-portrait', '4K-square', '9:16'])
     ap.add_argument('--max-images', type=int, default=1)
@@ -29,6 +29,8 @@ def main() -> None:
                     help='指定通道: huawei_sse(华为云) / ark(火山引擎ARK) / siliconflow(硅基流动) / xiaoyi_pro(小艺云端Seedream Pro)')
     ap.add_argument('--dry-run', action='store_true')
     args = ap.parse_args()
+    if not args.dry_run and not args.prompt:
+        ap.error('--prompt 为必填（除非使用 --dry-run）')
 
     # ── dry-run: 只查看可用通道，不发请求 ──
     if args.dry_run:
