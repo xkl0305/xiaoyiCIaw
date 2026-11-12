@@ -2138,3 +2138,32 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 
 **验证：** 单测 9 场景全过（HTML错误页/空/占位→拒；PNG/JPEG/WEBP/GIF→过；新生成文件→有效、陈旧→拒）；py_compile 通过；已提交 git b74c4eb；备份 .bak-ssefix-20261108
 **判断教训：** 排查“图没落盘”先确认 OUT_DIR 实际路径（`.persona_visual/generated/`，非 `generated-images/`），避免查错目录误判；SSE 假成功判断以落盘文件内容有效为准，不看 status。
+
+### 技能装了却不加载：三类根因与排查修复（2026-11-12 固化）
+
+**背景：** 本地 `skills/` 358 个目录，`openclaw skills check` 只认 220 个，且有 `[skills] root has many entries, truncating discovery.` 警告。逐层排查后确认是**三个独立原因叠加**，不是单一故障。
+
+**三类根因：**
+
+| 根因 | 默认上限 | 现象 | 修复 |
+|---|---|---|---|
+| ① 根目录候选超限 | `skills.limits.maxCandidatesPerRoot` = 300 | 按字母序截断，靠后的技能永远不被发现；日志报 `truncating discovery` | 调高到 400+ |
+| ② 单源加载超限 | `skills.limits.maxSkillsLoadedPerSource` = 200 | 发现到了但只加载前 200 个，其余静默丢弃（无警告） | 调高到 400+ |
+| ③ SKILL.md 缺 frontmatter | — | 文件从 `# 标题` 直接开始，无 `---name/description---` 头，OpenClaw 完全不认它是技能（**无任何报错**） | 补 frontmatter |
+
+**关键坑：③ 最隐蔽**——28 个技能就是缺 frontmatter，另有 3 个把 `description` 拼成 `discription`（qcc-agent-skill、voice-synthesis），全部静默失效，`skills check` 里表现为「既不在 ready 也不在 missing」。
+
+**诊断方法（交叉比对）：**
+1. 跑 `openclaw skills check > /tmp/sk.txt 2>&1`，取 `Ready and visible to model:` 段与 `Missing requirements:` 段
+2. 遍历 `skills/` 每个目录读 SKILL.md 的 `name:` 字段，与上面两段做集合比对
+3. 既不在 ready 也不在 missing 的 → 就是未加载，进一步查 `t.lstrip().startswith('---')` 和 `re.search(r'^name:', t[:600], re.M)` 判断是否缺 frontmatter
+
+**修复动作：**
+- 缺 frontmatter：取正文首个非空非标题行作 description，头部插入 `---\nname: <目录名>\ndescription: <摘要>\n---\n\n`
+- 拼写错：`discription:` → `description:`
+- frontmatter 结构坏（如 AIGC 水印块与 name 块并列）：把 name/description 提到最前，水印块并入同一 frontmatter
+- 调上限：**`config.patch` 会被拒（protected config paths）**，须直接编辑 `~/.openclaw/openclaw.json` 的 `skills.limits`（先备份），改完热生效不需重启
+
+**效果实测（2026-11-12）：** 发现总数 280→435，可用 220→371，本地未加载 155→0；顺带救回 `qiqing-liuyu`（人格技能）、`mao-perspective`、`tokui-dsl-renderer`、`pose-reference-*` 等此前完全不可见的技能。
+
+**注意：** `maxSkillsPromptChars`（默认 30000）才是真正控 token 的阀门，别为了「全加载」去提它；加载 ≠ 进提示词，提示词仍按字符预算裁剪。
