@@ -2052,6 +2052,14 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 1. **内容尺度边界实测**：文字直出的泳装/内衣时尚内容（泳池比基尼含“聚拢托胸设计”、蕾丝内衣含“吊袜带+过膝丝袜”等款式细节词）均正常过审——平台风控卡的是“写实真人参考图”，不卡“文字描述的合规时尚尺度”；合规时尚摄影类需求无需畏手畏脚，但描述保持克制（“避免低俗过度暴露”尾缀可挂）。
 2. **生图/生视频意图路由**：用户发纯静态描述（无时长/运镜/分镜）→ 默认 seedream 生图；含时长/比例/运镜/分镜结构 → seedance 生视频（仍走完整参数确认流程）。
 
+### 人格视觉防护关键词误伤规避（2026-11-12 09:05 固化）
+
+**坑点**：`xiaoyi_persona_visual/policy/persona_visual_request_guard.py` 的 PERSONA_VISUAL_KEYWORDS 含一批**通用美术表述**，普通角色图/四视图/人设图 prompt 命中即被拦，报 `persona_visual_request_must_use_main_pipeline`（provider_status=blocked）——不是通道故障。
+
+**高危通用词（画人物图必避）**：同一张脸、同一人物气质、图片内角色不变、像素级一致、展示一下、看看全身、看看腿、看看脚、看看手、看看腰、看看鞋、看看头发、看看眼睛、看看造型、看看整体效果、露个面看看、站在窗边、坐在床边、从门后探头
+
+**规避**：用「面部特征一致 / 脸型一致 / 五官一致 / 造型统一」替代“同一张脸”；遇此报错先 grep 关键词表核对，改词重跑即可（实测：四视图 prompt “保持同一张脸”被拦，改“面部特征一致”后一次通过）
+
 ### seedream 华为SSE假成功·根因与双层修复（2026-11-08 固化）
 
 **根因：** `huawei_provider._download_image` 仅校验 HTTP 200，把下载到的 HTML 错误页/占位文本/空内容也 `write_bytes` 落盘并返回 path，导致 SSE 返回 status=generated 但图是垃圾文件——假成功。seedream_provider 的 SSE 分支只查 `generated_image_path` 非空，未像 openai 分支那样用 `_validate_output_image` 强校验。
