@@ -187,6 +187,14 @@ def _load_all_channel_configs() -> List[Dict[str, Any]]:
     # 通道 B: 火山 ARK
     b_url = os.environ.get('SEEDREAM_API_URL') or file_env.get('SEEDREAM_API_URL', '')
     b_key = os.environ.get('SEEDREAM_API_KEY') or file_env.get('SEEDREAM_API_KEY', '')
+    # 2026-11-13 修复：ark key 必须以 'ark-' 开头；环境变量被误注入华为 key(SK-...)时
+    # 会导致 401 AuthenticationError，此处强制回退到 file_env 的方舟 key
+    if b_key and not str(b_key).startswith('ark-'):
+        _fb = file_env.get('SEEDREAM_API_KEY', '')
+        if _fb and str(_fb).startswith('ark-'):
+            b_key = _fb
+        else:
+            b_key = ''  # 拿不到合法方舟 key 就不注册 ark 通道，避免假通道反复 401
     if b_url and b_key:
         channels.append({'name': 'ark', 'url': b_url, 'api_key': b_key, 'uid': '', 'mode': 'openai'})
 
@@ -673,7 +681,8 @@ _SIZE_MAP: Dict[str, str] = {
     '4K-wide': '3840x2160',
     '4K-portrait': '3072x4096',
     '4K-square': '4096x4096',
-    '9:16': '2304x4096',
+    # huawei_sse 不接受 2304x4096（超范围），9:16 统一走标准 1080x1920
+    '9:16': '1080x1920',
 }
 
 # 硅基流动(Kolors)自家尺寸档：官方支持 7 档（实测全通）
@@ -901,9 +910,13 @@ def generate_image(
             if ch_mode == 'sse':
                 # 华为云 SSE 走 generate_seedream 的华为 provider 逻辑
                 from memory_context.persona_runtime.providers.huawei_provider import generate_image as hw_gen
+                # size 需先映射成华为认的 WIDTHxHEIGHT（'9:16' 等比例值后端不认）
+                _hw_size = _SIZE_MAP.get(str(size).strip(), '') or (
+                    str(size).strip() if re.match(r'^\d+\s*[xX*]\s*\d+$', str(size).strip()) else '2K')
                 hw_result = hw_gen(
                     prompt=prompt,
-                    size=size,
+                    input_image=(str(ref_paths[0]) if ref_paths else ''),
+                    size=_hw_size,
                     max_images=max_images,
                     reference_weight=reference_weight,
                 )
