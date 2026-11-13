@@ -121,11 +121,22 @@ def _local_check_engines_and_disk() -> Dict:
             if not py_files:
                 warnings.append(f"Engine group {g}: no .py files found")
     checks["engine_dirs"] = {g: os.path.isdir(os.path.join(engine_base, g)) for g in engine_groups}
-    # Subsystem directories (pipeline, planner, capability)
-    for sub in ["pipeline", "planner", "capability"]:
-        d = os.path.join(WORKSPACE, "core", sub)
-        if not os.path.isdir(d):
-            issues.append(f"Subsystem dir missing: core/{sub}")
+    # Subsystem directories — 动态检查 git 实际追踪的 core 子目录，避免硬编码虚构目录误报
+    # 修复(2026-11-14): 原硬编码 [pipeline, planner, capability]，其中 planner/capability 在 git 全历史从未存在 → 每日误报 🔴2
+    try:
+        _g = subprocess.run(["git", "-C", WORKSPACE, "ls-tree", "-d", "--name-only", "HEAD", "core/"],
+                            capture_output=True, text=True, timeout=10)
+        tracked = [l.strip().replace("core/", "", 1) for l in _g.stdout.splitlines() if l.strip()]
+        missing_subs = [s for s in tracked if not os.path.isdir(os.path.join(WORKSPACE, "core", s))]
+        for s in missing_subs:
+            issues.append(f"Subsystem dir missing: core/{s}")
+        checks["subsystem_dirs"] = {"tracked": len(tracked), "missing": missing_subs}
+    except Exception as e:
+        # git 不可用时回退检查核心目录，避免静默跳过
+        checks["subsystem_dirs"] = {"error": str(e)[:60]}
+        for sub in ["pipeline"]:
+            if not os.path.isdir(os.path.join(WORKSPACE, "core", sub)):
+                issues.append(f"Subsystem dir missing: core/{sub}")
     # Critical data files — 统一来源：init_correction_data.DATA_PATHS + 额外状态文件
     try:
         import importlib as _ic
