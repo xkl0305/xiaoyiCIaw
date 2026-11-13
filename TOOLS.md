@@ -611,11 +611,12 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - 根因：`hw_gen(...)` 调用漏了 `input_image` 参数
 - 修复：`input_image=(str(ref_paths[0]) if ref_paths else '')`
 
-**3. ark（火山引擎）key 失效（环境状态，待换 key）**
+**3. ark（火山引擎）401 间歇风控（2026-11-13 修正·非 key 失效）**
 - 报错：`HTTP 401 AuthenticationError: The API key format is incorrect`
-- 影响：所有走 ark 的请求都失败，自动降级到 siliconflow（画质弱一档）
-- 处置：需换有效方舟 API Key（`SEEDREAM_API_KEY`）；换之前不要指望 ark 出图，看到 `channel_used: siliconflow` 属正常降级
-- 验证：`--channel ark` 单独跑仍 401；`--channel huawei_sse` 正常
+- **误判纠正：** 之前写“key 失效需换 key”是错的。实测 key（`ark-75c16180…cf65f`）**有效**——curl 手动打 `/models` 与图片接口均 HTTP 200 出图；provider 直连 `generate_image(channel='ark')` 也多次成功出图（1440×2880）
+- **真实原因：** 401 是**间歇性风控/限流**——同 key 同代码几分钟内交替成功/失败（高频调用触发，火山返误导性 401 而非 429）
+- **处置：** 遇 401 先等 30-60 秒重试，**别急着换 key**；连续失败再考虑降级 siliconflow
+- **注意：** `ark` 请求 size 需 ≥3,686,400 像素（如 1440×2880）；1080×1920 会被 400 拒
 
 **补充结论：** 泳装/贴身内容被 `OutputImageSensitiveContentDetected` 拦是**内容审核问题，不是通道问题**——改合规描述后 huawei_sse 一次通过（1080×1920）。
 
