@@ -599,6 +599,26 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 
 **2026-11-12 18:48 合并 B 版能力（唯一 Pro 入口）：** xiaoyi_pro 已合并原 `seedream_image_gen`（B 版，573 行）的参考图能力，成为**唯一 Pro 入口**；B 版已标记停用（`user-invocable: false`，保留兼容）。统一用法：`seedream-image-gen --channel xiaoyi_pro [--input-image 图] --size 2K`。**注意边界：** 参考图对内衣/贴身服饰图**依然会被拦**（与 B 版同一后端 seedreamPro 审核），合并解决的是入口统一，不是审核放行。
 
+### huawei_sse 两个已修 bug + ark key 失效（2026-11-13 固化）
+
+**1. `--size 9:16` 未映射（已修）**
+- 现象：`--channel huawei_sse --size 9:16` 报 `InvalidParameter: size must be 'WIDTHxHEIGHT' or a supported size preset`
+- 根因：sse 分支直接把 `9:16` 原值传给 huawei_provider，没走 `_SIZE_MAP`；`_SIZE_MAP['9:16']` 原为 2304x4096 也超华为支持范围
+- 修复：sse 分支先映射 `_SIZE_MAP.get(size)`，`_SIZE_MAP['9:16']` 改为 `1080x1920`
+
+**2. sse 分支未传参考图（已修）**
+- 现象：带 `--input-image` 走 huawei_sse 时参考图完全不生效（白模/参考图白传）
+- 根因：`hw_gen(...)` 调用漏了 `input_image` 参数
+- 修复：`input_image=(str(ref_paths[0]) if ref_paths else '')`
+
+**3. ark（火山引擎）key 失效（环境状态，待换 key）**
+- 报错：`HTTP 401 AuthenticationError: The API key format is incorrect`
+- 影响：所有走 ark 的请求都失败，自动降级到 siliconflow（画质弱一档）
+- 处置：需换有效方舟 API Key（`SEEDREAM_API_KEY`）；换之前不要指望 ark 出图，看到 `channel_used: siliconflow` 属正常降级
+- 验证：`--channel ark` 单独跑仍 401；`--channel huawei_sse` 正常
+
+**补充结论：** 泳装/贴身内容被 `OutputImageSensitiveContentDetected` 拦是**内容审核问题，不是通道问题**——改合规描述后 huawei_sse 一次通过（1080×1920）。
+
 **鉴权坑（首次 401）：** 只传 `x-skill-id`+`x-uid`+`x-api-key` 会 401；必须补 `x-request-from: openclaw` 和 `x-hag-trace-id`（`sha256(uid)[:32] + 时间戳`）。
 
 **用途：** 华为 SSE / ARK 对内衣、贴身服饰类输出图审核严（`OutputImageSensitiveContentDetected`），Pro 是独立 skill 独立风控，实测宽松可过。作为降级链最后一环兜底。
