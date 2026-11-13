@@ -611,12 +611,14 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - 根因：`hw_gen(...)` 调用漏了 `input_image` 参数
 - 修复：`input_image=(str(ref_paths[0]) if ref_paths else '')`
 
-**3. ark（火山引擎）401 间歇风控（2026-11-13 修正·非 key 失效）**
+**3. ark（火山引擎）401 真根因：key 被污染（2026-11-13 二次修正·已代码修复）**
 - 报错：`HTTP 401 AuthenticationError: The API key format is incorrect`
-- **误判纠正：** 之前写“key 失效需换 key”是错的。实测 key（`ark-75c16180…cf65f`）**有效**——curl 手动打 `/models` 与图片接口均 HTTP 200 出图；provider 直连 `generate_image(channel='ark')` 也多次成功出图（1440×2880）
-- **真实原因：** 401 是**间歇性风控/限流**——同 key 同代码几分钟内交替成功/失败（高频调用触发，火山返误导性 401 而非 429）
-- **处置：** 遇 401 先等 30-60 秒重试，**别急着换 key**；连续失败再考虑降级 siliconflow
-- **注意：** `ark` 请求 size 需 ≥3,686,400 像素（如 1440×2880）；1080×1920 会被 400 拒
+- **两次误判纠正：** ①“key 失效需换 key”错 ②“间歇风控/限流”也错。**真实根因：`_load_all_channel_configs()` 里 `os.environ.get('SEEDREAM_API_KEY')` 在某些执行上下文被注入华为 key（`SK-3C1BE…FDC1`），拿它请求火山必然 401**——所以表现为“同 key 同代码时好时坏”，其实是环境变量时有时无
+- **修复（已提交）：** 加前缀校验——ark key 必须以 `ark-` 开头，否则回退 `file_env`（TOOLS.md 的方舟 key `ark-75c16180…cf65f`）；两者都拿不到就不注册 ark 通道，避免假通道反复 401
+- **验证：** 修复后 provider 直连与 CLI `--channel ark --size 2K` 双路径均 `generated` 出图成功
+- **ark 模型口径：** 必须走接入点 `ep-20260513192825-rt5vq`；直接用模型名 `doubao-seedream-5-0-260128` 会报 `InvalidEndpoint.ClosedEndpoint`（400）。/models 返回 54 个模型，seedream 系含 5-5 / 5-0-flash / 5-0-pro / 4-0
+- **size 约束：** 需 ≥3,686,400 像素（如 1440×2880）；1080×1920 会被 400 拒
+- **排查心法：** 401 先查实际发出的 key（打印 masked key + 来源），别急着怀疑服务端；同代码时好时坏优先怀疑环境变量污染
 
 **补充结论：** 泳装/贴身内容被 `OutputImageSensitiveContentDetected` 拦是**内容审核问题，不是通道问题**——改合规描述后 huawei_sse 一次通过（1080×1920）。
 
