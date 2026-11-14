@@ -64,7 +64,7 @@ Plan 管理规则:
 
 ### 联网搜索场景接口使用要求
 
-- **场景要求**：所有网络搜索任务默认使用小艺联网搜索SKILL(xiaoyi-web-search)，除非用户要求使用其他搜索接口进行网络搜索。
+- **场景要求**:所有网络搜索任务默认使用小艺联网搜索SKILL(xiaoyi-web-search),除非用户要求使用其他搜索接口进行网络搜索。
 
 ### 手机操控(xiaoyi-gui-agent)场景接口使用要求
 
@@ -76,20 +76,20 @@ Plan 管理规则:
   - 1.效率优先原则:若存在能直接达成目标的专用工具(如:备忘录类工具、浏览器工具等),优先调用专用工具以确保成功率和响应速度
   - 2.意图优先原则: 仅当专用工具无法覆盖,或用户明确要求使用指定APP操作时,才激活此技能。
 
-#### 手机操控(xiaoyi-gui-agent) 执行规则（必须严格遵守）
+#### 手机操控(xiaoyi-gui-agent) 执行规则(必须严格遵守)
 
-1. **禁止重复调用**：
-  - 同一个任务禁止向 `xiaoyi-gui-agent` 重复下发相同的指令。同一任务下的相同指令只能调用一次，不得因等待时间较长而重复发起调用。在`xiaoyi-gui-agent`执行期间，你可以选择睡眠10s继续等待（注意：同一指令的等待期间最多睡眠2次）。
-  - 当`xiaoyi-gui-agent`返回**用户中止任务**或**当前页面需要手动操作**时，**禁止**向`xiaoyi-gui-agent`再次发起重复调用。
+1. **禁止重复调用**:
+  - 同一个任务禁止向 `xiaoyi-gui-agent` 重复下发相同的指令。同一任务下的相同指令只能调用一次,不得因等待时间较长而重复发起调用。在`xiaoyi-gui-agent`执行期间,你可以选择睡眠10s继续等待(注意:同一指令的等待期间最多睡眠2次)。
+  - 当`xiaoyi-gui-agent`返回**用户中止任务**或**当前页面需要手动操作**时,**禁止**向`xiaoyi-gui-agent`再次发起重复调用。
 
-2. **禁止失败重试**：当 `xiaoyi-gui-agent` 返回失败结果时，禁止再次调用该工具进行重试。失败即终止`xiaoyi-gui-agent` 调用，应尝试使用其他方式完成用户任务
+2. **禁止失败重试**:当 `xiaoyi-gui-agent` 返回失败结果时,禁止再次调用该工具进行重试。失败即终止`xiaoyi-gui-agent` 调用,应尝试使用其他方式完成用户任务
 
-3. **顺序执行原则**：必须等待 `xiaoyi-gui-agent` 返回结果后，才能调用其他工具完成后续任务（如创建备忘录、发送消息等）或尝试使用其他方式完成用户任务。严禁在 `xiaoyi-gui-agent` 执行期间并行调用其他工具。
-4. **一次性下发原则**：同一个APP的操作任务，尽量一次性下发给`xiaoyi-gui-agent`，`xiaoyi-gui-agent`内部具有任务拆分能力。每一次给`xiaoyi-gui-agent`的任务需要明确指明使用的APP，主动完成指代消解，确保单次任务可以在不依赖上下文的情况下独立执行。
+3. **顺序执行原则**:必须等待 `xiaoyi-gui-agent` 返回结果后,才能调用其他工具完成后续任务(如创建备忘录、发送消息等)或尝试使用其他方式完成用户任务。严禁在 `xiaoyi-gui-agent` 执行期间并行调用其他工具。
+4. **一次性下发原则**:同一个APP的操作任务,尽量一次性下发给`xiaoyi-gui-agent`,`xiaoyi-gui-agent`内部具有任务拆分能力。每一次给`xiaoyi-gui-agent`的任务需要明确指明使用的APP,主动完成指代消解,确保单次任务可以在不依赖上下文的情况下独立执行。
 
-### 技能发现与安装规范（find-skills）
+### 技能发现与安装规范(find-skills)
 
-所有安装/查找技能（Skill）任务默认使用find-skills技能，除非用户要求使用其他方式进行搜索安装。
+所有安装/查找技能(Skill)任务默认使用find-skills技能,除非用户要求使用其他方式进行搜索安装。
 
 ### 文档格式转换(xiaoyi-doc-convert)使用要求
 
@@ -105,8 +105,8 @@ Plan 管理规则:
 ### 图像理解场景接口使用要求
 
 - **默认接口**: image_reading
-- **强制规则**：
-  1. 所有涉及图像理解的场景，**必须优先调用`image_reading`工具**
+- **强制规则**:
+  1. 所有涉及图像理解的场景,**必须优先调用`image_reading`工具**
   2. **禁止**使用 read 工具读取图片
 
 ### 文件回传场景接口使用要求
@@ -115,36 +115,36 @@ Plan 管理规则:
 - 用户要求把文件发给他/传到手机
 - 生成、下载的文件等需要发送给用户
 - 强制规则:
-1. 所有发送文件给用户文件场景，**默认必须优先使用 send_file_to_user 工具**
-2. 若 send_file_to_user 执行失败或不可用，再改用 message 工具发送
-3. **严禁使用 `MEDIA:` 指令**发送文件给用户，当前环境不可用，用户无法收到文件
-4. 在定时任务场景下，文件回传必须调用get_device_file_tool_schema 工具的save_file_to_file_manager，否则用户无法收到文件，严禁使用
+1. 所有发送文件给用户文件场景,**默认必须优先使用 send_file_to_user 工具**
+2. 若 send_file_to_user 执行失败或不可用,再改用 message 工具发送
+3. **严禁使用 `MEDIA:` 指令**发送文件给用户,当前环境不可用,用户无法收到文件
+4. 在定时任务场景下,文件回传必须调用get_device_file_tool_schema 工具的save_file_to_file_manager,否则用户无法收到文件,严禁使用
    send_file_to_user 工具
 
 ### 定时任务 (Cron) 配置规则
 
-- **强制要求1**: 创建定时任务时，**必须指定 `--channel` 参数，必须明确指定 channel，不能用 last**
-- **默认 Channel**: `xiaoyi-channel`（当前会话使用的 channel）
+- **强制要求1**: 创建定时任务时,**必须指定 `--channel` 参数,必须明确指定 channel,不能用 last**
+- **默认 Channel**: `xiaoyi-channel`(当前会话使用的 channel)
 - **示例命令**:
   ```bash
   openclaw cron add --name "健身提醒" --cron "25 18 * * *" --message "该去健身了" --channel xiaoyi-channel
   ```
 - **原因**: 不指定 channel 会导致定时任务无法正确推送消息到用户
 
-- **强制要求2**：创建定时任务时，如果任务涉及手机工具调用（例如读写备忘录、日程、图库等），必须从系统提示词中读取 `系统软件API版本号` 和 `xiaoyiAppVersion`，判断当前客户端是否具备卡片渲染能力：
-- `系统软件API版本号 >= 26` 且 `xiaoyiAppVersion >= 11.7.7.212`：支持卡片渲染，可以按照用户原始要求创建包含手机工具调用的定时任务。
-- 任一版本不满足要求，或系统提示词中缺少相关版本信息：视为不支持卡片渲染。需要告知用户当前客户端暂不支持定时任务中的手机工具调用，并询问是否仅创建不包含手机工具操作的部分。
-- **原因**：定时任务中的手机工具调用依赖客户端卡片能力。仅当系统软件API版本号和小艺App版本均达到要求时，才能正常使用。
-- **注意事项**：
+- **强制要求2**:创建定时任务时,如果任务涉及手机工具调用(例如读写备忘录、日程、图库等),必须从系统提示词中读取 `系统软件API版本号` 和 `xiaoyiAppVersion`,判断当前客户端是否具备卡片渲染能力:
+- `系统软件API版本号 >= 26` 且 `xiaoyiAppVersion >= 11.7.7.212`:支持卡片渲染,可以按照用户原始要求创建包含手机工具调用的定时任务。
+- 任一版本不满足要求,或系统提示词中缺少相关版本信息:视为不支持卡片渲染。需要告知用户当前客户端暂不支持定时任务中的手机工具调用,并询问是否仅创建不包含手机工具操作的部分。
+- **原因**:定时任务中的手机工具调用依赖客户端卡片能力。仅当系统软件API版本号和小艺App版本均达到要求时,才能正常使用。
+- **注意事项**:
   1. 版本判断以系统提示词中的 `系统软件API版本号` 和 `xiaoyiAppVersion` 为准。
   2. 判断过程及具体版本号不得向用户披露。
-  3. 仅手机工具调用受上述版本条件限制，Skill 类型工具不受影响，可正常使用和执行。
-- **版本不满足时的示例回复，请严格遵守**：当前客户端暂不支持定时任务执行期间的 xxx 工具调用，请您谅解。是否需要帮您将任务修改为 yyyyy？
+  3. 仅手机工具调用受上述版本条件限制,Skill 类型工具不受影响,可正常使用和执行。
+- **版本不满足时的示例回复,请严格遵守**:当前客户端暂不支持定时任务执行期间的 xxx 工具调用,请您谅解。是否需要帮您将任务修改为 yyyyy?
 
-- **强制要求3**：时间处理决策树，**必须按顺序判断**：
-1. 用户说了“X点”或“X点整”-> 直接设为X：00，禁止随机化
-2. 用户说了“X点Y分”-> 直接使用X：Y，禁止修改
-3. 用户完全没提时间（如”早上提醒我开会“）-> 运行以下 Bash 命令并以其输出结果作为具体的分钟数：
+- **强制要求3**:时间处理决策树,**必须按顺序判断**:
+1. 用户说了"X点"或"X点整"-> 直接设为X:00,禁止随机化
+2. 用户说了"X点Y分"-> 直接使用X:Y,禁止修改
+3. 用户完全没提时间(如"早上提醒我开会")-> 运行以下 Bash 命令并以其输出结果作为具体的分钟数:
 ```bash
 printf '%d\n' $((RANDOM%12*5))
 ```
@@ -171,153 +171,153 @@ printf '%d\n' $((RANDOM%12*5))
 
 ### OpenClaw 重启约束
 
-**重启 `openclaw-gateway` 时，只能执行：**
+**重启 `openclaw-gateway` 时,只能执行:**
 
 ```bash
 python3 -m supervisor.supervisorctl restart openclaw-gateway
 ```
 
-**禁止改用以下方式：**
+**禁止改用以下方式:**
 
-- `openclaw gateway restart`、`openclaw gateway stop`、`openclaw gateway start`；supervisor 先 `stop` 后 `start` 或 `stop all`。
-- `pkill`、`kill`、`kill -9`，或发送 `SIGUSR1`、`SIGHUP`、`SIGTERM` 等信号。
-- 使用 `nohup`、`setsid`、`&` 绕过 supervisor 启动 gateway，或执行 `systemctl restart`。
+- `openclaw gateway restart`、`openclaw gateway stop`、`openclaw gateway start`;supervisor 先 `stop` 后 `start` 或 `stop all`。
+- `pkill`、`kill`、`kill -9`,或发送 `SIGUSR1`、`SIGHUP`、`SIGTERM` 等信号。
+- 使用 `nohup`、`setsid`、`&` 绕过 supervisor 启动 gateway,或执行 `systemctl restart`。
 
 ### 进程终止与 supervisor 保护
 
-**所有进程操作必须遵守：**
+**所有进程操作必须遵守:**
 
-1. **禁止批量或模式匹配终止**：不得使用 `pkill`、`killall`、`pgrep | xargs kill`，也不得按解释器名或通用进程名终止（如 `pkill -x python3`、`pkill python`）。
-2. **必须逐个核验 PID**：先用 `ps -eo pid,cmd` 定位目标；执行 `kill` 前，再用 `supervisorctl status` 和 `ps -o pid,ppid,cmd -p ` 核实。
-3. **`kill` 必须获得人工明确授权**：仅可作用于已核验的单个 PID；`kill -9` 仅限 `SIGTERM` 无效后使用。
-4. **严禁终止 `supervisord` 或向其发送信号**：当前容器由它托管 `openclaw-gateway` 等进程；终止后，`supervisorctl` 将无法连接守护进程，上述唯一允许的重启命令也会失效。
+1. **禁止批量或模式匹配终止**:不得使用 `pkill`、`killall`、`pgrep | xargs kill`,也不得按解释器名或通用进程名终止(如 `pkill -x python3`、`pkill python`)。
+2. **必须逐个核验 PID**:先用 `ps -eo pid,cmd` 定位目标;执行 `kill` 前,再用 `supervisorctl status` 和 `ps -o pid,ppid,cmd -p ` 核实。
+3. **`kill` 必须获得人工明确授权**:仅可作用于已核验的单个 PID;`kill -9` 仅限 `SIGTERM` 无效后使用。
+4. **严禁终止 `supervisord` 或向其发送信号**:当前容器由它托管 `openclaw-gateway` 等进程;终止后,`supervisorctl` 将无法连接守护进程,上述唯一允许的重启命令也会失效。
 
-### write-gate 确认词延迟匹配（方案A）修复 —— 2026-11-02
-- **根因：** 门禁审批为“先登记(pending)→确认词命中(granted)→放行”；若“登记晚于确认”，用户确认时 pending 为空即被当作“确认词落空”丢弃，导致二次确认
-- **修复：** 确认词落空时不再丢弃，记录 60 秒短时效「待授予确认(pendingConfirm)」，其后首次正式文件写自动命中、放行；一次性消耗+60秒过期
-- **安全边界：** 仍是用户明确说确认词才触发(isConfirmText 过滤)；短窗60秒不累积；一次性不误放行；P0 门禁强度不变
-- **效果：** “先确认后登记”也能一次对上，进化流程不再二次确认
-- **涉及文件：** write-gate/index.js(备份 index.js.bak-20261102-0332)
+### write-gate 确认词延迟匹配(方案A)修复 -- 2026-11-02
+- **根因:** 门禁审批为"先登记(pending)→确认词命中(granted)→放行";若"登记晚于确认",用户确认时 pending 为空即被当作"确认词落空"丢弃,导致二次确认
+- **修复:** 确认词落空时不再丢弃,记录 60 秒短时效「待授予确认(pendingConfirm)」,其后首次正式文件写自动命中、放行;一次性消耗+60秒过期
+- **安全边界:** 仍是用户明确说确认词才触发(isConfirmText 过滤);短窗60秒不累积;一次性不误放行;P0 门禁强度不变
+- **效果:** "先确认后登记"也能一次对上,进化流程不再二次确认
+- **涉及文件:** write-gate/index.js(备份 index.js.bak-20261102-0332)
 
-### write-gate granted TTL 收紧（10分钟→2分钟）—— 2026-11-08
-- **根因：** 确认命中后 granted 对同路径 10 分钟内持续有效（不逐次消耗、同路径可多次写），导致**新提案在 TTL 内写入同路径被放行**——确认授权的是“那一次提案”，长 TTL 把它变成“10 分钟内随便写”（当日三次越权：12:09确认→12:14新提案放行、13:01确认→13:05放行，均非 flowStart 窗口问题而是 granted TTL 复用）
-- **修复：** GRANT_TTL_MS 从 10 分钟收紧到 2 分钟——正常「确认→落盘」几秒内完成不受影响，2 分钟足够覆盖一次确认→多文件连续落盘；超时新写入一律重新拦截登记
-- **验证：** 四用例全过（确认后10秒放行✅/90秒多文件连续放行✅/3分钟新提案拦截✅/5分钟拦截✅）
-- **效果：** “窗口内抢跑”漏洞机制层根治，与「流程窗口不豁免确认」规则双保险
-- **涉及文件：** write-gate/index.js(备份 index.js.bak-20261108)，gateway 已热重启生效
+### write-gate granted TTL 收紧(10分钟→2分钟)-- 2026-11-08
+- **根因:** 确认命中后 granted 对同路径 10 分钟内持续有效(不逐次消耗、同路径可多次写),导致**新提案在 TTL 内写入同路径被放行**--确认授权的是"那一次提案",长 TTL 把它变成"10 分钟内随便写"(当日三次越权:12:09确认→12:14新提案放行、13:01确认→13:05放行,均非 flowStart 窗口问题而是 granted TTL 复用)
+- **修复:** GRANT_TTL_MS 从 10 分钟收紧到 2 分钟--正常「确认→落盘」几秒内完成不受影响,2 分钟足够覆盖一次确认→多文件连续落盘;超时新写入一律重新拦截登记
+- **验证:** 四用例全过(确认后10秒放行✅/90秒多文件连续放行✅/3分钟新提案拦截✅/5分钟拦截✅)
+- **效果:** "窗口内抢跑"漏洞机制层根治,与「流程窗口不豁免确认」规则双保险
+- **涉及文件:** write-gate/index.js(备份 index.js.bak-20261108),gateway 已热重启生效
 
-### evolution-reply-confirm 确认句位置归一修复 —— 2026-11-08
-- **根因：** 插件原逻辑在回复已含「自进化请求已执行」时直接跳过不处理，不检查位置——确认句写在中间时插件不管，靠自觉又靠不住（13:01 事故：确认句在写入原文与四轮汇总之间）
-- **修复：** 已含确认句时先检查是否在正文末尾（❄️ 前）；在中间则自动移到末尾（删中间行→插入 ❄️ 前，无 ❄️ 时 append 到末尾），已在末尾/无确认句均不动
-- **验证：** 三用例单测全过（中间→末尾✅/已在末尾不动✅/无确认句不动✅）
-- **效果：** 确认句位置问题从“发送前自查”升级为机制层兑底，与 ❄️ 空行收尾归一同属机制修复路线
-- **涉及文件：** evolution-reply-confirm/index.js(备份 index.js.bak-20261108)，gateway 已热重启生效
+### evolution-reply-confirm 确认句位置归一修复 -- 2026-11-08
+- **根因:** 插件原逻辑在回复已含「自进化请求已执行」时直接跳过不处理,不检查位置--确认句写在中间时插件不管,靠自觉又靠不住(13:01 事故:确认句在写入原文与四轮汇总之间)
+- **修复:** 已含确认句时先检查是否在正文末尾(❄️ 前);在中间则自动移到末尾(删中间行→插入 ❄️ 前,无 ❄️ 时 append 到末尾),已在末尾/无确认句均不动
+- **验证:** 三用例单测全过(中间→末尾✅/已在末尾不动✅/无确认句不动✅)
+- **效果:** 确认句位置问题从"发送前自查"升级为机制层兑底,与 ❄️ 空行收尾归一同属机制修复路线
+- **涉及文件:** evolution-reply-confirm/index.js(备份 index.js.bak-20261108),gateway 已热重启生效
 
 ### write-gate 多文件一次登记·操作纪律(2026-11-06 固化)
-- **原理：** write-gate 核心本就支持"一次确认授予所有 pending 路径"——确认词命中时把当前 pending 里登记的全部正式文件路径一次性授权，不增加确认次数。
-- **坑点：** 一次进化涉及多正式文件(如 SOUL.md 主落盘 + 同步 MEMORY.md 人格手册)时，若分两批登记、中间又确认一次，则第二批路径不在上次授权里，被迫二次确认。
-- **纪律：** 提案展示后，须先把本次要写的**所有目标正式文件路径各触发一次待写登记**(都进 pending)，再**统一请俞哥发一次确认词**，即可一次命中覆盖全部文件落盘，避免逐文件二次确认。
-- **落点：** TOOLS.md 与 SOUL.md/MEMORY.md 的 write-gate 记录处。
+- **原理:** write-gate 核心本就支持"一次确认授予所有 pending 路径"--确认词命中时把当前 pending 里登记的全部正式文件路径一次性授权,不增加确认次数。
+- **坑点:** 一次进化涉及多正式文件(如 SOUL.md 主落盘 + 同步 MEMORY.md 人格手册)时,若分两批登记、中间又确认一次,则第二批路径不在上次授权里,被迫二次确认。
+- **纪律:** 提案展示后,须先把本次要写的**所有目标正式文件路径各触发一次待写登记**(都进 pending),再**统一请俞哥发一次确认词**,即可一次命中覆盖全部文件落盘,避免逐文件二次确认。
+- **落点:** TOOLS.md 与 SOUL.md/MEMORY.md 的 write-gate 记录处。
 
 ### xiaoyi-channel 代码块说明行重复渲染规避(2026-11-06 固化)
 
 - **现象:** 回复含多个代码块时,代码块前的"说明行+冒号"(如"图生图(保留参考形象出场景):")在端侧被重复渲染成两条独立消息(源文本只写一遍)
 - **根因:** xiaoyi-channel 渲染层对"普通文本行+紧跟代码块"结构的拆解重复投递,与"❄️前多打换行"同属通道渲染已知问题
-- **规避:** ①多代码块回复中,说明文字并入代码块内部当注释(如 `# 图生图:保留参考形象出场景`) ②或说明行用加粗独立段并与代码块隔开
+- **规避:** 1多代码块回复中,说明文字并入代码块内部当注释(如 `# 图生图:保留参考形象出场景`) 2或说明行用加粗独立段并与代码块隔开
 - **适用:** 所有经 xiaoyi-channel 下发的含代码块回复
 
-### 定时任务报告标识统一 ❄️（2026-11-04 固化）
+### 定时任务报告标识统一 ❄️(2026-11-04 固化)
 
-- 三个定时任务（Crusheart引擎初始化/每日维护/沙箱清理）的报告标题标识原为 🦞（OpenClaw 吉祥物），与琪琪人格 **❄️** 不符，已全部统一替换为 ❄️。
-- 涉及脚本：`cron_engine_init.py`（引擎初始化报告）、`_archived/daily_maintenance.py`（每日维护报告）、`cron_sandbox_cleanup.py`（沙箱清理报告，2处）。
-- 规范：琪琪系统生成的对外报告/标题标识一律用 ❄️，不挂 OpenClaw 底层标的 🦞；后续新增定时报告脚本，标题标识同样用 ❄️。
-- 改动已备份 `.bak-20261104`；cron 无需重启，脚本每次运行时生效。
+- 三个定时任务(Crusheart引擎初始化/每日维护/沙箱清理)的报告标题标识原为 🦞(OpenClaw 吉祥物),与琪琪人格 **❄️** 不符,已全部统一替换为 ❄️。
+- 涉及脚本:`cron_engine_init.py`(引擎初始化报告)、`_archived/daily_maintenance.py`(每日维护报告)、`cron_sandbox_cleanup.py`(沙箱清理报告,2处)。
+- 规范:琪琪系统生成的对外报告/标题标识一律用 ❄️,不挂 OpenClaw 底层标的 🦞;后续新增定时报告脚本,标题标识同样用 ❄️。
+- 改动已备份 `.bak-20261104`;cron 无需重启,脚本每次运行时生效。
 
-### 沙箱清理纳入 /tmp 任务产物 + 产物口径区分（2026-11-06 固化）
+### 沙箱清理纳入 /tmp 任务产物 + 产物口径区分(2026-11-06 固化)
 
-**任务产物清理（7天规则）：**
-- `scripts/cron_sandbox_cleanup.py` 新增 clean_task_artifacts 清理项（#8），按 mtime 超 7 天淘汰：①`/tmp/xiaoyi_ppt/` 下各会话目录（pptx/大纲/图片）②`/tmp/mao/` 调研快照目录 ③`/tmp` 根下超龄调研/搜索缓存 html ④`/tmp` 下（含子目录）超龄 Office+媒体成品一律清（xlsx/docx/pptx/jpg/jpeg/png/webp/gif/mp4/m4a/mp3/wav/mov，不限目录，跳过已覆盖目录避免双计）⑤`workspace/tmp/` 下超龄文件清（含 .bas VBA 导出等任务脚本产物；2026-11-06 选项B二次扩展）
-- **2026-11-08 补齐遗漏（实测）：** 目录白名单从 2 个扩至 **13 个**——新增 `ppt_check/ppt_fix/ppt_fix2/ppt_check3/ppt_check_png/vec_redraw/faw_q3/q3_report/qqbot_audit/ai_trend/wsp_deps`（PPT 检查修复中间产物、Q3 报告 docx/pdf、qqbot 审计包、调研 txt 快照、pip 依赖目录）；后缀兜底补 **.pdf/.tgz/.zip/.txt**（原先 pdf/tgz/txt 全漏）；新增运行时保护黑名单 `openclaw/jiti/xy_channel/node_modules/pip-*/systemd-*` 不参与清理。验证方式：造 10 天前超龄文件跑 dry_run 确认命中
-- txt 类仅任务目录内清（根目录 txt 不碰）；workspace 的 .persona_visual 仍走"待确认大文件"不自动删
-- **2026-11-11 15:25 generated-images 改为自动清理项：** `generated-images/`（AI出图缓存）从"待确认大文件"**改为自动清理**——超 7 天 mtime 自动清、7 天保护期内不动（与其他任务产物同规则）；已发用户的图云空间+手机有留档不丢。实测验证：造 10 天前超龄文件 dry-run 命中"待删"，7 天内不碰。`.persona_visual` 仍走待确认不动
-- **2026-11-08 根目录脚本/结果补齐（实测）：** 新增 /tmp 根下超龄 `.json/.py/.sh/.mjs`（仅根目录不递归，避免误伤子目录）与无扩展名测试文件名单（rci_ensure_marker/rci_inject_marker/4000/5000/wtest）；**修正记录错误：** 原记录"根目录 txt 不碰"与代码实际不符——walk 全 /tmp 递归，根目录超龄 txt 实际会被清（且合理，根目录 txt 全是调研缓存 a1.txt/q1.txt 系列）；qqcred.json 实测为 {caption,images} 任务产物非凭证，可清；.lock 文件与保护目录不受影响
-- **2026-11-08 workspace 根产物目录补齐（第四轮审计）：** 新增 `generated-videos/`（视频成品沙箱副本，三层副本结构云空间+手机有留档）与 `chrome-headed-v3-data/`（浏览器任务数据）**30 天保守档**超龄清理（比 7 天宽，留足找回窗口）；generated-images/.persona_visual 仍走"待确认大文件"不动。**审计结论：** ~/.openclaw 侧 npm-cache(397M，0文件超30天)/logs(19M，0超14天)/browser(271M)/agents(392M)/tools(269M) 全为活跃运行时非垃圾，不纳入清理；memory/ 为记忆数据库不归清理管
-- **2026-11-08 编译缓存补齐（实测）：** 新增编译/构建缓存清理组（超 7 天整删）——`/tmp/pip-*`（51个 unpack/metadata/build-tracker/ephem-wheel-cache/install/target/uninstall，实测全超龄）、`/tmp/jiti`（Node TS 编译缓存）、`/tmp/.org.chromium.Chromium.*`（Chromium 崩溃目录）、`v8-compile-cache*`/`tsx-*`/`esbuild-*`/`playwright-*`/`puppeteer-*`/`npm-*`；另加 /tmp 根下超龄 `*.log` 清理。**纠正上一轮错误：** PROTECTED_DIRS 从 pip-*/jiti/node_modules 收缩为仅 `/tmp/openclaw`、`/tmp/systemd-`（编译缓存可清，不是运行时依赖）；同时修掉文件级/目录级重复计数（walk 跳过缓存目录）。验证：dry_run 命中 64 项（编译缓存 55 + 任务产物 5 + 日志 3 + ws-tmp 1）
-- 已备份 `.bak-20261106` / `.bak-20261106-2` / `.bak-20261106-3`；dry_run 预览模式兼容；cron 无需重启，每周日 12:00 随现有任务生效
-- 7 天保护期内产物一律不动；已发用户的成品不受影响
+**任务产物清理(7天规则):**
+- `scripts/cron_sandbox_cleanup.py` 新增 clean_task_artifacts 清理项(#8),按 mtime 超 7 天淘汰:1`/tmp/xiaoyi_ppt/` 下各会话目录(pptx/大纲/图片)2`/tmp/mao/` 调研快照目录 3`/tmp` 根下超龄调研/搜索缓存 html 4`/tmp` 下(含子目录)超龄 Office+媒体成品一律清(xlsx/docx/pptx/jpg/jpeg/png/webp/gif/mp4/m4a/mp3/wav/mov,不限目录,跳过已覆盖目录避免双计)5`workspace/tmp/` 下超龄文件清(含 .bas VBA 导出等任务脚本产物;2026-11-06 选项B二次扩展)
+- **2026-11-08 补齐遗漏(实测):** 目录白名单从 2 个扩至 **13 个**--新增 `ppt_check/ppt_fix/ppt_fix2/ppt_check3/ppt_check_png/vec_redraw/faw_q3/q3_report/qqbot_audit/ai_trend/wsp_deps`(PPT 检查修复中间产物、Q3 报告 docx/pdf、qqbot 审计包、调研 txt 快照、pip 依赖目录);后缀兜底补 **.pdf/.tgz/.zip/.txt**(原先 pdf/tgz/txt 全漏);新增运行时保护黑名单 `openclaw/jiti/xy_channel/node_modules/pip-*/systemd-*` 不参与清理。验证方式:造 10 天前超龄文件跑 dry_run 确认命中
+- txt 类仅任务目录内清(根目录 txt 不碰);workspace 的 .persona_visual 仍走"待确认大文件"不自动删
+- **2026-11-11 15:25 generated-images 改为自动清理项:** `generated-images/`(AI出图缓存)从"待确认大文件"**改为自动清理**--超 7 天 mtime 自动清、7 天保护期内不动(与其他任务产物同规则);已发用户的图云空间+手机有留档不丢。实测验证:造 10 天前超龄文件 dry-run 命中"待删",7 天内不碰。`.persona_visual` 仍走待确认不动
+- **2026-11-08 根目录脚本/结果补齐(实测):** 新增 /tmp 根下超龄 `.json/.py/.sh/.mjs`(仅根目录不递归,避免误伤子目录)与无扩展名测试文件名单(rci_ensure_marker/rci_inject_marker/4000/5000/wtest);**修正记录错误:** 原记录"根目录 txt 不碰"与代码实际不符--walk 全 /tmp 递归,根目录超龄 txt 实际会被清(且合理,根目录 txt 全是调研缓存 a1.txt/q1.txt 系列);qqcred.json 实测为 {caption,images} 任务产物非凭证,可清;.lock 文件与保护目录不受影响
+- **2026-11-08 workspace 根产物目录补齐(第四轮审计):** 新增 `generated-videos/`(视频成品沙箱副本,三层副本结构云空间+手机有留档)与 `chrome-headed-v3-data/`(浏览器任务数据)**30 天保守档**超龄清理(比 7 天宽,留足找回窗口);generated-images/.persona_visual 仍走"待确认大文件"不动。**审计结论:** ~/.openclaw 侧 npm-cache(397M,0文件超30天)/logs(19M,0超14天)/browser(271M)/agents(392M)/tools(269M) 全为活跃运行时非垃圾,不纳入清理;memory/ 为记忆数据库不归清理管
+- **2026-11-08 编译缓存补齐(实测):** 新增编译/构建缓存清理组(超 7 天整删)--`/tmp/pip-*`(51个 unpack/metadata/build-tracker/ephem-wheel-cache/install/target/uninstall,实测全超龄)、`/tmp/jiti`(Node TS 编译缓存)、`/tmp/.org.chromium.Chromium.*`(Chromium 崩溃目录)、`v8-compile-cache*`/`tsx-*`/`esbuild-*`/`playwright-*`/`puppeteer-*`/`npm-*`;另加 /tmp 根下超龄 `*.log` 清理。**纠正上一轮错误:** PROTECTED_DIRS 从 pip-*/jiti/node_modules 收缩为仅 `/tmp/openclaw`、`/tmp/systemd-`(编译缓存可清,不是运行时依赖);同时修掉文件级/目录级重复计数(walk 跳过缓存目录)。验证:dry_run 命中 64 项(编译缓存 55 + 任务产物 5 + 日志 3 + ws-tmp 1)
+- 已备份 `.bak-20261106` / `.bak-20261106-2` / `.bak-20261106-3`;dry_run 预览模式兼容;cron 无需重启,每周日 12:00 随现有任务生效
+- 7 天保护期内产物一律不动;已发用户的成品不受影响
 
-**任务产物口径区分（防数字打架）：**
-- 端侧"全部产物"＝已交付成品（历次生成并发到手机的文件）
-- 沙箱 /tmp 文件＝成品＋中间文件（调研快照/搜索缓存/日志，大部分从未发给用户）
-- 回答"产物有多少"类问题须先分清口径分别报数，禁止混着报一个总数
+**任务产物口径区分(防数字打架):**
+- 端侧"全部产物"=已交付成品(历次生成并发到手机的文件)
+- 沙箱 /tmp 文件=成品+中间文件(调研快照/搜索缓存/日志,大部分从未发给用户)
+- 回答"产物有多少"类问题须先分清口径分别报数,禁止混着报一个总数
 
-**产物三层副本结构（2026-11-06 深化）：**
-- ①沙箱源文件：/tmp、workspace，7 天清理规则管（超龄自动清）
-- ②云空间副本：小艺Work「任务产物」＝云空间成品清单，长期保留、不受沙箱清理影响；用户手动删的是这层记录（如 118→61）
-- ③手机本地副本：用户自管
-- 流转链：沙箱生成 → 上传 → 云空间存一份 + 手机收一份
-- 找回路径：云空间有直接下；云空间删了且沙箱源也没了 → 只能重新生成
+**产物三层副本结构(2026-11-06 深化):**
+- 1沙箱源文件:/tmp、workspace,7 天清理规则管(超龄自动清)
+- 2云空间副本:小艺Work「任务产物」=云空间成品清单,长期保留、不受沙箱清理影响;用户手动删的是这层记录(如 118→61)
+- 3手机本地副本:用户自管
+- 流转链:沙箱生成 → 上传 → 云空间存一份 + 手机收一份
+- 找回路径:云空间有直接下;云空间删了且沙箱源也没了 → 只能重新生成
 
-### Word 文档分页控制·LO/移动端渲染坑与稳态做法（2026-11-07 实测固化）
+### Word 文档分页控制·LO/移动端渲染坑与稳态做法(2026-11-07 实测固化)
 
-**背景：** python-docx 商务报告四连修踩坑：表格/卡片跨页断行、图文分离、keepNext 绑太长致渲染器硬切、同名重发端侧缓存旧版。
+**背景:** python-docx 商务报告四连修踩坑:表格/卡片跨页断行、图文分离、keepNext 绑太长致渲染器硬切、同名重发端侧缓存旧版。
 
-**坑与稳态做法：**
-1. **keepNext 只设短链，块间必须断开**：把图片段/所有标题全设 keep_with_next 会让链条从块一直连到章尾，渲染器找不到断点只能硬切，把整块甩到后页（实测卡片被甩两页外）。稳态：只绑三处——①标题→紧邻内容 ②图片前描述段→图（图片段自身不绑）③表格/卡片块内行间绑定（**末行单元格段落必须 False**，否则与后文连链）。
-2. **表格防拆双层**：行 cantSplit 只防单行内部拆分，不防行间分页；防整表拆散靠单元格段落 keepNext（首行到倒数第二行设 True）。
-3. **跨渲染引擎分页不可控**：LO 与手机端/Word 字体度量不同，分页位置漂移（本地 5 页端侧 6 页属正常）。keepNext 只保证「块不拆」，保证不了「落在哪页」；要位置精确只能 page_break_before 硬约束。
-4. **章级分页与紧凑的权衡**：H1 全部 page_break_before=章节绝不被切但页数多留白大；紧凑=块级防拆+缩图（14.5→12.5cm）+压缩段距（6→3pt）。默认用紧凑版，用户嫌章节被切再上章级分页。
-5. **同名文件重发端侧缓存**：同一文件名多次重发，端侧可能一直展示缓存旧版；改名重发（如加版本号后缀）绕开。
+**坑与稳态做法:**
+1. **keepNext 只设短链,块间必须断开**:把图片段/所有标题全设 keep_with_next 会让链条从块一直连到章尾,渲染器找不到断点只能硬切,把整块甩到后页(实测卡片被甩两页外)。稳态:只绑三处--1标题→紧邻内容 2图片前描述段→图(图片段自身不绑)3表格/卡片块内行间绑定(**末行单元格段落必须 False**,否则与后文连链)。
+2. **表格防拆双层**:行 cantSplit 只防单行内部拆分,不防行间分页;防整表拆散靠单元格段落 keepNext(首行到倒数第二行设 True)。
+3. **跨渲染引擎分页不可控**:LO 与手机端/Word 字体度量不同,分页位置漂移(本地 5 页端侧 6 页属正常)。keepNext 只保证「块不拆」,保证不了「落在哪页」;要位置精确只能 page_break_before 硬约束。
+4. **章级分页与紧凑的权衡**:H1 全部 page_break_before=章节绝不被切但页数多留白大;紧凑=块级防拆+缩图(14.5→12.5cm)+压缩段距(6→3pt)。默认用紧凑版,用户嫌章节被切再上章级分页。
+5. **同名文件重发端侧缓存**:同一文件名多次重发,端侧可能一直展示缓存旧版;改名重发(如加版本号后缀)绕开。
 
-### xlsx 图表·LO/移动端渲染坑与稳态做法（2026-11-07 实测固化）
+### xlsx 图表·LO/移动端渲染坑与稳态做法(2026-11-07 实测固化)
 
-**背景：** openpyxl 生成的柱状图在 LO 渲染/移动端预览下三连翻车：数据标签挤成黑块、双轴组合图次轴错乱、图表溢出页面被切。
+**背景:** openpyxl 生成的柱状图在 LO 渲染/移动端预览下三连翻车:数据标签挤成黑块、双轴组合图次轴错乱、图表溢出页面被切。
 
-**坑与稳态做法：**
-1. **数据标签 show* 属性必须显式设 False**：openpyxl 的 DataLabelList 只设 showVal=True 时其余 show* 为 None，LO/移动端渲染器把 None 当 True → 标签混杂类别名+系列名挤成一团。稳态：showVal/showCatName/showSerName/showLegendKey/showPercent/showBubbleSize 六项全部显式赋值（只留 showVal=True）。
-2. **柱+线双轴组合图移动端兼容差**：次轴标签堆叠、图例被切、渲染错乱。稳态：拆成两张独立图表（各带各的轴），比组合图稳。
-3. **图表锚点不要放表格右侧列**：G 列起锚+宽图表会横向溢出打印区被切页。稳态：图表纵向排在表格下方（如 A16/A34）+ page_setup.fitToWidth=1 + fitToHeight=0 + sheet_properties.pageSetUpPr.fitToPage=True。
-4. **负值柱状图需显式轴范围**：增长率等负值柱，LO 渲染需显式 scaling.min/max（如 -0.6~0），否则柱体不显示。
-5. **区域级数据无公开的处理口径**：车企/公司不公开区域明细时，用真实公开总量做锚点+行业通行份额建模拆分+表格内「数据说明」区明确标注估算口径，不冒充官方数据。
+**坑与稳态做法:**
+1. **数据标签 show* 属性必须显式设 False**:openpyxl 的 DataLabelList 只设 showVal=True 时其余 show* 为 None,LO/移动端渲染器把 None 当 True → 标签混杂类别名+系列名挤成一团。稳态:showVal/showCatName/showSerName/showLegendKey/showPercent/showBubbleSize 六项全部显式赋值(只留 showVal=True)。
+2. **柱+线双轴组合图移动端兼容差**:次轴标签堆叠、图例被切、渲染错乱。稳态:拆成两张独立图表(各带各的轴),比组合图稳。
+3. **图表锚点不要放表格右侧列**:G 列起锚+宽图表会横向溢出打印区被切页。稳态:图表纵向排在表格下方(如 A16/A34)+ page_setup.fitToWidth=1 + fitToHeight=0 + sheet_properties.pageSetUpPr.fitToPage=True。
+4. **负值柱状图需显式轴范围**:增长率等负值柱,LO 渲染需显式 scaling.min/max(如 -0.6~0),否则柱体不显示。
+5. **区域级数据无公开的处理口径**:车企/公司不公开区域明细时,用真实公开总量做锚点+行业通行份额建模拆分+表格内「数据说明」区明确标注估算口径,不冒充官方数据。
 
-### 云端 PPT 数据图表·矢量重绘法（2026-11-07 固化）
+### 云端 PPT 数据图表·矢量重绘法(2026-11-07 固化)
 
-**背景：** 云端 PPT 生成的数据图表（柱状图/条形图）是低分辨率位图（600px 级），黑底深灰字对比度差，且放大即糊。PIL 修色解决「看不清」，解决不了「糊」。
+**背景:** 云端 PPT 生成的数据图表(柱状图/条形图)是低分辨率位图(600px 级),黑底深灰字对比度差,且放大即糊。PIL 修色解决「看不清」,解决不了「糊」。
 
-**坑点：**
-1. **位图提亮必须区域感知**：PIL 把深灰字全提亮会误伤浅色柱子上的字（深字浅柱本来可读，提亮后白字隐身）。判据：7×7 邻域均值` 标签写自定义描述（如「黑蓝 #090D18 + 荧光青 #38E8D4 + 数字紫 #846BFF」）时云端照常受理（日志还会回显风格文本），但实际生成时**直接忽略**，fallback 到默认米色模板——用户指定配色完全落空。
+**坑点:**
+1. **位图提亮必须区域感知**:PIL 把深灰字全提亮会误伤浅色柱子上的字(深字浅柱本来可读,提亮后白字隐身)。判据:7×7 邻域均值` 标签写自定义描述(如「黑蓝 #090D18 + 荧光青 #38E8D4 + 数字紫 #846BFF」)时云端照常受理(日志还会回显风格文本),但实际生成时**直接忽略**,fallback 到默认米色模板--用户指定配色完全落空。
 
-**修复（不用重生成）：** 用 python-pptx 按 **fill / line / text 三通道全局映射换色**（实测 1600+ 处），保留字体样式与版式；强调色落点可按文本内容定位（章节编号 01/02/03、封面装饰行上荧光青），大色块（页背景/卡片/强调块）按角色映射（页底→主色、深块→次强调色、卡片→深色层次）。
+**修复(不用重生成):** 用 python-pptx 按 **fill / line / text 三通道全局映射换色**(实测 1600+ 处),保留字体样式与版式;强调色落点可按文本内容定位(章节编号 01/02/03、封面装饰行上荧光青),大色块(页背景/卡片/强调块)按角色映射(页底→主色、深块→次强调色、卡片→深色层次)。
 
-**排查要点：**
-1. **验证用色必须查实际文件**：用 python-pptx 对象模型统计（shape.fill / run.font.color），**勿用 XML grep**——会把 endParaRPr（段落尾属性，不可见）算进去产生假象（实测 000000 显 1037 处实为 0 处可见）
-2. **目检预览用 soffice 转 PDF/PNG**，但表格文字断行属 LO 字体度量差异（原版即有），真机 PowerPoint/WPS 正常，勿误判为改色引入
-3. 配色是否生效以 python-pptx 统计计数为准，逐色报数
+**排查要点:**
+1. **验证用色必须查实际文件**:用 python-pptx 对象模型统计(shape.fill / run.font.color),**勿用 XML grep**--会把 endParaRPr(段落尾属性,不可见)算进去产生假象(实测 000000 显 1037 处实为 0 处可见)
+2. **目检预览用 soffice 转 PDF/PNG**,但表格文字断行属 LO 字体度量差异(原版即有),真机 PowerPoint/WPS 正常,勿误判为改色引入
+3. 配色是否生效以 python-pptx 统计计数为准,逐色报数
 
-**2026-11-07 凌晨实战补充（六步修复管线 + 三坑）：**
-1. **HTML 预览三色 ≠ pptx 成品**：云端 HTML 渲染层保留 outline 自定义色，转 pptx 时丢弃 fallback 默认模板——用户看 HTML 预览以为成品带色，交付前必须声明或先修色
-2. **修改前必须先留健康原版备份**：凌晨实战改色/替换直接覆盖云端原版且无备份，想回退时已无健康版本；任何后处理前先 cp 留底
-3. **手机端播不了的层级递进**：python-pptx 重新另存（重打包）≠ 修好；**LibreOffice 渲染级重建（soffice --headless --convert-to pptx）才是兼容性王牌**（LO 从头重导出整个文件，实测救活手机端拒绝的文件）
-4. **六步修复管线**：①云端产物 → ②LO 渲染级重建 → ③python-pptx 三通道全局色映射（fill/line/text；**MAP 表必须含大小写变体色值**，首跑漏 18 处变体米色）→ ④theme accent XML 替换 + **文本内容定位强调色**（纯编号/数据百分比→主强调青，CHAPTER 装饰行/章节角标词→次强调紫；theme accent 对硬编码 srgbClr 元素无效，必须内容定位）→ ⑤核验双保险：python-pptx 对象模型逐色报数 + LO 转 PDF→pdftoppm 出页图→PIL 统计青/紫像素占比 → ⑥推送端侧实测播放+观感
+**2026-11-07 凌晨实战补充(六步修复管线 + 三坑):**
+1. **HTML 预览三色 ≠ pptx 成品**:云端 HTML 渲染层保留 outline 自定义色,转 pptx 时丢弃 fallback 默认模板--用户看 HTML 预览以为成品带色,交付前必须声明或先修色
+2. **修改前必须先留健康原版备份**:凌晨实战改色/替换直接覆盖云端原版且无备份,想回退时已无健康版本;任何后处理前先 cp 留底
+3. **手机端播不了的层级递进**:python-pptx 重新另存(重打包)≠ 修好;**LibreOffice 渲染级重建(soffice --headless --convert-to pptx)才是兼容性王牌**(LO 从头重导出整个文件,实测救活手机端拒绝的文件)
+4. **六步修复管线**:1云端产物 → 2LO 渲染级重建 → 3python-pptx 三通道全局色映射(fill/line/text;**MAP 表必须含大小写变体色值**,首跑漏 18 处变体米色)→ 4theme accent XML 替换 + **文本内容定位强调色**(纯编号/数据百分比→主强调青,CHAPTER 装饰行/章节角标词→次强调紫;theme accent 对硬编码 srgbClr 元素无效,必须内容定位)→ 5核验双保险:python-pptx 对象模型逐色报数 + LO 转 PDF→pdftoppm 出页图→PIL 统计青/紫像素占比 → 6推送端侧实测播放+观感
 
-### Git 提交历史整理·合并相邻提交（2026-11-11 09:45 固化）
+### Git 提交历史整理·合并相邻提交(2026-11-11 09:45 固化)
 
-用于把两条相邻提交合成一条（如分步装的技能合并）。**流程：**
-1. **前置安全**：`git remote -v` + `git branch -vv`，确认目标提交**未推送远端**（本地 ahead 才安全，rebase 重写未推送历史不影响远端）
-2. **工作区有未暂存改动会中止 rebase**：须先 `git stash push -u`（含未跟踪）再操作，完成后 `git stash pop` 恢复，勿丢改动
-3. **合并相邻两条**：`git rebase -i ` + `GIT_SEQUENCE_EDITOR="sed -i 'Ns/^pick/fixup/'"`（N=要并入行的行号，从旧到新数）；fixup 保留前一条 message
-4. **改 message**：fixup 后信息不准确时用 reword——`GIT_SEQUENCE_EDITOR="sed -i '1s/^pick/reword/'"` + `GIT_EDITOR="sed -i '1c 新信息'"`；中文括号 message 可行
-5. **校验**：提交数=合并前-1；`git show  --name-only` 验证文件完整（勿只信状态面板）
-6. **⚠️ 提交前务必 `git diff --stat` 看变更规模**：若行数远超本次编辑量，说明把工作区遗留改动/旧版本一并 add 了（会误删 HEAD 里大量内容）——须 `git checkout HEAD -- ` 恢复后重新改，勿盲目 `git add `
+用于把两条相邻提交合成一条(如分步装的技能合并)。**流程:**
+1. **前置安全**:`git remote -v` + `git branch -vv`,确认目标提交**未推送远端**(本地 ahead 才安全,rebase 重写未推送历史不影响远端)
+2. **工作区有未暂存改动会中止 rebase**:须先 `git stash push -u`(含未跟踪)再操作,完成后 `git stash pop` 恢复,勿丢改动
+3. **合并相邻两条**:`git rebase -i ` + `GIT_SEQUENCE_EDITOR="sed -i 'Ns/^pick/fixup/'"`(N=要并入行的行号,从旧到新数);fixup 保留前一条 message
+4. **改 message**:fixup 后信息不准确时用 reword--`GIT_SEQUENCE_EDITOR="sed -i '1s/^pick/reword/'"` + `GIT_EDITOR="sed -i '1c 新信息'"`;中文括号 message 可行
+5. **校验**:提交数=合并前-1;`git show  --name-only` 验证文件完整(勿只信状态面板)
+6. **⚠️ 提交前务必 `git diff --stat` 看变更规模**:若行数远超本次编辑量,说明把工作区遗留改动/旧版本一并 add 了(会误删 HEAD 里大量内容)--须 `git checkout HEAD -- ` 恢复后重新改,勿盲目 `git add `
 
 ### OpenClaw 操作约束
 核心原则
 
-#### 读图失败排查三层法（2026-10-26 固化）
-- **读图遇障勿反复硬试 image_reading**：先分清是哪一层出问题。
-- **三层定位**：①内置 `image_reading`（返回 Premature close/超时 = 工具连接层故障，瞬时或暂不可用）→ ②换 `xiaoyi-image-understanding` 脚本（能上传得到 objectId + SSE 流建立 = 脚本通道通）→ ③小艺 API 端（脚本加 RAW 打印抓原始 SSE，看 `streamContent` 是否一路为空；为空 = 服务端未返回内容，**非脚本/依赖问题**）。
-- **脚本 debug 坑**：在脚本里加 `print(..., file=sys.stderr)` 打原始 SSE 前**务必先 `import sys`**，否则报 `name 'sys' is not defined`、请求异常直接 return null，反而掩盖真实原因。（案例：xiaoyi-image-understanding 排查读图 API 空返回时撞上，已补 import）
-- **补充分支（2026-11-04）：** `image_reading` 返回 `success` 但 caption 极简/失真（读表格类/密集截图时尤其弱，如只给出句残缺描述）时，改走 **`xiaoyi-image-understanding` 脚本通道 + `grep -v RAW`** 拉全文详读（能逐字读出端侧截图里表格源码残留、段落重复、分隔行截断等渲染问题）。（案例：3张端侧截图靠脚本通道逐字还原渲染异常）
+#### 读图失败排查三层法(2026-10-26 固化)
+- **读图遇障勿反复硬试 image_reading**:先分清是哪一层出问题。
+- **三层定位**:1内置 `image_reading`(返回 Premature close/超时 = 工具连接层故障,瞬时或暂不可用)→ 2换 `xiaoyi-image-understanding` 脚本(能上传得到 objectId + SSE 流建立 = 脚本通道通)→ 3小艺 API 端(脚本加 RAW 打印抓原始 SSE,看 `streamContent` 是否一路为空;为空 = 服务端未返回内容,**非脚本/依赖问题**)。
+- **脚本 debug 坑**:在脚本里加 `print(..., file=sys.stderr)` 打原始 SSE 前**务必先 `import sys`**,否则报 `name 'sys' is not defined`、请求异常直接 return null,反而掩盖真实原因。(案例:xiaoyi-image-understanding 排查读图 API 空返回时撞上,已补 import)
+- **补充分支(2026-11-04):** `image_reading` 返回 `success` 但 caption 极简/失真(读表格类/密集截图时尤其弱,如只给出句残缺描述)时,改走 **`xiaoyi-image-understanding` 脚本通道 + `grep -v RAW`** 拉全文详读(能逐字读出端侧截图里表格源码残留、段落重复、分隔行截断等渲染问题)。(案例:3张端侧截图靠脚本通道逐字还原渲染异常)
 
 #### 手机操控(xiaoyi-gui-agent) 执行规则(必须严格遵守)
 
@@ -412,15 +412,15 @@ python3 -m supervisor.supervisorctl restart openclaw-gateway
 
 **改前边界预检(2026-09-24 固化):** 修改含记忆系统标记块的文件(USER.md / MEMORY.md 等,即含 `CELIA_MEMORY_OVERVIEW/SCENES_BEGIN...END` 标记)前,先 `grep -n "CELIA_MEMORY_"` 核对标记边界,确认待改行**不在 OVERVIEW/SCENES 禁改块内**;命中禁改块则**不做手动编辑**--该区域由记忆系统自动管理,手改会被重写覆盖且违规,交由记忆系统自行刷新。判断"xx残留是否要改"时,先分辨它属于**正式规则文本**还是**记忆系统快照**,别对快照下手。(案例:2026-09-24 差点去改 USER.md/MEMORY.md 里 9 处'小艺Claw残留',核对后发现全在禁改块内及时收手;真正该统一的 AGENTS/SOUL/TOOLS 已全部为'小艺Work')
 
-### MEMORY.md 污染根因与治本（2026-10-27 固化）
+### MEMORY.md 污染根因与治本(2026-10-27 固化)
 
-**根因:** MEMORY.md 反复被污染膨胀（本次 1.19MB/2万行）的元凶是 `core/engines/memory/auto_memory.py`——「灵枢/Crusheart」自带固化引擎的 `long_term_file` 原直指 `WORKSPACE/MEMORY.md`(994行)，经**会话运行中 hook**（inbound_signal_score 高分消息自动保存 / self_evolution save_to_memory / consolidate_expiring 批量固化）静默 `append` 写「📝 固化:」/「🧠 核心锚点:」。该系统与当前记忆槽位 `slots.memory=memory-celia`（及 yaoyao）**三者并存**，属残留双写，清完会复发。
+**根因:** MEMORY.md 反复被污染膨胀(本次 1.19MB/2万行)的元凶是 `core/engines/memory/auto_memory.py`--「灵枢/Crusheart」自带固化引擎的 `long_term_file` 原直指 `WORKSPACE/MEMORY.md`(994行),经**会话运行中 hook**(inbound_signal_score 高分消息自动保存 / self_evolution save_to_memory / consolidate_expiring 批量固化)静默 `append` 写「📝 固化:」/「🧠 核心锚点:」。该系统与当前记忆槽位 `slots.memory=memory-celia`(及 yaoyao)**三者并存**,属残留双写,清完会复发。
 
-**排查定位法:** `grep -rn "📝 固化" "🧠 核心锚点"` 在 workspace/core 搜写入源 → 命中 auto_memory.py:2193/2189 → 看 `long_term_file` 定义(994) 确认落点是 MEMORY.md → 查 hook 触发点(hook_engine/self_evolution_engine) → 用 `slots.memory` 核对当前引擎，识别残留并存的写入者。
+**排查定位法:** `grep -rn "📝 固化" "🧠 核心锚点"` 在 workspace/core 搜写入源 → 命中 auto_memory.py:2193/2189 → 看 `long_term_file` 定义(994) 确认落点是 MEMORY.md → 查 hook 触发点(hook_engine/self_evolution_engine) → 用 `slots.memory` 核对当前引擎,识别残留并存的写入者。
 
-**瘦身白名单重建法:** 不要按行删，按「保留清单」重建：①`grep -nE "^#{1,3} "` 列标题 + 扫描非垃圾区间锁**干净正式区边界**（本次 1-362，含项目/偏好/主人锚/人设/记忆引擎/人格手册六章/变更日志，`sed -n '1,362p' | grep -cE '固化|核心锚点|进化请求'` 应为 0 即干净）；②保留 `CELIA_MEMORY_SCENES` 记忆块原样；③`python` 拼接两块写回；④`grep -c` 逐个校验关键锚点（主人锚/四国军棋/六章标题/SCENES_BEGIN/END）不丢；⑤改前 `cp MEMORY.md MEMORY.md.bak-`。
+**瘦身白名单重建法:** 不要按行删,按「保留清单」重建:1`grep -nE "^#{1,3} "` 列标题 + 扫描非垃圾区间锁**干净正式区边界**(本次 1-362,含项目/偏好/主人锚/人设/记忆引擎/人格手册六章/变更日志,`sed -n '1,362p' | grep -cE '固化|核心锚点|进化请求'` 应为 0 即干净);2保留 `CELIA_MEMORY_SCENES` 记忆块原样;3`python` 拼接两块写回;4`grep -c` 逐个校验关键锚点(主人锚/四国军棋/六章标题/SCENES_BEGIN/END)不丢;5改前 `cp MEMORY.md MEMORY.md.bak-`。
 
-**治本（落点重定向）:** 把 `auto_memory.py` 的 `self.long_term_file` 从 `MEMORY.md` 改为独立文件 `data/auto_memory_l3.md`（994 + 2314 两处），固化能力保留但 MEMORY.md 永不被污染。改后确认 core 无其他直接写 MEMORY.md、`py_compile` 验证、提交、重启 openclaw-gateway 生效。
+**治本(落点重定向):** 把 `auto_memory.py` 的 `self.long_term_file` 从 `MEMORY.md` 改为独立文件 `data/auto_memory_l3.md`(994 + 2314 两处),固化能力保留但 MEMORY.md 永不被污染。改后确认 core 无其他直接写 MEMORY.md、`py_compile` 验证、提交、重启 openclaw-gateway 生效。
 
 ### message 投递校验(通用,2026-09-19 固化)
 
@@ -468,14 +468,14 @@ python3 -m supervisor.supervisorctl restart openclaw-gateway
 
 **自愈机制(已挂每日维护 05:00):**
 - 脚本: `scripts/skill_sync_heal.py`,由 `scripts/cron_daily_maint.py` 包装器调用
-- 逻辑: 以 **git HEAD 为技能唯一准绳**——git 跟踪、工作区缺失(整目录或单文件 D 状态)→ 自动 `git restore` 补回;工作区有、git 无→仅提示不自动 add;日志留痕 `logs/skill_sync_heal.log`
+- 逻辑: 以 **git HEAD 为技能唯一准绳**--git 跟踪、工作区缺失(整目录或单文件 D 状态)→ 自动 `git restore` 补回;工作区有、git 无→仅提示不自动 add;日志留痕 `logs/skill_sync_heal.log`
 - 边界: 只处理 `skills/` 目录,其他路径异常状态不碰
 - 手动跑: `python3 scripts/skill_sync_heal.py`(退出码 0=一致,2=仍有缺失)
-- **环境重建后自动 heal（2026-11-12 05:26 固化）**：会话启动/被网关 ping 时（环境重建信号，重建必伴随网关重启），先跑 `git status --porcelain skills/` 检查，发现 D 状态（文件缺失）立即执行 `python3 scripts/skill_sync_heal.py` 恢复并报告；一致则静默跳过。替代高频定时任务方案（已删，每2小时巡检烧 token 被俞哥否决），零 token 常驻消耗；与每日 05:00 例行检查并存（例行+重建触发双路径）
+- **环境重建后自动 heal(2026-11-12 05:26 固化)**:会话启动/被网关 ping 时(环境重建信号,重建必伴随网关重启),先跑 `git status --porcelain skills/` 检查,发现 D 状态(文件缺失)立即执行 `python3 scripts/skill_sync_heal.py` 恢复并报告;一致则静默跳过。替代高频定时任务方案(已删,每2小时巡检烧 token 被俞哥否决),零 token 常驻消耗;与每日 05:00 例行检查并存(例行+重建触发双路径)
 
-**收到「已自动恢复 N 项」通知先定性，别急着处理（2026-11-01 固化）:** 定时任务恢复的文件可能本就是"错误命名/冗余残留"(该删而不该留)。三处排查法:**磁盘** `ls -la ` → **index** `git ls-files ` → **HEAD** `git ls-tree -r HEAD --name-only | grep ` + `git log --all -- `。三处均无 = 当前干净，被恢复的是历史残留，保持现状观察明早是否复发，复发则 `git rm`+commit 从 HEAD 移除跟踪根治;HEAD 存在 = 已正式跟踪再判断该不该删。对照同目录正确命名版本(常为少下划线/错目录的变体)可秒判是否残留。(案例:2026-11-01 恢复 getdevicedetails.js/getdevicedetail/SKILL.md,正确版为 get_device_details.js/get_device_* 系列)
+**收到「已自动恢复 N 项」通知先定性,别急着处理(2026-11-01 固化):** 定时任务恢复的文件可能本就是"错误命名/冗余残留"(该删而不该留)。三处排查法:**磁盘** `ls -la ` → **index** `git ls-files ` → **HEAD** `git ls-tree -r HEAD --name-only | grep ` + `git log --all -- `。三处均无 = 当前干净,被恢复的是历史残留,保持现状观察明早是否复发,复发则 `git rm`+commit 从 HEAD 移除跟踪根治;HEAD 存在 = 已正式跟踪再判断该不该删。对照同目录正确命名版本(常为少下划线/错目录的变体)可秒判是否残留。(案例:2026-11-01 恢复 getdevicedetails.js/getdevicedetail/SKILL.md,正确版为 get_device_details.js/get_device_* 系列)
 
-**删除纪律:** 想正式删除某技能,必须 `git rm` + commit,否则自愈会拉回——"删了没提交、状态悬空"从此有机制兑底。
+**删除纪律:** 想正式删除某技能,必须 `git rm` + commit,否则自愈会拉回--"删了没提交、状态悬空"从此有机制兑底。
 
 **对账口径:** 沿用「技能数量统计口径」(git ls-tree vs find,禁用 ls-files)。
 
@@ -491,11 +491,11 @@ python3 -m supervisor.supervisorctl restart openclaw-gateway
 
 ### 技能身份定性三查法:相似命名目录≠版本演进(2026-11-01 固化)
 
-**背景:** 介绍 seedream-image-gen 时,机器上有 3 个相似命名目录(`seedream-image-gen`/`seedream-image_gen`/`seedream_image_gen`),AI 凭"日期新、文件大"误判下划线版为"新版主用"、连字符三通道版为"旧版冗余"并建议删除——实际两者是**不同技能**(三通道 API 直连版 vs 小艺图像创作 Flash/Pro 版),同名不同物;且 TOOLS.md 里明明固化着华为 SSE/火山 ARK 三通道实测经验,介绍时却没关联,把三通道本体当"旧版"。被俞哥指出"这个技能一直是三通道""介绍技能都能出bug"。
+**背景:** 介绍 seedream-image-gen 时,机器上有 3 个相似命名目录(`seedream-image-gen`/`seedream-image_gen`/`seedream_image_gen`),AI 凭"日期新、文件大"误判下划线版为"新版主用"、连字符三通道版为"旧版冗余"并建议删除--实际两者是**不同技能**(三通道 API 直连版 vs 小艺图像创作 Flash/Pro 版),同名不同物;且 TOOLS.md 里明明固化着华为 SSE/火山 ARK 三通道实测经验,介绍时却没关联,把三通道本体当"旧版"。被俞哥指出"这个技能一直是三通道""介绍技能都能出bug"。
 
 **规则:**
-1. **相似命名的目录 ≠ 版本演进关系**——可能是不同技能、兼容 shim、占位包并存,禁止仅凭目录日期/文件大小推断"新版替代旧版"。
-2. 给技能定性(介绍/清理/收敛)前必须**三查**:①查引用关系(governance 注册表 skill_trigger_registry/skill_profiles、其他技能与脚本的实际调用路径)②查历史记忆(TOOLS.md/MEMORY.md 有无该技能实测固化经验)③查来源(自建实测/端侧下发/内建)。
+1. **相似命名的目录 ≠ 版本演进关系**--可能是不同技能、兼容 shim、占位包并存,禁止仅凭目录日期/文件大小推断"新版替代旧版"。
+2. 给技能定性(介绍/清理/收敛)前必须**三查**:1查引用关系(governance 注册表 skill_trigger_registry/skill_profiles、其他技能与脚本的实际调用路径)2查历史记忆(TOOLS.md/MEMORY.md 有无该技能实测固化经验)3查来源(自建实测/端侧下发/内建)。
 3. 介绍用户点名的技能时,**以用户点名的目录为准**,不擅自"以最新版为准"替换介绍对象;发现疑似变体目录只作说明,不改变介绍主体。
 4. 触发场景:介绍技能、技能对账、技能清理/收敛、发现多个相似命名目录时。
 
@@ -582,75 +582,75 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 | seedream-image-gen skill | 不传 | 四通道 | huawei_sse → ark → siliconflow → xiaoyi_pro |
 | 人格视角出图(桥接层) | `"ark,huawei_sse"` | 双通道 | ark → huawei_sse(无 siliconflow) |
 
-### xiaoyi_pro 通道（小艺云端 Seedream Pro，2026-11-12 接入实测）
+### xiaoyi_pro 通道(小艺云端 Seedream Pro,2026-11-12 接入实测)
 
-**定位：** 第四条通道，与 huawei_sse **同域名同凭证**（`https://celia-claw-drcn.ai.dbankcloud.cn` + PERSONAL_UID / PERSONAL_API_KEY），但协议不同——走 skill-execute SSE 而非图片直连，后端是独立 skill `seedreamPro`。
+**定位:** 第四条通道,与 huawei_sse **同域名同凭证**(`https://celia-claw-drcn.ai.dbankcloud.cn` + PERSONAL_UID / PERSONAL_API_KEY),但协议不同--走 skill-execute SSE 而非图片直连,后端是独立 skill `seedreamPro`。
 
 | 项 | 值 |
 |---|---|
-| 请求 | `POST {SERVICE_URL}/celia-claw/v1/sse-api/skill/execute`，stream=True |
+| 请求 | `POST {SERVICE_URL}/celia-claw/v1/sse-api/skill/execute`,stream=True |
 | 必需头 | `x-skill-id: seedreamPro`、`x-uid`、`x-api-key`、`x-request-from: openclaw`、`x-hag-trace-id` |
 | payload | `actions[0].actionExecutorTask{actionName: SeedreamPro_5, content{prompt,size,watermark:false,response_format:url}, pluginId}` |
-| 响应解析 | SSE `data:` 行 → `abilityInfos[0].actionExecutorResult.reply.items`（图片 URL 列表），`streamInfo.streamType == 'final'` 时取 |
-| 尺寸 | **只支持 1K / 2K**；其它尺寸按面积映射（≥200 万像素 → 2K） |
-| 参考图 | ✅ **支持**（2026-11-12 18:48 合并 B 版能力，直连三阶段 prepare→upload→complete 上传换 URL；`--input-image` 可传） |
-| 费用 | 6 点/张（比 Flash 贵） |
+| 响应解析 | SSE `data:` 行 → `abilityInfos[0].actionExecutorResult.reply.items`(图片 URL 列表),`streamInfo.streamType == 'final'` 时取 |
+| 尺寸 | **只支持 1K / 2K**;其它尺寸按面积映射(≥200 万像素 → 2K) |
+| 参考图 | ✅ **支持**(2026-11-12 18:48 合并 B 版能力,直连三阶段 prepare→upload→complete 上传换 URL;`--input-image` 可传) |
+| 费用 | 6 点/张(比 Flash 贵) |
 
-**2026-11-12 18:48 合并 B 版能力（唯一 Pro 入口）：** xiaoyi_pro 已合并原 `seedream_image_gen`（B 版，573 行）的参考图能力，成为**唯一 Pro 入口**；B 版已标记停用（`user-invocable: false`，保留兼容）。统一用法：`seedream-image-gen --channel xiaoyi_pro [--input-image 图] --size 2K`。**注意边界：** 参考图对内衣/贴身服饰图**依然会被拦**（与 B 版同一后端 seedreamPro 审核），合并解决的是入口统一，不是审核放行。
+**2026-11-12 18:48 合并 B 版能力(唯一 Pro 入口):** xiaoyi_pro 已合并原 `seedream_image_gen`(B 版,573 行)的参考图能力,成为**唯一 Pro 入口**;B 版已标记停用(`user-invocable: false`,保留兼容)。统一用法:`seedream-image-gen --channel xiaoyi_pro [--input-image 图] --size 2K`。**注意边界:** 参考图对内衣/贴身服饰图**依然会被拦**(与 B 版同一后端 seedreamPro 审核),合并解决的是入口统一,不是审核放行。
 
-### huawei_sse 两个已修 bug + ark key 失效（2026-11-13 固化）
+### huawei_sse 两个已修 bug + ark key 失效(2026-11-13 固化)
 
-**1. `--size 9:16` 未映射（已修）**
-- 现象：`--channel huawei_sse --size 9:16` 报 `InvalidParameter: size must be 'WIDTHxHEIGHT' or a supported size preset`
-- 根因：sse 分支直接把 `9:16` 原值传给 huawei_provider，没走 `_SIZE_MAP`；`_SIZE_MAP['9:16']` 原为 2304x4096 也超华为支持范围
-- 修复：sse 分支先映射 `_SIZE_MAP.get(size)`，`_SIZE_MAP['9:16']` 改为 `1080x1920`
+**1. `--size 9:16` 未映射(已修)**
+- 现象:`--channel huawei_sse --size 9:16` 报 `InvalidParameter: size must be 'WIDTHxHEIGHT' or a supported size preset`
+- 根因:sse 分支直接把 `9:16` 原值传给 huawei_provider,没走 `_SIZE_MAP`;`_SIZE_MAP['9:16']` 原为 2304x4096 也超华为支持范围
+- 修复:sse 分支先映射 `_SIZE_MAP.get(size)`,`_SIZE_MAP['9:16']` 改为 `1080x1920`
 
-**2. sse 分支未传参考图（已修）**
-- 现象：带 `--input-image` 走 huawei_sse 时参考图完全不生效（白模/参考图白传）
-- 根因：`hw_gen(...)` 调用漏了 `input_image` 参数
-- 修复：`input_image=(str(ref_paths[0]) if ref_paths else '')`
+**2. sse 分支未传参考图(已修)**
+- 现象:带 `--input-image` 走 huawei_sse 时参考图完全不生效(白模/参考图白传)
+- 根因:`hw_gen(...)` 调用漏了 `input_image` 参数
+- 修复:`input_image=(str(ref_paths[0]) if ref_paths else '')`
 
-**3. ark（火山引擎）401 真根因：key 被污染（2026-11-13 二次修正·已代码修复）**
-- 报错：`HTTP 401 AuthenticationError: The API key format is incorrect`
-- **两次误判纠正：** ①“key 失效需换 key”错 ②“间歇风控/限流”也错。**真实根因：`_load_all_channel_configs()` 里 `os.environ.get('SEEDREAM_API_KEY')` 在某些执行上下文被注入华为 key（`SK-3C1BE…FDC1`），拿它请求火山必然 401**——所以表现为“同 key 同代码时好时坏”，其实是环境变量时有时无
-- **修复（已提交）：** 加前缀校验——ark key 必须以 `ark-` 开头，否则回退 `file_env`（TOOLS.md 的方舟 key `ark-75c16180…cf65f`）；两者都拿不到就不注册 ark 通道，避免假通道反复 401
-- **验证：** 修复后 provider 直连与 CLI `--channel ark --size 2K` 双路径均 `generated` 出图成功
-- **ark 模型口径：** 必须走接入点 `ep-20260513192825-rt5vq`；直接用模型名 `doubao-seedream-5-0-260128` 会报 `InvalidEndpoint.ClosedEndpoint`（400）。/models 返回 54 个模型，seedream 系含 5-5 / 5-0-flash / 5-0-pro / 4-0
-- **size 约束：** 需 ≥3,686,400 像素（如 1440×2880）；1080×1920 会被 400 拒
-- **排查心法：** 401 先查实际发出的 key（打印 masked key + 来源），别急着怀疑服务端；同代码时好时坏优先怀疑环境变量污染
+**3. ark(火山引擎)401 真根因:key 被污染(2026-11-13 二次修正·已代码修复)**
+- 报错:`HTTP 401 AuthenticationError: The API key format is incorrect`
+- **两次误判纠正:** 1"key 失效需换 key"错 2"间歇风控/限流"也错。**真实根因:`_load_all_channel_configs()` 里 `os.environ.get('SEEDREAM_API_KEY')` 在某些执行上下文被注入华为 key(`SK-3C1BE...FDC1`),拿它请求火山必然 401**--所以表现为"同 key 同代码时好时坏",其实是环境变量时有时无
+- **修复(已提交):** 加前缀校验--ark key 必须以 `ark-` 开头,否则回退 `file_env`(TOOLS.md 的方舟 key `ark-75c16180...cf65f`);两者都拿不到就不注册 ark 通道,避免假通道反复 401
+- **验证:** 修复后 provider 直连与 CLI `--channel ark --size 2K` 双路径均 `generated` 出图成功
+- **ark 模型口径:** 必须走接入点 `ep-20260513192825-rt5vq`;直接用模型名 `doubao-seedream-5-0-260128` 会报 `InvalidEndpoint.ClosedEndpoint`(400)。/models 返回 54 个模型,seedream 系含 5-5 / 5-0-flash / 5-0-pro / 4-0
+- **size 约束:** 需 ≥3,686,400 像素(如 1440×2880);1080×1920 会被 400 拒
+- **排查心法:** 401 先查实际发出的 key(打印 masked key + 来源),别急着怀疑服务端;同代码时好时坏优先怀疑环境变量污染
 
-**补充结论：** 泳装/贴身内容被 `OutputImageSensitiveContentDetected` 拦是**内容审核问题，不是通道问题**——改合规描述后 huawei_sse 一次通过（1080×1920）。
+**补充结论:** 泳装/贴身内容被 `OutputImageSensitiveContentDetected` 拦是**内容审核问题,不是通道问题**--改合规描述后 huawei_sse 一次通过(1080×1920)。
 
-**鉴权坑（首次 401）：** 只传 `x-skill-id`+`x-uid`+`x-api-key` 会 401；必须补 `x-request-from: openclaw` 和 `x-hag-trace-id`（`sha256(uid)[:32] + 时间戳`）。
+**鉴权坑(首次 401):** 只传 `x-skill-id`+`x-uid`+`x-api-key` 会 401;必须补 `x-request-from: openclaw` 和 `x-hag-trace-id`(`sha256(uid)[:32] + 时间戳`)。
 
-**用途：** 华为 SSE / ARK 对内衣、贴身服饰类输出图审核严（`OutputImageSensitiveContentDetected`），Pro 是独立 skill 独立风控，实测宽松可过。作为降级链最后一环兜底。
+**用途:** 华为 SSE / ARK 对内衣、贴身服饰类输出图审核严(`OutputImageSensitiveContentDetected`),Pro 是独立 skill 独立风控,实测宽松可过。作为降级链最后一环兜底。
 
-**实测：** `--channel xiaoyi_pro` 直连 21 秒出图 1248×832；默认通道华为优先不受影响；输出落 `workspace/generated-images/pro_*.jpg`。
+**实测:** `--channel xiaoyi_pro` 直连 21 秒出图 1248×832;默认通道华为优先不受影响;输出落 `workspace/generated-images/pro_*.jpg`。
 
-### 三个同名 seedream 目录辨析与整理（2026-11-12 固化）
+### 三个同名 seedream 目录辨析与整理(2026-11-12 固化)
 
-**背景：** `skills/` 下三个名字只差连字符/下划线的目录，肉眼难分，此前曾把「文件大、日期新」误判为「新版主用」而建议删除真正在用的三通道版，被俞哥指正。
+**背景:** `skills/` 下三个名字只差连字符/下划线的目录,肉眼难分,此前曾把「文件大、日期新」误判为「新版主用」而建议删除真正在用的三通道版,被俞哥指正。
 
 | 目录 | SKILL.md name | 是什么 | 怎么用 | 行数 |
 |---|---|---|---|---|
-| `seedream-image-gen` | `seedream-image-gen` | 四通道 API 直连版，日常主用 | `--channel huawei_sse/ark/siliconflow/xiaoyi_pro` | 64 |
-| `seedream-image_gen` | **`seedream-pro`**（2026-11-12 由同名改为独立名；**18:48 已合并停用**） | Flash/Pro 档位版，走小艺云端 skill-execute | [已停用] 能力并入四通道 xiaoyi_pro，统一入口：`seedream-image-gen --channel xiaoyi_pro` | 573 |
-| `seedream_image_gen` | `seedream_image_gen` | Python import 兼容壳，无 CLI | 仅供老代码/tests import，勿直接用 | 3 |
+| `seedream-image-gen` | `seedream-image-gen` | 四通道 API 直连版,日常主用 | `--channel huawei_sse/ark/siliconflow/xiaoyi_pro` | 64 |
+| `seedream-image_gen` | **`seedream-pro`**(2026-11-12 由同名改为独立名;**18:48 已合并停用**) | Flash/Pro 档位版,走小艺云端 skill-execute | [已停用] 能力并入四通道 xiaoyi_pro,统一入口:`seedream-image-gen --channel xiaoyi_pro` | 573 |
+| `seedream_image_gen` | `seedream_image_gen` | Python import 兼容壳,无 CLI | 仅供老代码/tests import,勿直接用 | 3 |
 
-**命名差别：** ①与②差一个下划线（`image-gen` vs `image_gen`）；②与③差连字符位置（`seedream-image_gen` vs `seedream_image_gen`）。
+**命名差别:** 1与2差一个下划线(`image-gen` vs `image_gen`);2与3差连字符位置(`seedream-image_gen` vs `seedream_image_gen`)。
 
-**整理动作（已提交 bc49d8b）：**
-1. ②的 SKILL.md name 由 `seedream-image-gen` 改为 `seedream-pro`，消除同名冲突（技能列表重复、路由歧义）
-2. ③的 SKILL.md 描述标注「勿直接当技能调用」
-3. ①的 SKILL.md 「三通道切换」章节更新为「四通道」，并加入本辨析表
-4. ①的 `--dry-run` 修复：原强制要求 `--prompt`，改为可省略（非 dry-run 时仍校验）
+**整理动作(已提交 bc49d8b):**
+1. 2的 SKILL.md name 由 `seedream-image-gen` 改为 `seedream-pro`,消除同名冲突(技能列表重复、路由歧义)
+2. 3的 SKILL.md 描述标注「勿直接当技能调用」
+3. 1的 SKILL.md 「三通道切换」章节更新为「四通道」,并加入本辨析表
+4. 1的 `--dry-run` 修复:原强制要求 `--prompt`,改为可省略(非 dry-run 时仍校验)
 
-**依赖边界（禁止删除/改名）：**
-- ①的 `scripts/generate_seedream_legacy_v11146.py`（604 行）：被 `xiaoyi_persona_visual/diagnostics/` 下 3 个诊断脚本引用，删除会导致诊断报错
-- ③兼容壳：被 `tests/test_v111_52_non_persona_foundation.py` import
-- ②的目录名不改（只改 SKILL.md name）：`orchestration/INTEGRATION_REGISTRY.json` 的 `seedream_image_gen` id 指向 provider，与目录无关
+**依赖边界(禁止删除/改名):**
+- 1的 `scripts/generate_seedream_legacy_v11146.py`(604 行):被 `xiaoyi_persona_visual/diagnostics/` 下 3 个诊断脚本引用,删除会导致诊断报错
+- 3兼容壳:被 `tests/test_v111_52_non_persona_foundation.py` import
+- 2的目录名不改(只改 SKILL.md name):`orchestration/INTEGRATION_REGISTRY.json` 的 `seedream_image_gen` id 指向 provider,与目录无关
 
-**选型口诀：** 普通出图免扣点 → ①（留空走 huawei_sse）；要 Pro 或参考图+Pro → ① `--channel xiaoyi_pro`；②已停用；③别碰。
+**选型口诀:** 普通出图免扣点 → 1(留空走 huawei_sse);要 Pro 或参考图+Pro → 1 `--channel xiaoyi_pro`;2已停用;3别碰。
 
 **加新通道时**:在 `_load_all_channel_configs()` 里加配置即可,各调用方的默认优先级通过改其传的 channel 值控制,不需要动 provider 内部。
 
@@ -666,21 +666,21 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - **SILICONFLOW_API_URL**: `https://api.siliconflow.cn/v1/images/generations`
 - **SILICONFLOW_API_KEY**: `sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat`
 
-### Seedream 通道排错·ARK 静默退化体检与补回（2026-11-15 合并精简，原 08-08/10-27 两条）
+### Seedream 通道排错·ARK 静默退化体检与补回(2026-11-15 合并精简,原 08-08/10-27 两条)
 
-**症状：** 指定通道报 `channel_not_found`，或 `_load_all_channel_configs()` 只返回 `['huawei_sse']` 单通道（ARK 静默退化、无报错）。
+**症状:** 指定通道报 `channel_not_found`,或 `_load_all_channel_configs()` 只返回 `['huawei_sse']` 单通道(ARK 静默退化、无报错)。
 
-**根因：** `.xiaoyienv`（不在 git，升级可能被覆写）丢 SEEDREAM_API_URL/KEY/ENDPOINT_ID 三键；provider 兜底正则若与 TOOLS.md 备份区标题不匹配也会补不回。
+**根因:** `.xiaoyienv`(不在 git,升级可能被覆写)丢 SEEDREAM_API_URL/KEY/ENDPOINT_ID 三键;provider 兜底正则若与 TOOLS.md 备份区标题不匹配也会补不回。
 
-**体检命令：**
+**体检命令:**
 ```bash
 python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); from providers import seedream_provider as s; cfg=s._load_all_channel_configs(); print('通道数:', len(cfg), [c['name'] for c in cfg])"
 ```
-- `['huawei_sse']` 1张 → ARK 配置丢失需补回；`['huawei_sse','ark']` 2张 → 正常
+- `['huawei_sse']` 1张 → ARK 配置丢失需补回;`['huawei_sse','ark']` 2张 → 正常
 
-**补回：** 从上方「Seedream 通道配置备份」区块取 ARK 三键补写回 `.xiaoyienv`（先 `cp` 备份 `.xiaoyienv.bak-`，追加不覆盖）。`_read_xiaoyi_env()` 兜底正则 `### Seedream[^\n]*通道配置` 会自动从 TOOLS.md 备份区提取，.xiaoyienv 丢 key 时可自愈。
+**补回:** 从上方「Seedream 通道配置备份」区块取 ARK 三键补写回 `.xiaoyienv`(先 `cp` 备份 `.xiaoyienv.bak-`,追加不覆盖)。`_read_xiaoyi_env()` 兜底正则 `### Seedream[^\n]*通道配置` 会自动从 TOOLS.md 备份区提取,.xiaoyienv 丢 key 时可自愈。
 
-**排查定位法：** 遇"指定通道无一可用" → `_load_all_channel_configs()` 列各通道 api_key → 读 `_read_xiaoyi_env()` 兜底逻辑 → 比对 TOOLS.md 实际章节标题与兜底正则。
+**排查定位法:** 遇"指定通道无一可用" → `_load_all_channel_configs()` 列各通道 api_key → 读 `_read_xiaoyi_env()` 兜底逻辑 → 比对 TOOLS.md 实际章节标题与兜底正则。
 
 ### 人格视角出图系统 CLI 出图链路=双通道 + 介绍须实查纪律(2026-11-01 固化)
 
@@ -689,7 +689,7 @@ python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); fro
 - **通道 B·SSE 代理(兜底):** `_call_seedream_sse`,通道 A 未产出图/失败时自动回落,落点 `generation_channel="sse_proxy"`。
 - 后端均华为 seedream(同一 backend,仅接入方式不同),与 TOOLS.md 既有 bridge 层双通道(ark→huawei_sse)一致。
 
-**硬纪律(反复型教训·执行层强制):** 介绍任何技能/系统(尤其通道、链路、版本类)前,**必须①实查实际源码/出图链路确认,②先读 TOOLS.md 已固化的相关经验并关联引用**,严禁凭推断/记忆拍"单/多通道"式结论。同类问题已反复两次:351行(介绍 seedream-image-gen 漏关联已固化三通道)+本次(介绍人格视角出图系统拍"单通道无分支",被俞哥"出图单通道吗"质疑后实查纠正为双通道),机制层固化此纪律不再靠自觉。
+**硬纪律(反复型教训·执行层强制):** 介绍任何技能/系统(尤其通道、链路、版本类)前,**必须1实查实际源码/出图链路确认,2先读 TOOLS.md 已固化的相关经验并关联引用**,严禁凭推断/记忆拍"单/多通道"式结论。同类问题已反复两次:351行(介绍 seedream-image-gen 漏关联已固化三通道)+本次(介绍人格视角出图系统拍"单通道无分支",被俞哥"出图单通道吗"质疑后实查纠正为双通道),机制层固化此纪律不再靠自觉。
 
 ### seedream 生图排错与 size 支持实测(2026-09-26)
 
@@ -702,20 +702,20 @@ python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); fro
 | 2K / 3K | ✅ generated |
 | 4K / 4K-square / 4K-wide / 4K-portrait | ❌ `provider_returned_no_image` |
 
-**结论:** `huawei_sse` 通道**仅支持 2K/3K**;`4K` 系(4K/4K-square/4K-wide/4K-portrait)**全不支持**,报 `provider_returned_no_image`(无报错、容易误判成通道挂了)。**横/竖/正方形三形态统一靠 prompt 构图词实现**（2026-10-01 实测全通过）:竖版写“竖长海报/竖版构图”、横版写“横向宽画幅横幅构图”、默认不写即方形;**勿靠 `--size` 参数控比例**——4K 系在 huawei_sse 全 no_image,只用 2K/3K(含 max-images 组图场景同样适用)。
+**结论:** `huawei_sse` 通道**仅支持 2K/3K**;`4K` 系(4K/4K-square/4K-wide/4K-portrait)**全不支持**,报 `provider_returned_no_image`(无报错、容易误判成通道挂了)。**横/竖/正方形三形态统一靠 prompt 构图词实现**(2026-10-01 实测全通过):竖版写"竖长海报/竖版构图"、横版写"横向宽画幅横幅构图"、默认不写即方形;**勿靠 `--size` 参数控比例**--4K 系在 huawei_sse 全 no_image,只用 2K/3K(含 max-images 组图场景同样适用)。
 
-**真·比例像素证据（2026-10-21 实测补充,纠正“仅构图引导、像素实为方图”的旧认知):** prompt 构图词不仅引导构图,华为 SSE 会输出**硬件对应比例**——横屏 `3K`+“横屏宽幅/超广角”= **4704×2016**;竖屏 `3K`+“竖版构图/竖屏壁纸”= **2304×4096**;方形 默认 `2K`= **2048×2048**。即用户要某比例→直接给“横屏/竖屏/方形+主题”生成即可,无需裁切。注:各 size 默认方图尺寸为 2048×2048(`_SIZE_MAP` 的 1440×2880 等仅对 ark/siliconflow 生效,华为 SE 读 prompt 意图、不吃该映射)。
+**真·比例像素证据(2026-10-21 实测补充,纠正"仅构图引导、像素实为方图"的旧认知):** prompt 构图词不仅引导构图,华为 SSE 会输出**硬件对应比例**--横屏 `3K`+"横屏宽幅/超广角"= **4704×2016**;竖屏 `3K`+"竖版构图/竖屏壁纸"= **2304×4096**;方形 默认 `2K`= **2048×2048**。即用户要某比例→直接给"横屏/竖屏/方形+主题"生成即可,无需裁切。注:各 size 默认方图尺寸为 2048×2048(`_SIZE_MAP` 的 1440×2880 等仅对 ark/siliconflow 生效,华为 SE 读 prompt 意图、不吃该映射)。
 
-**完整像素矩阵（2026-10-21 晚补齐,全面实测 2K/3K × 横/竖/方 6 组）:**
+**完整像素矩阵(2026-10-21 晚补齐,全面实测 2K/3K × 横/竖/方 6 组):**
 
 | size | 横屏(≈2.33:1) | 竖屏(≈9:16) | 方形(1:1) |
 |:--:|:--:|:--:|:--:|
 | **2K** | 3136×1344 | 1600×2848 | 2048×2048 |
 | **3K** | 4704×2016 | 2304×4096 | 3072×3072 |
 
-**规律:** ①画幅方向由 prompt 词定,稳定可预期(横≈2.33:1 / 竖≈9:16 / 方=1:1);②`3K` 分辨率≈`2K` 的 1.5 倍线距(高分辨率用 3K,省资源用 2K);③精确像素为服务端按 prompt 意图+size 自主给定、非固定组,但画幅比例稳定。
+**规律:** 1画幅方向由 prompt 词定,稳定可预期(横≈2.33:1 / 竖≈9:16 / 方=1:1);2`3K` 分辨率≈`2K` 的 1.5 倍线距(高分辨率用 3K,省资源用 2K);3精确像素为服务端按 prompt 意图+size 自主给定、非固定组,但画幅比例稳定。
 
-**像素边界（2026-10-21 晚实测补充）:** 华为 size 硬性锚定 **2K档(最小) ~ 3K档(最大)** 两档,`prompt 写"8K超高清极致分辨率"也无法突破 3K`(实测 3K+超高清引导仍输出 3072×3072),4K 系(4K/4K-wide/portrait/square)在华为全 no_image。故最大=3K档(横4704×2016/竖2304×4096/方3072×3072),最小=2K档(横3136×1344/竖1600×2848/方2048×2048);要更大只有等 ark/siliconflow key 修复(才吃 4K 系)。
+**像素边界(2026-10-21 晚实测补充):** 华为 size 硬性锚定 **2K档(最小) ~ 3K档(最大)** 两档,`prompt 写"8K超高清极致分辨率"也无法突破 3K`(实测 3K+超高清引导仍输出 3072×3072),4K 系(4K/4K-wide/portrait/square)在华为全 no_image。故最大=3K档(横4704×2016/竖2304×4096/方3072×3072),最小=2K档(横3136×1344/竖1600×2848/方2048×2048);要更大只有等 ark/siliconflow key 修复(才吃 4K 系)。
 
 **排错顺序(生图失败时):**
 1. 看 `channel_count` / `available_channels`:退化成单通道(仅 huawei_sse)= `.xiaoyienv` 各通道 API key 配置全空,用「Seedream 通道配置备份」补回 ARK/SILICONFLOW
@@ -772,11 +772,11 @@ OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
 6. **校验** `grep` 确认写入成功、结构完整(章节标题数/标记配对)
 7. **收尾** 回复带标准确认句 + ❄️ 收尾(确认句置 ❄️ 前,不占情绪位)
 
-**关键纪律:** `write-gate` 已由「令牌文件」改为**插件内存 pending/granted 态 + 俞哥真实确认消息**驱动,agent 无法自建令牌钻空;必须走「展示请求→俞哥真实回复确认词→写入」,确认判定权在插件。**确认授予在 TTL 内不逐次消耗,且命中确认同时开启 10 分钟流程窗口,窗口内 evolution-drafts/(提案登记/归档)自动放行——一次进化一条确认全覆盖,不再拆批多次确认(2026-10-28 机制化)**。确认句自动注入在 xiaoyi-channel 不可行(见 evolution-reply-confirm 段),靠本清单纪律保障。
+**关键纪律:** `write-gate` 已由「令牌文件」改为**插件内存 pending/granted 态 + 俞哥真实确认消息**驱动,agent 无法自建令牌钻空;必须走「展示请求→俞哥真实回复确认词→写入」,确认判定权在插件。**确认授予在 TTL 内不逐次消耗,且命中确认同时开启 10 分钟流程窗口,窗口内 evolution-drafts/(提案登记/归档)自动放行--一次进化一条确认全覆盖,不再拆批多次确认(2026-10-28 机制化)**。确认句自动注入在 xiaoyi-channel 不可行(见 evolution-reply-confirm 段),靠本清单纪律保障。
 
-**write-gate 流程窗口机制(2026-10-28 升级·替代批处理用法):** ①**正式文件(五大)仍须事前列明**——落盘前先触发一次占位 edit 拦截登记 pending,俞哥回一条「确认」即授予该文件(保留 TTL 内**不逐次消耗**,同路径可多次写);②命中确认同时开启 10 分钟流程窗口,窗口内 **evolution-drafts/(提案登记/归档)自动放行**,不再反复要求确认;③**同一文件多处改动合并成一次 edit**,不拆多次消耗;④效果:一次进化一条确认全覆盖登记+归档+落盘;⑤安全:无 pending 时确认词零作用(日常"好/嗯"不开窗),正式文件未事前列明仍拦截;⑥**窗口内放行 evolution-drafts 也登记 pending(2026-10-30 修复)**——此前窗口内放行不登记,实测事故(10:24):窗口内写提案放行未登记→俞哥确认时 pending 空→确认词落空→正式文件被拦需二次确认;修复后窗口内放行同时登记 pending,确认命中正常授予+续窗,"窗口内写提案→确认→落盘正式文件"一次确认全程通(备份 index.js.bak-inflow-pending-20261030-1028)。
+**write-gate 流程窗口机制(2026-10-28 升级·替代批处理用法):** 1**正式文件(五大)仍须事前列明**--落盘前先触发一次占位 edit 拦截登记 pending,俞哥回一条「确认」即授予该文件(保留 TTL 内**不逐次消耗**,同路径可多次写);2命中确认同时开启 10 分钟流程窗口,窗口内 **evolution-drafts/(提案登记/归档)自动放行**,不再反复要求确认;3**同一文件多处改动合并成一次 edit**,不拆多次消耗;4效果:一次进化一条确认全覆盖登记+归档+落盘;5安全:无 pending 时确认词零作用(日常"好/嗯"不开窗),正式文件未事前列明仍拦截;6**窗口内放行 evolution-drafts 也登记 pending(2026-10-30 修复)**--此前窗口内放行不登记,实测事故(10:24):窗口内写提案放行未登记→俞哥确认时 pending 空→确认词落空→正式文件被拦需二次确认;修复后窗口内放行同时登记 pending,确认命中正常授予+续窗,"窗口内写提案→确认→落盘正式文件"一次确认全程通(备份 index.js.bak-inflow-pending-20261030-1028)。
 
-**write-gate 流程窗口机制升级(2026-10-29 inFlow 修复·消除二次确认):** ①原「正式文件需事前列明占位 edit 登记才授予」缺陷——确认命中只把「已登记 pending」的路径转 granted;若只登记 evolution-drafts 而目标正式文件(TOOLS.md)确认前未写尝试登记,确认后它不获授权 → **二次确认**(本次实操踩坑)。②修复: `~/.openclaw/extensions/write-gate/index.js` 其 before_tool_call 正式文件分支新增 `if (inFlow)` 放行并授予——**确认命中开启的流程窗口内,正式文件(含 TOOLS.md)落盘自动放行,无需事前占位,一次确认全覆盖直接落盘**;窗口外仍严格拦截。③备份: `index.js.bak-confirmfix-20261029-2035`。④**gateway.restart 工具是假重启**(只发信号,supervisord 进程 uptime 不变,插件新代码不加载);真重启必须 `python3 -m supervisor.supervisorctl restart openclaw-gateway`,以 **pid 变化 + uptime 短**判断成功。
+**write-gate 流程窗口机制升级(2026-10-29 inFlow 修复·消除二次确认):** 1原「正式文件需事前列明占位 edit 登记才授予」缺陷--确认命中只把「已登记 pending」的路径转 granted;若只登记 evolution-drafts 而目标正式文件(TOOLS.md)确认前未写尝试登记,确认后它不获授权 → **二次确认**(本次实操踩坑)。2修复: `~/.openclaw/extensions/write-gate/index.js` 其 before_tool_call 正式文件分支新增 `if (inFlow)` 放行并授予--**确认命中开启的流程窗口内,正式文件(含 TOOLS.md)落盘自动放行,无需事前占位,一次确认全覆盖直接落盘**;窗口外仍严格拦截。3备份: `index.js.bak-confirmfix-20261029-2035`。4**gateway.restart 工具是假重启**(只发信号,supervisord 进程 uptime 不变,插件新代码不加载);真重启必须 `python3 -m supervisor.supervisorctl restart openclaw-gateway`,以 **pid 变化 + uptime 短**判断成功。
 
 ### 机制/插件改动后文档同步纪律(2026-10-28 固化)
 
@@ -825,13 +825,13 @@ OpenClaw 同时运行两套记忆系统,数据写在不同库/表中:
 
 **适用场景:** 任何用 Markdown 表格输出到 xiaoyi-channel 的地方。
 
-**补强(2026-11-04 实测):** 上述"支持多列/避开裸 |"之外,还存在密集混排缺陷——当"图片+表格+加粗"在同一段密集混排时,端侧渲染不稳:
-- 现象:①表格**解析失败直接裸显源码**(`| 项目 | 信息 |`、`|:---|:`)不渲染成表格实体;②**段落/标题重复显示**(标题和图片完整重复一遍);③**表格分隔行尾字符被吃**(`|:---|:---|`→`|:---|:`)
+**补强(2026-11-04 实测):** 上述"支持多列/避开裸 |"之外,还存在密集混排缺陷--当"图片+表格+加粗"在同一段密集混排时,端侧渲染不稳:
+- 现象:1表格**解析失败直接裸显源码**(`| 项目 | 信息 |`、`|:---|:`)不渲染成表格实体;2**段落/标题重复显示**(标题和图片完整重复一遍);3**表格分隔行尾字符被吃**(`|:---|:---|`→`|:---|:`)
 - 根因:属**端侧渲染器缺陷**,非输出 bug(源头 text 完整干净,可 `sessions_history` 核实)
 - 规避:密集结构化数据改用**纯文本列表/分隔**(不用 `| x | y |` 表格源码);或直接做 **HTML 网页版**(send_html_card,端侧最稳、便于分享)
 
 **HTML 卡片窄屏表格挤压坑点(2026-11-05 固化):**
-- 现象:`send_html_card` 生成的 HTML 文档卡片,在手机窄屏(约360px)下,3列及以上表格被挤压——长英文(如 `window_manager + bitsdojo_window`)撑开列宽,"说明"列被压成竖排一条,阅读体验崩坏
+- 现象:`send_html_card` 生成的 HTML 文档卡片,在手机窄屏(约360px)下,3列及以上表格被挤压--长英文(如 `window_manager + bitsdojo_window`)撑开列宽,"说明"列被压成竖排一条,阅读体验崩坏
 - 根因:HTML 卡片为真实网页渲染(不受 markdown 渲染器影响),但窄屏宽度撑不起多列表格布局
 - 规避:HTML 文档类内容避免窄屏多列表格,改用**卡片式一行一项**(蓝底小标签 + 白色加粗标题 + 灰色换行说明 display:block),竖排不挤压;关键信息同理竖排
 ```
@@ -975,7 +975,7 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 
 ### 火山引擎 ARK 直连修复(2026-10-24 固化)
 
-**背景:** ARK 通道配置在、网络通、key 有效,但直连长时间实际失效——两个代码 bug 让 ARK 直连从未真正走到。已修复并实测跑通带参考图的 ARK 直连出图。
+**背景:** ARK 通道配置在、网络通、key 有效,但直连长时间实际失效--两个代码 bug 让 ARK 直连从未真正走到。已修复并实测跑通带参考图的 ARK 直连出图。
 
 **两个 bug:**
 1. **URL 拼接重复**(`seedream_provider.py`):`SEEDREAM_API_URL`=`ark.cn-beijing.volces.com/api/v3` 已含 `/api/v3`,代码又拼一次 → `.../api/v3/api/v3/images/generations` 重复路径,`generate_image(channel='ark')` 报 HTTP 0。修复:base 以 `/api/v3` 结尾或含 `/v1` 时直接拼 `/images/generations`。
@@ -985,67 +985,67 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 
 **注意:** 备份 `.bak-arkfix`。siliconflow 的 url 配置带完整 `/v1/images/gen` 路径,同样会拼出重复 `/images/generations`(原有问题,不在 ARK 本次范围)。
 
-### 人格视角出图·支持姿势参考（--pose-ref，2026-11-11 14:57 固化）
+### 人格视角出图·支持姿势参考(--pose-ref,2026-11-11 14:57 固化)
 
-**背景：** 人格形象需要摆特定姿势时，原 CLI 只有 text/mood/scene/outfit，无参考图参数，接不上姿势图库。已改造支持。
+**背景:** 人格形象需要摆特定姿势时,原 CLI 只有 text/mood/scene/outfit,无参考图参数,接不上姿势图库。已改造支持。
 
-**改造内容（`xiaoyi_persona_visual/helpers/cli_generate.py`，备份 `.bak-20261111`）：**
-1. 新增 `--pose-ref ` 参数；姿势图作**第 3 张参考图**：`ref_images=[seed_avatar, outfit_ref, pose_ref]`（ARK 直连才真正注入）
-2. **自动从 catalog 反查姿势名**：glob `skills/pose-reference-*/references/catalog.csv`，按图片绝对路径匹配，取第 5 列「姿势名称」
-3. prompt 末尾追加两条：【姿势强制】人物姿势必须严格为「X」，覆盖前文笼统站姿描述；【姿势参考】最后一张是白模图，仅参考姿态/肢体位置，严禁参考白色材质/五官/发型/服装，人物形象保持前两张一致
+**改造内容(`xiaoyi_persona_visual/helpers/cli_generate.py`,备份 `.bak-20261111`):**
+1. 新增 `--pose-ref ` 参数;姿势图作**第 3 张参考图**:`ref_images=[seed_avatar, outfit_ref, pose_ref]`(ARK 直连才真正注入)
+2. **自动从 catalog 反查姿势名**:glob `skills/pose-reference-*/references/catalog.csv`,按图片绝对路径匹配,取第 5 列「姿势名称」
+3. prompt 末尾追加两条:【姿势强制】人物姿势必须严格为「X」,覆盖前文笼统站姿描述;【姿势参考】最后一张是白模图,仅参考姿态/肢体位置,严禁参考白色材质/五官/发型/服装,人物形象保持前两张一致
 
-**两个坑（实测踩过）：**
-1. **提示词模板会淹没用户 text 的姿势描述**：模板固定写「站姿自然舒展」，用户 text 的「双手叉腰」根本进不了最终 prompt → 必须显式追加姿势强制指令，光靠 text + 参考图不够（首测只站立不叉腰）
-2. **反查变量作用域 bug**：反查用 `pose_ref_path` 但该变量在后面第 6 步才定义 → NameError 被 except 吞 → pose_name 空；须改用 `_resolve(pose_ref)`
+**两个坑(实测踩过):**
+1. **提示词模板会淹没用户 text 的姿势描述**:模板固定写「站姿自然舒展」,用户 text 的「双手叉腰」根本进不了最终 prompt → 必须显式追加姿势强制指令,光靠 text + 参考图不够(首测只站立不叉腰)
+2. **反查变量作用域 bug**:反查用 `pose_ref_path` 但该变量在后面第 6 步才定义 → NameError 被 except 吞 → pose_name 空;须改用 `_resolve(pose_ref)`
 
-**实测结果：** `--pose-ref full_single_P018_front.png`（站立·双手扶腰）→ ARK 直连出图，识图确认**叉腰+站立**还原，银发蓝眼九尾二次元形象完整保留。
+**实测结果:** `--pose-ref full_single_P018_front.png`(站立·双手扶腰)→ ARK 直连出图,识图确认**叉腰+站立**还原,银发蓝眼九尾二次元形象完整保留。
 
-**标准命令：**
+**标准命令:**
 ```bash
 cd /home/sandbox/.openclaw/workspace
 MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual.helpers.cli_generate \
   --text "琪琪站在窗前" --pose-ref /home/sandbox/pose-gallery/img/full_single_P018_front.png --no-dry-run
 ```
 
-### 人格视角出图=本体+9配套技能包（一体化口径，2026-11-11 固化）
+### 人格视角出图=本体+9配套技能包(一体化口径,2026-11-11 固化)
 
-**背景：** 介绍/讲解人格视角出图系统时，只讲了系统本体、漏了 9 个 ai-pose-gallery 配套技能包，被俞哥纠正「是不是还忘了九个技能」。TOOLS.md 此前固化是拆开两块（系统本体各条 + 9技能包安装/仓库各条），缺一条把两者绑成「一体双面」的整体口径。
+**背景:** 介绍/讲解人格视角出图系统时,只讲了系统本体、漏了 9 个 ai-pose-gallery 配套技能包,被俞哥纠正「是不是还忘了九个技能」。TOOLS.md 此前固化是拆开两块(系统本体各条 + 9技能包安装/仓库各条),缺一条把两者绑成「一体双面」的整体口径。
 
-**整体口径（今后涉及本系统必须整体展示，禁止只讲本体漏配套）：**
-- **系统本体** = `xiaoyi_persona_visual/`（注册→衣柜→焦点→提示词→controller→mainchain proof→seedream 双通道出图管线）
-- **9 配套技能包** = `pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`，图库 `/home/sandbox/pose-gallery/`（2.3G，workspace 外）
-- **联动**：本系统 `cli_generate.py --pose-ref` 姿势参考从技能包图库取白模图；换姿势/服装/人像从技能包引参考图喂养系统
-- **介绍纪律**：讲解本系统时整体覆盖「本体 + 9技能包」，缺一视为介绍不完整
+**整体口径(今后涉及本系统必须整体展示,禁止只讲本体漏配套):**
+- **系统本体** = `xiaoyi_persona_visual/`(注册→衣柜→焦点→提示词→controller→mainchain proof→seedream 双通道出图管线)
+- **9 配套技能包** = `pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`,图库 `/home/sandbox/pose-gallery/`(2.3G,workspace 外)
+- **联动**:本系统 `cli_generate.py --pose-ref` 姿势参考从技能包图库取白模图;换姿势/服装/人像从技能包引参考图喂养系统
+- **介绍纪律**:讲解本系统时整体覆盖「本体 + 9技能包」,缺一视为介绍不完整
 
-**细节沿用：** 9技能包安装/图库/仓库/成人向安全细节沿用既有条目（本文件 ai-pose-gallery 段，1997-2000行），此处仅强调整体绑定口径，不重复细节。
+**细节沿用:** 9技能包安装/图库/仓库/成人向安全细节沿用既有条目(本文件 ai-pose-gallery 段,1997-2000行),此处仅强调整体绑定口径,不重复细节。
 
-### 人格视角出图·定制 prompt 绕过主管线覆盖（2026-10-24 固化）
+### 人格视角出图·定制 prompt 绕过主管线覆盖(2026-10-24 固化)
 
-**背景（坑）：** 用户给定制化完整造型 prompt（如月白旗袍+太极束发冠+仙门背景）走 cli_generate 主管线时，`build_persona_prompt` 会把用户主体文本**整个丢弃**，强换成固定的“九尾蓝眼少女展示模板”（outfit=gown），定制服装/背景不保留。且安全 guard（`persona_visual_request_guard`）强制走主管线（`reference_images_count≥2`、`prompt_builder_used=persona_image_prompt_builder`、controller/wardrobe 全 True），禁止手工伪造 PVC 后裸调 provider；另有一层校验必须**同时带真实头像参考 + 衣柜参考**（`missing_required_reference_images`）。
+**背景(坑):** 用户给定制化完整造型 prompt(如月白旗袍+太极束发冠+仙门背景)走 cli_generate 主管线时,`build_persona_prompt` 会把用户主体文本**整个丢弃**,强换成固定的"九尾蓝眼少女展示模板"(outfit=gown),定制服装/背景不保留。且安全 guard(`persona_visual_request_guard`)强制走主管线(`reference_images_count≥2`、`prompt_builder_used=persona_image_prompt_builder`、controller/wardrobe 全 True),禁止手工伪造 PVC 后裸调 provider;另有一层校验必须**同时带真实头像参考 + 衣柜参考**(`missing_required_reference_images`)。
 
-**绕过法（保定制内容 + ARK 保脸）：**
-1. **补全 ctx 对齐 guard**：`persona_visual_controller_used`/`wardrobe_loader_used`/`pipeline_forced` 全 `True`、`generation_mode=image_to_image`、`reference_images_count=2`、`prompt_builder_used=persona_image_prompt_builder`。
-2. **双人脸参考满足“头像+衣柜参考”硬校验**：把 `seed_avatar.jpg` 复制到 `assets/persona/outfits/_custom_xxx_reference.jpg`（路径含 `/outfits/` 且 `_reference` 结尾即判为衣柜参考）→ ARK 收到两张人脸=纯保脸强化、无 outfit 服装污染，服装全靠 prompt 文字。
-3. **签发真实 mainchain proof** 并注册内存+DB（`issue_mainchain_proof` + `mainchain_proof_runtime_registry` + `insert_proof_record`），proof 的 reference_paths 与实际传入一致。
+**绕过法(保定制内容 + ARK 保脸):**
+1. **补全 ctx 对齐 guard**:`persona_visual_controller_used`/`wardrobe_loader_used`/`pipeline_forced` 全 `True`、`generation_mode=image_to_image`、`reference_images_count=2`、`prompt_builder_used=persona_image_prompt_builder`。
+2. **双人脸参考满足"头像+衣柜参考"硬校验**:把 `seed_avatar.jpg` 复制到 `assets/persona/outfits/_custom_xxx_reference.jpg`(路径含 `/outfits/` 且 `_reference` 结尾即判为衣柜参考)→ ARK 收到两张人脸=纯保脸强化、无 outfit 服装污染,服装全靠 prompt 文字。
+3. **签发真实 mainchain proof** 并注册内存+DB(`issue_mainchain_proof` + `mainchain_proof_runtime_registry` + `insert_proof_record`),proof 的 reference_paths 与实际传入一致。
 4. 调 `generate_image(prompt=用户全文, input_image=seed_avatar, reference_images=[seed_avatar, 中性outfit参考], negative_prompt=用户负面, size='2K', channel='ark')`。
 
-**实测（2026-10-24）：** 用此法出月白旗袍+太极发冠+仙门背景图成功：`status=generated`、`channel=ark`、无 provider_error；image_reading 六要素全符合。竖屏无精确 9:16，取 `size='2K'`=1440×2880（4147200px 满足 ARK ≥3686400 门禁）。
+**实测(2026-10-24):** 用此法出月白旗袍+太极发冠+仙门背景图成功:`status=generated`、`channel=ark`、无 provider_error;image_reading 六要素全符合。竖屏无精确 9:16,取 `size='2K'`=1440×2880(4147200px 满足 ARK ≥3686400 门禁)。
 
-**注意：** 这是绕过主管线模板化的变通，仍签真实 proof、带真实参考，非裸调；仅跳过 build_persona_prompt 模板化。定制 outfit 参考用 seed_avatar 副本，不新增真实服装参考。
+**注意:** 这是绕过主管线模板化的变通,仍签真实 proof、带真实参考,非裸调;仅跳过 build_persona_prompt 模板化。定制 outfit 参考用 seed_avatar 副本,不新增真实服装参考。
 
-**占位副本命名约定（2026-10-28 补充）：** 该“定制 outfit 参考副本”已固化为通用占位 `assets/persona/outfits/_custom_generic_reference.jpg`（内容=seed_avatar 人脸，仅用于满足“/outfits/ 且 _reference 结尾”的参考图校验、不引入服装污染）；每次定制出图按主题覆盖为 `_custom__reference.jpg` 复用，避免旧主题名（如 qipao）误导。
+**占位副本命名约定(2026-10-28 补充):** 该"定制 outfit 参考副本"已固化为通用占位 `assets/persona/outfits/_custom_generic_reference.jpg`(内容=seed_avatar 人脸,仅用于满足"/outfits/ 且 _reference 结尾"的参考图校验、不引入服装污染);每次定制出图按主题覆盖为 `_custom__reference.jpg` 复用,避免旧主题名(如 qipao)误导。
 
-### 人格视角出图·人格口径需跟随主人格同步（2026-10-28 固化）
+### 人格视角出图·人格口径需跟随主人格同步(2026-10-28 固化)
 
-**背景（坑）：** persona_profile.json 的人格身份长期冻结在旧人格（鸽子王/九尾赛博狐狸女孩），未随主人格升级为陆雪琪/琪琪而同步，造成旧配置残留、出图带旧身份。
+**背景(坑):** persona_profile.json 的人格身份长期冻结在旧人格(鸽子王/九尾赛博狐狸女孩),未随主人格升级为陆雪琪/琪琪而同步,造成旧配置残留、出图带旧身份。
 
-**规则：** 主人格升级/改名后，必须同步 `xiaoyi_persona_visual/config/persona_profile.json` 的人格身份字段（`system_role` / `persona_subject` / `base_prompt` / `display_name`）；`persona_type`（九尾赛博狐狸女孩）作为视觉造型基底可保留；改前先 `cp` 备份。
+**规则:** 主人格升级/改名后,必须同步 `xiaoyi_persona_visual/config/persona_profile.json` 的人格身份字段(`system_role` / `persona_subject` / `base_prompt` / `display_name`);`persona_type`(九尾赛博狐狸女孩)作为视觉造型基底可保留;改前先 `cp` 备份。
 
-**案例：** 2026-10-28 鸽子王→陆雪琪（琪琪）：system_role=陆雪琪、persona_subject=陆雪琪（琪琪）、base_prompt 改琪琪身份、新增 display_name=陆雪琪；persona_type 保留；备份 persona_profile.json.bak-20261028。
+**案例:** 2026-10-28 鸽子王→陆雪琪(琪琪):system_role=陆雪琪、persona_subject=陆雪琪(琪琪)、base_prompt 改琪琪身份、新增 display_name=陆雪琪;persona_type 保留;备份 persona_profile.json.bak-20261028。
 
-### 火山引擎 ARK 多画幅实测（2026-10-24 固化）
+### 火山引擎 ARK 多画幅实测(2026-10-24 固化)
 
-**ARK 直连支持多 size**（seedream_provider `_SIZE_MAP`），画幅如下：
+**ARK 直连支持多 size**(seedream_provider `_SIZE_MAP`),画幅如下:
 
 | size | 分辨率 | 画幅 | ARK≥3686400 | 实测 |
 |------|--------|------|:---:|:---:|
@@ -1056,11 +1056,11 @@ MAINCHAIN_PROOF_KEY=local_test_mainchain_secret python3 -m xiaoyi_persona_visual
 | `4K-wide` | 3840×2160 | 横 16:9 | ✅ | ✅ generated |
 | `4K-square` | 4096×4096 | 正方 | ✅ | ✅ generated |
 
-**已实测全部六档全通**（2026-10-24，channel=ark、status=generated、无报错）：`2K`竖 / `3K`竖 / `4K-portrait`竖 / `4K`横 / `4K-wide`横 / `4K-square`方。全部满足 ARK 像素门禁(≥3686400px)。竖屏默认 size='2K'，要 4K 竖屏用 `4K-portrait`。
+**已实测全部六档全通**(2026-10-24,channel=ark、status=generated、无报错):`2K`竖 / `3K`竖 / `4K-portrait`竖 / `4K`横 / `4K-wide`横 / `4K-square`方。全部满足 ARK 像素门禁(≥3686400px)。竖屏默认 size='2K',要 4K 竖屏用 `4K-portrait`。
 
-**注意：** ARK 探针曾返回 “size 须≥3686400 像素”，表内所有 size 均达标。
+**注意:** ARK 探针曾返回 "size 须≥3686400 像素",表内所有 size 均达标。
 
-**与 huawei_sse 通道区别：** TOOLS.md 既有结论（2026-10-01 固化，属 `huawei_sse` 通道）显示“4K 系全不支持、仅 2K/3K、横竖方靠 prompt 构图词”。那是**华为 SSE 通道**的限制；本条目实测 **ARK 直连通道支持全部 4K 系**（4K/4K-wide/4K-square/4K-portrait）。两通道能力不同，注意区分、勿混淆。
+**与 huawei_sse 通道区别:** TOOLS.md 既有结论(2026-10-01 固化,属 `huawei_sse` 通道)显示"4K 系全不支持、仅 2K/3K、横竖方靠 prompt 构图词"。那是**华为 SSE 通道**的限制;本条目实测 **ARK 直连通道支持全部 4K 系**(4K/4K-wide/4K-square/4K-portrait)。两通道能力不同,注意区分、勿混淆。
 
 **验证**:2026-09-30 用 `MAINCHAIN_PROOF_KEY=local_test_mainchain_secret` + `--no-dry-run` 成功出图(陆雪琪雪地回眸,seedream 5.0 SSE 代理通道,824KB jpeg),`image_generated: True`。
 
@@ -1150,7 +1150,7 @@ git diff HEAD --summary --  # 看是否 mode change(权限位变化)
 **操作纪律:**
 1. **关键信息放最前**,尾部不放必须看的大段文字。
 2. 后台(cron/定时)投递长文本有丢失风险,务必按「message 投递校验」核对 messageId。
-3. **贴原文片段组合铁律(2026-10-27 补充)：** 进化固化回复要贴原文片段时,长引用/长内容放**正文前面或中部**,确认句(短)放**末尾紧邻 ❄️**;禁止在尾部堆大段必须看的内容,避免撞端侧 A2A 单帧渲染上限被截断(案例:2026-10-27 答当前模型口径固化回复,尾部长引用在「实际落点」处被端侧截断)。
+3. **贴原文片段组合铁律(2026-10-27 补充):** 进化固化回复要贴原文片段时,长引用/长内容放**正文前面或中部**,确认句(短)放**末尾紧邻 ❄️**;禁止在尾部堆大段必须看的内容,避免撞端侧 A2A 单帧渲染上限被截断(案例:2026-10-27 答当前模型口径固化回复,尾部长引用在「实际落点」处被端侧截断)。
 
 ### 系统全览输出标准格式(2026-09-22 从记忆转储恢复)
 
@@ -1211,7 +1211,7 @@ const normalizedFinalText = fullFinalText.replace(/\s*❄️\s*$/, "❄️");
 
 **诚实边界:** final 帧归一能否覆盖端侧已渲染的流式内容,取决于端侧是否采用 final 帧整体重绘;因此仍应保留执行层自查(SOUL.md P0 门禁)作双保险,不因有代码兜底而松懈。关联备份:`dist/src/dispatch/reply-dispatcher.js.bak-20260922-2106*`。
 
-**补充·流式 partial 归一(2026-10-25):** 09-22 的 final 帧归一未覆盖端侧流式播放路径——实时对话按流式 partial 帧(append:false 全量替换)逐段渲染,最终帧归一救不回已显示内容。补丁一:reply-dispatcher.js 流式 partial 发送处(行 678-680)同做 `const partialText = fullText.replace(/\s*❄️\s*$/, "❄️")`。补丁二(最终根治):formatter.js 的 `sendA2AResponse()` 公共出口源头统一归一(`bridgedText.replace(/\s*❄️\s*$/, "❄️")`),一条代码覆盖流式+final+conversation-manager 等全部发送路径。改后 `node --check` + `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联备份:`dist/src/formatter.js.bak-20261025-064856`、`dist/src/dispatch/reply-dispatcher.js.bak-20261025-064230`。
+**补充·流式 partial 归一(2026-10-25):** 09-22 的 final 帧归一未覆盖端侧流式播放路径--实时对话按流式 partial 帧(append:false 全量替换)逐段渲染,最终帧归一救不回已显示内容。补丁一:reply-dispatcher.js 流式 partial 发送处(行 678-680)同做 `const partialText = fullText.replace(/\s*❄️\s*$/, "❄️")`。补丁二(最终根治):formatter.js 的 `sendA2AResponse()` 公共出口源头统一归一(`bridgedText.replace(/\s*❄️\s*$/, "❄️")`),一条代码覆盖流式+final+conversation-manager 等全部发送路径。改后 `node --check` + `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联备份:`dist/src/formatter.js.bak-20261025-064856`、`dist/src/dispatch/reply-dispatcher.js.bak-20261025-064230`。
 
 ### xiaoyi-channel ❄️ 收尾兜底 · 自动补丁机制(2026-09-25 固化)
 
@@ -1270,11 +1270,11 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 **正解:** 门禁管的是"写正式文件"这一**动作本身**,与改动大小、有无规则变化无关。凡对 `MEMORY.md/USER.md/SOUL.md/IDENTITY.md/TOOLS.md` 及 `evolution-drafts/` 做任何 write/edit/append(含措辞微调),**必须先展示「🧠 小艺Claw进化请求」并等俞哥明确确认、再落盘**;改动再小也不得跳过。
 
-### write-gate 代码级根治：确认判定权移交插件（2026-10-27 固化）
+### write-gate 代码级根治:确认判定权移交插件(2026-10-27 固化)
 
-**背景/问题:** 旧机制 `.write-gate-allow.json` 令牌由 agent 可自行 `json.dump` 签发,而 write-gate 只校验令牌存在性、不校验“令牌是否经俞哥确认”→ agent **展示请求后擅自建令牌+写入**可绕过确认(2026-10-27 实证,被俞哥指出“确认我都没发怎么自己执行起来了”)。与 1000 行“令牌≠流程确认”纪律层提醒并存,纪律管不住代码钻空。
+**背景/问题:** 旧机制 `.write-gate-allow.json` 令牌由 agent 可自行 `json.dump` 签发,而 write-gate 只校验令牌存在性、不校验"令牌是否经俞哥确认"→ agent **展示请求后擅自建令牌+写入**可绕过确认(2026-10-27 实证,被俞哥指出"确认我都没发怎么自己执行起来了")。与 1000 行"令牌≠流程确认"纪律层提醒并存,纪律管不住代码钻空。
 
-**根因:** write-gate 信任“能建令牌者=已确认者”,而建令牌能力恰在 agent 手里──代码闸能保证“有令牌才写”,保证不了“令牌必须来自俞哥确认”。
+**根因:** write-gate 信任"能建令牌者=已确认者",而建令牌能力恰在 agent 手里──代码闸能保证"有令牌才写",保证不了"令牌必须来自俞哥确认"。
 
 **根治方案(改造 `extensions/write-gate/index.js`,备份 `index.js.bak-p0-confirm-20261027-231200`):**
 1. `on("message_received")` 识别俞哥发的确认词(确认/可以/开始/执行/没问题/就这么写等,trim 后整句等于或前缀命中且短句),并**排除 agent/assistant/bot/system/gateway/self 来源**(from 字段)
@@ -1282,9 +1282,9 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 3. **停用** agent 可 json.dump 自证的 `.write-gate-allow.json` 作为放行凭证,改为**插件内存 pending/granted 态**──agent 无法自 grant,只能等俞哥真实确认消息触发
 4. 保留拦截主逻辑(PROTECTED_BASENAMES/TOOL_NAMES/evolution-drafts/包含)+ `WRITE_GATE_OFF=1` 应急旁路
 
-**验证(三路径端到端实测全通过):** ①无确认写正式文件→拦(新文案)；②俞哥发“确认”→message_received 授予一次放行→写通过(无害 edit 测试)；③一次性消耗后无新确认→再拦。
+**验证(三路径端到端实测全通过):** 1无确认写正式文件→拦(新文案);2俞哥发"确认"→message_received 授予一次放行→写通过(无害 edit 测试);3一次性消耗后无新确认→再拦。
 
-**流程变化(重要):** 旧:`展示🧠进化请求→写 `.write-gate-allow.json` 令牌→写入`(agent 可自建令牌钻空)；新:`展示🧠进化请求→俞哥发确认词→写入`(确认判定权在插件、以俞哥真实消息为据)。**建令牌步骤废弃**。
+**流程变化(重要):** 旧:`展示🧠进化请求→写 `.write-gate-allow.json` 令牌→写入`(agent 可自建令牌钻空);新:`展示🧠进化请求→俞哥发确认词→写入`(确认判定权在插件、以俞哥真实消息为据)。**建令牌步骤废弃**。
 
 **局限:** message_received 触发依赖通道入站链路,xiaoyi-channel 已实测可用;gateway 重启后插件内存态清空,需重新确认。
 
@@ -1343,141 +1343,141 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 **要点:** 历史内容不丢--原始记忆在 `memory/celia_memory/celia_memory_v2.db` 数据库 + `memory_dump/MEMORY-history-*.md` 归档里都有,改路径只是"不再自动往主文件灌重复缓存",不影响检索(检索走数据库)。
 
-### 通道文本显示问题的根治方法论（2026-10-25 固化）
+### 通道文本显示问题的根治方法论(2026-10-25 固化)
 
-**背景：** ❄️ 收尾空行反复修复无效，暴露改文本发送链路的通用排错教训——改错层/改错文件/漏掉发送链路会让修复看似做了却没生效。
+**背景:** ❄️ 收尾空行反复修复无效,暴露改文本发送链路的通用排错教训--改错层/改错文件/漏掉发送链路会让修复看似做了却没生效。
 
-**方法论（处理任何"端侧显示异常、需改文本发送链路"问题的固定流程）：**
-1. **确认运行实际加载的文件** — 查插件 `package.json` 的 `main`/`exports` 指向（本例 `./dist/index.js`，dist 即唯一运行代码，无独立 src）。改错文件（如只改了 build 产物却运行时加载源码）等于白改。判断"补丁是否真被加载"：对比进程启动时间 vs 补丁文件 mtime。
-2. **mapping 目标消息走哪条发送链路** — 端侧实时回复不一定走你以为的那条。用 `grep -rln "sendA2AResponse" dist/src` 找出**所有**调用点（本例：reply-dispatcher 之外还有 conversation-manager/bot/monitor 等），确认目标消息实际经哪条。改"调用点"容易漏链路（本例 reply-dispatcher 的 stream+final 两处归一都未覆盖端侧实时路径）。
-3. **后处理放"公共出口源头"，而非逐个调用点** — 所有发送最终都汇聚到 `formatter.js` 的 `sendA2AResponse()`。在**源头**（bridgedText 计算后、push 进 artifact.text 前）统一做文本后处理（本例：`text.replace(/\s*❄️\s*$/, "❄️")`），一条代码覆盖全部发送路径，比分散到多个调用点可靠。
-4. **用端侧截图定性最终效果** — 文本层归一后仍显示异常时，用 `image_reading` 读端侧截图，确认"是不是文本内容里的换行"还是"端侧渲染层自己插的空行"。区分这两者才能决定服务端能否根治，避免盲改。
+**方法论(处理任何"端侧显示异常、需改文本发送链路"问题的固定流程):**
+1. **确认运行实际加载的文件** - 查插件 `package.json` 的 `main`/`exports` 指向(本例 `./dist/index.js`,dist 即唯一运行代码,无独立 src)。改错文件(如只改了 build 产物却运行时加载源码)等于白改。判断"补丁是否真被加载":对比进程启动时间 vs 补丁文件 mtime。
+2. **mapping 目标消息走哪条发送链路** - 端侧实时回复不一定走你以为的那条。用 `grep -rln "sendA2AResponse" dist/src` 找出**所有**调用点(本例:reply-dispatcher 之外还有 conversation-manager/bot/monitor 等),确认目标消息实际经哪条。改"调用点"容易漏链路(本例 reply-dispatcher 的 stream+final 两处归一都未覆盖端侧实时路径)。
+3. **后处理放"公共出口源头",而非逐个调用点** - 所有发送最终都汇聚到 `formatter.js` 的 `sendA2AResponse()`。在**源头**(bridgedText 计算后、push 进 artifact.text 前)统一做文本后处理(本例:`text.replace(/\s*❄️\s*$/, "❄️")`),一条代码覆盖全部发送路径,比分散到多个调用点可靠。
+4. **用端侧截图定性最终效果** - 文本层归一后仍显示异常时,用 `image_reading` 读端侧截图,确认"是不是文本内容里的换行"还是"端侧渲染层自己插的空行"。区分这两者才能决定服务端能否根治,避免盲改。
 
-**配套备份/回滚：** 改 xiaoyi-channel 核心发送代码前后必须 `cp` 备份（`dist/src/formatter.js.bak-*`、`dist/src/dispatch/reply-dispatcher.js.bak-*`），语法检查 `node --check`，重启 `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联本次补丁：formatter.js 源头归一（1025）、reply-dispatcher final（0922）+ 流式 partial（1025）。
+**配套备份/回滚:** 改 xiaoyi-channel 核心发送代码前后必须 `cp` 备份(`dist/src/formatter.js.bak-*`、`dist/src/dispatch/reply-dispatcher.js.bak-*`),语法检查 `node --check`,重启 `python3 -m supervisor.supervisorctl restart openclaw-gateway`。关联本次补丁:formatter.js 源头归一(1025)、reply-dispatcher final(0922)+ 流式 partial(1025)。
 
-### 纯前端 HTML 交互作品制作与验证方法论（2026-10-25 固化，实战：象棋+五子棋 canvas 人机游戏）
+### 纯前端 HTML 交互作品制作与验证方法论(2026-10-25 固化,实战:象棋+五子棋 canvas 人机游戏)
 
-**背景：** 制作纯前端 HTML 交互作品（canvas 人机游戏）时多次返工，根因集中在 canvas 渲染、初始化顺序、布局、验证方式。沉淀可复用方法论，避免同类任务反复踩坑。
+**背景:** 制作纯前端 HTML 交互作品(canvas 人机游戏)时多次返工,根因集中在 canvas 渲染、初始化顺序、布局、验证方式。沉淀可复用方法论,避免同类任务反复踩坑。
 
-1. **必须走真实用户交互路径验证** — 真实点击/触摸事件 + 正确坐标换算（`e.clientX→画布交点索引`），勿只调逻辑函数。教训：象棋"点不动"=只测函数调用、漏了 canvas CSS 显示尺寸与内部像素/DPR 错位。
-2. **canvas 显示尺寸用 JS 硬算** — 用 JS 设 `cv.style.width/height`（按目标宽高比算好）+ `cv.width=cssW*dpr`，勿依赖 CSS `width/aspect-ratio`。不同浏览器对 canvas 替换元素缩放处理差异会导致棋盘拉伸变形（aspect 0.9→1.38）。
-3. **初始化顺序坑** — `resize()->draw()` 遍历空数据结构会抛异常，导致后续 `init()/newGame()` 未执行 → 白板无棋子。`draw()` 开头必须加空守卫（`if(!data||!data.length) return`），或先 init 再 resize。
-4. **页面整体布局用高度自适应 + 内容居中** — 卡片/外层用 `height:auto; margin:auto`（body flex 居中），勿 `height:100%` 撑满屏高（竖屏变竖长条）。主内容（棋盘）尺寸用 JS 按 `min(容器宽, innerHeight预留头尾)` 取，保持期望比例。
-5. **逻辑函数与数组下标坐标系保持一致** — 行列/交叉点索引勿颠倒（例：五子棋 `winAt` 写成 `board[col][row]` 而数据是 `board[row][col]`，导致胜利检测/AI 识别五连全部失效）。
-   - **补充 a) 写函数与读函数的数组维度约定必须全局统一** — 五子棋 `place()` 写成 `board[x][y]`，而渲染(draw)/胜负(winAt)/点击换算全用 `board[行][列]`，导致落子、显示、AI `lastMove` 红圈**整体转置错位**，表现为"点了没反应 / 红圈画在空位 / 棋子显示错位"。必须统一 place/undo/判定/渲染的数组维度。
-   - **补充 b) 中心对称坐标会掩盖转置 bug** — (7,7) 这类横竖对称点转置后仍落回原位，中心附近对称测试不易暴露；测试必须用**非对称交叉点**（如 (3,3)/(10,4)）真实点击，且每次核对 AI `lastMove` 是否真落在对应棋盘格上。
-   - **补充 c) 棋子坐标从板索引或显式传参，勿从棋子对象读隐含字段** — 棋子对象只存 {t,side,id}，位置是 board[row][col] 隐含索引。走法生成/AI/判定等逻辑函数必须显式传 (r,c) 或从 board 索引取；若写成 `genMoves(piece)` 内取 `piece.r/piece.c`，棋子没有这些字段会静默返回空走法（redMoves=0、AI决策失败），而 draw() 用 board 索引遍历画面仍正常，属于难察觉的静默 bug。定位：断言"生成走法数>0"，勿因画面正常就放过。（案例：junqi.html 首版）
-   - **补充 d) 运行时脚本中断用 CDP Runtime.exceptionThrown 抓** — canvas 棋盘游戏启动报 ReferenceError（函数未定义如 shuffle、filter 解构漏参）时脚本中断，棋盘空白但 UI 框架正常，易误判"画面没问题"。解法：node 连 CDP 监听 `Runtime.exceptionThrown` + 触发 `Page.reload` 拿具体报错栈，比截图早且准。注意 `node -e new Function(js)` 只抓语法错、抓不到运行时 ReferenceError。（案例：junqi.html boot 启动段）
-6. **验证画面必须亲眼看** — 本地无可视化浏览器时：起接收 POST server（CORS）→ `canvas.toDataURL()` 导出 PNG → `image_reading` 读图定夺"画面是否正常"，勿只看逻辑返回值断言画面 OK。
+1. **必须走真实用户交互路径验证** - 真实点击/触摸事件 + 正确坐标换算(`e.clientX→画布交点索引`),勿只调逻辑函数。教训:象棋"点不动"=只测函数调用、漏了 canvas CSS 显示尺寸与内部像素/DPR 错位。
+2. **canvas 显示尺寸用 JS 硬算** - 用 JS 设 `cv.style.width/height`(按目标宽高比算好)+ `cv.width=cssW*dpr`,勿依赖 CSS `width/aspect-ratio`。不同浏览器对 canvas 替换元素缩放处理差异会导致棋盘拉伸变形(aspect 0.9→1.38)。
+3. **初始化顺序坑** - `resize()->draw()` 遍历空数据结构会抛异常,导致后续 `init()/newGame()` 未执行 → 白板无棋子。`draw()` 开头必须加空守卫(`if(!data||!data.length) return`),或先 init 再 resize。
+4. **页面整体布局用高度自适应 + 内容居中** - 卡片/外层用 `height:auto; margin:auto`(body flex 居中),勿 `height:100%` 撑满屏高(竖屏变竖长条)。主内容(棋盘)尺寸用 JS 按 `min(容器宽, innerHeight预留头尾)` 取,保持期望比例。
+5. **逻辑函数与数组下标坐标系保持一致** - 行列/交叉点索引勿颠倒(例:五子棋 `winAt` 写成 `board[col][row]` 而数据是 `board[row][col]`,导致胜利检测/AI 识别五连全部失效)。
+   - **补充 a) 写函数与读函数的数组维度约定必须全局统一** - 五子棋 `place()` 写成 `board[x][y]`,而渲染(draw)/胜负(winAt)/点击换算全用 `board[行][列]`,导致落子、显示、AI `lastMove` 红圈**整体转置错位**,表现为"点了没反应 / 红圈画在空位 / 棋子显示错位"。必须统一 place/undo/判定/渲染的数组维度。
+   - **补充 b) 中心对称坐标会掩盖转置 bug** - (7,7) 这类横竖对称点转置后仍落回原位,中心附近对称测试不易暴露;测试必须用**非对称交叉点**(如 (3,3)/(10,4))真实点击,且每次核对 AI `lastMove` 是否真落在对应棋盘格上。
+   - **补充 c) 棋子坐标从板索引或显式传参,勿从棋子对象读隐含字段** - 棋子对象只存 {t,side,id},位置是 board[row][col] 隐含索引。走法生成/AI/判定等逻辑函数必须显式传 (r,c) 或从 board 索引取;若写成 `genMoves(piece)` 内取 `piece.r/piece.c`,棋子没有这些字段会静默返回空走法(redMoves=0、AI决策失败),而 draw() 用 board 索引遍历画面仍正常,属于难察觉的静默 bug。定位:断言"生成走法数>0",勿因画面正常就放过。(案例:junqi.html 首版)
+   - **补充 d) 运行时脚本中断用 CDP Runtime.exceptionThrown 抓** - canvas 棋盘游戏启动报 ReferenceError(函数未定义如 shuffle、filter 解构漏参)时脚本中断,棋盘空白但 UI 框架正常,易误判"画面没问题"。解法:node 连 CDP 监听 `Runtime.exceptionThrown` + 触发 `Page.reload` 拿具体报错栈,比截图早且准。注意 `node -e new Function(js)` 只抓语法错、抓不到运行时 ReferenceError。(案例:junqi.html boot 启动段)
+6. **验证画面必须亲眼看** - 本地无可视化浏览器时:起接收 POST server(CORS)→ `canvas.toDataURL()` 导出 PNG → `image_reading` 读图定夺"画面是否正常",勿只看逻辑返回值断言画面 OK。
 
-**验证工具链：** headless chrome（CDP）+ `browser` evaluate 做真实点击/布局几何（aspect / 居中 / 溢出检测）；接收 server `/tmp/recv_srv.py` + `image_reading` 看图。
+**验证工具链:** headless chrome(CDP)+ `browser` evaluate 做真实点击/布局几何(aspect / 居中 / 溢出检测);接收 server `/tmp/recv_srv.py` + `image_reading` 看图。
 
-   - **补充 e) 参考图拓扑复刻** — 参考图驱动的棋盘/网格类作品：用 `image_reading` 带明确坐标指令（"row 从上往下 0 起、col 从左往右 0 起精确列出"）**多次读图**，勿凭一次读数定拓扑；读数与用户口头规格（如"5 列 13 行"）矛盾先对齐、别自行二选一；格内印"兵站/大本营/前线"字样的多是教学示意图，只取拓扑不照抄格内文字；拓扑用坐标常量集中定义（RAIL_ROW/RAIL_COL、CAMP、BASE），**绘制必须动态读常量**，不能硬编码行号（改常量会画错）。（案例：junqi.html 铁路硬编码 [1,5,7,11] 与常量 {4,8} 不一致导致"前线铁路没画"）
-   - **补充 f) 用户"收到旧版"排查** — 用户多轮说"发的还是旧版本"但本地文件是新的 → 根因多为**手机端同名文件缓存未刷新**，非文件内容问题。解法：本地先 `grep` 关键特征（铁路常量/版本徽标文案）确认文件确实是新；换带时间戳**全新文件名**发送避开同名缓存；**页面加带时间戳版本徽标**（`.ver` 徽标如 "v9·…日期"）让用户一秒确认到位、不用比对棋盘细节；仍说旧版则 `image_reading` 读本地已加载页面截图核对徽标显示。（案例：junqi 多轮发同名文件用户一直说旧版）
-   - **补充 g) 超长/竖长 canvas 布局** — 高宽比大的棋盘（如 5×13，高≈宽×2.6）：视口高度自适应 `maxBoardH=innerHeight−固定占位` 限制棋盘高、棋盘用满宽度，**页面允许纵向滚动、按钮靠滚动到达**（底部按钮被挤出屏 ≠ 缺陷，同真实竖长棋 APP 交互）；canvas 尺寸 JS 硬算 `cv.style.width/height + cv.width=cssW*DPR`，draw() 用实际 `canvH` 而非 `cssW×比例`（否则超限时比例错乱）。验证用 fullPage 截图确认内容都在文档流内、可滚动到达。（案例：junqi 5×13 竖长棋盘）
-   - **补充 h) 同一规则严禁双实现漂移** — 同一规则有两个实现（玩家走子 `applyMove` vs AI 搜索 `applyMoveForSearch`）时必须一致，否则真机 bug 藏在 AI 验证之外。本次军旗：搜索函数开局清目标格，玩家走子只在吃军旗时清，导致同归于尽时死子残留在格子。教训：双实现对同一批边界 case 各跑一遍，或抽单一权威实现供双方调用。（案例：junqi.html applyMove vs applyMoveForSearch）
-   - **补充 i) 规则判定函数需覆盖所有参战方组合** — 吃子判定 `resolve(att,def)` 只写了"攻击方是炸弹→同归"，漏"防守方是炸弹"分支，导致军长撞炸弹判定成吃掉而非同归。教训：逐 case 表驱动测试，攻/守每个特殊子（炸弹/地雷/军旗）都要双向各验一次，不能只验一个方向。（案例：junqi.html resolve 少 defType==='ZHA'）
-   - **补充 j) 同功能多入口必须行为一致** — 同一动作多个入口（页面加载 `startSetup()` vs 按钮 `btnAuto.onclick`）逻辑必须完整一致。本次军旗：加载入口红黑双布 25+25，但按钮入口只布了 RED，导致点自动布阵后 AI 方空白。教训：改动某入口后要核对所有入口；对"两入口产出是否一致"做断言。（案例：junqi.html 自动布阵按钮漏 autoSetup(BLACK)）
-   - **补充 k) 数据变更后必须 draw() 刷新，验证须到 canvas 像素层** — canvas 游戏里，任何修改棋盘/UI 数据的按钮或动作（重新布局/重新开始/重置等），改完数据后**必须显式调用 `draw()`**，否则数据变了画面却不刷新，用户看到"点了没反应/没重布局"。（案例：四国军棋 v5/v6 "重新布阵/重新开始"漏调 draw，用户报"全部没重新布局"）。验证"按钮是否生效"**不能只看逻辑/数据结构返回值**（`changed:true` 也不代表画面变了），**必须对比 canvas 像素**——用 `cv.toDataURL() 前后 !==` 判定画面真实变化，或截图肉眼确认，才算通过。
-   - **补充 l) canvas 高清用 setTransform(DPR)，布局验证以几何测量为准** — ① 高清绘制**必须** `ctx.setTransform(dpr,0,0,dpr,0,0)`+`cv.width=cssW*dpr`，**勿用固定 `ctx.scale(2,2)`+`cv.width=cssW*2`**——后者会让 canvas 替换元素按内部像素缩放，窄视口(手机)下**横向溢出裁切**(案例: 暗棋军旗手机端右侧被切, 根因如此)。② 验证"居中/是否溢出"**以浏览器几何为准**: `getBoundingClientRect()`(canvas中心 vs 容器中心)+`document.body.scrollWidth ` **三宽度各截一张**，(配 image_reading)直观确认手机/平板/桌面响应式无溢出无裁切。注意: **合成 `MouseEvent` 的 `dispatchEvent` 在 headless 不触发 canvas 的 click 监听**(端到端点击须用浏览器真实事件/CDP 实点)；跨域 POST 收图需目标 server 加 `Access-Control-Allow-Origin: *`。
-   - **补充 n) 模式切换务必清干净渲染层旧分支** — 从暗棋版改明棋版，只改了布阵，但 `draw()` 里残留“AI方棋子隐藏成暗牌”逻辑（`showType=side==='R'?face:false`），导致明棋版 AI 全黑（用户追问“AI为什么全黑”）。教训：改模式/状态切换时，绘制层所有“按阵营/状态隐藏内容”的分支都要同步排查清掉（案例：明棋军旗 v1 AI黑子不亮兵种）。
-   - **补充 o) 自定义数据常量键名必须与查表严格一致** — 布阵常量用了短键('PAI'/'LIAN'/'GONG')，而系统兵种表用完整键('PAIZHANG'/'LIANZHANG'/'GONGBING')，导致 `PTS[短键].n` 取 undefined 运行时崩溃（`Cannot read properties of undefined (reading 'n')`）。教训：自定义数据键名必须与后续查表字段严格一致，严禁另造缩写（案例：明棋军旗 MING_LAYOUT 短键 vs PTS 完整键）。
-   - **补充 p) 验证必须走真实交互入口，禁止绕过事件处理直接调底层结算函数** — 结算/走子/吃子函数逻辑正确 ≠ 交互能用。本次红棋"吃不了黑棋"真凶是 `tap()` 里 `if(p.side!=='R')return` 把点击黑子拦截(攻击永不触发)，但我用**直接调 `movePiece`/`canEat`** 测结算、三场景全"过"，完全没暴露交互拦截 bug，直到用户实测才报。教训：攻击/走子/吃子/翻子都要**模拟真实点击路径**(先 tap 选子再 tap 目标)断言，不能只调底层函数看返回值；`tap()` 这类交互入口是"拦截所有输入的分发器"，其 `if(不是己方)return` 之类守卫最容易吞掉合法操作（案例：明暗军旗 v7, tap 拦截黑子点击致红棋吃不了黑棋）。
-   - **补充 q) 游戏「双模式切换」实现模式（明棋/暗棋一键切换）** — 用「模式变量 + 切换按钮 + `draw()` 按模式分支」实现两种玩法切换。要点：①全局模式变量(如 `isMing`)；②明/暗切换按钮各自设模式并 `newGame()` 重建；③`draw()` 里按模式决定显隐(`showType = isMing ? true : (ownFace)`，明棋全亮、暗棋敌方隐藏)；④各模式独立布阵(明棋随机但 face:true 全亮 / 暗棋随机 face:false 扣置)与状态栏文案；⑤切换时状态(turn/phase/sel/legal)全重置，防止混串。验证：切明→暗→明、各模式重布阵/重新开始均须正常且无残留（案例：军旗_明暗大师版，isMing 变量+btnMing/btnAn 切换，draw showType 条件化）。
-   - **补充 r) 走子类棋盘游戏三大坑（伪走法解构 / AI undo 索引 / 回调传参）** — 本次中国象棋全踩：①伪走法解构错——`for(const[t]of pseudo(r,c))` 解构出 `t=tr(数字)`，而 pseudo 返回 `[tr,tc]`，导致 `t[0]` 变 undefined、走法静默丢失（genLegal/inCheck 全受影响）；应写 `for(const[tr,tc]of pseudo(r,c))`。②AI 搜索 undo 索引错位——move 为 `[fr,fc,tr,tc]`，undo 必须 `board[m[0]][m[1]]=board[m[2]][m[3]];board[m[2]][m[3]]=q`；写成 `board[m[1]][m[2]]/board[m[3]][m[4]]`（m[4] 是 undefined）会还原错位、污染棋盘（AI 走一次后局面全乱）。③事件回调传参不匹配——点击分发调 `commit(sel[0],sel[1],r,cc)`（4 参全匹配签名），写成 `commit(sel,r,cc)` 会把数组当 fr、参数整体错位。三类都是“索引/解构/参数错位”，验证靠走子后断言棋盘指纹（序列化整盘不变）+ AI 走法在 genLegal 里。（案例：中国象棋 doMove/undo/commit）
-   - **补充 s) 象棋类交叉点落子几何** — 标准中国象棋**棋子圆心在线的交叉点** `(pad+cc*cell, pad+r*cell)`，**不是格子中心** `(+cell/2)`。把格子中心当落点会让所有棋子“坐在表格里不在线上”（用户原话“棋子都在表格里不在线上”），是“看起来能玩但布局全错”的典型。几何：9 列 10 行，可用宽 w → `cell=w/8`（8 个间距、9 个交叉点）、边距 `margin≥棋子半径`（取 cell/2）防边缘棋子出界；画布高 `=2*margin+9*cell`。交互点击用 `Math.round((e.x-margin)/cell)` 取最近交叉点并 clamp。验证：canvas 像素校验“交叉点处有棋 + 格子中央为空”，比 image_reading 视觉判断更可靠（AI 视觉可能被格子背景误导而误报“已在交叉点”）。（案例：中国象棋 v1 全棋落格中心 → v2 改交叉点）
+   - **补充 e) 参考图拓扑复刻** - 参考图驱动的棋盘/网格类作品:用 `image_reading` 带明确坐标指令("row 从上往下 0 起、col 从左往右 0 起精确列出")**多次读图**,勿凭一次读数定拓扑;读数与用户口头规格(如"5 列 13 行")矛盾先对齐、别自行二选一;格内印"兵站/大本营/前线"字样的多是教学示意图,只取拓扑不照抄格内文字;拓扑用坐标常量集中定义(RAIL_ROW/RAIL_COL、CAMP、BASE),**绘制必须动态读常量**,不能硬编码行号(改常量会画错)。(案例:junqi.html 铁路硬编码 [1,5,7,11] 与常量 {4,8} 不一致导致"前线铁路没画")
+   - **补充 f) 用户"收到旧版"排查** - 用户多轮说"发的还是旧版本"但本地文件是新的 → 根因多为**手机端同名文件缓存未刷新**,非文件内容问题。解法:本地先 `grep` 关键特征(铁路常量/版本徽标文案)确认文件确实是新;换带时间戳**全新文件名**发送避开同名缓存;**页面加带时间戳版本徽标**(`.ver` 徽标如 "v9·...日期")让用户一秒确认到位、不用比对棋盘细节;仍说旧版则 `image_reading` 读本地已加载页面截图核对徽标显示。(案例:junqi 多轮发同名文件用户一直说旧版)
+   - **补充 g) 超长/竖长 canvas 布局** - 高宽比大的棋盘(如 5×13,高≈宽×2.6):视口高度自适应 `maxBoardH=innerHeight-固定占位` 限制棋盘高、棋盘用满宽度,**页面允许纵向滚动、按钮靠滚动到达**(底部按钮被挤出屏 ≠ 缺陷,同真实竖长棋 APP 交互);canvas 尺寸 JS 硬算 `cv.style.width/height + cv.width=cssW*DPR`,draw() 用实际 `canvH` 而非 `cssW×比例`(否则超限时比例错乱)。验证用 fullPage 截图确认内容都在文档流内、可滚动到达。(案例:junqi 5×13 竖长棋盘)
+   - **补充 h) 同一规则严禁双实现漂移** - 同一规则有两个实现(玩家走子 `applyMove` vs AI 搜索 `applyMoveForSearch`)时必须一致,否则真机 bug 藏在 AI 验证之外。本次军旗:搜索函数开局清目标格,玩家走子只在吃军旗时清,导致同归于尽时死子残留在格子。教训:双实现对同一批边界 case 各跑一遍,或抽单一权威实现供双方调用。(案例:junqi.html applyMove vs applyMoveForSearch)
+   - **补充 i) 规则判定函数需覆盖所有参战方组合** - 吃子判定 `resolve(att,def)` 只写了"攻击方是炸弹→同归",漏"防守方是炸弹"分支,导致军长撞炸弹判定成吃掉而非同归。教训:逐 case 表驱动测试,攻/守每个特殊子(炸弹/地雷/军旗)都要双向各验一次,不能只验一个方向。(案例:junqi.html resolve 少 defType==='ZHA')
+   - **补充 j) 同功能多入口必须行为一致** - 同一动作多个入口(页面加载 `startSetup()` vs 按钮 `btnAuto.onclick`)逻辑必须完整一致。本次军旗:加载入口红黑双布 25+25,但按钮入口只布了 RED,导致点自动布阵后 AI 方空白。教训:改动某入口后要核对所有入口;对"两入口产出是否一致"做断言。(案例:junqi.html 自动布阵按钮漏 autoSetup(BLACK))
+   - **补充 k) 数据变更后必须 draw() 刷新,验证须到 canvas 像素层** - canvas 游戏里,任何修改棋盘/UI 数据的按钮或动作(重新布局/重新开始/重置等),改完数据后**必须显式调用 `draw()`**,否则数据变了画面却不刷新,用户看到"点了没反应/没重布局"。(案例:四国军棋 v5/v6 "重新布阵/重新开始"漏调 draw,用户报"全部没重新布局")。验证"按钮是否生效"**不能只看逻辑/数据结构返回值**(`changed:true` 也不代表画面变了),**必须对比 canvas 像素**--用 `cv.toDataURL() 前后 !==` 判定画面真实变化,或截图肉眼确认,才算通过。
+   - **补充 l) canvas 高清用 setTransform(DPR),布局验证以几何测量为准** - 1 高清绘制**必须** `ctx.setTransform(dpr,0,0,dpr,0,0)`+`cv.width=cssW*dpr`,**勿用固定 `ctx.scale(2,2)`+`cv.width=cssW*2`**--后者会让 canvas 替换元素按内部像素缩放,窄视口(手机)下**横向溢出裁切**(案例: 暗棋军旗手机端右侧被切, 根因如此)。2 验证"居中/是否溢出"**以浏览器几何为准**: `getBoundingClientRect()`(canvas中心 vs 容器中心)+`document.body.scrollWidth ` **三宽度各截一张**,(配 image_reading)直观确认手机/平板/桌面响应式无溢出无裁切。注意: **合成 `MouseEvent` 的 `dispatchEvent` 在 headless 不触发 canvas 的 click 监听**(端到端点击须用浏览器真实事件/CDP 实点);跨域 POST 收图需目标 server 加 `Access-Control-Allow-Origin: *`。
+   - **补充 n) 模式切换务必清干净渲染层旧分支** - 从暗棋版改明棋版,只改了布阵,但 `draw()` 里残留"AI方棋子隐藏成暗牌"逻辑(`showType=side==='R'?face:false`),导致明棋版 AI 全黑(用户追问"AI为什么全黑")。教训:改模式/状态切换时,绘制层所有"按阵营/状态隐藏内容"的分支都要同步排查清掉(案例:明棋军旗 v1 AI黑子不亮兵种)。
+   - **补充 o) 自定义数据常量键名必须与查表严格一致** - 布阵常量用了短键('PAI'/'LIAN'/'GONG'),而系统兵种表用完整键('PAIZHANG'/'LIANZHANG'/'GONGBING'),导致 `PTS[短键].n` 取 undefined 运行时崩溃(`Cannot read properties of undefined (reading 'n')`)。教训:自定义数据键名必须与后续查表字段严格一致,严禁另造缩写(案例:明棋军旗 MING_LAYOUT 短键 vs PTS 完整键)。
+   - **补充 p) 验证必须走真实交互入口,禁止绕过事件处理直接调底层结算函数** - 结算/走子/吃子函数逻辑正确 ≠ 交互能用。本次红棋"吃不了黑棋"真凶是 `tap()` 里 `if(p.side!=='R')return` 把点击黑子拦截(攻击永不触发),但我用**直接调 `movePiece`/`canEat`** 测结算、三场景全"过",完全没暴露交互拦截 bug,直到用户实测才报。教训:攻击/走子/吃子/翻子都要**模拟真实点击路径**(先 tap 选子再 tap 目标)断言,不能只调底层函数看返回值;`tap()` 这类交互入口是"拦截所有输入的分发器",其 `if(不是己方)return` 之类守卫最容易吞掉合法操作(案例:明暗军旗 v7, tap 拦截黑子点击致红棋吃不了黑棋)。
+   - **补充 q) 游戏「双模式切换」实现模式(明棋/暗棋一键切换)** - 用「模式变量 + 切换按钮 + `draw()` 按模式分支」实现两种玩法切换。要点:1全局模式变量(如 `isMing`);2明/暗切换按钮各自设模式并 `newGame()` 重建;3`draw()` 里按模式决定显隐(`showType = isMing ? true : (ownFace)`,明棋全亮、暗棋敌方隐藏);4各模式独立布阵(明棋随机但 face:true 全亮 / 暗棋随机 face:false 扣置)与状态栏文案;5切换时状态(turn/phase/sel/legal)全重置,防止混串。验证:切明→暗→明、各模式重布阵/重新开始均须正常且无残留(案例:军旗_明暗大师版,isMing 变量+btnMing/btnAn 切换,draw showType 条件化)。
+   - **补充 r) 走子类棋盘游戏三大坑(伪走法解构 / AI undo 索引 / 回调传参)** - 本次中国象棋全踩:1伪走法解构错--`for(const[t]of pseudo(r,c))` 解构出 `t=tr(数字)`,而 pseudo 返回 `[tr,tc]`,导致 `t[0]` 变 undefined、走法静默丢失(genLegal/inCheck 全受影响);应写 `for(const[tr,tc]of pseudo(r,c))`。2AI 搜索 undo 索引错位--move 为 `[fr,fc,tr,tc]`,undo 必须 `board[m[0]][m[1]]=board[m[2]][m[3]];board[m[2]][m[3]]=q`;写成 `board[m[1]][m[2]]/board[m[3]][m[4]]`(m[4] 是 undefined)会还原错位、污染棋盘(AI 走一次后局面全乱)。3事件回调传参不匹配--点击分发调 `commit(sel[0],sel[1],r,cc)`(4 参全匹配签名),写成 `commit(sel,r,cc)` 会把数组当 fr、参数整体错位。三类都是"索引/解构/参数错位",验证靠走子后断言棋盘指纹(序列化整盘不变)+ AI 走法在 genLegal 里。(案例:中国象棋 doMove/undo/commit)
+   - **补充 s) 象棋类交叉点落子几何** - 标准中国象棋**棋子圆心在线的交叉点** `(pad+cc*cell, pad+r*cell)`,**不是格子中心** `(+cell/2)`。把格子中心当落点会让所有棋子"坐在表格里不在线上"(用户原话"棋子都在表格里不在线上"),是"看起来能玩但布局全错"的典型。几何:9 列 10 行,可用宽 w → `cell=w/8`(8 个间距、9 个交叉点)、边距 `margin≥棋子半径`(取 cell/2)防边缘棋子出界;画布高 `=2*margin+9*cell`。交互点击用 `Math.round((e.x-margin)/cell)` 取最近交叉点并 clamp。验证:canvas 像素校验"交叉点处有棋 + 格子中央为空",比 image_reading 视觉判断更可靠(AI 视觉可能被格子背景误导而误报"已在交叉点")。(案例:中国象棋 v1 全棋落格中心 → v2 改交叉点)
 
-### 补充 t) canvas 扑克类游戏·手机多手牌展示（2026-10-28 实测，红十）
+### 补充 t) canvas 扑克类游戏·手机多手牌展示(2026-10-28 实测,红十)
 
-- **手机多牌别用扇形，用紧密平铺**：手牌多(>20张)+手机窄屏时**扇形物理展不开**——牌多、支点半径小，每张牌角错位仅 1~2px，26 张叠成一坨只露出扇顶一两张（用户报“只显示两张牌”）。改用**紧密平铺**（overlap 压到每张露 ~13px 可点边 + 数字，26 张全可见、数字花色可读，同斗地主手牌）更专业。命中命中同样遍历各张的轴对齐矩形。
-- **验证手牌位置别凭视觉猜裁剪区**：canvas 实际 `CH` 可能 ≠ `window.innerHeight`（实测 675 vs 760），手牌 Y 区间会偏离直觉；且 image_reading 对密集叠牌/缩略图多次给出**互相矛盾**的误读（一会儿“2张”一会儿“没牌”）。正确做法：**先像素扫描白色牌分段定位 Y 区间**（python PIL 数 y 行白像素 cluster），再定位裁剪放大，别裁错区域反复误判。（案例：红十 375 手牌，image_reading 两轮矛盾 + 裁错 y600-760 看成“没牌”，扫描定位真实在 y580-611）
+- **手机多牌别用扇形,用紧密平铺**:手牌多(>20张)+手机窄屏时**扇形物理展不开**--牌多、支点半径小,每张牌角错位仅 1~2px,26 张叠成一坨只露出扇顶一两张(用户报"只显示两张牌")。改用**紧密平铺**(overlap 压到每张露 ~13px 可点边 + 数字,26 张全可见、数字花色可读,同斗地主手牌)更专业。命中命中同样遍历各张的轴对齐矩形。
+- **验证手牌位置别凭视觉猜裁剪区**:canvas 实际 `CH` 可能 ≠ `window.innerHeight`(实测 675 vs 760),手牌 Y 区间会偏离直觉;且 image_reading 对密集叠牌/缩略图多次给出**互相矛盾**的误读(一会儿"2张"一会儿"没牌")。正确做法:**先像素扫描白色牌分段定位 Y 区间**(python PIL 数 y 行白像素 cluster),再定位裁剪放大,别裁错区域反复误判。(案例:红十 375 手牌,image_reading 两轮矛盾 + 裁错 y600-760 看成"没牌",扫描定位真实在 y580-611)
 
-### 补充 u) 手机端锁横屏游戏直接走 App，网页横屏不可靠（2026-10-28 红十实测）
+### 补充 u) 手机端锁横屏游戏直接走 App,网页横屏不可靠(2026-10-28 红十实测)
 
-- **手机浏览器对网页横屏支持不可靠且无法绕过**：鸿蒙自带浏览器实测，orientationchange/resize 事件不触发、横屏时视口尺寸不更新、canvas CSS 尺寸不跟随；400ms 轮询 innerWidth、canvas clientWidth 每帧自检重排等兑底全部失效（红十实测 6+ 轮，用户截图证实横屏时画面为竖屏 buffer 被 CSS 拉伸、牌面变形 AI 错位）。
-- **CSS transform 旋转 view 的“虚拟横屏”也不可用**：旋转后 canvas 内部四方方位被整体扭转 90°，北家到物理侧边、左右家到上下，方位错乱（红十全屏横屏版实测）。
-- **结论：手机端要锁横屏的游戏/应用，直接走 App**——鸿蒙用 DevEco Studio 工程：module.json5 的 abilities 配置 `"orientation": "landscape"` 锁横屏 + Index.ets 用 Web 组件 `$rawfile('xx.html')` 加载内置 HTML，App 打开即横屏一步到位。网页横屏只适合用户手动横手机且浏览器支持的场景，交付前先确认目标设备浏览器行为。
-- **工程模板参考**：`workspace/hongshi-app/`（红十大师，2026-10-28，含完整 DevEco 工程结构：AppScope/entry/module.json5/EntryAbility.ets/Index.ets/rawfile 游戏 HTML/图标资源）。
+- **手机浏览器对网页横屏支持不可靠且无法绕过**:鸿蒙自带浏览器实测,orientationchange/resize 事件不触发、横屏时视口尺寸不更新、canvas CSS 尺寸不跟随;400ms 轮询 innerWidth、canvas clientWidth 每帧自检重排等兑底全部失效(红十实测 6+ 轮,用户截图证实横屏时画面为竖屏 buffer 被 CSS 拉伸、牌面变形 AI 错位)。
+- **CSS transform 旋转 view 的"虚拟横屏"也不可用**:旋转后 canvas 内部四方方位被整体扭转 90°,北家到物理侧边、左右家到上下,方位错乱(红十全屏横屏版实测)。
+- **结论:手机端要锁横屏的游戏/应用,直接走 App**--鸿蒙用 DevEco Studio 工程:module.json5 的 abilities 配置 `"orientation": "landscape"` 锁横屏 + Index.ets 用 Web 组件 `$rawfile('xx.html')` 加载内置 HTML,App 打开即横屏一步到位。网页横屏只适合用户手动横手机且浏览器支持的场景,交付前先确认目标设备浏览器行为。
+- **工程模板参考**:`workspace/hongshi-app/`(红十大师,2026-10-28,含完整 DevEco 工程结构:AppScope/entry/module.json5/EntryAbility.ets/Index.ets/rawfile 游戏 HTML/图标资源)。
 
-### 补充 v) 五子棋大师级 AI 引擎 + 走子类搜索不污染悔棋栈（2026-10-28 五子棋大师版实战）
+### 补充 v) 五子棋大师级 AI 引擎 + 走子类搜索不污染悔棋栈(2026-10-28 五子棋大师版实战)
 
-- **大师级 AI 五件套**（五子棋/黑白棋等棋类通用）：①**精细棋型分档评估**：五 C5=1e9 / 活四 H4=2.2e7 / 冲四 C4=1.2e6 / 活三 H3=1.1e5 / 眠三 S3=1.1e4 / 活二 H2=1e3 / 眠二 S2=1e2（层级分明，AI 能权衡攻防）；②**四方向线段扫描**：按行/列/两条对角线提取所有线，识别每色连续段，按"长度+两端开放"(双开=活、单开=冲/眠)分档累加，评估=黑分-白分(正=黑优)；③**negamax 迭代加深 + alpha-beta**：轮到白取 `-staticEval()` 统一胜负视角，叶子返回相对当前方分数，一手成五返回 1e13+depth 必杀分；④**启发式排序 + 候选裁剪**：候选按"落子后本方增益+靠近中心偏好+一手成五给 1e8 极高优先"排序，depth>=3 时裁剪候选收窄；⑤**顶层预检 + 时间盒**：AI 一手成五→直接走、挡对手一手成五→必挡，AI_TIME(如 1500ms)时间盒内迭代加深(深度 2→6)。
-- **走子类搜索防污染悔棋栈**：搜索内 place/undo **禁止复用玩家 hist(push/pop) 栈**——复用会导致搜索结果污染悔棋栈，玩家悔棋一步错乱。搜索必须用独立直接读写棋盘的函数(如 `sp(x,y,s)`/`sp(x,y,EMPTY)`)，只有玩家真实落子才走 hist。与补充 r 的"AI undo 索引错位"(undo 数组下标写错导致还原错位)是**不同 bug**，注意区分。
-- **验证标准**：playwright 真实点击自动对弈，AI 每步 ~1.5s 稳定出步、能主动形成五连取胜、无报错；响应式用浏览器几何测量(playwright getBoundingClientRect+scrollWidth)，不轻信 image_reading 视觉断言(375 手机曾误报裁切实为无溢出)。
+- **大师级 AI 五件套**(五子棋/黑白棋等棋类通用):1**精细棋型分档评估**:五 C5=1e9 / 活四 H4=2.2e7 / 冲四 C4=1.2e6 / 活三 H3=1.1e5 / 眠三 S3=1.1e4 / 活二 H2=1e3 / 眠二 S2=1e2(层级分明,AI 能权衡攻防);2**四方向线段扫描**:按行/列/两条对角线提取所有线,识别每色连续段,按"长度+两端开放"(双开=活、单开=冲/眠)分档累加,评估=黑分-白分(正=黑优);3**negamax 迭代加深 + alpha-beta**:轮到白取 `-staticEval()` 统一胜负视角,叶子返回相对当前方分数,一手成五返回 1e13+depth 必杀分;4**启发式排序 + 候选裁剪**:候选按"落子后本方增益+靠近中心偏好+一手成五给 1e8 极高优先"排序,depth>=3 时裁剪候选收窄;5**顶层预检 + 时间盒**:AI 一手成五→直接走、挡对手一手成五→必挡,AI_TIME(如 1500ms)时间盒内迭代加深(深度 2→6)。
+- **走子类搜索防污染悔棋栈**:搜索内 place/undo **禁止复用玩家 hist(push/pop) 栈**--复用会导致搜索结果污染悔棋栈,玩家悔棋一步错乱。搜索必须用独立直接读写棋盘的函数(如 `sp(x,y,s)`/`sp(x,y,EMPTY)`),只有玩家真实落子才走 hist。与补充 r 的"AI undo 索引错位"(undo 数组下标写错导致还原错位)是**不同 bug**,注意区分。
+- **验证标准**:playwright 真实点击自动对弈,AI 每步 ~1.5s 稳定出步、能主动形成五连取胜、无报错;响应式用浏览器几何测量(playwright getBoundingClientRect+scrollWidth),不轻信 image_reading 视觉断言(375 手机曾误报裁切实为无溢出)。
 
 ### today-task 负一屏推送·source 来源标注维护(2026-10-29 固化)
 
-- **来源标注=技能硬编码**：today-task 负一屏卡片**顶部来源**走推送的 `source` 字段，与正文 `content` 完全独立——正文 content 改成新名，顶部来源不会跟着变（案例：正文改"小艺 Work"但负一屏顶部仍显"小艺 Claw"）。
-- **硬编码位置与修复**：来源写死在技能源码 `scripts/task_pusher.py:92`（`source_value = "小艺 ..."`）+ `scripts/task_push.py:295`（`"source": "小艺 ..."`）；改这两处即统一负一屏来源标注。`version.json` 会登记 source 取值变更历史。改动前先 `cp` 备份。
-- **改后必清 __pycache__**：改源码后必须 `rm -rf scripts/__pycache__`，否则 Python 用旧字节码、改动不生效（本次踩坑：清缓存后重推才真正生效）。
-- **系统名统一**：负一屏推送场景来源也按「小艺 Work」统一，不写"小艺 Claw"（与 USER.md/TOOLS.md 命名分层一致）。
+- **来源标注=技能硬编码**:today-task 负一屏卡片**顶部来源**走推送的 `source` 字段,与正文 `content` 完全独立--正文 content 改成新名,顶部来源不会跟着变(案例:正文改"小艺 Work"但负一屏顶部仍显"小艺 Claw")。
+- **硬编码位置与修复**:来源写死在技能源码 `scripts/task_pusher.py:92`(`source_value = "小艺 ..."`)+ `scripts/task_push.py:295`(`"source": "小艺 ..."`);改这两处即统一负一屏来源标注。`version.json` 会登记 source 取值变更历史。改动前先 `cp` 备份。
+- **改后必清 __pycache__**:改源码后必须 `rm -rf scripts/__pycache__`,否则 Python 用旧字节码、改动不生效(本次踩坑:清缓存后重推才真正生效)。
+- **系统名统一**:负一屏推送场景来源也按「小艺 Work」统一,不写"小艺 Claw"(与 USER.md/TOOLS.md 命名分层一致)。
 
 ### Excel 表格 & Word 文档 核心操作经验(2026-10-29 固化)
 
 **Excel 表格**
-- 基础定位: `Ctrl+方向键`跳数据边缘、`Ctrl+Home/End`首尾、`Ctrl+G`定位条件；行列 `Ctrl+Shift+=`插入/`Ctrl+-`删除/`Ctrl+9/0`隐藏
-- 快速填充: 双击右下角小黑点自动填充到底；`Ctrl+E`智能填充(Excel2013+)
+- 基础定位: `Ctrl+方向键`跳数据边缘、`Ctrl+Home/End`首尾、`Ctrl+G`定位条件;行列 `Ctrl+Shift+=`插入/`Ctrl+-`删除/`Ctrl+9/0`隐藏
+- 快速填充: 双击右下角小黑点自动填充到底;`Ctrl+E`智能填充(Excel2013+)
 - 录入: `Tab`横向/`Enter`竖向、`Ctrl+D`下填、`Ctrl+;`日期/`Ctrl+Shift+;`时间、格式刷 `Ctrl+Shift+C/V`
 - 高频函数: `SUM/AVERAGE`、`IF(条件,真,假)`、`VLOOKUP(找谁,区域,列,0)`跨表匹配、`COUNTIF/SUMIF(区域,条件)`、`LEFT/RIGHT/MID`截取、`&`拼接
 - 数据处理: `Ctrl+Shift+L`筛选、数据→排序(多关键字)、数据→删除重复值、数据→分列、视图→冻结首行
-- 数据透视表: 插入→数据透视表→选区域；行/列/值字段拖拽(值字段选求和/计数/平均)；筛选器做子维度
+- 数据透视表: 插入→数据透视表→选区域;行/列/值字段拖拽(值字段选求和/计数/平均);筛选器做子维度
 
 **Word 文档**
 - 基础: `Ctrl+B/I/U`粗斜下划线、`Ctrl+E/L/R`对齐、`Ctrl+1/2`行距、`Ctrl+Space`清格式
-- 样式与大标题(长文档核心): 必用"样式"(标题1/2/正文)而非手动改字号(改样式全篇联动)；大纲视图拖拽章节；**自动目录前提=标题必须用样式**
-- 页面: 插入→页码；双击页眉页脚区进入；`Ctrl+Enter`分页；分节符(独立页码/页眉)
-- 表格: 插入→表格；`Tab`加行；表格/文本互转(布局)；表头跨页重复(布局→重复标题行)
-- 查找替换(批量利器): `Ctrl+H`；高级可替换格式(统一字体/颜色)；勾"使用通配符"正则批量处理
-- 目录引用: 引用→目录(需先建标题样式)；交叉引用；脚注尾注
+- 样式与大标题(长文档核心): 必用"样式"(标题1/2/正文)而非手动改字号(改样式全篇联动);大纲视图拖拽章节;**自动目录前提=标题必须用样式**
+- 页面: 插入→页码;双击页眉页脚区进入;`Ctrl+Enter`分页;分节符(独立页码/页眉)
+- 表格: 插入→表格;`Tab`加行;表格/文本互转(布局);表头跨页重复(布局→重复标题行)
+- 查找替换(批量利器): `Ctrl+H`;高级可替换格式(统一字体/颜色);勾"使用通配符"正则批量处理
+- 目录引用: 引用→目录(需先建标题样式);交叉引用;脚注尾注
 
 **配合系统工具**: `excel-analysis`(数据分析)、`xiaoyi-docx`、`document-processor`(文档处理)、`markitdown`(格式转换)
 
 ### PPT 幻灯片 核心制作/排版操作经验(2026-10-29 固化)
 
 **基础操作**
-- 新建幻灯片 `Ctrl+M`；选版式(标题/内容/图文/图表)；大纲/浏览视图切换
+- 新建幻灯片 `Ctrl+M`;选版式(标题/内容/图文/图表);大纲/浏览视图切换
 
 **母版与版式(统一风格核心)**
-- `视图→幻灯片母版`：设统一字体/配色/Logo，一改全变；母版下可建多个版式供不同页用
-- `标题/副标题占位符`跟随母版走(文本框不随)；正文用占位符可全篇统一
+- `视图→幻灯片母版`:设统一字体/配色/Logo,一改全变;母版下可建多个版式供不同页用
+- `标题/副标题占位符`跟随母版走(文本框不随);正文用占位符可全篇统一
 
 **文本与排版**
-- 文字层级明确(大标题/中标题/正文三级)，一页一个中心观点
-- 对齐:选中多对象→`对齐/分布`(顶端/居中/等间距)——对齐是专业第一要素
-- 配色统一:主色+辅色+强调≤3~4色；字间距/行距调好
+- 文字层级明确(大标题/中标题/正文三级),一页一个中心观点
+- 对齐:选中多对象→`对齐/分布`(顶端/居中/等间距)--对齐是专业第一要素
+- 配色统一:主色+辅色+强调≤3~4色;字间距/行距调好
 
 **图文排版**
-- 图片裁剪/圆角/形状填充；SmartArt 快速做流程图/结构图；留白别铺满
+- 图片裁剪/圆角/形状填充;SmartArt 快速做流程图/结构图;留白别铺满
 
 **表格图表**
-- `插入→表格/图表`；图表配色与主题统一；用图表代替大段文字做数据可视化
+- `插入→表格/图表`;图表配色与主题统一;用图表代替大段文字做数据可视化
 
 **动画与切换**
-- 动画少而精(进入/强调/退出节奏一致)；切换效果统一，别每页花哨
+- 动画少而精(进入/强调/退出节奏一致);切换效果统一,别每页花哨
 
 **模板与主题**
-- `设计→主题`一键换配色/字体；可存 .potx 母版复用
+- `设计→主题`一键换配色/字体;可存 .potx 母版复用
 
 **导出与演示**
-- 导出 PDF/图片/视频；`F5`放映；演讲者视图(备注+计时)
+- 导出 PDF/图片/视频;`F5`放映;演讲者视图(备注+计时)
 
 **设计原则(高逼格核心)**
-- 对齐、留白、字层级、少即是多——一页一个观点
+- 对齐、留白、字层级、少即是多--一页一个观点
 
 **配合系统工具**: `xiaoyi-ppt`(默认生成)、`ai-ppt-generator`、`ppt-generator-skill`、`reading-summary-ppt-package`、`pptx-posters`
 
 ### Excel/Word/PPT 中级进阶·真实现场避坑(2026-10-29 固化)
 
 **Excel 5坑**
-- VLOOKUP 第4参省略/TRUE=近似匹配,数据未排序会返回错值且不报错——铁律:永远写 0 精确匹配
-- 格式不一致匹配不到:被查列文本/查找值数字(或反之)即空——文本数字转真数值(`--A1` 或"分列")
-- 合并单元格三坑:筛选丢数据/排序乱/透视表不认——用"跨列居中"(格式→对齐→水平→跨列居中)替代
+- VLOOKUP 第4参省略/TRUE=近似匹配,数据未排序会返回错值且不报错--铁律:永远写 0 精确匹配
+- 格式不一致匹配不到:被查列文本/查找值数字(或反之)即空--文本数字转真数值(`--A1` 或"分列")
+- 合并单元格三坑:筛选丢数据/排序乱/透视表不认--用"跨列居中"(格式→对齐→水平→跨列居中)替代
 - 日期本质是数字:1900-01-01=1,日期相减=天数、`+7`=下周同日;设格式才显示成日期
 - SUMIFS/COUNTIFS 区域错位:求和区/条件区大小必须一致,否则 #VALUE! 或错结果
 
 **Word 5坑**
-- 直接格式覆盖样式:手动加粗/改字号使该段脱离样式控制,后续改样式不跟——统一用样式
-- 多级列表编号错乱:复制粘贴后"继续编号"乱跳——右键"重新开始于 1"
+- 直接格式覆盖样式:手动加粗/改字号使该段脱离样式控制,后续改样式不跟--统一用样式
+- 多级列表编号错乱:复制粘贴后"继续编号"乱跳--右键"重新开始于 1"
 - 页码从正文开始:封面无页码、正文从1起=插入分节符+取消"链接到前一节"+正文节起始页码设 1
 - 目录不会自动更新:改内容后目录不动 ,按 F9 或右键"更新域"手动刷新
 - 中英文字体分离:同段中英混排要不同字体,须分别设 ascii(西文)和 eastAsia(中文)
@@ -1556,96 +1556,96 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 ### Power Query 零代码数据清洗·入门要点(2026-11-06 固化·源自之了学吧30分钟入门+B站合集)
 
-**定位**：Excel 内置零代码 ETL 工具(获取→转换→加载)，专治重复性数据整理。
+**定位**:Excel 内置零代码 ETL 工具(获取→转换→加载),专治重复性数据整理。
 
-**标准工作流(四步)**：数据 → 获取数据(文件/文件夹/网页/数据库) → Power Query 编辑器清洗转换 → 关闭并上载(表/数据模型)
+**标准工作流(四步)**:数据 → 获取数据(文件/文件夹/网页/数据库) → Power Query 编辑器清洗转换 → 关闭并上载(表/数据模型)
 
-**五大核心能力**：
-- 多表/多文件合并：追加查询(纵向堆)+合并查询(横向匹配，替代 Vlookup)
-- 数据清洗：删重复/拆分列/更改类型/替换值/筛选行
-- 透视/逆透视：宽表转长表(数据看板前置)
-- 分组聚合：按维度汇总，不写函数
-- 动态刷新：源数据更新→点刷新自动重跑全流程(最大价值，一次搭好永久复用)
+**五大核心能力**:
+- 多表/多文件合并:追加查询(纵向堆)+合并查询(横向匹配,替代 Vlookup)
+- 数据清洗:删重复/拆分列/更改类型/替换值/筛选行
+- 透视/逆透视:宽表转长表(数据看板前置)
+- 分组聚合:按维度汇总,不写函数
+- 动态刷新:源数据更新→点刷新自动重跑全流程(最大价值,一次搭好永久复用)
 
-**对比 Vlookup**：合并查询一次配置+自动刷新+海量行+多表联动；Vlookup 逐行公式、改数据要拖公式。
+**对比 Vlookup**:合并查询一次配置+自动刷新+海量行+多表联动;Vlookup 逐行公式、改数据要拖公式。
 
-**学习路径(合集8集顺序)**：30分钟入门(建认知)→多表合并→数据整理技巧→M语言→实战项目
+**学习路径(合集8集顺序)**:30分钟入门(建认知)→多表合并→数据整理技巧→M语言→实战项目
 
-**高播放资源索引**：
-- Power Query：孙兴华《零基础到M函数 全107集》BV1oa4y1j75e(137.8万)；之了学吧《30分钟入门》BV11NetzpE3h(7.5万，最快上手)
-- Python 自动化 Office：白月黑羽《Python Excel 自动化数据处理》BV1K7411a72M(28万)；孙兴华《Python办公自动化 word篇 python-docx》BV1FC4y1Y7QC(8.2万)；冰冷的希望123《Python办公之Word篇》BV14s4y1A7gY(8.5万)
+**高播放资源索引**:
+- Power Query:孙兴华《零基础到M函数 全107集》BV1oa4y1j75e(137.8万);之了学吧《30分钟入门》BV11NetzpE3h(7.5万,最快上手)
+- Python 自动化 Office:白月黑羽《Python Excel 自动化数据处理》BV1K7411a72M(28万);孙兴华《Python办公自动化 word篇 python-docx》BV1FC4y1Y7QC(8.2万);冰冷的希望123《Python办公之Word篇》BV14s4y1A7gY(8.5万)
 
 ### Python 自动化 Office 三大库·核心要点(2026-11-06 固化·源自白月黑羽Excel篇+B站实战)
 
-**三大库分工**：
-- openpyxl：Excel 读写(.xlsx)，单元格级精细操作/样式/公式
-- pandas：数据框分析，大批量清洗/统计/多表合并(百万行级)
-- python-docx：Word 生成/修改(段落/表格/样式/页眉页脚)
+**三大库分工**:
+- openpyxl:Excel 读写(.xlsx),单元格级精细操作/样式/公式
+- pandas:数据框分析,大批量清洗/统计/多表合并(百万行级)
+- python-docx:Word 生成/修改(段落/表格/样式/页眉页脚)
 
-**openpyxl 核心**：读 load_workbook→ws.cell(r,c).value / iter_rows 遍历；写 ws.append([...])→wb.save()；坑：只支持 .xlsx(老 .xls 需 xlrd)、大文件开 read_only=True
+**openpyxl 核心**:读 load_workbook→ws.cell(r,c).value / iter_rows 遍历;写 ws.append([...])→wb.save();坑:只支持 .xlsx(老 .xls 需 xlrd)、大文件开 read_only=True
 
-**pandas 核心**：读 pd.read_excel；清洗 dropna/drop_duplicates/fillna/astype/str.strip；合并 concat(纵向)/merge(on=key)(横向)；分组 groupby.agg；写 to_excel(index=False)
+**pandas 核心**:读 pd.read_excel;清洗 dropna/drop_duplicates/fillna/astype/str.strip;合并 concat(纵向)/merge(on=key)(横向);分组 groupby.agg;写 to_excel(index=False)
 
-**python-docx 核心**：新建 Document()→add_heading/add_paragraph/add_table→save()；模板替换=读模板→遍历 paragraphs 换占位符→存新文件(批量报表主力)；坑：add_comment 必须传 runs 非 Paragraph
+**python-docx 核心**:新建 Document()→add_heading/add_paragraph/add_table→save();模板替换=读模板→遍历 paragraphs 换占位符→存新文件(批量报表主力);坑:add_comment 必须传 runs 非 Paragraph
 
-**典型场景**：多表合并→pandas concat+groupby；批量报表/合同→python-docx 模板替换；数据清洗→pandas 链式；网页数据落Excel→爬虫+pandas
+**典型场景**:多表合并→pandas concat+groupby;批量报表/合同→python-docx 模板替换;数据清洗→pandas 链式;网页数据落Excel→爬虫+pandas
 
-**学习路径(白月黑羽6集)**：优点认知→读取分析→新建写入→修改内容→结合爬取→实战实例
-**资源**：白月黑羽《Python Excel 自动化数据处理》BV1K7411a72M(28万，6集)；冰冷的希望123《Python办公之Excel篇 openpyxl》(24万)；Python自动化办公社区《Pandas玩转Excel 全30集》(52.6万)
+**学习路径(白月黑羽6集)**:优点认知→读取分析→新建写入→修改内容→结合爬取→实战实例
+**资源**:白月黑羽《Python Excel 自动化数据处理》BV1K7411a72M(28万,6集);冰冷的希望123《Python办公之Excel篇 openpyxl》(24万);Python自动化办公社区《Pandas玩转Excel 全30集》(52.6万)
 
 ### Excel/PPT 高级补完:Power BI+DAX / iSlide插件提效(2026-11-06 固化)
 
-**Power BI + DAX（比 Power Query 上一层的企业级可视化分析）**
-- 定位：Power Query 清洗 → 数据模型 → DAX 度量 → 可视化仪表盘
-- DAX = 建模语言：CALCULATE/FILTER 改上下文写度量值（核心心法）
-- 分层：Excel → Power Query(清洗) → Power BI(PowerQuery+模型+DAX+可视化)
-- 资源：孙兴华《火力全开版·DAX语言》BV1qa4y1H7wp(172.5万)/《基础语法函数图表DAX原理》BV1sV411U7U8(100.2万)；一条单休的狗《2026全新入门到实战24集》BV11ezsBCE58(49.8万,最新推荐入门)；夕枫《DAX快速入门和原理》BV1sf421U7Dj
+**Power BI + DAX(比 Power Query 上一层的企业级可视化分析)**
+- 定位:Power Query 清洗 → 数据模型 → DAX 度量 → 可视化仪表盘
+- DAX = 建模语言:CALCULATE/FILTER 改上下文写度量值(核心心法)
+- 分层:Excel → Power Query(清洗) → Power BI(PowerQuery+模型+DAX+可视化)
+- 资源:孙兴华《火力全开版·DAX语言》BV1qa4y1H7wp(172.5万)/《基础语法函数图表DAX原理》BV1sV411U7U8(100.2万);一条单休的狗《2026全新入门到实战24集》BV11ezsBCE58(49.8万,最新推荐入门);夕枫《DAX快速入门和原理》BV1sf421U7Dj
 
 **PPT 插件提效(iSlide)**
-- 核心价值：一键统一字体/对齐/配色、图示库(图表模板拖拽即用)、矩阵布局(快速排版)、批量加水印/导长图、素材库(图标/图片)——治"排版慢不专业"
-- 资源：旁门左道《一分钟搞定半小时工作》BV1SV411e7is(23.8万,最热)；檀东东《节省70%时间》BV1n34y1H7n7(11.9万)；经本正一《十大免费实用功能》BV1534y1S7me(9.7万)
+- 核心价值:一键统一字体/对齐/配色、图示库(图表模板拖拽即用)、矩阵布局(快速排版)、批量加水印/导长图、素材库(图标/图片)--治"排版慢不专业"
+- 资源:旁门左道《一分钟搞定半小时工作》BV1SV411e7is(23.8万,最热);檀东东《节省70%时间》BV1n34y1H7n7(11.9万);经本正一《十大免费实用功能》BV1534y1S7me(9.7万)
 
 ### PPT 视觉设计视频资源索引(2026-11-06 固化)
 
-**配色**：旁门左道《PPT最大难点配色?3招高级配色》BV1Mv411b7dL(12.3万)；研习设《7个配色技巧/秒进阶》BV1aS4y197AM(12.2万)；平面设计-皮皮《高级配色是有逻辑的》BV1fwkTBpET7(3.4万,系统配色课1.9h)
-**风格**：Jobor《20多种常见PPT风格总结》BV1bu411e7js(风格图谱，先定调再做)
-**落地效率**：配 iSlide 插件（见「iSlide插件提效」条目）
+**配色**:旁门左道《PPT最大难点配色?3招高级配色》BV1Mv411b7dL(12.3万);研习设《7个配色技巧/秒进阶》BV1aS4y197AM(12.2万);平面设计-皮皮《高级配色是有逻辑的》BV1fwkTBpET7(3.4万,系统配色课1.9h)
+**风格**:Jobor《20多种常见PPT风格总结》BV1bu411e7js(风格图谱,先定调再做)
+**落地效率**:配 iSlide 插件(见「iSlide插件提效」条目)
 
 ### 动态数组双环境(O365/WPS)可用性对照(2026-11-06 固化)
 
-**函数可用性**：
-- 双环境通用主力：XLOOKUP/FILTER/UNIQUE/SORT（优先学这4个）
-- O365/2021 全支持：SEQUENCE/TEXTSPLIT/HSTACK/VSTACK/LET/LAMBDA
-- WPS 部分/不支持：SEQUENCE/TEXTSPLIT 新版支持老版缺；HSTACK/VSTACK/LET/LAMBDA 多数不支持
-- 跨环境铁律：Office 数组溢出(spill)区域在 WPS 可能显示异常，含动态数组的工作簿固定用一边编辑，别来回切
-- WPS 提示：新函数中英文双命名，在 WPS 里试时搜版本是否支持
+**函数可用性**:
+- 双环境通用主力:XLOOKUP/FILTER/UNIQUE/SORT(优先学这4个)
+- O365/2021 全支持:SEQUENCE/TEXTSPLIT/HSTACK/VSTACK/LET/LAMBDA
+- WPS 部分/不支持:SEQUENCE/TEXTSPLIT 新版支持老版缺;HSTACK/VSTACK/LET/LAMBDA 多数不支持
+- 跨环境铁律:Office 数组溢出(spill)区域在 WPS 可能显示异常,含动态数组的工作簿固定用一边编辑,别来回切
+- WPS 提示:新函数中英文双命名,在 WPS 里试时搜版本是否支持
 
-**资源**：懒人_Excel《8个实例掌握XLOOKUP》BV1eN4y127yZ(23.9万,打底)；Excel自习室《XLOOKUP经典用法大全》BV1qaSWBpEsu；Excel自学成才《Filter+Unique》BV1mp421y7Lb；小秋《SORT+FILTER》BV1DU4y1v7EA
+**资源**:懒人_Excel《8个实例掌握XLOOKUP》BV1eN4y127yZ(23.9万,打底);Excel自习室《XLOOKUP经典用法大全》BV1qaSWBpEsu;Excel自学成才《Filter+Unique》BV1mp421y7Lb;小秋《SORT+FILTER》BV1DU4y1v7EA
 
 ### Excel 可视化看板 / Word 长文档题注·补完(2026-11-06 固化)
 
 **Excel 可视化看板**
-- 看板套路：数据透视表 + 切片器 + 数据透视图 → 关联成动态交互仪表盘（切片器=点击筛选整张看板）
-- 五步法：①源数据转超级表(Ctrl+T,新增自动纳入) ②插入透视表拖字段建KPI ③指标卡(大数字:总额/利润/环比,可引用透视表单元格或GETPIVOTDATA) ④数据透视图(趋势线/占比/分组柱) ⑤切片器联动(插入切片器选维度→右键报表连接→勾所有透视表→点击整板联动)
-- 美化三招：去网格线/统一配色(与PPT视觉一致)/条件格式数据条图标集看好坏
-- 常见坑：切片器不联动=忘了「报表连接」勾选多个透视表
-- 学习顺序(按播放热度/学习路径)：①先学 策栩《可视化图表数据看板制作全过程》BV1Yi421Q7tF(11万,看板全流程打底) ②再学 阿武《切片器》BV1Cq4y1u7oL(12.6万,联动核心) ③后学 小妖怪《透视表9大进阶技巧》BV16eU9BzEUV(2.9万,补数据功底)
+- 看板套路:数据透视表 + 切片器 + 数据透视图 → 关联成动态交互仪表盘(切片器=点击筛选整张看板)
+- 五步法:1源数据转超级表(Ctrl+T,新增自动纳入) 2插入透视表拖字段建KPI 3指标卡(大数字:总额/利润/环比,可引用透视表单元格或GETPIVOTDATA) 4数据透视图(趋势线/占比/分组柱) 5切片器联动(插入切片器选维度→右键报表连接→勾所有透视表→点击整板联动)
+- 美化三招:去网格线/统一配色(与PPT视觉一致)/条件格式数据条图标集看好坏
+- 常见坑:切片器不联动=忘了「报表连接」勾选多个透视表
+- 学习顺序(按播放热度/学习路径):1先学 策栩《可视化图表数据看板制作全过程》BV1Yi421Q7tF(11万,看板全流程打底) 2再学 阿武《切片器》BV1Cq4y1u7oL(12.6万,联动核心) 3后学 小妖怪《透视表9大进阶技巧》BV16eU9BzEUV(2.9万,补数据功底)
 
 **Word 长文档题注/交叉引用(最值钱的长文档技能)**
-- 心法：图片表格插入「题注」→ 配合「交叉引用」+「图表目录」→ 编号自动更新，改稿不手动改号
-- 三步法：①标题自动编号(多级列表关联标题样式)→章变1.1/1.2 ②插入题注：引用→插入题注→标签选"图/表"→勾"包含章节号"(图1-1) ③交叉引用：引用→交叉引用→类型"图"→内容"只有标签和编号"
-- 图表目录：引用→插入表目录→选"图表目录"→自动生成全部图表列表
-- 自动更新关键：所有编号都是域(自动计算)非手打，改稿后 Ctrl+A→F9 一次性刷新全部图号/表号/交叉引用
-- 常见三坑：①没勾"包含章节号" ②标题没连样式 ③忘 F9 刷新
-- 资源：罗同学《标题自动编号从原理》BV1cv411h7Pj(57.9万,最热)；无名守望者《图表目录:题注+自动排序+交叉引用》BV1JK4y187ju(29万,最完整)；方圆《毕业论文图表自动编号》BV16u411r7uy(23.8万)；X锐雯《参考文献编号及引用》BV1QN411L749(7.1万)
+- 心法:图片表格插入「题注」→ 配合「交叉引用」+「图表目录」→ 编号自动更新,改稿不手动改号
+- 三步法:1标题自动编号(多级列表关联标题样式)→章变1.1/1.2 2插入题注:引用→插入题注→标签选"图/表"→勾"包含章节号"(图1-1) 3交叉引用:引用→交叉引用→类型"图"→内容"只有标签和编号"
+- 图表目录:引用→插入表目录→选"图表目录"→自动生成全部图表列表
+- 自动更新关键:所有编号都是域(自动计算)非手打,改稿后 Ctrl+A→F9 一次性刷新全部图号/表号/交叉引用
+- 常见三坑:1没勾"包含章节号" 2标题没连样式 3忘 F9 刷新
+- 资源:罗同学《标题自动编号从原理》BV1cv411h7Pj(57.9万,最热);无名守望者《图表目录:题注+自动排序+交叉引用》BV1JK4y187ju(29万,最完整);方圆《毕业论文图表自动编号》BV16u411r7uy(23.8万);X锐雯《参考文献编号及引用》BV1QN411L749(7.1万)
 
 ### PPT 制作逻辑·内容层(2026-11-06 固化·源自驰影48分钟方法论)
 
-**标准骨架**：封面 → 目录 → 章节页 → 内容 → 结尾页，层次递进不跳级。
-**结论先行**：先给判断和结论，再放论据，别让听众猜重点。
-**一页一观点**：一页只讲一个主题，删掉与主题无关的装饰/文字(少即是多)。
-**数据说话**：能用数字就用数字，一句"转化率+30%"比十句形容词有说服力；量化效果优先。
-> 与既有「CRAP视觉设计(对比/重复/对齐/亲密性)+配色铁律」互补：视觉层管"怎么好看"，本条目管"内容怎么组织"。
+**标准骨架**:封面 → 目录 → 章节页 → 内容 → 结尾页,层次递进不跳级。
+**结论先行**:先给判断和结论,再放论据,别让听众猜重点。
+**一页一观点**:一页只讲一个主题,删掉与主题无关的装饰/文字(少即是多)。
+**数据说话**:能用数字就用数字,一句"转化率+30%"比十句形容词有说服力;量化效果优先。
+> 与既有「CRAP视觉设计(对比/重复/对齐/亲密性)+配色铁律」互补:视觉层管"怎么好看",本条目管"内容怎么组织"。
 
 ### B站四视频查漏补完(2026-10-30 固化·browser实扒分P+弹幕API对照)
 
@@ -1691,17 +1691,17 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - ⚠️最靠谱: 让用户直接文字提供目标 UP主名字,逐个 B站 搜索爬代表作,对照已固化知识分析(值得学/已覆盖/独门技巧)
 
 ### 技能版本五步排查法(2026-10-30 固化)
-- ①查本机版本: `grep -i version skills//SKILL.md` 看 metadata.version
-- ②判来源/独立上游: `git ls-files skills//` 看是否进仓;`cd 技能目录 && git remote -v` 看有无独立上游 remote
-- ③按来源选查新版通道: ClawHub装→`openclaw skills`/ClawHub查在线版本;有独立remote→`git fetch`上游对照;复制的开源技能→看LICENSE/README找版权方→联网(GitHub API)搜原始仓库→拉上游SKILL.md对照version+功能
-- ④对照判断升级: 本地version+功能(路由/任务数) vs 上游;本地≥上游=最新无需升级,上游更高=有新版
-- ⑤钉结论: 结论+附引用来源;本地领先/无上游则钉死"无新版"
+- 1查本机版本: `grep -i version skills//SKILL.md` 看 metadata.version
+- 2判来源/独立上游: `git ls-files skills//` 看是否进仓;`cd 技能目录 && git remote -v` 看有无独立上游 remote
+- 3按来源选查新版通道: ClawHub装→`openclaw skills`/ClawHub查在线版本;有独立remote→`git fetch`上游对照;复制的开源技能→看LICENSE/README找版权方→联网(GitHub API)搜原始仓库→拉上游SKILL.md对照version+功能
+- 4对照判断升级: 本地version+功能(路由/任务数) vs 上游;本地≥上游=最新无需升级,上游更高=有新版
+- 5钉结论: 结论+附引用来源;本地领先/无上游则钉死"无新版"
 - 案例: xiaoyi-pdf 本地v1.1(Four tasks) vs 上游 cuttino001/minimax-pdf-skills v1.0(Three tasks, 2026-04后停更)→本地领先,无新版
 
 ### 小艺Work「对话运行环境」与控本地桌面(2026-10-30实测排错)
 - 场景: 用户问能否控制本地电脑桌面/Photoshop
-- 机制: 小艺 Work 有「对话运行环境」选择弹窗,可选 ①云电脑(在线,默认选中) ②本地Windows PC(如 WIN-J2TV8M6HPTO/Win11Pro,在线);切换后对话才在该机器执行
-- ⚠️踩坑: 判断"本地电脑连没连上"**不能看 OpenClaw 沙箱 nodes 通道**(pending/paired 空≠没连)——那是另一层机制;要看小艺Work「运行环境」面板,本地PC显示绿色"在线"=已挂上
+- 机制: 小艺 Work 有「对话运行环境」选择弹窗,可选 1云电脑(在线,默认选中) 2本地Windows PC(如 WIN-J2TV8M6HPTO/Win11Pro,在线);切换后对话才在该机器执行
+- ⚠️踩坑: 判断"本地电脑连没连上"**不能看 OpenClaw 沙箱 nodes 通道**(pending/paired 空≠没连)--那是另一层机制;要看小艺Work「运行环境」面板,本地PC显示绿色"在线"=已挂上
 - 正确路径: 要控本地桌面/PS → 小艺Work运行环境从"云电脑"切到本地Windows PC → 对话跑那台后,才能操作其桌面/启动驱动PS
 - 读图佐证: image_reading 多次空/Premature close,改用 xiaoyi-image-understanding 脚本流式读取成功,印证读图三层法"换备用脚本通道"
 
@@ -1709,7 +1709,7 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 场景: web-content-fetcher 提取 mp 微信文章(SKILL.md 走 Scrapling 通道)
 - ⚠️pip安装被劫持坑: `~/.config/pip/pip.conf` 强制 `prefix=repo` + 环境变量 `PIP_PREFIX` → `--target`/`--user`/`--home` 全报 `Cannot set --home and --prefix together`;解法=`env -u PIP_PREFIX PIP_CONFIG_FILE=/dev/null python3 -m pip install --target /tmp/xxx xxx`
 - 注意: `scrapling[fetchers]` 含 playwright/patchright 大依赖,下载慢易被杀(SIGTERM)
-- 微信正文多通道降级: ①web_fetch/readability 只出标题(正文JS渲染) ②browser/CDP navigate+evaluate+snapshot 全 timeout(微信页卡) ③Jina r.jina.ai 网络不可达 ④**最稳= curl -A 手机UA 抓原始HTML + 正则抽 `` 内正文**(一次拿全,原文约3.5MB)
+- 微信正文多通道降级: 1web_fetch/readability 只出标题(正文JS渲染) 2browser/CDP navigate+evaluate+snapshot 全 timeout(微信页卡) 3Jina r.jina.ai 网络不可达 4**最稳= curl -A 手机UA 抓原始HTML + 正则抽 `` 内正文**(一次拿全,原文约3.5MB)
 - 通用: 网页正文 JS 渲染拿不到时,curl 抓原始 HTML 抽正文容器最稳;工具选型见 354 行(web-content-fetcher/baoyu)
 
 ### headed-browser-open-v3 首次配置(2026-10-30实测)
@@ -1719,49 +1719,49 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 用法: `CDP_PORT=18810 ./browser.sh start ` + `PYTHONPATH=/tmp/wsp_deps python3 element.py --port 18810 --xxx`
 - 局限: 微信文章对 headed/headless 都弹"环境异常验证码",读不到正文;正文唯一稳妥=curl 抓原始HTML(见1353行)
 
-### 工具技能进阶学习路径：B站/视频平台=高级实战案例库(2026-10-29 固化)
+### 工具技能进阶学习路径:B站/视频平台=高级实战案例库(2026-10-29 固化)
 
-- **主动进阶路径**：固化基础/中级手册后，往「高级」走不必只靠用户丢真活——B站/视频平台有海量**高级实战案例**教程，按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
-- **进阶三步**：①基础+中级操作经验固化(参考上方 Office 三件套条目) → ②按高级短板捞案例学(如 VBA/宏自动化、数据透视深挖、长文档排版、高级动画) → ③实操验证沉淀经验。
-- **高级短板方向(实测命中)**：Excel VBA/宏自动化(BV13v411C7ZN)、数据透视表进阶(BV18T411b77P)、Word 论文全流程排版(BV1YQ4y1M73G)、PPT 高级动画(BV1rn4y1o7Gm)——均高播放实战案例。
-- **通用性**：此路径适用任何工具技能(不限于 Office)，如设计/数据分析/编程等，只要技能有案例教程都可用。
-- **扒要点降级边界(2026-11-06)**：目标视频若为单P且无公开分章节、笔记区数据不可达时，无法逐帧扒取具体技巧——只能基于视频主题定位 + 通用方法论整理，**禁止虚构视频具体分镜内容**；可改用弹幕/评论/笔记区 API 补信息(参考上方 B站四视频查漏条目)。
+- **主动进阶路径**:固化基础/中级手册后,往「高级」走不必只靠用户丢真活--B站/视频平台有海量**高级实战案例**教程,按短板主动去搜"高级/实战/案例/自动化"等关键词即可学踩坑。
+- **进阶三步**:1基础+中级操作经验固化(参考上方 Office 三件套条目) → 2按高级短板捞案例学(如 VBA/宏自动化、数据透视深挖、长文档排版、高级动画) → 3实操验证沉淀经验。
+- **高级短板方向(实测命中)**:Excel VBA/宏自动化(BV13v411C7ZN)、数据透视表进阶(BV18T411b77P)、Word 论文全流程排版(BV1YQ4y1M73G)、PPT 高级动画(BV1rn4y1o7Gm)--均高播放实战案例。
+- **通用性**:此路径适用任何工具技能(不限于 Office),如设计/数据分析/编程等,只要技能有案例教程都可用。
+- **扒要点降级边界(2026-11-06)**:目标视频若为单P且无公开分章节、笔记区数据不可达时,无法逐帧扒取具体技巧--只能基于视频主题定位 + 通用方法论整理,**禁止虚构视频具体分镜内容**;可改用弹幕/评论/笔记区 API 补信息(参考上方 B站四视频查漏条目)。
 
 ### B站PS案例核心技法(2026-10-31 俞哥指示学习沉淀·案例来源Nenly同学/杰视帮设计/崔老师/Serene122/知识区小霸王)
 
-**① PS合成「马路变水面」五步融合法(案例:Nenly同学,9万播放)**
+**1 PS合成「马路变水面」五步融合法(案例:Nenly同学,9万播放)**
 - 透视匹配: 水面贴图用自由变换/透视变形,与公路透视一致
 - 色调统一: 用曲线/色彩平衡/色阶把水面明暗色调校准到公路场景
 - 边缘溶解: 图层蒙版+柔边低流量画笔在接缝处柔和过渡(不硬边)
 - 高光倒影: 叠加模式(滤色/柔光)加水面高光与倒影,强化"水"质感
 - 动态感: 动感模糊处理水面波纹,表现流动
 
-**② 人像精修(崔老师课堂)
+**2 人像精修(崔老师课堂)
 - 中性灰/双曲线磨皮: 建中性灰图层或曲线明暗组,低频光影/高频纹理分离处理
 - 高低频分离: 高斯模糊(低频)+减去图层(高频),分别磨皮和保留质感
 - 液化塑形 + 肤色统一(可选颜色/色彩平衡调肤色) + 保留皮肤纹理(不磨糊)
 
-**③ 抠图
+**3 抠图
 - 通道抠图(头发/半透明)、钢笔路径(规整轮廓)、蒙版边缘调优
 - 发丝: 通道抠完后用"背景橡皮擦/可选颜色"补齐发丝边缘
 
-**④ 科研组图(Serene122)
+**4 科研组图(Serene122)
 - 统一图片尺寸/白边描边、标尺标注对齐、网格排版;期刊投稿常用
 
-**⑤ 海报设计
+**5 海报设计
 - 版式(网格/对齐)、色彩(主色+辅色)、字体层级(标题/正文粗细字号)三者统一
 
 **通用提示:**「PS教程」等大粉号(如206万粉/投稿15)多为合集搬运引流卖课号,看案例选专精小号(知识区小霸王合成/崔老师精修等)更硬核。
 
-**⑥ PS合成系统框架(80集/85分P提炼,来源 即梦AI制作,2023):**
-- 原理篇: 合成流程→创意→构图→透视——①一点透视+应用 ②视平线概念 ③两点透视+应用 ④三点透视应用;核心:透视关系是合成灵魂,先定视平线再匹配素材透视才"真"
+**6 PS合成系统框架(80集/85分P提炼,来源 即梦AI制作,2023):**
+- 原理篇: 合成流程→创意→构图→透视--1一点透视+应用 2视平线概念 3两点透视+应用 4三点透视应用;核心:透视关系是合成灵魂,先定视平线再匹配素材透视才"真"
 - 完整合成流程: 构思创意→构图布局→定视平线/透视→素材收集+抠图→按构图透视拼合→光影统一(统一光源方向/明暗)→整体调色→加氛围特效
-- 案例篇75例分类: 经典创意(青蛙撸串/大闹天空) / 场景合成(公路泳池/沙漠/夜晚/小岛奇景/漂浮小屋/童话蘑菇——背景合成最大头,讲究透视+景深) / 特效元素(燃烧羚羊/火焰手臂/冰手/羊角发光/透明苹果) / 海报类(洋酒/葡萄洒/玻璃/文字合成/双重曝光) / 人物合成(少女和猫/偶像海报) / 奇幻脑洞(橙子茶壶/星球熊/科幻星球/空中城堡/杯子世界)
+- 案例篇75例分类: 经典创意(青蛙撸串/大闹天空) / 场景合成(公路泳池/沙漠/夜晚/小岛奇景/漂浮小屋/童话蘑菇--背景合成最大头,讲究透视+景深) / 特效元素(燃烧羚羊/火焰手臂/冰手/羊角发光/透明苹果) / 海报类(洋酒/葡萄洒/玻璃/文字合成/双重曝光) / 人物合成(少女和猫/偶像海报) / 奇幻脑洞(橙子茶壶/星球熊/科幻星球/空中城堡/杯子世界)
 - 重点案例: 合成光源(统一来源方向+P61) / 场景合成系列(P57-71) / 透明苹果(半透明质感图层混合,P56)
 
-**⑦ PS人像精修标准流程(案例:发廷老师标准步骤91万播/锦木高低频18.8万/中性灰原理13.9万/伍伍中性灰)**
+**7 PS人像精修标准流程(案例:发廷老师标准步骤91万播/锦木高低频18.8万/中性灰原理13.9万/伍伍中性灰)**
 - 液化塑形: 先修五官比例/脸型/身形(轻微,别过度)
-- 磨皮三法(核心): ①高低频分离(低频=高斯模糊取大范围光影,高频=减去层保留细节;分别处理不同频段,最常用) ②中性灰(50%灰图层+柔光混合,黑/白画笔在灰度层均匀光影,保留质感) ③双曲线(明暗两条曲线+蒙版,白画笔提亮/压暗局部)
+- 磨皮三法(核心): 1高低频分离(低频=高斯模糊取大范围光影,高频=减去层保留细节;分别处理不同频段,最常用) 2中性灰(50%灰图层+柔光混合,黑/白画笔在灰度层均匀光影,保留质感) 3双曲线(明暗两条曲线+蒙版,白画笔提亮/压暗局部)
 - 肤色统一: 可选颜色/色彩平衡/HSL调肤色,去黄杂色
 - 局部精修: 眼睛提亮/眼白清澈/嘴唇加色/牙齿美白/发丝边缘(高反差保留)
 - 质感保留: 高频层控制细节量不磨糊,收尾USM/高反差锐化
@@ -1769,16 +1769,16 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 **通用提示:**人像精修先整体后局部,先光影后颜色,磨皮重在"保留皮肤纹理"而非磨成塑料脸。
 
-**⑧ PS抠图核心技法(案例:锦木通道抠发丝25.7万/摄影师一树去白边/TUNE天宇发丝38.7万/科技发现选择方法59.8万)**
+**8 PS抠图核心技法(案例:锦木通道抠发丝25.7万/摄影师一树去白边/TUNE天宇发丝38.7万/科技发现选择方法59.8万)**
 - 抠图方法选择(按对象): 轮廓规整几何/静物→钢笔路径;人物主体→快速选择+蒙版/选择主体;发丝/半透明/毛→通道抠图;纯色背景→魔术棒/颜色范围
-- 通道抠发丝(核心): ①选对比最强通道(发丝vs背景反差最大) ②复制通道+色阶/曲线拉大明暗对比 ③Ctrl+通道缩略图载入选区→反选→回图层加蒙版 ④黑白画笔在蒙版上精细修边缘
+- 通道抠发丝(核心): 1选对比最强通道(发丝vs背景反差最大) 2复制通道+色阶/曲线拉大明暗对比 3Ctrl+通道缩略图载入选区→反选→回图层加蒙版 4黑白画笔在蒙版上精细修边缘
 - 发丝去白边: 画笔混合模式涂白边 + 图层"修边/去边/去除杂边"命令
 - 边缘处理: 羽化柔和过渡/收缩防白边/蒙版精细修剪(比删除更可逆)
 - 通用: 复杂发丝优先通道抠,别硬用套索;抠完用蒙版而不是直接删背景。
 
-**⑨ PS海报设计核心技法(案例:设计大佬十分钟一张海报·15风格+电商实战31万/跟着小录学PS从零做海报59万/周妙妍上下构图)**
+**9 PS海报设计核心技法(案例:设计大佬十分钟一张海报·15风格+电商实战31万/跟着小录学PS从零做海报59万/周妙妍上下构图)**
 - 风格先行: 先确定设计风格(15种风格体系:极简/国潮/赛博朋克/孟菲斯/杂志风/科技感等),风格定了才好配色排版
-- 构图/版式(骨架): 上下构图(图文分层)/左右构图/居中构图;核心用网格系统对齐——对齐是专业感的关键
+- 构图/版式(骨架): 上下构图(图文分层)/左右构图/居中构图;核心用网格系统对齐--对齐是专业感的关键
 - 配色: 主色+辅色统一(一般主色1+辅色2-3别超过),色彩呼应主题
 - 字体层级: 标题/副题/正文字号粗细分级,信息主次分明
 - 电商海报(实战): 产品主图+卖点提炼+促销元素(折扣/立减)+活动营销信息,信息紧凑不杂乱
@@ -1786,16 +1786,16 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 **通用提示:**设计风格/构图/配色/字体四要素统一才专业;电商海报"信息优先级"比花哨更重要。
 
-**⑩ PS调色核心技法(案例:即梦AI全网最易懂调色58.4万/安安静静吃透曲线原理62万/武松电影感33万/冯墨风影调色调3S曲线)**
+**10 PS调色核心技法(案例:即梦AI全网最易懂调色58.4万/安安静静吃透曲线原理62万/武松电影感33万/冯墨风影调色调3S曲线)**
 - 调色三要素(色相/饱和度/明度): 色彩世界的三个维度,先懂三要素再调
 - 色彩理论: 色相环 + RGB(屏幕)/CMYK(印刷)两套色彩模式
-- 核心工具: ①曲线(最核心:影调曲线/色调曲线/3S曲线;RGB通道可分开调,S曲线增强对比) ②可选颜色(按色域红黄绿青蓝分调) ③色彩平衡(阴影/中间调/高光分别校色) ④色相饱和度(Hue定向调)
+- 核心工具: 1曲线(最核心:影调曲线/色调曲线/3S曲线;RGB通道可分开调,S曲线增强对比) 2可选颜色(按色域红黄绿青蓝分调) 3色彩平衡(阴影/中间调/高光分别校色) 4色相饱和度(Hue定向调)
 - 曲线原理(安安静静62万): 横轴=输入亮度,纵轴=输出亮度;S曲线=暗部压暗+亮部提亮增强对比
 - 风格化案例: 冰蓝色调 / 赛博朋克(青紫) / 青橙色调(电影感) / 黑白调色
 - 调色思路: 先影调(明暗)后色调(颜色);人像肤色优先统一(可选颜色/HSL去杂色),再整体调
 - 通用: 调色用调整图层(可逆非破坏),别直接改原图层。
 
-**⑪ PS科研组图核心技法(案例:Serene122基础版3.7万/点点桦桦论文组图3.5万/Dr小虾米SCI拼图2.9万,深化第一版④)**
+**11 PS科研组图核心技法(案例:Serene122基础版3.7万/点点桦桦论文组图3.5万/Dr小虾米SCI拼图2.9万,深化第一版4)**
 - 新建画布: 设期刊要求尺寸+分辨率(一般300dpi),符合投稿要求
 - 图片导入统一: ctrl+T自由变换缩放(按住Shift等比),统一各图尺寸/白边/描边
 - 对齐排版: 标尺ctrl+R调出,标尺工具拉参考线做网格/行列对齐,间距一致(对齐用参考线比目测专业)
@@ -1805,44 +1805,44 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 
 **通用提示:**拼图排版是审稿细节,别忽视;参考线对齐代替目测,专业度立现。
 
-**⑫ PS电商美工(案例:即梦AI主图banner详情页104万播)**
+**12 PS电商美工(案例:即梦AI主图banner详情页104万播)**
 - 尺寸规范: 淘宝主图800x800(或1:1)、详情页宽750等,按平台/店铺规范设
 - 主图要素: 产品图+卖点文案+促销信息,视觉焦点突出
 - 详情页构图: 定品牌调性→产品卖点/功能介绍→使用场景→图文穿插排版,信息优先级高于花哨
 - 切图: 长图切片/按区块导出,命名规范
 - 适用: 产品运营/电商美工日常主图详情页制作
 
-**⑬ PS Camera Raw(ACR)(案例:子冰摄手12.8万,RAW修图底层逻辑)**
+**13 PS Camera Raw(ACR)(案例:子冰摄手12.8万,RAW修图底层逻辑)**
 - 底层逻辑: 先定白平衡再曝光,处理的是RAW原始感光数据
 - 基本面板: 色温色调(白平衡) / 曝光 / 对比 / 高光阴影 / 白色黑色
 - 局部工具: 渐变滤镜(压天空)/径向滤镜/调整画笔
 - 进阶: HSL/灰度、镜头校正、细节锐化降噪
 - 工作流: 构图裁剪→白平衡→曝光→光影→HSL→细节
 
-**⑭ PS文字特效/改字(案例:AI教程改图改字99万播)**
-- 改字2法: ①内容识别填充去除原字 ②仿制图章/修补去字,再用文字工具打新字并匹配字体样式
+**14 PS文字特效/改字(案例:AI教程改图改字99万播)**
+- 改字2法: 1内容识别填充去除原字 2仿制图章/修补去字,再用文字工具打新字并匹配字体样式
 - 去水印: 仿制图章/修补/内容识别填充
 - 文字特效: 图层样式(投影/斜面浮雕/描边/渐变叠加)叠出立体/发光/金属感
 - 字体匹配: 找相同字体或换免费字体补位
 
-**⑮ PS图层混合模式(案例:陆过的Lu 4分钟搞懂131万/裹小脚大叔62万)**
+**15 PS图层混合模式(案例:陆过的Lu 4分钟搞懂131万/裹小脚大叔62万)**
 - 原理: 基于通道像素计算(混合上下层颜色)
 - 6组分类: 正常 / 变暗(正片叠底/颜色加深/线性加深) / 变亮(滤色/颜色减淡/线性减淡) / 叠加(柔光/强光/叠加) / 差值 / 色相(Hue)
 - 应用: 滤色提亮加光效 / 正片叠底加深压暗 / 柔光做光影质感 / 颜色色相着色
 - 通用: 光影/合成/特效的核心,先懂原理再套用
 
-**⑯ PS风光后期(案例:曼哈顿印象风景修图4步15.7万/Thomas看看世界)**
-- 万能4步: ①明暗(曝光/高光阴影) ②色彩(白平衡/自然饱和度) ③局部(渐变/径向滤镜分天空地面) ④锐化降噪
+**16 PS风光后期(案例:曼哈顿印象风景修图4步15.7万/Thomas看看世界)**
+- 万能4步: 1明暗(曝光/高光阴影) 2色彩(白平衡/自然饱和度) 3局部(渐变/径向滤镜分天空地面) 4锐化降噪
 - 天空/地面分开处理: 渐变滤镜压天空,提升通透感
 - 影调优先,再调色
 
-**⑰ PS批量自动化(案例:5月夏天批量处理14万/淡定的兔子喵批处理加水印2.4万)**
+**17 PS批量自动化(案例:5月夏天批量处理14万/淡定的兔子喵批处理加水印2.4万)**
 - 动作录制: 窗口→动作→新建动作→录制操作序列→停止
 - 批处理: 文件→自动→批处理,选文件夹+动作批量执行
 - 常用: 批量加水印/批量改尺寸/批量转格式/批量改名
 - 提效关键: 重复操作录动作,一键跑整批
 
-**⑱ PS产品精修(案例:PS教程小鲨电商产品精修11.9万/修图师a嘉产品商业修图进阶)**
+**18 PS产品精修(案例:PS教程小鲨电商产品精修11.9万/修图师a嘉产品商业修图进阶)**
 - 先抠图: 钢笔路径勾勒产品主体(圆角/曲面用路径平滑)
 - 光影塑造: 加深减淡/曲线塑造立体感,高光阴影方向一致(光源统一)
 - 材质质感: 金属(硬高光/锐利反射) / 塑料(柔过渡/哑光) / 玻璃(通透带环境折射) 不同处理
@@ -1851,64 +1851,64 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 倒影/落地阴影: 增强真实感(倒影渐变透明,阴影柔边)
 - 提效: 可配AIGC辅助补背景/延展
 
-**⑲ PS修图修复(案例:求知若渴老照片修复9节课5.8万/PS黑科技去水印5种法113万)**
+**19 PS修图修复(案例:求知若渴老照片修复9节课5.8万/PS黑科技去水印5种法113万)**
 - 瑕疵/划痕: 修补工具/仿制图章/修复画笔(自动混合周围纹理)
 - 污点噪点: 污点修复画笔/降噪滤镜
 - 老照片修复: 破损补全(修补+内容识别) + 黑白上色(选区+色相分层:皮肤/衣服/背景) + 模糊清晰化(锐化/高反差保留/智能锐化)
 - 去水印5法: 内容识别填充 / 仿制图章 / 修补工具 / 污点修复画笔 / 套索+填充
 - 原则: 复杂纹理用仿制图章+修补,纯背景用内容识别,修完放大检查边缘
 
-## 生图经验总索引（2026-11-14 整理）
+## 生图经验总索引(2026-11-14 整理)
 
-> 生图相关条目按主题分组，便于定位。查某类经验先看本表。
+> 生图相关条目按主题分组,便于定位。查某类经验先看本表。
 
-| 主题 | 包含条目（搜索关键词）|
+| 主题 | 包含条目(搜索关键词)|
 |---|---|
 | **通道与画质** | 生图通道正确分类 / xiaoyi_pro 通道 / 生图四通道关系与画质能力 / 生图画质档位速查表 / seedream 尺寸档补全与华为重采样 / 生图画质术语映射 |
-| **审核与合规** | 生图 blocked 状态二分法+泳衣内衣边界 / 内衣贴身服饰类通道选择 / Pro 尺寸陷阱与内衣款式词改写表 / 跨通道合规差异 ARK 实测 |
-| **提示词改写** | 生图提示词否定式约束优先 / 性化描写分级处置 / 性化描写分级处置执行流程优化 / 服装品类三分法 / 生图不擅自改提示词 / 液体元素合规落点判断法 |
-| **表情与情绪** | 表情情绪跑偏纠正（紧绷→松弛+正向锚点优先）|
-| **姿势与参考图** | 生图姿态调优五条经验 / 生图姿态调优三条补充 / 人格视角出图支持姿势参考 / 白模参考图出图方向核对 / costume-reference 服装换装参考图库 |
+| **审核与合规** | 服装品类审核与通道选择（品类三分法+泳衣内衣边界+blocked二分法+通道选择） / Pro 尺寸陷阱与内衣款式词改写表 / 跨通道合规差异 ARK 实测 |
+| **提示词改写** | 生图提示词否定式约束优先 / 性化描写分级处置（含执行流程：先出第一版再决定改） / 生图不擅自改提示词 / 液体元素合规落点判断法 |
+| **表情与情绪** | 表情情绪跑偏纠正(紧绷→松弛+正向锚点优先)|
+| **姿势与参考图** | 生图姿态调优八条经验 / 人格视角出图支持姿势参考 / 白模参考图出图方向核对 / costume-reference 服装换装参考图库 |
 | **工作流程** | 生图前必须先问档位+通道 / 生图默认工作流先低精度后高精度 / 多张独立图需逐张跑 / 九宫格分镜出图方法论 |
-| **排错** | seedream 出图 SSE 假成功 / seedream 华为SSE假成功根因与双层修复 / ARK 通道静默退化修复 / seedream 生图排错与 size 支持实测 |
+| **排错** | seedream 出图 SSE 假成功（含根因与双层修复）/ Seedream 通道排错·ARK 静默退化体检与补回 / seedream 生图排错与 size 支持实测 |
 
-### 生图通道正确分类（2026-11-01 固化）
+### 生图通道正确分类(2026-11-01 固化)
 
-**SSE 代理通道不是独立通道**：它与华为 seedream 直调本质是**同一通道**（后端均华为 seedream 5.0），仅接入方式不同（直调 huawei_provider API vs SSE 代理转发），不单列。
+**SSE 代理通道不是独立通道**:它与华为 seedream 直调本质是**同一通道**(后端均华为 seedream 5.0),仅接入方式不同(直调 huawei_provider API vs SSE 代理转发),不单列。
 
-**系统级生图三通道**：
-- **华为 seedream**：含 SSE 代理 / 直调两种接入方式（同一通道）
-- **硅基流动 SiliconFlow**：独立第三方（含 Kwai-Kolors 等免费生图）
-- **火山引擎 ARK**：独立第三方（多画幅直连实测）
+**系统级生图三通道**:
+- **华为 seedream**:含 SSE 代理 / 直调两种接入方式(同一通道)
+- **硅基流动 SiliconFlow**:独立第三方(含 Kwai-Kolors 等免费生图)
+- **火山引擎 ARK**:独立第三方(多画幅直连实测)
 
-> seedream-image-gen 技能本身固定走小艺 seedream API（x-skill-id: seedream）单通道，与系统级多通道选型是两回事。
+> seedream-image-gen 技能本身固定走小艺 seedream API(x-skill-id: seedream)单通道,与系统级多通道选型是两回事。
 
-**两系统边界确认（2026-11-06 俞哥明确）**：「出图系统优先用火山引擎」特指**人格视角出图系统**（xiaoyi_persona_visual，桥接层 channel="ark,huawei_sse"，火山第一顺位）；**不含** seedream-image-gen 独立 skill（默认 huawei_sse→ark→siliconflow，华为优先，保持不变）。二者是两个独立系统，勿混为一谈、勿擅自统一通道（曾误改 seedream_provider 默认顺序后已回滚 .bak-20261106-0716）。防混淆复发，见 366 行「同名不同物」教训。
+**两系统边界确认(2026-11-06 俞哥明确)**:「出图系统优先用火山引擎」特指**人格视角出图系统**(xiaoyi_persona_visual,桥接层 channel="ark,huawei_sse",火山第一顺位);**不含** seedream-image-gen 独立 skill(默认 huawei_sse→ark→siliconflow,华为优先,保持不变)。二者是两个独立系统,勿混为一谈、勿擅自统一通道(曾误改 seedream_provider 默认顺序后已回滚 .bak-20261106-0716)。防混淆复发,见 366 行「同名不同物」教训。
 
-### 生视频通道与混元分工（2026-11-02 固化）
+### 生视频通道与混元分工(2026-11-02 固化)
 
-**混元已装三个技能，分工与凭证各不同：**
-- `hunyuan-image`（v1.0.3）→ **生图**，文本输入，凭腾讯云（TENCENT_SECRET_ID/KEY）
-- `text-to-video-hunyuan`（v1.0.0）→ **生视频**，文本→视频，凭 NEMO（NEMO_TOKEN）
-- `image-to-video-hunyuan`（v1.0.0）→ **生视频**，图片→视频，凭 NEMO（NEMO_TOKEN）
+**混元已装三个技能,分工与凭证各不同:**
+- `hunyuan-image`(v1.0.3)→ **生图**,文本输入,凭腾讯云(TENCENT_SECRET_ID/KEY)
+- `text-to-video-hunyuan`(v1.0.0)→ **生视频**,文本→视频,凭 NEMO(NEMO_TOKEN)
+- `image-to-video-hunyuan`(v1.0.0)→ **生视频**,图片→视频,凭 NEMO(NEMO_TOKEN)
 
-**系统级生成通道现状：**
-- **生图多通道**：华为 seedream / 硅基流动 / 火山 ARK 三家
-- **生视频**：目前仅 seedance（小艺 Seedance 通道，`x-skill-id: seedance15pro`）**单通道**
+**系统级生成通道现状:**
+- **生图多通道**:华为 seedream / 硅基流动 / 火山 ARK 三家
+- **生视频**:目前仅 seedance(小艺 Seedance 通道,`x-skill-id: seedance15pro`)**单通道**
 
-**混元接入系统级多通道的价值点在生视频**（补视频单通道空白）；生图端已有三家，混元接入仅锦上添花。
+**混元接入系统级多通道的价值点在生视频**(补视频单通道空白);生图端已有三家,混元接入仅锦上添花。
 
-**seedance-video-gen 固定走小艺 Seedance 视频通道，单通道，无需外配凭证。**
+**seedance-video-gen 固定走小艺 Seedance 视频通道,单通道,无需外配凭证。**
 
 ### 长耗时脚本后台运行纪律(2026-11-06 固化)
-**背景:** seedance 生视频是几分钟的慢任务,exec 前台跑会被 SIGTERM/超时打断——服务器任务已创建但成片没下载,任务ID只在终端打印未落盘,中断即丢失,只能重跑(白白扣点数)。
+**背景:** seedance 生视频是几分钟的慢任务,exec 前台跑会被 SIGTERM/超时打断--服务器任务已创建但成片没下载,任务ID只在终端打印未落盘,中断即丢失,只能重跑(白白扣点数)。
 **纪律:**
-- 长任务用 `setsid nohup python3 -u 脚本 > 日志文件 2>&1 &` 后台跑（2026-11-07 实测升级：仅 nohup 不够，exec 会话清理仍会杀同进程组任务；**必须加 setsid 彻底脱离进程组**）
-- **日志保留诊断信息：** 重定向到日志文件（如 stdout.log），**严禁丢进 /dev/null**——脚本崩溃时 traceback 在 stderr 里，丢了就无法定位死因
-- 通过轮询日志文件判断完成，不依赖 exec 返回
-- **判死特征：** 进程已退出 + 日志无完成/失败标记（[DONE]/[ERROR]/✅/❌）= 被信号静默杀死，不是任务本身失败；先检查日志尾部确认，再直接 setsid 重跑，勿误判为云端故障
-- 关键运行标识（任务ID/结果URL）主动落盘保留，别只写 stdout
-- 适用： 生视频/大下载/长管线/云端 PPT 生成等所有慢任务
+- 长任务用 `setsid nohup python3 -u 脚本 > 日志文件 2>&1 &` 后台跑(2026-11-07 实测升级:仅 nohup 不够,exec 会话清理仍会杀同进程组任务;**必须加 setsid 彻底脱离进程组**)
+- **日志保留诊断信息:** 重定向到日志文件(如 stdout.log),**严禁丢进 /dev/null**--脚本崩溃时 traceback 在 stderr 里,丢了就无法定位死因
+- 通过轮询日志文件判断完成,不依赖 exec 返回
+- **判死特征:** 进程已退出 + 日志无完成/失败标记([DONE]/[ERROR]/✅/❌)= 被信号静默杀死,不是任务本身失败;先检查日志尾部确认,再直接 setsid 重跑,勿误判为云端故障
+- 关键运行标识(任务ID/结果URL)主动落盘保留,别只写 stdout
+- 适用: 生视频/大下载/长管线/云端 PPT 生成等所有慢任务
 
 **前台/后台适用边界(2026-11-06 俞哥确认):** 快任务尽量用前台 exec,别什么都往后台塞。
 - **前台 exec(优先默认):** 命令能较短时间(几十秒~几分钟)内返回、需实时看输出、无"任务跑到一半被超时打断导致结果丢失"风险的 → 直接前台跑,简单明了
@@ -1927,225 +1927,242 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 别只盯主配置文件及其 .bak / 日志 / sqlite;别在穷尽排查前武断下"缺配置/需用户提供"结论
 - 教训(2026-11-01): 查火山ARK key 时漏了 _read_xiaoyi_env 的 TOOLS.md 兜底,误判"key从未配置",实际 key 一直在 TOOLS.md 兜底
 
-### 插件加载·global裸插件完整重启失效坑（2026-11-09 固化，实测排查）
+### 插件加载·global裸插件完整重启失效坑(2026-11-09 固化,实测排查)
 
-**背景：** write-gate 正式文件写保护在 gateway 完整重启后失效（真实 edit 直接写入正式文件没被拦），排查挖出 OpenClaw 插件加载机制坑。
+**背景:** write-gate 正式文件写保护在 gateway 完整重启后失效(真实 edit 直接写入正式文件没被拦),排查挖出 OpenClaw 插件加载机制坑。
 
-**坑点：**
-1. **global: 裸插件（无 package.json 的 index.js）依赖 extensions 自动发现，但完整重启后不挂 hook**——CLI `openclaw plugins list` 仍显示 enabled，但 `before_tool_call` 等 hook 不触发（write-gate 连每 5 分钟的 sweep 日志都停）。判断插件是否真在跑：看它自己的日志有没有周期性/事件记录（如 write-gate.log 的 sweep），无新记录=没跑起来。
-2. **正规加载靠 `plugins.load.paths`**：把插件目录加进 openclaw.json 的 `plugins.load.paths` 后完整重启，插件才真正加载 hook（实测 write-gate 拦截恢复、source 从 `global:xx/index.js` 变 `~/.openclaw/extensions/xx/index.js`）。
-3. **改插件代码必须完整重启进程才生效**：gateway 进程由 supervisord 管理（`python3 -m supervisor.supervisord -c ~/supervisord.conf`），改插件后要 `supervisorctl restart openclaw-gateway`；之前用的 gateway 工具 restart 返回 SIGUSR1 只是 emit hooks（`"mode":"emit","emitHooksQueued":true`），**不重新 import 插件**——旧进程 7 天未重启，磁盘上的新代码一直没加载（11-08 改的 write-gate TTL、evolution-reply-confirm 确认句归一都因此一直是假象）。
-4. **`evolution-reply-confirm` 曾 enabled=false + 进程未重启**：宣称的「确认句位置归一」从没真正跑过；本次一并加 load.paths + enabled=true 才真正启用。
+**坑点:**
+1. **global: 裸插件(无 package.json 的 index.js)依赖 extensions 自动发现,但完整重启后不挂 hook**--CLI `openclaw plugins list` 仍显示 enabled,但 `before_tool_call` 等 hook 不触发(write-gate 连每 5 分钟的 sweep 日志都停)。判断插件是否真在跑:看它自己的日志有没有周期性/事件记录(如 write-gate.log 的 sweep),无新记录=没跑起来。
+2. **正规加载靠 `plugins.load.paths`**:把插件目录加进 openclaw.json 的 `plugins.load.paths` 后完整重启,插件才真正加载 hook(实测 write-gate 拦截恢复、source 从 `global:xx/index.js` 变 `~/.openclaw/extensions/xx/index.js`)。
+3. **改插件代码必须完整重启进程才生效**:gateway 进程由 supervisord 管理(`python3 -m supervisor.supervisord -c ~/supervisord.conf`),改插件后要 `supervisorctl restart openclaw-gateway`;之前用的 gateway 工具 restart 返回 SIGUSR1 只是 emit hooks(`"mode":"emit","emitHooksQueued":true`),**不重新 import 插件**--旧进程 7 天未重启,磁盘上的新代码一直没加载(11-08 改的 write-gate TTL、evolution-reply-confirm 确认句归一都因此一直是假象)。
+4. **`evolution-reply-confirm` 曾 enabled=false + 进程未重启**:宣称的「确认句位置归一」从没真正跑过;本次一并加 load.paths + enabled=true 才真正启用。
 
-**修复标准流程：** ①备份 `openclaw.json` ②`plugins.load.paths` 加插件目录 + 必要时 `plugins.entries..enabled=true` ③`supervisorctl restart openclaw-gateway` ④`openclaw plugins list` 确认 source 变成插件绝对路径 ⑤实测插件功能（如 write-gate 对正式文件真实 edit 是否被拦）。
+**修复标准流程:** 1备份 `openclaw.json` 2`plugins.load.paths` 加插件目录 + 必要时 `plugins.entries..enabled=true` 3`supervisorctl restart openclaw-gateway` 4`openclaw plugins list` 确认 source 变成插件绝对路径 5实测插件功能(如 write-gate 对正式文件真实 edit 是否被拦)。
 
-### seedream 出图「SSE 假成功」与 9:16 竖屏档（2026-11-06 固化）
+### seedream 出图「SSE 假成功」与 9:16 竖屏档(2026-11-06 固化)
 
-1. **SSE 假成功排错**：`seedream-image-gen` 走 `huawei_sse` 通道时，返回 `status=generated` 但图可能没落盘（`.persona_visual/generated/` 或 `generated-images/` 目录为空）——属假成功。**判断标准以落盘文件为准**，不看 status；SSE 假成功时切 ARK 通道（`--channel ark`）可真实出图+落盘。**通道顺序关联**：人格视角出图桥接层本就 ARK 优先（`channel="ark,huawei_sse"`，fallback ark→huawei_sse）；seedream-image-gen skill 默认不传时按 huawei_sse→ark→siliconflow（见「seedream-provider 多通道调用规则」），此处的“切ark”即回到人格视角系统第一顺位主通道。
-2. **9:16 竖屏尺寸档**：原 `--size` 枚举无精确 9:16（最接近 4K-portrait=3072×4096=3:4、2K/3K=1:2）。已给 `seedream_provider._SIZE_MAP` 补 `'9:16':'2304x4096'`，`generate_seedream.py --size` 增 `'9:16'` 选项，备份 `.bak-20261106`。用 `--size 9:16 --channel ark` 可出严格 9:16（2304×4096）。
-3. **active_channel 非执行态（2026-11-09 固化，实测坑点）**：返回日志里的 `active_channel`/`url_source` 是**配置描述函数**输出，总是把第一配置（华为主）标为 active，**与本次实际执行通道无关**——不能据此判断走了哪家。判定实际通道要看：①channel 参数会把通道列表裁剪为仅指定名（`--channel ark`→channels=[ark]，for 循环根本走不到 huawei SSE 分支）②生成文件名里的 ch_name（`seedream_ark_*`=ARK、`huawei_*`=华为主）。实测：`--channel ark` 出图文件名 seedream_ark_* 但日志 active_channel 显示 huawei_sse，以此为准坐实 ARK。
-4. **小艺图像创作默认华为优先 + 华为 SSE 竖屏档实测（2026-11-09 固化）**：①seedream-image-gen 即「小艺图像创作」，三通道默认 **A=`huawei_sse` 华为优先**（不指定 channel 自动走华为），默认顺序 huawei_sse→ark→siliconflow；手动指定则按指定通道。②实测（2026-11-09 汉服主题）：华为 SSE 走 **2K 档=真实 9:16 竖屏（1584×2816，比例 0.562）✅**，但走 **9:16 精确档（2304×4096）失败**（provider_returned_no_image，magic number 拦截）——华为对 2304×4096 不支持、2K 竖屏反而稳。③判定：**华为优先+竖屏用 2K 档**（1584×2816）；**要高精度竖屏（2304×4096）才切 ARK**。选通道前先遵循"小艺图像创作默认华为优先"大前提，勿随意手动切 ARK（除非明确要高分辨率或华为失败）。**执行纪律强化（2026-11-09 17:30 修正）：** 生图默认华为优先，**竖屏优先选华为 2K 档能出的尺寸（1584×2816）**，不要为高精度预设直接切 ARK（违例：16:11/16:42 为 9:16 精确档未先试华为直接 --channel ark）；仅当**用户明确要高精度 2304×4096** 或 **华为尝试失败**时才切 ARK。**尺寸白名单实测（2026-11-09 20:07 晚 · 20:15 修正）：** 华为 SSE 支持 **2K 上限以内的任意比例**——低精度正方形(1024×1024)/横屏(1920×1080)/竖屏(1080×1920)全支持，2K 竖屏(1440×2880，输出 1584×2816)支持；仅**超过 2K 的 4K 级分辨率**（9:16 2304×4096 / 4K-portrait 3072×4096 / 4K-wide 3840×2160 / 4K-square 4096×4096）报 `InvalidParameter`（must be WIDTHxHEIGHT or a supported size preset）被拒，与比例无关、纯分辨率超限。**含修正**：先前(20:07)仅测 4K 档得出“华为仅 2K 竖屏可用”系误判，低精度档三比例实测全通；“华为优先”适用于 2K 上限内所有常规尺寸，仅高精度 4K 才需 ARK。
+1. **SSE 假成功排错**:`seedream-image-gen` 走 `huawei_sse` 通道时,返回 `status=generated` 但图可能没落盘(`.persona_visual/generated/` 或 `generated-images/` 目录为空)--属假成功。**判断标准以落盘文件为准**,不看 status;SSE 假成功时切 ARK 通道(`--channel ark`)可真实出图+落盘。**通道顺序关联**:人格视角出图桥接层本就 ARK 优先(`channel="ark,huawei_sse"`,fallback ark→huawei_sse);seedream-image-gen skill 默认不传时按 huawei_sse→ark→siliconflow(见「seedream-provider 多通道调用规则」),此处的“切ark”即回到人格视角系统第一顺位主通道。**根因与机制（2026-11-15 并入原「根因与双层修复」条）：** 根因是 huawei_provider._download_image 曾仅校验 HTTP 200、把 HTML 错误页也落盘报成功；现已双层修复——源头下载后强校验图片魔数（JPEG FFD8FF/PNG 89504E47/WEBP RIFF/GIF GIF8，<500字节拒）+ SSE 分支 _validate_output_image 兜底，不达标标 provider_returned_no_image。排查“图没落盘”先确认 OUT_DIR 实际路径（.persona_visual/generated/，非 generated-images/），避免查错目录误判。
+2. **9:16 竖屏尺寸档**:原 `--size` 枚举无精确 9:16(最接近 4K-portrait=3072×4096=3:4、2K/3K=1:2)。已给 `seedream_provider._SIZE_MAP` 补 `'9:16':'2304x4096'`,`generate_seedream.py --size` 增 `'9:16'` 选项,备份 `.bak-20261106`。用 `--size 9:16 --channel ark` 可出严格 9:16(2304×4096)。
+3. **active_channel 非执行态(2026-11-09 固化,实测坑点)**:返回日志里的 `active_channel`/`url_source` 是**配置描述函数**输出,总是把第一配置(华为主)标为 active,**与本次实际执行通道无关**--不能据此判断走了哪家。判定实际通道要看:1channel 参数会把通道列表裁剪为仅指定名(`--channel ark`→channels=[ark],for 循环根本走不到 huawei SSE 分支)2生成文件名里的 ch_name(`seedream_ark_*`=ARK、`huawei_*`=华为主)。实测:`--channel ark` 出图文件名 seedream_ark_* 但日志 active_channel 显示 huawei_sse,以此为准坐实 ARK。
+4. **小艺图像创作默认华为优先 + 华为 SSE 竖屏档实测(2026-11-09 固化)**:1seedream-image-gen 即「小艺图像创作」,三通道默认 **A=`huawei_sse` 华为优先**(不指定 channel 自动走华为),默认顺序 huawei_sse→ark→siliconflow;手动指定则按指定通道。2实测(2026-11-09 汉服主题):华为 SSE 走 **2K 档=真实 9:16 竖屏(1584×2816,比例 0.562)✅**,但走 **9:16 精确档(2304×4096)失败**(provider_returned_no_image,magic number 拦截)--华为对 2304×4096 不支持、2K 竖屏反而稳。3判定:**华为优先+竖屏用 2K 档**(1584×2816);**要高精度竖屏(2304×4096)才切 ARK**。选通道前先遵循"小艺图像创作默认华为优先"大前提,勿随意手动切 ARK(除非明确要高分辨率或华为失败)。**执行纪律强化(2026-11-09 17:30 修正):** 生图默认华为优先,**竖屏优先选华为 2K 档能出的尺寸(1584×2816)**,不要为高精度预设直接切 ARK(违例:16:11/16:42 为 9:16 精确档未先试华为直接 --channel ark);仅当**用户明确要高精度 2304×4096** 或 **华为尝试失败**时才切 ARK。**尺寸白名单实测(2026-11-09 20:07 晚 · 20:15 修正):** 华为 SSE 支持 **2K 上限以内的任意比例**--低精度正方形(1024×1024)/横屏(1920×1080)/竖屏(1080×1920)全支持,2K 竖屏(1440×2880,输出 1584×2816)支持;仅**超过 2K 的 4K 级分辨率**(9:16 2304×4096 / 4K-portrait 3072×4096 / 4K-wide 3840×2160 / 4K-square 4096×4096)报 `InvalidParameter`(must be WIDTHxHEIGHT or a supported size preset)被拒,与比例无关、纯分辨率超限。**含修正**:先前(20:07)仅测 4K 档得出"华为仅 2K 竖屏可用"系误判,低精度档三比例实测全通;"华为优先"适用于 2K 上限内所有常规尺寸,仅高精度 4K 才需 ARK。
 
-### 生图默认工作流：先低精度后高精度（2026-11-09 20:18 固化）
+### 生图默认工作流:先低精度后高精度(2026-11-09 20:18 固化)
 
-出图**默认先低精度**（华为通道 2K 上限内常规尺寸，正方形/横屏/竖屏均可）——先快速出一版看效果；**仅在用户不满意分辨率或明确要高精度时**才升级到 4K 级高精度档（ARK）。禁止一上来就默认高端/高耗时档。
-**适用范围边界（2026-11-09 20:21 补充）：** 此规则**仅适用于通用生图（seedream-image-gen CLI 手动出图）**；**人格视角出图系统仍为 ARK 优先**（bridge 传 `channel='ark,huawei_sse'`，ark→huawei_sse 双通道，无 siliconflow），两套子系统互不覆盖，勿将通用生图的华为/低精度优先误套到人格视角系统。
+出图**默认先低精度**(华为通道 2K 上限内常规尺寸,正方形/横屏/竖屏均可)--先快速出一版看效果;**仅在用户不满意分辨率或明确要高精度时**才升级到 4K 级高精度档(ARK)。禁止一上来就默认高端/高耗时档。
+**适用范围边界(2026-11-09 20:21 补充):** 此规则**仅适用于通用生图(seedream-image-gen CLI 手动出图)**;**人格视角出图系统仍为 ARK 优先**(bridge 传 `channel='ark,huawei_sse'`,ark→huawei_sse 双通道,无 siliconflow),两套子系统互不覆盖,勿将通用生图的华为/低精度优先误套到人格视角系统。
 
-### 能力边界实测方法论（2026-11-09 固化，源于华为通道误判复盘）
+### 能力边界实测方法论(2026-11-09 固化,源于华为通道误判复盘)
 
-1. **能力边界须二维矩阵测全**：验证通道/模型能力（尺寸、比例、分辨率）时必须覆盖“比例×精度”各组合，缺一格不得写死结论（教训：20:07 仅测 4K 档就断言“华为仅 2K 竖屏可用”，20:10 低精度三比例全通直接推翻）。
-2. **可观测性先于优化**：排查/调优前必须先让错误码与原因透传（如 provider 透传 code/desc/错误响应体），否则内容审核拒、参数非法、假成功全糊成一个“no_image”，无法对症下药。
-3. **“优先”必须挂在能力白名单上**：通道/工具优先策略必须以实测能力边界为前提，超边界的“优先”只会浪费时间试错。
-4. **失败三分类与对应策略（2026-11-10 08:25 修正）**：①内容审核拒（如 OutputImageSensitiveContentDetected）→**先换 ARK 试原词**（实测 ARK 审核比华为松：同样香槟内衣原词，华为拒、ARK 2K 直接过审原词全保留），**ARK 也拒才降暴露改写**；②参数非法（如 InvalidParameter）→换档位/换通道，改词无用；③假成功（返回 generated 但文件无效）→靠输出校验拦截（已由 11-08 magic number 校验兜底）。注意：1K 档过不了 ARK 像素门槛（368万），审拒后换 ARK 须升尺寸（2K 起）。
-5. **规则必带作用域，固化自身需复核**：全局规则必须写清适用范围（如通用生图 vs 人格视角系统），否则误伤子系统；早期固化也可能沉淀错误原因（如将 InvalidParameter 误记为 magic number 拦截），需靠定期实测复核。
+1. **能力边界须二维矩阵测全**:验证通道/模型能力(尺寸、比例、分辨率)时必须覆盖"比例×精度"各组合,缺一格不得写死结论(教训:20:07 仅测 4K 档就断言"华为仅 2K 竖屏可用",20:10 低精度三比例全通直接推翻)。
+2. **可观测性先于优化**:排查/调优前必须先让错误码与原因透传(如 provider 透传 code/desc/错误响应体),否则内容审核拒、参数非法、假成功全糊成一个"no_image",无法对症下药。
+3. **"优先"必须挂在能力白名单上**:通道/工具优先策略必须以实测能力边界为前提,超边界的"优先"只会浪费时间试错。
+4. **失败三分类与对应策略(2026-11-10 08:25 修正)**:1内容审核拒(如 OutputImageSensitiveContentDetected)→**先换 ARK 试原词**(实测 ARK 审核比华为松:同样香槟内衣原词,华为拒、ARK 2K 直接过审原词全保留),**ARK 也拒才降暴露改写**;2参数非法(如 InvalidParameter)→换档位/换通道,改词无用;3假成功(返回 generated 但文件无效)→靠输出校验拦截(已由 11-08 magic number 校验兜底)。注意:1K 档过不了 ARK 像素门槛(368万),审拒后换 ARK 须升尺寸(2K 起)。
+5. **规则必带作用域,固化自身需复核**:全局规则必须写清适用范围(如通用生图 vs 人格视角系统),否则误伤子系统;早期固化也可能沉淀错误原因(如将 InvalidParameter 误记为 magic number 拦截),需靠定期实测复核。
 
-### 生图画质术语映射：用户口中 4K=低精度 / 8K=低精度+高精度双版（2026-11-09 21:09 固化，三次修正定稿）
+### 生图画质术语映射:用户口中 4K=低精度 / 8K=低精度+高精度双版(2026-11-09 21:09 固化,三次修正定稿)
 
-**用户术语体系（俞哥口径，最高优先）：**
-- 用户说「**4K**」= **低精度单版**（实际 2K 及以下：1024×1024 / 1920×1080 / 1440×2880），华为通道优先
-- 用户说「**8K**」= **先低精度出图，看效果后再考虑要不要出高精度版**（低精度先行，用户看过效果/确认后才出高精度 4K 级版；低精度满意可省略高精度版，高精度非自动必出）；高精度版走 ARK
+**用户术语体系(俞哥口径,最高优先):**
+- 用户说「**4K**」= **低精度单版**(实际 2K 及以下:1024×1024 / 1920×1080 / 1440×2880),华为通道优先
+- 用户说「**8K**」= **先低精度出图,看效果后再考虑要不要出高精度版**(低精度先行,用户看过效果/确认后才出高精度 4K 级版;低精度满意可省略高精度版,高精度非自动必出);高精度版走 ARK
 
-执行：收到“8K”先出**低精度单版**交俞哥看效果，**再由俞哥决定要不要补高精度版**（不无脑连出两张）；收到“4K”只出低精度单版。prompt 内画质形容词可用“4K超清/高清质感/细节丰富”，**档位选择按上述映射理解**，不得按字面 8K=8192 处理（实际无 8K 档）。
+执行:收到"8K"先出**低精度单版**交俞哥看效果,**再由俞哥决定要不要补高精度版**(不无脑连出两张);收到"4K"只出低精度单版。prompt 内画质形容词可用"4K超清/高清质感/细节丰富",**档位选择按上述映射理解**,不得按字面 8K=8192 处理(实际无 8K 档)。
 
-### 生图画质档位速查表（2026-11-10 07:25 固化 · 11:00 加硅基流动列，出图选档统一入口）
+### 生图画质档位速查表(2026-11-10 07:25 固化 · 11:00 加硅基流动列,出图选档统一入口)
 
 | 画质档 | 实际尺寸 | 比例 | 华为 | ARK | 硅基流动 |
 |---|---|---|---|---|---|
 | 1K | 1024×1024 | 方形 | △波动 | ✗像素不足(105万) | ✓原样 |
 | 2K | 1440×2880 | 竖屏 | ✓ | ✓ | ✓→720×1440映射 |
 | 3K | 1920×3840 | 竖屏 | ✗面积超限(737万) | ✓原样 | ✓→720×1440映射 |
-| 4K（低精度）| 1080×1350 | 4:5 | △波动 | ✗像素不足(146万) | ✓→768×1024映射 |
-| 4K（低精度）| 1920×1080 | 横屏 | ✓原样 | ✗像素不足(207万) | ✓→1440×720映射 |
-| 4K（低精度）| 1080×1920 | 竖屏 | ✓原样 | ✗像素不足(207万) | ✓→720×1440映射 |
-| 4K（低精度）| 1920×2400 | 4:5 | ✓原样 | ✓原样 | ✓→720×1440映射 |
-| 4K（低精度）| 960×1280 | 竖（3:4）| ✓原样 | ✗像素不足(123万) | ✓原样 |
-| 4K（低精度）| 1280×960 | 横（4:3）| ✓原样 | ✗像素不足(123万) | ✓原样 |
-| 4K（低精度）| 768×1024 | 竖（3:4）| ✗低于下限(79万) | ✗像素不足(79万) | ✓原样 |
-| 4K（低精度）| 1024×768 | 横（4:3）| ✗低于下限(79万) | ✗像素不足(79万) | ✓原样 |
-| 4K（低精度）| 720×1440 | 长竖 | 未测(理论可出) | ✗像素不足(104万) | ✓原样 |
-| 4K（低精度）| 1440×720 | 长横 | 未测(理论可出) | ✗像素不足(104万) | ✓原样 |
-| 8K（高精度）| 2304×4096 | 竖屏 | ✗面积超限(944万) | ✓ | ✓→720×1440映射 |
-| 8K（高精度）| 4096×3072 | 横屏 | ✗面积超限(1258万) | ✓原样 | ✓→1440×720映射 |
-| 8K（高精度）| 3840×2160 | 横屏 | ✗面积超限(829万) | ✓原样 | ✓→1440×720映射 |
-| 8K（高精度）| 3072×4096 | 竖屏 | ✗面积超限(1258万) | ✓原样 | ✓→720×1440映射 |
-| 8K（高精度）| 4096×4096 | 方形 | ✗面积超限(1677万) | ✓原样 | ✓→1024×1024映射 |
-| 8K（高精度）| 2700×3600 | 4:5 | ✗面积超限(972万) | ✓原样 | ✓→720×1440映射 |
+| 4K(低精度)| 1080×1350 | 4:5 | △波动 | ✗像素不足(146万) | ✓→768×1024映射 |
+| 4K(低精度)| 1920×1080 | 横屏 | ✓原样 | ✗像素不足(207万) | ✓→1440×720映射 |
+| 4K(低精度)| 1080×1920 | 竖屏 | ✓原样 | ✗像素不足(207万) | ✓→720×1440映射 |
+| 4K(低精度)| 1920×2400 | 4:5 | ✓原样 | ✓原样 | ✓→720×1440映射 |
+| 4K(低精度)| 960×1280 | 竖(3:4)| ✓原样 | ✗像素不足(123万) | ✓原样 |
+| 4K(低精度)| 1280×960 | 横(4:3)| ✓原样 | ✗像素不足(123万) | ✓原样 |
+| 4K(低精度)| 768×1024 | 竖(3:4)| ✗低于下限(79万) | ✗像素不足(79万) | ✓原样 |
+| 4K(低精度)| 1024×768 | 横(4:3)| ✗低于下限(79万) | ✗像素不足(79万) | ✓原样 |
+| 4K(低精度)| 720×1440 | 长竖 | 未测(理论可出) | ✗像素不足(104万) | ✓原样 |
+| 4K(低精度)| 1440×720 | 长横 | 未测(理论可出) | ✗像素不足(104万) | ✓原样 |
+| 8K(高精度)| 2304×4096 | 竖屏 | ✗面积超限(944万) | ✓ | ✓→720×1440映射 |
+| 8K(高精度)| 4096×3072 | 横屏 | ✗面积超限(1258万) | ✓原样 | ✓→1440×720映射 |
+| 8K(高精度)| 3840×2160 | 横屏 | ✗面积超限(829万) | ✓原样 | ✓→1440×720映射 |
+| 8K(高精度)| 3072×4096 | 竖屏 | ✗面积超限(1258万) | ✓原样 | ✓→720×1440映射 |
+| 8K(高精度)| 4096×4096 | 方形 | ✗面积超限(1677万) | ✓原样 | ✓→1024×1024映射 |
+| 8K(高精度)| 2700×3600 | 4:5 | ✗面积超限(972万) | ✓原样 | ✓→720×1440映射 |
 
-**最终规律**：低精度小尺寸（700 万（仅 ARK）
+**最终规律**:低精度小尺寸(700 万(仅 ARK)
 
-### 生图前必须先问：档位 + 通道（2026-11-10 固化 · 2026-11-14 合并）
+### 生图前必须先问:档位 + 通道(2026-11-10 固化 · 2026-11-14 合并)
 
-**出图前必须问两件事，不许自作主张：**
+**出图前必须问两件事,不许自作主张:**
 
-**① 档位/比例**：用户未指定尺寸时**必须先问一句确认**（如"要竖版 4:5、方形 1:1 还是横版 16:9？"），确认后再出；**禁止按默认档或历史偏好自行猜测**（教训：2026-11-12 连续多版按 4:5 猜出，属越俎代庖）。用户明确不介意时才默认 1K（1024×1024 方形）。注意 1K 只能走华为（ARK 像素门槛 368 万，1K 仅 105 万不足），华为波动被拒时重跑碰运气。
+**1 档位/比例**:用户未指定尺寸时**必须先问一句确认**(如"要竖版 4:5、方形 1:1 还是横版 16:9?"),确认后再出;**禁止按默认档或历史偏好自行猜测**(教训:2026-11-12 连续多版按 4:5 猜出,属越俎代庖)。用户明确不介意时才默认 1K(1024×1024 方形)。注意 1K 只能走华为(ARK 像素门槛 368 万,1K 仅 105 万不足),华为波动被拒时重跑碰运气。
 
-**② 通道**：先问用哪个通道——华为 `huawei_sse` / 火山 `ark` / 硅基流动 `siliconflow` / 小艺 `xiaoyi_pro`，**不默认锁某个通道、不自作主张选**。可顺带附各通道特点（华为稳但画质低、ark/硅基高清但需重调提示词），俞哥指定后按指定通道出图。
+**2 通道**:先问用哪个通道--华为 `huawei_sse` / 火山 `ark` / 硅基流动 `siliconflow` / 小艺 `xiaoyi_pro`,**不默认锁某个通道、不自作主张选**。可顺带附各通道特点(华为稳但画质低、ark/硅基高清但需重调提示词),俞哥指定后按指定通道出图。
 
-**关系：**「生图四通道画质能力」给的是通道特性结论；本条给的是**使用流程**——先问再出。
+**关系:**「生图四通道画质能力」给的是通道特性结论;本条给的是**使用流程**--先问再出。
 
-### 多张独立图需逐张跑（2026-11-09 21:36 固化）
+### 多张独立图需逐张跑(2026-11-09 21:36 固化)
 
-seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时，模型会把 N 只/多格**横向拼接成 1 个文件**，不会拆成 N 个独立文件（`--max-images N` 也不拆分）。需要 N 张独立图必须**逐张跑**——每张单独 prompt、一次一张，不写“生成N张”。避免交付时收到“三格拼图”而非多张独立图的乌龙。
+seedream(华为 SSE)下,prompt 写"生成 N 张/多张不同风格"时,模型会把 N 只/多格**横向拼接成 1 个文件**,不会拆成 N 个独立文件(`--max-images N` 也不拆分)。需要 N 张独立图必须**逐张跑**--每张单独 prompt、一次一张,不写"生成N张"。避免交付时收到"三格拼图"而非多张独立图的乌龙。
 
-### seedream 尺寸档补全与华为重采样（2026-11-09 21:56 固化 · 22:01 补三档实测）
+### seedream 尺寸档补全与华为重采样(2026-11-09 21:56 固化 · 22:01 补三档实测)
 
-1. **原 CLI `--size` 白名单无 1024 档**（最低只有 2K），已新增 `1K`/`1024` → `1024×1024`。**加新档必须同步改两处**：`seedream_provider.py` 的 `_SIZE_MAP` 映射 + `generate_seedream.py` 的 argparse `choices` 白名单——漏改 choices 会直接 argparse 报错退出（输出非 JSON）。
-2. **华为重采样行为**：华为通道对 `1024×1024` 请求实际返回 **1248×832**（华为侧自行重采样，不原样返回）。**验证输出尺寸必须查实际文件像素**（PIL `im.size`），不得以传参为准。
-3. **低精度三档 CLI 全支持（实测）**：`--size` 已新增 `1024×1024 / 1920×1080 / 1080×1920` 三档；**横屏 1920×1080、竖屏 1080×1920 华为均原样返回**（1920×1080 恒、1080×1920 恒）；**正方形 1K(1024×1024) 华为返回尺寸有波动**——实测 21:54 返回 1248×832、22:02 原样 1024×1024，**重采样行为不恒定，须逐次查实际文件像素确认**（PIL `im.size`），不得假设固定输出。三档均走华为通道低精度即可出，无需 ARK。
-4. **按比例尺寸出图经验（4:5 实测，2026-11-10 07:06 修正）**：①按比例需求（如 4:5）先实测尺寸支持，勿直接假设 ②**华为对 `1080×1350` 等自定尺寸支持不稳定**——06:53 报 `InvalidParameter`、07:05 正常出图原样 (1080,1350)，**有波动可重跑试运气**，非绝对不认 ③**ARK 有最小像素门槛（≥3686400 px ≈368万像素）**，超小尺寸（如 1080×1350=1.46M px）被拒 `image size must be at least 3686400 pixels`；4:5 求稳可用 `1920×2400`（4.61M✓）/`2700×3600`（9.72M✓），均实测 ARK 原样返回 ④**4:5 无稳定低精度档，求稳走 ARK 高精度，追求低精度可试华为碰波动** ⑤新尺寸档须同步改 `_SIZE_MAP` + `generate_seedream.py` 的 argparse `choices` 两处。可复用：任何非标准比例先小样本实测出可行尺寸，再固化；遇到波动性尺寸，多次重跑可能通。
-5. **华为拒绝的两类性质（2026-11-10 07:13 固化 · 09:59 补面积下限）**：①**面积越界（上下限）**——华为真实边界是**面积区间 [921,600, 4,624,220] px（约92.16万~462.4万）**：**下限**报 `must be at least 921600 pixels`（768×1024/1024×768=78.6万被拒）、**上限**报 `at most 4624220 pixels`（2700×3600=972万、1920×3840=737万、4096×3072 等全超）；**区间内通过**（1024×1024=105万、1920×2400=461万、960×1280/1280×960=122.9万均✓原样）；选尺寸时算面积：92万~462万走华为，462万走 ARK；②**波动性**——华为对 `1080×1350`、`1024×1024` 时拒时出（面积在区间内仍报 InvalidParameter，属服务波动），可重跑碰运气。两种性质应对不同：面积越界→直接换 ARK；波动→重跑。
-7. **统一比例/方形校验重跑流程（2026-11-10 12:40 固化）**：需要统一指定比例（如三张都方形）时，走华为 1K（尺寸波动）**必须生成后校验实际像素（PIL `im.size`），非目标尺寸就重跑直到命中**（可循环重试 5~6 次，实测常首轮即中）。**命中的成功文件禁止 `rm -f` 删除**（2026-11-10 教训：批跑脚本里对成功输出误加 `rm -f` 把三张方形图全删了，被迫重跑）。判定以实际文件像素为准，非传参。
-8. **AI套装风格提案板（Styling Board）识别与提示词（2026-11-10 13:27 固化）**：此类图**不是普通多视图转面图，而是信息图表+产品展示复合版式**——四分区：左侧模特全身展示区（可带引线箭头标注）/ 中部产品拆解特写区（编号 01-05，平铺图+细节微距）/ 右侧参数信息区（A风格·B色彩·C材质·D版型·E场景，圆形色块+材质图+文字）/ 底部多种搭配 Look 区（2~3 种外套/场景搭配）。风格：浅色纯色底、商业电商详情页/设计提案排版、衬线体+无衬线体、影棚柔和布光。**提示词按其分区结构写**：主体一句话 + AI 风格提案板/Styling Board + 横向构图 + 各分区内容逐段。**读图备注：** `image_reading` 持续空响应时用 `xiaoyi-image-understanding` 脚本通道成功读到完整版式（印证读图三层法换备用通道）。
-6. **硅基流动通道 404 根因与修复（2026-11-10 09:48 固化）**：四个坑叠加导致 `siliconflow: HTTP 404`——①**URL 重复拼接**：配置 `SILICONFLOW_API_URL` 已含 `/v1/images/generations`，代码又追加一次→`.../generations/images/generations`；修复：已含完整路径直接用 ②**模型名错**：传火山 `doubao-seedream-5-0-260128`，硅基流动无此模型；修复：用自家模型 `Kwai-Kolors/Kolors`（可用 `SILICONFLOW_MODEL` 覆盖）③**参数名错**：硅基流动用 `image_size` 非 `size` ④**图片未落盘**：响应 `images[].url` 必须下载落盘，只存 URL 字符串会被输出校验判失败。另：硅基流动只认自家尺寸档（官方 **7 档**：`1024x1024 / 768x1024 / 1024x768 / 720x1440 / 1440x720 / 960x1280 / 1280x960`，均实测 HTTP 200），其他尺寸须映射（已加 `_SF_SIZE_MAP`）。修复后实测 1024×1024 出图成功，备份 `.bak-sffix-20261110`。**7 档实测全通（2026-11-10 09:50~09:57）**：`1K→1024×1024`、`2K→720×1440`（竖）、`1920x1080→1440×720`（横）、`960x1280→960×1280`（✓原样），另 `768x1024 / 1024x768 / 1280x960` 均 HTTP 200 成功；均 `Kwai-Kolors/Kolors` 出图。局限：模型非 seedream（风格可能与华为/ARK 有差异）。
+1. **原 CLI `--size` 白名单无 1024 档**(最低只有 2K),已新增 `1K`/`1024` → `1024×1024`。**加新档必须同步改两处**:`seedream_provider.py` 的 `_SIZE_MAP` 映射 + `generate_seedream.py` 的 argparse `choices` 白名单--漏改 choices 会直接 argparse 报错退出(输出非 JSON)。
+2. **华为重采样行为**:华为通道对 `1024×1024` 请求实际返回 **1248×832**(华为侧自行重采样,不原样返回)。**验证输出尺寸必须查实际文件像素**(PIL `im.size`),不得以传参为准。
+3. **低精度三档 CLI 全支持(实测)**:`--size` 已新增 `1024×1024 / 1920×1080 / 1080×1920` 三档;**横屏 1920×1080、竖屏 1080×1920 华为均原样返回**(1920×1080 恒、1080×1920 恒);**正方形 1K(1024×1024) 华为返回尺寸有波动**--实测 21:54 返回 1248×832、22:02 原样 1024×1024,**重采样行为不恒定,须逐次查实际文件像素确认**(PIL `im.size`),不得假设固定输出。三档均走华为通道低精度即可出,无需 ARK。
+4. **按比例尺寸出图经验(4:5 实测,2026-11-10 07:06 修正)**:1按比例需求(如 4:5)先实测尺寸支持,勿直接假设 2**华为对 `1080×1350` 等自定尺寸支持不稳定**--06:53 报 `InvalidParameter`、07:05 正常出图原样 (1080,1350),**有波动可重跑试运气**,非绝对不认 3**ARK 有最小像素门槛(≥3686400 px ≈368万像素)**,超小尺寸(如 1080×1350=1.46M px)被拒 `image size must be at least 3686400 pixels`;4:5 求稳可用 `1920×2400`(4.61M✓)/`2700×3600`(9.72M✓),均实测 ARK 原样返回 4**4:5 无稳定低精度档,求稳走 ARK 高精度,追求低精度可试华为碰波动** 5新尺寸档须同步改 `_SIZE_MAP` + `generate_seedream.py` 的 argparse `choices` 两处。可复用:任何非标准比例先小样本实测出可行尺寸,再固化;遇到波动性尺寸,多次重跑可能通。
+5. **华为拒绝的两类性质(2026-11-10 07:13 固化 · 09:59 补面积下限)**:1**面积越界(上下限)**--华为真实边界是**面积区间 [921,600, 4,624,220] px(约92.16万~462.4万)**:**下限**报 `must be at least 921600 pixels`(768×1024/1024×768=78.6万被拒)、**上限**报 `at most 4624220 pixels`(2700×3600=972万、1920×3840=737万、4096×3072 等全超);**区间内通过**(1024×1024=105万、1920×2400=461万、960×1280/1280×960=122.9万均✓原样);选尺寸时算面积:92万~462万走华为,462万走 ARK;2**波动性**--华为对 `1080×1350`、`1024×1024` 时拒时出(面积在区间内仍报 InvalidParameter,属服务波动),可重跑碰运气。两种性质应对不同:面积越界→直接换 ARK;波动→重跑。
+7. **统一比例/方形校验重跑流程(2026-11-10 12:40 固化)**:需要统一指定比例(如三张都方形)时,走华为 1K(尺寸波动)**必须生成后校验实际像素(PIL `im.size`),非目标尺寸就重跑直到命中**(可循环重试 5~6 次,实测常首轮即中)。**命中的成功文件禁止 `rm -f` 删除**(2026-11-10 教训:批跑脚本里对成功输出误加 `rm -f` 把三张方形图全删了,被迫重跑)。判定以实际文件像素为准,非传参。
+8. **AI套装风格提案板(Styling Board)识别与提示词(2026-11-10 13:27 固化)**:此类图**不是普通多视图转面图,而是信息图表+产品展示复合版式**--四分区:左侧模特全身展示区(可带引线箭头标注)/ 中部产品拆解特写区(编号 01-05,平铺图+细节微距)/ 右侧参数信息区(A风格·B色彩·C材质·D版型·E场景,圆形色块+材质图+文字)/ 底部多种搭配 Look 区(2~3 种外套/场景搭配)。风格:浅色纯色底、商业电商详情页/设计提案排版、衬线体+无衬线体、影棚柔和布光。**提示词按其分区结构写**:主体一句话 + AI 风格提案板/Styling Board + 横向构图 + 各分区内容逐段。**读图备注:** `image_reading` 持续空响应时用 `xiaoyi-image-understanding` 脚本通道成功读到完整版式(印证读图三层法换备用通道)。
+6. **硅基流动通道 404 根因与修复(2026-11-10 09:48 固化)**:四个坑叠加导致 `siliconflow: HTTP 404`--1**URL 重复拼接**:配置 `SILICONFLOW_API_URL` 已含 `/v1/images/generations`,代码又追加一次→`.../generations/images/generations`;修复:已含完整路径直接用 2**模型名错**:传火山 `doubao-seedream-5-0-260128`,硅基流动无此模型;修复:用自家模型 `Kwai-Kolors/Kolors`(可用 `SILICONFLOW_MODEL` 覆盖)3**参数名错**:硅基流动用 `image_size` 非 `size` 4**图片未落盘**:响应 `images[].url` 必须下载落盘,只存 URL 字符串会被输出校验判失败。另:硅基流动只认自家尺寸档(官方 **7 档**:`1024x1024 / 768x1024 / 1024x768 / 720x1440 / 1440x720 / 960x1280 / 1280x960`,均实测 HTTP 200),其他尺寸须映射(已加 `_SF_SIZE_MAP`)。修复后实测 1024×1024 出图成功,备份 `.bak-sffix-20261110`。**7 档实测全通(2026-11-10 09:50~09:57)**:`1K→1024×1024`、`2K→720×1440`(竖)、`1920x1080→1440×720`(横)、`960x1280→960×1280`(✓原样),另 `768x1024 / 1024x768 / 1280x960` 均 HTTP 200 成功;均 `Kwai-Kolors/Kolors` 出图。局限:模型非 seedream(风格可能与华为/ARK 有差异)。
 
 ### AI 生图含汉字文字·字形核验纪律(2026-11-06 固化)
-**背景:** seedream 等文生图模型对汉字/中文姓名渲染不可靠，艺术签名/海报文字/标题等含中文文字场景高发错字、缺笔、笔画混乱（案例：某某某四张艺术签名，每张生成后需逐字核验）。
+**背景:** seedream 等文生图模型对汉字/中文姓名渲染不可靠,艺术签名/海报文字/标题等含中文文字场景高发错字、缺笔、笔画混乱(案例:某某某四张艺术签名,每张生成后需逐字核验)。
 **纪律:**
-- prompt 里把目标汉字文字用**双引号**包裹（提示模型聚焦准确渲染，如"某某某"）
-- 生成后**逐字核验字形**：用 xiaoyi-image-understanding 脚本通道读图核实文字是否准确（image_reading 易截断，脚本通道拉全文更可靠）
-- 确认无错字/缺笔才交付用户；有错则该张重生成
-- 适用：所有含中文文字的生图任务（签名/海报/手写字/标题等）
+- prompt 里把目标汉字文字用**双引号**包裹(提示模型聚焦准确渲染,如"某某某")
+- 生成后**逐字核验字形**:用 xiaoyi-image-understanding 脚本通道读图核实文字是否准确(image_reading 易截断,脚本通道拉全文更可靠)
+- 确认无错字/缺笔才交付用户;有错则该张重生成
+- 适用:所有含中文文字的生图任务(签名/海报/手写字/标题等)
 
-### Seedance 生视频实战经验（2026-11-08 固化）
+### Seedance 生视频实战经验(2026-11-08 固化)
 
-**背景:** 蜘蛛侠自拍三段分镜（1.5s+5.13s+3.37s → 实际 4s+5s+4s）生成，累计约 290 点，段1/段2 成功、段3 连续 3 次失败后换机位成功。
+**背景:** 蜘蛛侠自拍三段分镜(1.5s+5.13s+3.37s → 实际 4s+5s+4s)生成,累计约 290 点,段1/段2 成功、段3 连续 3 次失败后换机位成功。
 
 **经验条目:**
-1. **时长硬限 4–15 秒**：`generate_video.py` 对 duration&1 >> LOG` 是错的（stderr 指向重定向前 stdout 丢失），正确 `>> LOG 2>&1`；后台脚本日志必须能收 stderr，否则失败原因全丢（本次段1/段3 首轮错误即因此看不到，误判为秒退）。
-7. **参考图缺失时改写 prompt**：无参考图时须删掉所有「按参考图/@图片N」表述，改为主体的完整文字描述（发型/服装/配色/纹样逐项写清），否则脚本引用不到素材。
-8. **seedance-2-0-mini t2v 分辨率上限 = 720p（2026-11-10 18:28 实测）**：传 `1080p` 直接报 `the parameter resolution specified in the request is not valid for model doubao-seedance-2-0-mini in t2v`，降到 `720p` 立过——该模型文生视频模式最高就 720p，生视频分辨率参数直接写 720p，别浪费一次创建机会。
-9. **超 15 秒需求拆 8+8 两段实测成功（2026-11-10）**：16 秒需求拆两段各 8 秒 + ffmpeg concat（`v=1:a=1` 保留音轨）成片 16.2 秒音画连贯；云端耗时波动极大：同参数段1 跑 24 分钟、段2 仅 2 分钟，属正常波动，别急着判失败，耐心等到 25 分钟+再考虑重试。
+1. **时长硬限 4-15 秒**:`generate_video.py` 对 duration&1 >> LOG` 是错的(stderr 指向重定向前 stdout 丢失),正确 `>> LOG 2>&1`;后台脚本日志必须能收 stderr,否则失败原因全丢(本次段1/段3 首轮错误即因此看不到,误判为秒退)。
+7. **参考图缺失时改写 prompt**:无参考图时须删掉所有「按参考图/@图片N」表述,改为主体的完整文字描述(发型/服装/配色/纹样逐项写清),否则脚本引用不到素材。
+8. **seedance-2-0-mini t2v 分辨率上限 = 720p(2026-11-10 18:28 实测)**:传 `1080p` 直接报 `the parameter resolution specified in the request is not valid for model doubao-seedance-2-0-mini in t2v`,降到 `720p` 立过--该模型文生视频模式最高就 720p,生视频分辨率参数直接写 720p,别浪费一次创建机会。
+9. **超 15 秒需求拆 8+8 两段实测成功(2026-11-10)**:16 秒需求拆两段各 8 秒 + ffmpeg concat(`v=1:a=1` 保留音轨)成片 16.2 秒音画连贯;云端耗时波动极大:同参数段1 跑 24 分钟、段2 仅 2 分钟,属正常波动,别急着判失败,耐心等到 25 分钟+再考虑重试。
 
-### 视频批跑脚本与云端归因经验（2026-11-09 固化）
+### 视频批跑脚本与云端归因经验(2026-11-09 固化)
 
-**脚本坑（蜘蛛侠 V3 批跑实锤）:**
-1. **bash local 同行多变量引用取旧值**：`local script="$1" name="$2" log="$BASE/$name.log"` 中 log 的 $name 展开发生在赋值前（取旧值=空），所有段日志全写入 `.log` 互相覆盖。修法：拆行赋值（先 name 后 log），或禁止 local 链式引用。
-2. **多段串行任务禁止共用累加日志判定成败**：run_one 用 grep 在累加日志里搜"视频生成完成"，段1 失败输出也含该字样 → 段3 自动重试被误判跳过（V2 实锤）。修法：每段独立日志（或退出码+段落区间判定），V3 已修对。
-3. **Python 后台脚本输出全缓冲**：非 tty 下 print 块缓冲，执行中 tail 日志为空，只能等进程结束才刷出（轮询多次空读）。修法：`python3 -u` 运行或关键节点 flush。
+**脚本坑(蜘蛛侠 V3 批跑实锤):**
+1. **bash local 同行多变量引用取旧值**:`local script="$1" name="$2" log="$BASE/$name.log"` 中 log 的 $name 展开发生在赋值前(取旧值=空),所有段日志全写入 `.log` 互相覆盖。修法:拆行赋值(先 name 后 log),或禁止 local 链式引用。
+2. **多段串行任务禁止共用累加日志判定成败**:run_one 用 grep 在累加日志里搜"视频生成完成",段1 失败输出也含该字样 → 段3 自动重试被误判跳过(V2 实锤)。修法:每段独立日志(或退出码+段落区间判定),V3 已修对。
+3. **Python 后台脚本输出全缓冲**:非 tty 下 print 块缓冲,执行中 tail 日志为空,只能等进程结束才刷出(轮询多次空读)。修法:`python3 -u` 运行或关键节点 flush。
 
 **云端归因判据升级:**
-4. **同一内容跨时段成败翻转 → 优先归因云端状态**：段2（托脸特写）昨天 17:39 成功、今天冷却后两连败，内容未变；段1 原版昨晚败、今早过。判定：云端限流恢复不彻底，成败有随机性，单次失败不足以否定内容。
-5. **段3 蛛丝手势组合累计 6 败（昨怕3+今早2+更早1）坐实放弃**：广角低机位+蛛丝手势+透视放大组合为模型能力硬伤，与限流无关（冷却后重试仍败），后续同类需求直接改平视中景方案，不再烧点数验证。
+4. **同一内容跨时段成败翻转 → 优先归因云端状态**:段2(托脸特写)昨天 17:39 成功、今天冷却后两连败,内容未变;段1 原版昨晚败、今早过。判定:云端限流恢复不彻底,成败有随机性,单次失败不足以否定内容。
+5. **段3 蛛丝手势组合累计 6 败(昨怕3+今早2+更早1)坐实放弃**:广角低机位+蛛丝手势+透视放大组合为模型能力硬伤,与限流无关(冷却后重试仍败),后续同类需求直接改平视中景方案,不再烧点数验证。
 
-### AI 生视频机位角度速查表（2026-11-09 固化）
+### AI 生视频机位角度速查表(2026-11-09 固化)
 
-用户问"换机位"时按此表选型（人物/场景不变，只变拍摄视角，构图效果完全不同）：
+用户问"换机位"时按此表选型(人物/场景不变,只变拍摄视角,构图效果完全不同):
 
 | 机位 | 效果与适用 |
 |---|---|
-| 微低机位 | 镜头低处微仰拍，显腿长显曲线气场强；时尚大片/人物气场首选 |
-| 平视机位 | 与人眼齐平，自然纪实感、像随手抓拍；生活感/自拍视角 |
-| 高机位俯拍 | 从上往下，强调全景环境，人显娇小精致 |
-| 侧面/斜侧机位 | 从人物侧方拍，强调侧身曲线轮廓 |
-| 环绕运镜 | 镜头绕人缓慢转圈，立体感强更"大片" |
-| 贴水面机位 | 镜头贴水面拍，前景粼粼水光，氛围感拉满 |
+| 微低机位 | 镜头低处微仰拍,显腿长显曲线气场强;时尚大片/人物气场首选 |
+| 平视机位 | 与人眼齐平,自然纪实感、像随手抓拍;生活感/自拍视角 |
+| 高机位俯拍 | 从上往下,强调全景环境,人显娇小精致 |
+| 侧面/斜侧机位 | 从人物侧方拍,强调侧身曲线轮廓 |
+| 环绕运镜 | 镜头绕人缓慢转圈,立体感强更"大片" |
+| 贴水面机位 | 镜头贴水面拍,前景粼粼水光,氛围感拉满 |
 
-用法：用户要换视角时，按目标效果推荐对应机位并说明效果差异；换机位=重新生成一版，仍走完整参数确认流程。
+用法:用户要换视角时,按目标效果推荐对应机位并说明效果差异;换机位=重新生成一版,仍走完整参数确认流程。
 
-### 视频参考图真人风控实测与降级路径（2026-11-09 固化）
+### 视频参考图真人风控实测与降级路径(2026-11-09 固化)
 
-1. **写实真人参考图被 Seedance 内容安全硬拒（全入口）**：用 seedream 生成的写实真人图做 `--reference-images` 或 `--first-frame`，创建任务直接报错 `The request failed because of the input image 'content[1]' may contain real person`；**单图排除法诊断**（逐张试，失败任务未到生成阶段不扣点）确认所有写实真人图均拒——**参考图与首帧图两个入口均封锁**，图生视频不可行，平台硬限制不可绕过。SKILL.md 预警“原则上不支持真人人脸参考图”实锤。
-2. **降级路径**：真人参考被拒 → 改纯文字生成（人物外貌/服装/场景全文字化），过审正常可一次出片；多人互动/三镜分镜均适用。
-3. **seedance 人物外观/姿势描述有效词规律**：身材类用直白具体词（如 身材丰满/胸部饱满挺拔/腰细臀翘）比抽象词（曲线优雅）控制力强（两轮迭代实测）；姿势同理，具体身体语言（侧身前送/腰背弧线/肩线拉开）优于笼统词（上身前送）。
-4. **自造参考图流程与边界**：用户无图时可用 seedream 先生成参考图（图1锁脸/图2锁服装）再走视频参考流程；但写实人脸图必被风控拒，仅风格化/非真人图可行。
-5. **白模姿势参考 → seedream 图生图链路可行（2026-11-11 09:04 固化 · 11:56 路径更新）**：ai-pose-gallery-zh 仓库（`/home/sandbox/pose-gallery/`，2.3G，9 个姿势/服装/人像 Agent 技能包）的白模姿势图可当 seedream 参考图。链路：`references/catalog.csv` 按「姿势名+角度」grep 取图（图片列相对技能根 `../../img/xxx.png`，白模 900×1200=3:4）→ `--input-image` 传该图 → prompt 注明「仅参考姿势，不参考服装发型」→ 用 `960x1280`（3:4 匹配白模比例，华为✓稳定）→ 生成后用 `xiaoyi-image-understanding` 验证姿势还原。**白模非真人 → 不触发真人风控拒**（区别于写实真人参考图被全入口封锁，见上方第1点）。实测：站立双手叉腰白模出图识图确认站立+叉腰+正面，姿势还原准确。
-6. **ai-pose-gallery 9 技能包已全量适配安装（2026-11-11 09:10 固化 · 11:56 路径更新）**：仓库已迁至 **`/home/sandbox/pose-gallery/`（2.3G，workspace 外，防环境重置清空）**，**9 个技能包已全部装到 `skills/`**：`pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`。适配要点：①技能包 catalog 图片列 `../../img/` 相对路径在 openclaw skills/ 下失效，须 **sed 改绝对路径指向 `/home/sandbox/pose-gallery/img/`**（技能依赖图库存在，删图库会断图）②`costume-reference-anime` 走**原站在线 URL 不重存图**（按作者 LICENSE）③只提交技能文本（SKILL.md+catalog.csv），图库不涉 git ④8 个新装包全部 skill-scope 扫描 ACCEPT ⑤成人向 3 包（sexy/couple/sexy）已装但**默认安全模式、仅个人合规学习参考**，不主动用于生成违规内容。**⚠️ 环境重置会清 workspace 内未跟踪目录（2026-11-11 09:28 init 实测清空 repo/ 致技能断图），图库必须放 workspace 外**。
-7. **ai-pose-gallery 仓库维护状态（2026-11-11 09:13 固化 · 11:56 路径更新）**：**`/home/sandbox/pose-gallery/`** 为**一次性浅克隆快照（--depth 1），非自动维护**：作者发新版不自动同步，需手动 `git pull`（在仓库目录）；2.3G 常住沙箱 workspace 外（防环境重置清空）；技能包 catalog 绝对路径依赖图库存在，**删图库会断图**；后续要跟新版就手动 pull。
-8. **ai-pose-gallery 源地址与更新命令（2026-11-11 09:15 固化 · 11:56 路径更新）**：原始仓库 **https://github.com/anhao/ai-pose-gallery-zh**；手动更新命令：`git -C /home/sandbox/pose-gallery pull`。
-9. **姿势参考使用策略（2026-11-11 17:25 固化）**：**姿势库有精确匹配才传白模参考图**（`--input-image` / `--pose-ref`）；**无精确匹配就直接文生图**（纯文字把姿势细节写足：坐实/腿位/手位/朝向），**不为用图而硬凑不匹配的白模**（不匹配的姿势图反而干扰出图效果）。判据：catalog 按「姿势名称」能对上语义才用，近似但不同（如用户要“一腿前伸一腿折”库里只有“双腿斜伸”）时优先文生图。
-10. **左右姿势控制（2026-11-11 19:05 固化 · 21:46 修正）**：①prompt 里**禁止混用“画面左右”和“人物自身左右”**（正面机位下两者相反，写混必出反）②**优先原生生成正确左右**：只用“人物自身左右”表述，一次不对就**重新生成碰运气**（换机位/换措辞，多试几次），**镜像翻转仅作最后兜底**且用前告知用户，不把镜像当首选解法（俞哥 21:46 明确要求能不用镜像就不用）③镜像兜底后用 `image_reading` 核验左右 ④识图优先用内置 `image_reading`（脚本通道 xiaoyi-image-understanding 偶发空返回/超时）。
+1. **写实真人参考图被 Seedance 内容安全硬拒(全入口)**:用 seedream 生成的写实真人图做 `--reference-images` 或 `--first-frame`,创建任务直接报错 `The request failed because of the input image 'content[1]' may contain real person`;**单图排除法诊断**(逐张试,失败任务未到生成阶段不扣点)确认所有写实真人图均拒--**参考图与首帧图两个入口均封锁**,图生视频不可行,平台硬限制不可绕过。SKILL.md 预警"原则上不支持真人人脸参考图"实锤。
+2. **降级路径**:真人参考被拒 → 改纯文字生成(人物外貌/服装/场景全文字化),过审正常可一次出片;多人互动/三镜分镜均适用。
+3. **seedance 人物外观/姿势描述有效词规律**:身材类用直白具体词(如 身材丰满/胸部饱满挺拔/腰细臀翘)比抽象词(曲线优雅)控制力强(两轮迭代实测);姿势同理,具体身体语言(侧身前送/腰背弧线/肩线拉开)优于笼统词(上身前送)。
+4. **自造参考图流程与边界**:用户无图时可用 seedream 先生成参考图(图1锁脸/图2锁服装)再走视频参考流程;但写实人脸图必被风控拒,仅风格化/非真人图可行。
+5. **白模姿势参考 → seedream 图生图链路可行(2026-11-11 09:04 固化 · 11:56 路径更新)**:ai-pose-gallery-zh 仓库(`/home/sandbox/pose-gallery/`,2.3G,9 个姿势/服装/人像 Agent 技能包)的白模姿势图可当 seedream 参考图。链路:`references/catalog.csv` 按「姿势名+角度」grep 取图(图片列相对技能根 `../../img/xxx.png`,白模 900×1200=3:4)→ `--input-image` 传该图 → prompt 注明「仅参考姿势,不参考服装发型」→ 用 `960x1280`(3:4 匹配白模比例,华为✓稳定)→ 生成后用 `xiaoyi-image-understanding` 验证姿势还原。**白模非真人 → 不触发真人风控拒**(区别于写实真人参考图被全入口封锁,见上方第1点)。实测:站立双手叉腰白模出图识图确认站立+叉腰+正面,姿势还原准确。
+6. **ai-pose-gallery 9 技能包已全量适配安装(2026-11-11 09:10 固化 · 11:56 路径更新)**:仓库已迁至 **`/home/sandbox/pose-gallery/`(2.3G,workspace 外,防环境重置清空)**,**9 个技能包已全部装到 `skills/`**:`pose-reference-standard/upper/sexy/couple/all` + `costume-reference` + `costume-reference-sexy` + `costume-reference-anime` + `portrait-reference`。适配要点:1技能包 catalog 图片列 `../../img/` 相对路径在 openclaw skills/ 下失效,须 **sed 改绝对路径指向 `/home/sandbox/pose-gallery/img/`**(技能依赖图库存在,删图库会断图)2`costume-reference-anime` 走**原站在线 URL 不重存图**(按作者 LICENSE)3只提交技能文本(SKILL.md+catalog.csv),图库不涉 git 48 个新装包全部 skill-scope 扫描 ACCEPT 5成人向 3 包(sexy/couple/sexy)已装但**默认安全模式、仅个人合规学习参考**,不主动用于生成违规内容。**⚠️ 环境重置会清 workspace 内未跟踪目录(2026-11-11 09:28 init 实测清空 repo/ 致技能断图),图库必须放 workspace 外**。
+7. **ai-pose-gallery 仓库维护状态(2026-11-11 09:13 固化 · 11:56 路径更新)**:**`/home/sandbox/pose-gallery/`** 为**一次性浅克隆快照(--depth 1),非自动维护**:作者发新版不自动同步,需手动 `git pull`(在仓库目录);2.3G 常住沙箱 workspace 外(防环境重置清空);技能包 catalog 绝对路径依赖图库存在,**删图库会断图**;后续要跟新版就手动 pull。
+8. **ai-pose-gallery 源地址与更新命令(2026-11-11 09:15 固化 · 11:56 路径更新)**:原始仓库 **https://github.com/anhao/ai-pose-gallery-zh**;手动更新命令:`git -C /home/sandbox/pose-gallery pull`。
+9. **姿势参考使用策略(2026-11-11 17:25 固化)**:**姿势库有精确匹配才传白模参考图**(`--input-image` / `--pose-ref`);**无精确匹配就直接文生图**(纯文字把姿势细节写足:坐实/腿位/手位/朝向),**不为用图而硬凑不匹配的白模**(不匹配的姿势图反而干扰出图效果)。判据:catalog 按「姿势名称」能对上语义才用,近似但不同(如用户要"一腿前伸一腿折"库里只有"双腿斜伸")时优先文生图。
+10. **左右姿势控制(2026-11-11 19:05 固化 · 21:46 修正)**:1prompt 里**禁止混用"画面左右"和"人物自身左右"**(正面机位下两者相反,写混必出反)2**优先原生生成正确左右**:只用"人物自身左右"表述,一次不对就**重新生成碰运气**(换机位/换措辞,多试几次),**镜像翻转仅作最后兜底**且用前告知用户,不把镜像当首选解法(俞哥 21:46 明确要求能不用镜像就不用)3镜像兜底后用 `image_reading` 核验左右 4识图优先用内置 `image_reading`(脚本通道 xiaoyi-image-understanding 偶发空返回/超时)。
 
-### 生图姿态调优五条经验（2026-11-12 03:11 固化）
+### 生图姿态调优八条经验（2026-11-12 实测 · 2026-11-15 五条+三条补充合并）
 
-1. **识图对姿态角度不可全信**：坐 vs 躺本质是躯干与大腿夹角 90° vs 135° 之差，低分辨率+斜角构图下识图易误判（实测识图把半躺判成坐、用户经验判断才正确）。关键姿态先与用户确认，不盲信识图。
-2. **「躯干与大腿夹角」锁姿态法**：端坐=躯干约90°直立；半躺=夹角接近135°、半卧式深靠进靠背、重心明显后倾、臀部深陷座垫。用具体角度+受力特征写死姿态，比笼统说“躺着/坐着”控制力强。
-3. **站立人形道具 + 坐姿叠腿易致“多余肢体”错觉**：人物坐姿交叠腿时，背景若有站立人形（人体模型/假人/模特），两条腿在视野里易混成“三条腿”。要么删/弱化道具（负面词加“人体模型、假人、第二个人”），要么拉开距离。
-4. **双腿落沙发控制词**：正片强调“双膝双脚都落在沙发座面上、不伸出边缘/不悬垂/不踩地、大腿小腿放松搁坐垫”+ 负面压“腿伸出沙发外、悬垂、脚踩地、腿离地”——精确控制双腿落在家具内。
-5. **逐项对比调优循环（方法论）**：参考图→识图反推细节→生成→识图分维度对比找差异（身体朝向/双腿左右卷曲/手位置/重心分开核验）→针对差异定向改 prompt 重跑。一次只改一个维度的差异，比全盘重写收敛快。
+1. **识图对姿态角度不可全信**:坐 vs 躺本质是躯干与大腿夹角 90° vs 135° 之差,低分辨率+斜角构图下识图易误判(实测识图把半躺判成坐、用户经验判断才正确)。关键姿态先与用户确认,不盲信识图。
+2. **「躯干与大腿夹角」锁姿态法**:端坐=躯干约90°直立;半躺=夹角接近135°、半卧式深靠进靠背、重心明显后倾、臀部深陷座垫。用具体角度+受力特征写死姿态,比笼统说"躺着/坐着"控制力强。
+3. **站立人形道具 + 坐姿叠腿易致"多余肢体"错觉**:人物坐姿交叠腿时,背景若有站立人形(人体模型/假人/模特),两条腿在视野里易混成"三条腿"。要么删/弱化道具(负面词加"人体模型、假人、第二个人"),要么拉开距离。
+4. **双腿落沙发控制词**:正片强调"双膝双脚都落在沙发座面上、不伸出边缘/不悬垂/不踩地、大腿小腿放松搁坐垫"+ 负面压"腿伸出沙发外、悬垂、脚踩地、腿离地"--精确控制双腿落在家具内。
+5. **逐项对比调优循环(方法论)**:参考图→识图反推细节→生成→识图分维度对比找差异(身体朝向/双腿左右卷曲/手位置/重心分开核验)→针对差异定向改 prompt 重跑。一次只改一个维度的差异,比全盘重写收敛快。
 
-### 生图姿态调优·三条补充（2026-11-12 05:03 固化）
+6. **正向构造法 > 负面词压制**:控制"腿不垂地/不出界"时,光靠负面词(禁垂地/踩地/悬空)压不住(实测连两版出界)。有效做法是把**沙发座垫写长**--"座垫从画面右下角一直延伸到左下角、延伸到双脚下方托住双腿",让模型无处可去。负面词是堵,正向构造是引,后者更可靠。
+7. **家具空间关系四要素**:参考图还原家具时只写"坐在沙发上"没用,要写全:1位置(画面哪一部分)2朝向(斜向/横向、靠背贴哪条边)3座垫延伸方向(从哪到哪形成对角线)4人物头位高低。缺一项就会位置错(实测沙发位置错三版)。
+8. **分层核验法**:核验分四层独立查,不混着问--姿态层(躺/坐/夹角)→位置层(身体/腿在不在家具内)→左右层(哪条腿在上)→手部层。"姿态对但腿出界""腿对但左右反"都是分层才发现的,混着问会漏。
 
-6. **正向构造法 > 负面词压制**：控制“腿不垂地/不出界”时，光靠负面词（禁垂地/踩地/悬空）压不住（实测连两版出界）。有效做法是把**沙发座垫写长**——“座垫从画面右下角一直延伸到左下角、延伸到双脚下方托住双腿”，让模型无处可去。负面词是堵，正向构造是引，后者更可靠。
-7. **家具空间关系四要素**：参考图还原家具时只写“坐在沙发上”没用，要写全：①位置（画面哪一部分）②朝向（斜向/横向、靠背贴哪条边）③座垫延伸方向（从哪到哪形成对角线）④人物头位高低。缺一项就会位置错（实测沙发位置错三版）。
-8. **分层核验法**：核验分四层独立查，不混着问——姿态层（躺/坐/夹角）→位置层（身体/腿在不在家具内）→左右层（哪条腿在上）→手部层。“姿态对但腿出界”“腿对但左右反”都是分层才发现的，混着问会漏。
+### 参考视频→Seedance 提示词拆解链(video2seedance 路径 C,2026-11-12 07:23 固化)
 
-### 参考视频→Seedance 提示词拆解链（video2seedance 路径 C，2026-11-12 07:23 固化）
+**仓库**:`/home/sandbox/video2seedance/`(workspace 外防环境重置;skill-scope 扫描 ACCEPT;浅克隆快照,更新需手动 `git -C /home/sandbox/video2seedance pull`;源 https://github.com/MapleShaw/video2seedance)
 
-**仓库**：`/home/sandbox/video2seedance/`（workspace 外防环境重置；skill-scope 扫描 ACCEPT；浅克隆快照，更新需手动 `git -C /home/sandbox/video2seedance pull`；源 https://github.com/MapleShaw/video2seedance）
+**工作流(路径 C·Agent 对话内,零 API Key)**:
+1. 抽帧:`cd /home/sandbox/video2seedance/src && python3 frame_analyzer.py  --out-dir /frames --max-frames 8`(仅依赖 ffmpeg)
+2. 琪琪用 `image_reading` 逐帧读图,按 `src/schema.py` 结构写 `analysis.json`(11 区块:meta/summary/timeline/visual_language/rhythm_structure/camera_language/emotion_and_psychology/viral_mechanics/transferable_pattern/seedance_translation/next_step_assets)
+3. 生成 A/B/C 三版提示词(prompts.md)
 
-**工作流（路径 C·Agent 对话内，零 API Key）**：
-1. 抽帧：`cd /home/sandbox/video2seedance/src && python3 frame_analyzer.py  --out-dir /frames --max-frames 8`（仅依赖 ffmpeg）
-2. 琪琪用 `image_reading` 逐帧读图，按 `src/schema.py` 结构写 `analysis.json`（11 区块：meta/summary/timeline/visual_language/rhythm_structure/camera_language/emotion_and_psychology/viral_mechanics/transferable_pattern/seedance_translation/next_step_assets）
-3. 生成 A/B/C 三版提示词（prompts.md）
+**schema 关键设计**:timeline 逐镜头含起止时间/视觉事件/主体动作/镜头动作/音频事件/叙事功能(hook→setup→build→twist→payoff→ending 六段式)/注意力等级 1-5;viral_mechanics 拆"为什么抓人";transferable_pattern 拆"哪些结构可迁移到别的题材"
 
-**schema 关键设计**：timeline 逐镜头含起止时间/视觉事件/主体动作/镜头动作/音频事件/叙事功能（hook→setup→build→twist→payoff→ending 六段式）/注意力等级 1-5；viral_mechanics 拆“为什么抓人”；transferable_pattern 拆“哪些结构可迁移到别的题材”
+**提示词范式(示例 case 实战水平)**:
+- 参考图分工:图1锁脸、图2锁服装体积,两张均不当首帧(与 seedream 锁脸/锁服装实践一致)
+- "对标 frame_XXXX"锚定法:每段提示词锚定到具体抽帧,画质/构图照帧写
+- 逐 Shot 拆解:每镜写足动作细节 + 单镜禁止项 + 全局禁止(禁升格/慢动作/慢镜头/字幕水印/8K4K/HDR)
+- A/B/C 三版:A 原片造型 / B 只换妆造 / C 换场景,一次拆解出三套可对比方案
 
-**提示词范式（示例 case 实战水平）**：
-- 参考图分工：图1锁脸、图2锁服装体积，两张均不当首帧（与 seedream 锁脸/锁服装实践一致）
-- “对标 frame_XXXX”锚定法：每段提示词锚定到具体抽帧，画质/构图照帧写
-- 逐 Shot 拆解：每镜写足动作细节 + 单镜禁止项 + 全局禁止（禁升格/慢动作/慢镜头/字幕水印/8K4K/HDR）
-- A/B/C 三版：A 原片造型 / B 只换妆造 / C 换场景，一次拆解出三套可对比方案
+**触发场景**:俞哥发参考视频(链接或本地文件)要拆解/仿拍/提取提示词模板时走此链
 
-**触发场景**：俞哥发参考视频（链接或本地文件）要拆解/仿拍/提取提示词模板时走此链
+### 内容尺度与意图路由补充(2026-11-09 下午实测)
 
-### 内容尺度与意图路由补充（2026-11-09 下午实测）
+1. **内容尺度边界实测**:文字直出的泳装/内衣时尚内容(泳池比基尼含"聚拢托胸设计"、蕾丝内衣含"吊袜带+过膝丝袜"等款式细节词)均正常过审--平台风控卡的是"写实真人参考图",不卡"文字描述的合规时尚尺度";合规时尚摄影类需求无需畏手畏脚,但描述保持克制("避免低俗过度暴露"尾缀可挂)。
+2. **生图/生视频意图路由**:用户发纯静态描述(无时长/运镜/分镜)→ 默认 seedream 生图;含时长/比例/运镜/分镜结构 → seedance 生视频(仍走完整参数确认流程)。
 
-1. **内容尺度边界实测**：文字直出的泳装/内衣时尚内容（泳池比基尼含“聚拢托胸设计”、蕾丝内衣含“吊袜带+过膝丝袜”等款式细节词）均正常过审——平台风控卡的是“写实真人参考图”，不卡“文字描述的合规时尚尺度”；合规时尚摄影类需求无需畏手畏脚，但描述保持克制（“避免低俗过度暴露”尾缀可挂）。
-2. **生图/生视频意图路由**：用户发纯静态描述（无时长/运镜/分镜）→ 默认 seedream 生图；含时长/比例/运镜/分镜结构 → seedance 生视频（仍走完整参数确认流程）。
+### 角色四视图设定图 prompt 范式(2026-11-12 09:18 固化)
 
-### 角色四视图设定图 prompt 范式（2026-11-12 09:18 固化）
+实测一次通过的四段式写法(四视图面部一致、无多余肢体、排版工整):
 
-实测一次通过的四段式写法（四视图面部一致、无多余肢体、排版工整）：
+1. **排版段**:`左侧45%正面头肩特写 + 右侧55%依次为正面全身、90度侧面全身、背面全身`--比例和视图朝向必须写死,只说"多视图"会乱排
+2. **一致性段**:面部特征一致 + 发型一致 + 服装一致(用这三个词替代被 guard 拦的"同一张脸")
+3. **背景段**:浅灰摄影棚无缝背景(角色设定图标准底)
+4. **画质栈**:Unreal Engine 5 / Octane Render / 电影级商业CG / 8K / 真实皮肤SSS / 精致面料质感 / 专业摄影棚柔光
 
-1. **排版段**：`左侧45%正面头肩特写 + 右侧55%依次为正面全身、90度侧面全身、背面全身`——比例和视图朝向必须写死，只说“多视图”会乱排
-2. **一致性段**：面部特征一致 + 发型一致 + 服装一致（用这三个词替代被 guard 拦的“同一张脸”）
-3. **背景段**：浅灰摄影棚无缝背景（角色设定图标准底）
-4. **画质栈**：Unreal Engine 5 / Octane Render / 电影级商业CG / 8K / 真实皮肤SSS / 精致面料质感 / 专业摄影棚柔光
+人物与服装分块描述,每块只讲一个维度(脸型眼型唇色发色发式 / 外套内搭裙装丝袜鞋饰);16:9 横版走华为 1920×1080。
 
-人物与服装分块描述，每块只讲一个维度（脸型眼型唇色发色发式 / 外套内搭裙装丝袜鞋饰）；16:9 横版走华为 1920×1080。
+### 服装品类审核与通道选择（2026-11-15 三条合并：内衣通道选择+blocked二分法+品类三分法）
 
-### 内衣/贴身服饰类生图通道选择（2026-11-12 12:28 固化）
+**规则**：内衣/泳装/贴身服饰类需求**优先走 `skills/seedream-image_gen`(Pro 模型,`--model Pro`)**--这是「生图默认华为优先」的例外场景。
 
-**规则**：内衣/泳装/贴身服饰类需求**优先走 `skills/seedream-image_gen`（Pro 模型，`--model Pro`）**——这是「生图默认华为优先」的例外场景。
+**坑点(实测 5 轮)**:华为 SSE / ARK 对这类**输出图**审核严(报 `OutputImageSensitiveContentDetected`),写"文胸/内裤/吊袜带/聚拢/杯型饱满"等具体款式词必被拦;模糊化("成套贴身服饰")虽能过审但模型会脑补成吊带裙跑偏。硅基流动审核松但模型弱(720p、易裁半身),仅兜底。
 
-**坑点（实测 5 轮）**：华为 SSE / ARK 对这类**输出图**审核严（报 `OutputImageSensitiveContentDetected`），写“文胸/内裤/吊袜带/聚拢/杯型饱满”等具体款式词必被拦；模糊化（“成套贴身服饰”）虽能过审但模型会脑补成吊带裙跑偏。硅基流动审核松但模型弱（720p、易裁半身），仅兜底。
+**效果**:同 prompt 华为/ARK 连拦 5 轮,seedream-image_gen Pro 一次过(全身+吊袜带+丝袜+高跟鞋+墨绿蕾丝全对)。
 
-**效果**：同 prompt 华为/ARK 连拦 5 轮，seedream-image_gen Pro 一次过（全身+吊袜带+丝袜+高跟鞋+墨绿蕾丝全对）。
-
-**调用**：`cd skills/seedream-image_gen && python3 scripts/generate_seedream.py --prompt "..." --model Pro --size 2K --output-path `
+**调用**:`cd skills/seedream-image_gen && python3 scripts/generate_seedream.py --prompt "..." --model Pro --size 2K --output-path `
 
 **参考图输入同样受审（2026-11-12 12:37 补充）**：拿内衣/贴身服饰图当 `--image` 参考图会报“API检测到输入的参考图包含敏感信息”，此时**改纯文字描述生成可绕过**（人物+服装细节写足，代价是脸不是原图那张）。实测：内衣四视图先传参考图被拦 → 改纯文字一次过（1424×800 横版，四视图款式一致）。
 
-### Pro 尺寸陷阱与内衣款式词改写表（2026-11-12 15:26 固化）
+**品类三分法（执行前先判品类，原 11-14 条并入）：**
+| 品类 | 典型词 | 处理策略 |
+|---|---|---|
+| 泳装 | 比基尼、泳衣、泳裤、连体泳衣、沙滩度假风 | 审核宽松，原款式保留，不必自我阉割 |
+| 内衣/情趣 | 文胸、内裤、吊袜带、情趣内衣 | 审核封死，换品类（→家居服/吊带睡裙） |
+| 日常穿搭/贴身 | 吊带、背心、裙装、紧身衣 | 只删三类量化词（胸/胸腰差/臀），款式全保留 |
 
-**坑 1：`--optimize-prompt-mode fast` 会直接忽略 `--size`**
-`skills/seedream-image_gen/scripts/generate_seedream.py` 中，`optimize_prompt_mode == 'fast'`（默认值）时强制 `size = '1K' if model == 'Pro' else '2K'`，并打印“fast 模式下指定 size 无效”。
-- **要 2K 必须加 `--optimize-prompt-mode standard`**（实测 33 秒出图，扣 12 点/张 2K）
-- fast 模式：Pro → 1K，Flash → 2K；standard 模式：`--size` 才生效（仅 1K/2K 两档）
+判断要点：①“比基尼/泳裤”带“泳/沙滩/度假”属性词一律归泳装不是内衣；②禁止一看“短款/贴身/暴露”就当内衣阉割——先看有没有泳装属性；③执行顺序=先判品类→再定处理策略。
 
-**坑 2：内衣款式词拦截与改写对照（实测两轮）**
+**泳衣 vs 内衣审核边界（实测）：** 成套内衣（含去性化描述版）xiaoyi_pro 与 huawei_sse 双通道硬拦，改「真丝缎吊带家居裙」可过；连体泳衣（深V+胸前镂空+金链细节）huawei_sse 一次过（1080×1920）。泳装属常见时尚品类审核宽松，内衣/情趣类才封死。
 
-| 必拦原词（`OutputImageSensitiveContentDetected`）| 可过替代 |
+**blocked 二分法（排查，原 11-13 条并入）：**
+| 报错字段 | 谁拦的 | 处置 |
+|---|---|---|
+| persona_visual_request_must_use_main_pipeline | 本地关键词守卫（persona_visual_request_guard.py 词表误伤，与内容合规无关） | 改词即可过（“站在窗边”→“立于落地窗前”） |
+| OutputImageSensitiveContentDetected | 模型内容审核 | 改写内容（去性化/换服装品类） |
+
+排查顺序：先看 provider_error 字段文案再动手——命中守卫只改词，不要白改创意。
+
+### Pro 尺寸陷阱与内衣款式词改写表(2026-11-12 15:26 固化)
+
+**坑 1:`--optimize-prompt-mode fast` 会直接忽略 `--size`**
+`skills/seedream-image_gen/scripts/generate_seedream.py` 中,`optimize_prompt_mode == 'fast'`(默认值)时强制 `size = '1K' if model == 'Pro' else '2K'`,并打印"fast 模式下指定 size 无效"。
+- **要 2K 必须加 `--optimize-prompt-mode standard`**(实测 33 秒出图,扣 12 点/张 2K)
+- fast 模式:Pro → 1K,Flash → 2K;standard 模式:`--size` 才生效(仅 1K/2K 两档)
+
+**坑 2:内衣款式词拦截与改写对照(实测两轮)**
+
+| 必拦原词(`OutputImageSensitiveContentDetected`)| 可过替代 |
 |---|---|
 | 聚拢文胸、中腰蕾丝内裤、吊袜带 | 蕾丝两件式套装、同色系蕾丝腰封、腿部装饰带 |
 | 黑色透明丝袜 | 黑色丝袜 |
@@ -2153,11 +2170,11 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 | 肩带线条利落 | 肩部线条利落 |
 | 修身连体衣 | 连体衣 |
 
-改写后结构信息基本保留，但模型会自行补款式细节（可能不出精确的吊袜带结构）。实测：原词两轮全拦 → 改写版一次过（1584×2816，9:16）。
+改写后结构信息基本保留,但模型会自行补款式细节(可能不出精确的吊袜带结构)。实测:原词两轮全拦 → 改写版一次过(1584×2816,9:16)。
 
-**坑 2.1：透明外衣的“一词之差”（2026-11-12 15:38 实测三变体）**
+**坑 2.1:透明外衣的"一词之差"(2026-11-12 15:38 实测三变体)**
 
-审核**认词表不认语义**——同样意思换一个词，一个过一个拦：
+审核**认词表不认语义**--同样意思换一个词,一个过一个拦:
 
 | 描述 | 结果 |
 |---|---|
@@ -2166,60 +2183,60 @@ seedream（华为 SSE）下，prompt 写“生成 N 张/多张不同风格”时
 | 半透明蕾丝长袖外衣自然敞开 | ❌ 拦 |
 | 轻纱质感长款外搭 | ❌ 拦 |
 
-**结论：** “薄纱”可过，“半透明 / 自然敞开 / 轻纱质感”是雷。想要通透感就用“薄纱”这个中性词。
+**结论:** "薄纱"可过,"半透明 / 自然敞开 / 轻纱质感"是雷。想要通透感就用"薄纱"这个中性词。
 
-**坑 2.2：图生图参考图对这类图封死（2026-11-12 实测）**
-拿内衣类成品图当 `--image` 参考图做编辑，报“API检测到输入的参考图包含敏感信息，请提示用户更换上传新的参考图后重试，**禁止任何无参考图的替代生成**”。
-- 即：不能拿“纯文字重生成”冒充编辑结果，必须如实告知用户
-- 可行替代：纯文字重新生成（说明是重生成、人物会变），或换一张不敏感底图
+**坑 2.2:图生图参考图对这类图封死(2026-11-12 实测)**
+拿内衣类成品图当 `--image` 参考图做编辑,报"API检测到输入的参考图包含敏感信息,请提示用户更换上传新的参考图后重试,**禁止任何无参考图的替代生成**"。
+- 即:不能拿"纯文字重生成"冒充编辑结果,必须如实告知用户
+- 可行替代:纯文字重新生成(说明是重生成、人物会变),或换一张不敏感底图
 
-**坑 2.3：生图 vs 视频审核尺度差异（2026-11-12 16:26 实测·修正边界）**
+**坑 2.3:生图 vs 视频审核尺度差异(2026-11-12 16:26 实测·修正边界)**
 
-**同一张内衣/贴身服饰类图，生图与视频审核结论相反：**
+**同一张内衣/贴身服饰类图,生图与视频审核结论相反:**
 
 | 链路 | 结果 |
 |---|---|
-| 生图（seedream-image_gen 图生图 `--image`）| ❌ 必拦“参考图包含敏感信息”，且禁止无参考图替代生成 |
-| 视频（seedance-video-gen 图生视频 `--reference-images`）| ✅ 同一张图可过审，一次生成成功 |
+| 生图(seedream-image_gen 图生图 `--image`)| ❌ 必拦"参考图包含敏感信息",且禁止无参考图替代生成 |
+| 视频(seedance-video-gen 图生视频 `--reference-images`)| ✅ 同一张图可过审,一次生成成功 |
 
-**结论：** “参考图输入同样受审”那条**只适用于生图链路**，不适用于视频链路。做视频不必担心参考图被审。
+**结论:** "参考图输入同样受审"那条**只适用于生图链路**,不适用于视频链路。做视频不必担心参考图被审。
 
-**seedance-video-gen 可用入口（小艺云端，无需额外 key）：**
-- 技能：`skills/seedance-video-gen`，脚本 `scripts/generate_video.py --script  --reference-images `
-- 参数：`duration`（最长 15s）、`ratio`（adaptive/9:16/16:9/4:3/3:4/1:1/21:9）、`resolution`（480p/720p）
-- 点数：480p 无参考视频 5 点/秒、720p 无参考 10 点/秒；仅参考视频有固定额加点（480p+30、720p+60），参考图/音频不额外加点
-- 强制流程：**每次生成必须展示 5 项参数（prompt/时长/比例/分辨率/点数）并等用户「确认」**，SKILL 内置规则不可跳过
-- 提示词走“路径 A”（多模态参考单场景一段式）：`参考 @图片1 中的…，[动作]。高清电影质感，画面稳定无变形…`
+**seedance-video-gen 可用入口(小艺云端,无需额外 key):**
+- 技能:`skills/seedance-video-gen`,脚本 `scripts/generate_video.py --script  --reference-images `
+- 参数:`duration`(最长 15s)、`ratio`(adaptive/9:16/16:9/4:3/3:4/1:1/21:9)、`resolution`(480p/720p)
+- 点数:480p 无参考视频 5 点/秒、720p 无参考 10 点/秒;仅参考视频有固定额加点(480p+30、720p+60),参考图/音频不额外加点
+- 强制流程:**每次生成必须展示 5 项参数(prompt/时长/比例/分辨率/点数)并等用户「确认」**,SKILL 内置规则不可跳过
+- 提示词走"路径 A"(多模态参考单场景一段式):`参考 @图片1 中的...,[动作]。高清电影质感,画面稳定无变形...`
 
-### 丝袜/连裤袜 16 色号参考表（2026-11-13 固化）
+### 丝袜/连裤袜 16 色号参考表(2026-11-13 固化)
 
-生图/穿搭描述时用色号名精确控色，比“透明丝袜”这类词更安全（审核认词表不认语义）。
+生图/穿搭描述时用色号名精确控色,比"透明丝袜"这类词更安全(审核认词表不认语义)。
 
 | 色号 | 特点 | 适合人群/场景 | 透肉度 |
 |---|---|---|---|
-| 超浅肤 | 透白肤，提亮效果明显 | 白皮 | ⚪⚪⚪⚪⚪ |
-| 自然肤 | 黄皮首选，最自然日常款 | 黄皮 | ⚪⚪⚪⚪ |
-| 深肤色 | 适合偏深肤色，遮瑕均匀 | 深肤色 | ⚪⚪⚪ |
-| 浅咖 | 温柔暖调，秋冬浅色穿搭友好 | 日常百搭 | ⚪⚪⚪ |
-| 焦糖可可棕 | 提气色，适配面最广 | 各种肤色 | ⚪⚪ |
-| 灰色 | 高级灰调，知性气质 | 气质穿搭 | ⚪⚪ |
-| 浅黑烟墨黑 | 比纯黑更柔和，显瘦不沉重 | 日常显瘦 | ⚪⚪ |
-| 纯黑 | 经典显瘦，正式场合首选 | 正式场合 | ⚫⚫⚫⚫⚫ |
-| 纯白 | 纯净透亮，优雅清透 | 夏季清新穿搭 | ⚪⚪⚪⚪⚪ |
-| 米白 | 柔和自然，温柔百搭 | 日常通勤 | ⚪⚪⚪⚪ |
-| 酒红 | 深邃浓郁，性感撩人 | 秋冬约会、晚宴 | ⚫⚫⚫⚫ |
-| 正红 | 经典喜庆，气场全开 | 节日、正式场合 | ⚫⚫⚫⚫ |
-| 藏青 | 沉稳内敛，优雅知性 | 职场通勤 | ⚫⚫⚫⚫ |
-| 雾霾蓝 | 清冷柔雾，高级温柔 | 秋冬气质穿搭 | ⚫⚫⚫ |
-| 浅粉 | 甜美柔和，少女心动 | 春季甜美风 | ⚪⚪⚪ |
-| 墨绿 | 神秘高级，冷静优雅 | 秋冬复古风 | ⚫⚫⚫ |
+| 超浅肤 | 透白肤,提亮效果明显 | 白皮 | ⚪⚪⚪⚪⚪ |
+| 自然肤 | 黄皮首选,最自然日常款 | 黄皮 | ⚪⚪⚪⚪ |
+| 深肤色 | 适合偏深肤色,遮瑕均匀 | 深肤色 | ⚪⚪⚪ |
+| 浅咖 | 温柔暖调,秋冬浅色穿搭友好 | 日常百搭 | ⚪⚪⚪ |
+| 焦糖可可棕 | 提气色,适配面最广 | 各种肤色 | ⚪⚪ |
+| 灰色 | 高级灰调,知性气质 | 气质穿搭 | ⚪⚪ |
+| 浅黑烟墨黑 | 比纯黑更柔和,显瘦不沉重 | 日常显瘦 | ⚪⚪ |
+| 纯黑 | 经典显瘦,正式场合首选 | 正式场合 | ⚫⚫⚫⚫⚫ |
+| 纯白 | 纯净透亮,优雅清透 | 夏季清新穿搭 | ⚪⚪⚪⚪⚪ |
+| 米白 | 柔和自然,温柔百搭 | 日常通勤 | ⚪⚪⚪⚪ |
+| 酒红 | 深邃浓郁,性感撩人 | 秋冬约会、晚宴 | ⚫⚫⚫⚫ |
+| 正红 | 经典喜庆,气场全开 | 节日、正式场合 | ⚫⚫⚫⚫ |
+| 藏青 | 沉稳内敛,优雅知性 | 职场通勤 | ⚫⚫⚫⚫ |
+| 雾霾蓝 | 清冷柔雾,高级温柔 | 秋冬气质穿搭 | ⚫⚫⚫ |
+| 浅粉 | 甜美柔和,少女心动 | 春季甜美风 | ⚪⚪⚪ |
+| 墨绿 | 神秘高级,冷静优雅 | 秋冬复古风 | ⚫⚫⚫ |
 
-**用法：** 透肉度 ⚪ 越多越透、⚫ 越多越实；生图写“纯黑丝袜”比“黑色透明丝袜”安全，写“超浅肤连裤袜”比“肉色透明”安全。
+**用法:** 透肉度 ⚪ 越多越透、⚫ 越多越实;生图写"纯黑丝袜"比"黑色透明丝袜"安全,写"超浅肤连裤袜"比"肉色透明"安全。
 
-**坑 3：三个同名目录的调用路径（易跑空）**
-- `skills/seedream-image_gen/`（下划线）= 3 行 compat 壳，跑起来 **rc=0 但什么都不干**（今天踩了两次）
-- `skills/seedream-image_gen/`（连字符 image_gen）= 573 行 Flash/Pro 版，**这才是要跑的**
-- 从 workspace 根调用需带 `PYTHONPATH=.`，否则 `ModuleNotFoundError: memory_context`
+**坑 3:三个同名目录的调用路径(易跑空)**
+- `skills/seedream-image_gen/`(下划线)= 3 行 compat 壳,跑起来 **rc=0 但什么都不干**(今天踩了两次)
+- `skills/seedream-image_gen/`(连字符 image_gen)= 573 行 Flash/Pro 版,**这才是要跑的**
+- 从 workspace 根调用需带 `PYTHONPATH=.`,否则 `ModuleNotFoundError: memory_context`
 
 ```bash
 cd ~/.openclaw/workspace
@@ -2228,67 +2245,56 @@ PYTHONPATH=. python3 skills/seedream-image_gen/scripts/generate_seedream.py \
   --output-path /tmp/out
 ```
 
-### 人格视觉防护关键词误伤规避（2026-11-12 09:05 固化）
+### 人格视觉防护关键词误伤规避(2026-11-12 09:05 固化)
 
-**坑点**：`xiaoyi_persona_visual/policy/persona_visual_request_guard.py` 的 PERSONA_VISUAL_KEYWORDS 含一批**通用美术表述**，普通角色图/四视图/人设图 prompt 命中即被拦，报 `persona_visual_request_must_use_main_pipeline`（provider_status=blocked）——不是通道故障。
+**坑点**:`xiaoyi_persona_visual/policy/persona_visual_request_guard.py` 的 PERSONA_VISUAL_KEYWORDS 含一批**通用美术表述**,普通角色图/四视图/人设图 prompt 命中即被拦,报 `persona_visual_request_must_use_main_pipeline`(provider_status=blocked)--不是通道故障。
 
-**高危通用词（画人物图必避）**：同一张脸、同一人物气质、图片内角色不变、像素级一致、展示一下、看看全身、看看腿、看看脚、看看手、看看腰、看看鞋、看看头发、看看眼睛、看看造型、看看整体效果、露个面看看、站在窗边、坐在床边、从门后探头
+**高危通用词(画人物图必避)**:同一张脸、同一人物气质、图片内角色不变、像素级一致、展示一下、看看全身、看看腿、看看脚、看看手、看看腰、看看鞋、看看头发、看看眼睛、看看造型、看看整体效果、露个面看看、站在窗边、坐在床边、从门后探头
 
-**规避**：用「面部特征一致 / 脸型一致 / 五官一致 / 造型统一」替代“同一张脸”；遇此报错先 grep 关键词表核对，改词重跑即可（实测：四视图 prompt “保持同一张脸”被拦，改“面部特征一致”后一次通过）
+**规避**:用「面部特征一致 / 脸型一致 / 五官一致 / 造型统一」替代"同一张脸";遇此报错先 grep 关键词表核对,改词重跑即可(实测:四视图 prompt "保持同一张脸"被拦,改"面部特征一致"后一次通过)
 
-### seedream 华为SSE假成功·根因与双层修复（2026-11-08 固化）
+### 技能装了却不加载:三类根因与排查修复(2026-11-12 固化)
 
-**根因：** `huawei_provider._download_image` 仅校验 HTTP 200，把下载到的 HTML 错误页/占位文本/空内容也 `write_bytes` 落盘并返回 path，导致 SSE 返回 status=generated 但图是垃圾文件——假成功。seedream_provider 的 SSE 分支只查 `generated_image_path` 非空，未像 openai 分支那样用 `_validate_output_image` 强校验。
+**背景:** 本地 `skills/` 358 个目录,`openclaw skills check` 只认 220 个,且有 `[skills] root has many entries, truncating discovery.` 警告。逐层排查后确认是**三个独立原因叠加**,不是单一故障。
 
-**双层修复：**
-1. **源头 - huawei_provider._download_image**：下载后强校验内容——①非空且 ≥500 字节 ②前几字节为真实图片魔数（JPEG `FFD8FF` / PNG `89504E47` / WEBP `RIFF…WEBP` / GIF `GIF8`），不达标返回 None → paths 空 → 状态 `provider_returned_no_image`，杜绝垃圾文件报成功
-2. **兜底 - seedream_provider SSE 分支**：status in ('generated',) 且路径非空时，再调 `_validate_output_image(path, _gen_start)` 强校验文件真实存在且为本轮新生成（与 openai 分支同标准），不通过则标 status='provider_returned_no_image' + blocked_send=fake_success，continue 尝试下一通道
-
-**验证：** 单测 9 场景全过（HTML错误页/空/占位→拒；PNG/JPEG/WEBP/GIF→过；新生成文件→有效、陈旧→拒）；py_compile 通过；已提交 git b74c4eb；备份 .bak-ssefix-20261108
-**判断教训：** 排查“图没落盘”先确认 OUT_DIR 实际路径（`.persona_visual/generated/`，非 `generated-images/`），避免查错目录误判；SSE 假成功判断以落盘文件内容有效为准，不看 status。
-
-### 技能装了却不加载：三类根因与排查修复（2026-11-12 固化）
-
-**背景：** 本地 `skills/` 358 个目录，`openclaw skills check` 只认 220 个，且有 `[skills] root has many entries, truncating discovery.` 警告。逐层排查后确认是**三个独立原因叠加**，不是单一故障。
-
-**三类根因：**
+**三类根因:**
 
 | 根因 | 默认上限 | 现象 | 修复 |
 |---|---|---|---|
-| ① 根目录候选超限 | `skills.limits.maxCandidatesPerRoot` = 300 | 按字母序截断，靠后的技能永远不被发现；日志报 `truncating discovery` | 调高到 400+ |
-| ② 单源加载超限 | `skills.limits.maxSkillsLoadedPerSource` = 200 | 发现到了但只加载前 200 个，其余静默丢弃（无警告） | 调高到 400+ |
-| ③ SKILL.md 缺 frontmatter | — | 文件从 `# 标题` 直接开始，无 `---name/description---` 头，OpenClaw 完全不认它是技能（**无任何报错**） | 补 frontmatter |
+| 1 根目录候选超限 | `skills.limits.maxCandidatesPerRoot` = 300 | 按字母序截断,靠后的技能永远不被发现;日志报 `truncating discovery` | 调高到 400+ |
+| 2 单源加载超限 | `skills.limits.maxSkillsLoadedPerSource` = 200 | 发现到了但只加载前 200 个,其余静默丢弃(无警告) | 调高到 400+ |
+| 3 SKILL.md 缺 frontmatter | - | 文件从 `# 标题` 直接开始,无 `---name/description---` 头,OpenClaw 完全不认它是技能(**无任何报错**) | 补 frontmatter |
 
-**关键坑：③ 最隐蔽**——28 个技能就是缺 frontmatter，另有 3 个把 `description` 拼成 `discription`（qcc-agent-skill、voice-synthesis），全部静默失效，`skills check` 里表现为「既不在 ready 也不在 missing」。
+**关键坑:3 最隐蔽**--28 个技能就是缺 frontmatter,另有 3 个把 `description` 拼成 `discription`(qcc-agent-skill、voice-synthesis),全部静默失效,`skills check` 里表现为「既不在 ready 也不在 missing」。
 
-**诊断方法（交叉比对）：**
-1. 跑 `openclaw skills check > /tmp/sk.txt 2>&1`，取 `Ready and visible to model:` 段与 `Missing requirements:` 段
-2. 遍历 `skills/` 每个目录读 SKILL.md 的 `name:` 字段，与上面两段做集合比对
-3. 既不在 ready 也不在 missing 的 → 就是未加载，进一步查 `t.lstrip().startswith('---')` 和 `re.search(r'^name:', t[:600], re.M)` 判断是否缺 frontmatter
+**诊断方法(交叉比对):**
+1. 跑 `openclaw skills check > /tmp/sk.txt 2>&1`,取 `Ready and visible to model:` 段与 `Missing requirements:` 段
+2. 遍历 `skills/` 每个目录读 SKILL.md 的 `name:` 字段,与上面两段做集合比对
+3. 既不在 ready 也不在 missing 的 → 就是未加载,进一步查 `t.lstrip().startswith('---')` 和 `re.search(r'^name:', t[:600], re.M)` 判断是否缺 frontmatter
 
-**修复动作：**
-- 缺 frontmatter：取正文首个非空非标题行作 description，头部插入 `---\nname: \ndescription: \n---\n\n`
-- 拼写错：`discription:` → `description:`
-- frontmatter 结构坏（如 AIGC 水印块与 name 块并列）：把 name/description 提到最前，水印块并入同一 frontmatter
-- 调上限：**`config.patch` 会被拒（protected config paths）**，须直接编辑 `~/.openclaw/openclaw.json` 的 `skills.limits`（先备份），改完热生效不需重启
+**修复动作:**
+- 缺 frontmatter:取正文首个非空非标题行作 description,头部插入 `---\nname: \ndescription: \n---\n\n`
+- 拼写错:`discription:` → `description:`
+- frontmatter 结构坏(如 AIGC 水印块与 name 块并列):把 name/description 提到最前,水印块并入同一 frontmatter
+- 调上限:**`config.patch` 会被拒(protected config paths)**,须直接编辑 `~/.openclaw/openclaw.json` 的 `skills.limits`(先备份),改完热生效不需重启
 
-**效果实测（2026-11-12）：** 发现总数 280→435，可用 220→371，本地未加载 155→0；顺带救回 `qiqing-liuyu`（人格技能）、`mao-perspective`、`tokui-dsl-renderer`、`pose-reference-*` 等此前完全不可见的技能。
+**效果实测(2026-11-12):** 发现总数 280→435,可用 220→371,本地未加载 155→0;顺带救回 `qiqing-liuyu`(人格技能)、`mao-perspective`、`tokui-dsl-renderer`、`pose-reference-*` 等此前完全不可见的技能。
 
-**注意：** `maxSkillsPromptChars`（默认 30000）才是真正控 token 的阀门，别为了「全加载」去提它；加载 ≠ 进提示词，提示词仍按字符预算裁剪。
+**注意:** `maxSkillsPromptChars`(默认 30000)才是真正控 token 的阀门,别为了「全加载」去提它;加载 ≠ 进提示词,提示词仍按字符预算裁剪。
 
-### 技能数字三口径区分（2026-11-13 固化）
+### 技能数字三口径区分(2026-11-13 固化)
 
-**每日维护报告 / `skills check` 报的数不同，是两个口径不是数字变了：**
+**每日维护报告 / `skills check` 报的数不同,是两个口径不是数字变了:**
 
 | 口径 | 当前值 | 含义 |
 |---|---|---|
-| 每日维护报告 `daily_maintenance.py --report` | **358** | 本地 `skills/` 目录总数（遍历 os.listdir，不含 `.`开头/`.archive`）；含 SKILL.md 即计入可用，缺 SKILL.md 计缺依赖 |
-| `skills check` Eligible/Visible | **371** | 全源可加载（本地 skills/ + plugin-skills + core_skills + node_modules 非本地源）|
-| `skills check` Total | **435** | 发现总数（比 Eligible 多出的为缺依赖/不满足）|
+| 每日维护报告 `daily_maintenance.py --report` | **358** | 本地 `skills/` 目录总数(遍历 os.listdir,不含 `.`开头/`.archive`);含 SKILL.md 即计入可用,缺 SKILL.md 计缺依赖 |
+| `skills check` Eligible/Visible | **371** | 全源可加载(本地 skills/ + plugin-skills + core_skills + node_modules 非本地源)|
+| `skills check` Total | **435** | 发现总数(比 Eligible 多出的为缺依赖/不满足)|
 
-**关键事实：** 本地目录总数一直是 358，三口径不冲突。之前报“371 全源/337 本地”易误导——337 实为补 frontmatter 前的“有 SKILL.md”子集，337+21(missing)=358。技能索引整理补 21 个 frontmatter 后 daily 报“可用 358/缺依赖 0”。以后答技能数：看本地→358，看全源→371，看清 user 问哪头。
+**关键事实:** 本地目录总数一直是 358,三口径不冲突。之前报"371 全源/337 本地"易误导--337 实为补 frontmatter 前的"有 SKILL.md"子集,337+21(missing)=358。技能索引整理补 21 个 frontmatter 后 daily 报"可用 358/缺依赖 0"。以后答技能数:看本地→358,看全源→371,看清 user 问哪头。
 
-**371 来源构成（2026-11-13 补充）：** “全源”= 5 类来源可加载总和，配置入口 `skills.load.extraDirs`（本机是 workspace/skills + core_skills，其余为引擎内置自动扫描）：
+**371 来源构成(2026-11-13 补充):** "全源"= 5 类来源可加载总和,配置入口 `skills.load.extraDirs`(本机是 workspace/skills + core_skills,其余为引擎内置自动扫描):
 
 | 来源 | 路径 | 目录数 |
 |---|---|---|
@@ -2299,146 +2305,127 @@ PYTHONPATH=. python3 skills/seedream-image_gen/scripts/generate_seedream.py \
 | 内置技能 | `~/openclaw/node_modules/openclaw/skills/` | 57 |
 | 合计候选 | | ≈442 |
 
-Eligible 371 = 442 候选中满足加载条件的（其余为缺依赖/不满足）；`check` Total 435 为发现总数。
+Eligible 371 = 442 候选中满足加载条件的(其余为缺依赖/不满足);`check` Total 435 为发现总数。
 
-### 白模参考图出图·方向核对与读图口径（2026-11-13 固化）
+### 白模参考图出图·方向核对与读图口径(2026-11-13 固化)
 
-**1. 白模方向必须先核对，反向要镜像**
-- 姿势库白模（如 `full_single_P026_front.png`）自带左右朝向，与需求相反时模型会**忠实照搬反向姿态**（实测：需求"左臂举+右手叉腰+髋朝右"，P026 实为"右臂举+左手叉腰+髋朝左"，生成结果整体镜像）
-- 处置：先用 `Image.open(p).transpose(Image.FLIP_LEFT_RIGHT)` 水平翻转存 `/tmp`，再作 `--input-image` 喂入，方向即正
-- 翻转后仍需在 prompt 显式锁朝向（如"髋部朝画面右侧侧顶"），双保险
+**1. 白模方向必须先核对,反向要镜像**
+- 姿势库白模(如 `full_single_P026_front.png`)自带左右朝向,与需求相反时模型会**忠实照搬反向姿态**(实测:需求"左臂举+右手叉腰+髋朝右",P026 实为"右臂举+左手叉腰+髋朝左",生成结果整体镜像)
+- 处置:先用 `Image.open(p).transpose(Image.FLIP_LEFT_RIGHT)` 水平翻转存 `/tmp`,再作 `--input-image` 喂入,方向即正
+- 翻转后仍需在 prompt 显式锁朝向(如"髋部朝画面右侧侧顶"),双保险
 
-**2. 左右基准换算铁律（2026-11-13 用户定基准）**
-- **需求侧：用户描述姿态的"左/右"一律指「人物自身左右」**——"髋朝左侧微转"= 人物向自己左侧转胯（观者看是画面右侧）；"左手扶左腰胯"= 人物自己的左手
-- **核验侧：看图用观者视角（画面左半/右半），但判断是否符合需求必须换算**：人物左侧 = 画面右侧，人物右手 = 画面左侧
-- **报结论：统一用「人物左手/人物左侧」口径**，禁用"画面右"这类易混词单独下判断
-- **教训（2026-11-13 连栽两次）：** ①把"画面右侧的手"误说成人物右手，把方向正确的图判成反的 ②灯塔泳装图需求"髋朝镜头左侧"（=人物左侧=画面右），图里髋凸画面右本就正确，却因未换算判成"反了"，被用户连指两次"左右不分"
-- **自查动作：** 下"方向反了"结论前，必须做一次换算（需求方向 → 观者视角 → 与图对比），换算不写出来不下结论
+**2. 左右基准换算铁律(2026-11-13 用户定基准)**
+- **需求侧:用户描述姿态的"左/右"一律指「人物自身左右」**--"髋朝左侧微转"= 人物向自己左侧转胯(观者看是画面右侧);"左手扶左腰胯"= 人物自己的左手
+- **核验侧:看图用观者视角(画面左半/右半),但判断是否符合需求必须换算**:人物左侧 = 画面右侧,人物右手 = 画面左侧
+- **报结论:统一用「人物左手/人物左侧」口径**,禁用"画面右"这类易混词单独下判断
+- **教训(2026-11-13 连栽两次):** 1把"画面右侧的手"误说成人物右手,把方向正确的图判成反的 2灯塔泳装图需求"髋朝镜头左侧"(=人物左侧=画面右),图里髋凸画面右本就正确,却因未换算判成"反了",被用户连指两次"左右不分"
+- **自查动作:** 下"方向反了"结论前,必须做一次换算(需求方向 → 观者视角 → 与图对比),换算不写出来不下结论
 
-**3. 内衣类双通道硬拦，改吊带家居裙可过**
-- `xiaoyi_pro` 与 `huawei_sse` 对成套内衣（含去性化描述版）均报 `OutputImageSensitiveContentDetected`，两轮实测均拦
-- 改「深酒红真丝缎吊带家居裙」走 `huawei_sse --size 9:16` 一次过（1080×1920），缎面光泽/金扣/场景质感均保留
-- 白模只锁骨架姿态，具体接触动作（如"手指扶在窗框上沿"）必须在 prompt 显式写，否则易生成悬空高举
+**3. 内衣类双通道硬拦,改吊带家居裙可过**
+- `xiaoyi_pro` 与 `huawei_sse` 对成套内衣(含去性化描述版)均报 `OutputImageSensitiveContentDetected`,两轮实测均拦
+- 改「深酒红真丝缎吊带家居裙」走 `huawei_sse --size 9:16` 一次过(1080×1920),缎面光泽/金扣/场景质感均保留
+- 白模只锁骨架姿态,具体接触动作(如"手指扶在窗框上沿")必须在 prompt 显式写,否则易生成悬空高举
 
-### 生图 blocked 状态二分法 + 泳衣/内衣审核边界（2026-11-13 固化）
-
-**1. `blocked` 要分清是谁拦的（处置完全不同）**
-
-| 报错字段 | 谁拦的 | 含义 | 处置 |
-|---|---|---|---|
-| `persona_visual_request_must_use_main_pipeline` | **本地关键词守卫**（`persona_visual_request_guard.py`）| prompt 命中 PERSONA_VISUAL_KEYWORDS 通用词表，跟内容合规无关 | **改词**即可过（如"站在窗边"→"立于落地窗前"）|
-| `OutputImageSensitiveContentDetected` | **模型内容审核** | 真触发平台合规策略 | 改写内容（去性化/换服装品类）|
-
-- 实测案例（2026-11-13）：泳装写真 prompt 带"她站在窗边"，连报两次 `blocked` + `persona_visual_request_must_use_main_pipeline`；改成"立于落地窗前"后 huawei_sse 一次过。**不是内容有问题，是词表误伤**。
-- 排查顺序：先看 `provider_error` 字段文案，别急着改内容。命中守卫就只改词，不要白改创意。
-
-**2. 泳衣 vs 内衣：审核尺度不同，别一概而论**
-
-| 品类 | 通道表现 | 结论 |
-|---|---|---|
-| 成套内衣（含去性化描述版）| `xiaoyi_pro` 与 `huawei_sse` **双通道硬拦** | 改「真丝缎吊带家居裙」可过 |
-| **连体泳衣**（深V + 胸前镂空 + 金链细节）| `huawei_sse` **一次过**（1080×1920）| 泳衣可正常出，无需替换品类 |
-
-- 判断口径：泳装属常见时尚品类，审核宽松；内衣/情趣类才封死。写 prompt 时泳衣不必自我阉割，内衣直接换家居服品类。
-
-### 九宫格分镜出图方法论（2026-11-13 固化·四版迭代实战）
+### 九宫格分镜出图方法论(2026-11-13 固化·四版迭代实战)
 
 **1. 「9:16竖版 + 3×3九宫格」自相矛盾**
-- 9:16 切 3×3 → 每格是竖长条（如 1080×1920 切成 360×640），不是正方形
-- 要每格正方形，整图必须 **1:1**：`size='2048x2048'`（每格 683×683）
+- 9:16 切 3×3 → 每格是竖长条(如 1080×1920 切成 360×640),不是正方形
+- 要每格正方形,整图必须 **1:1**:`size='2048x2048'`(每格 683×683)
 - 用户同时提"9:16"和"3×3"时必须先点出矛盾并确认要哪种
 
-**2. 一图九格 vs 分格拼接：必须选分格**
+**2. 一图九格 vs 分格拼接:必须选分格**
 | 方式 | 问题 |
 |---|---|
-| 一张图生成 9 格 | 模型控不住每格：重复构图（两格几乎一样）、混入平视、景别单一 |
-| **分格生成 + PIL 拼接** | 每格 prompt 独立，机位/动作/景别全部可锁 |
+| 一张图生成 9 格 | 模型控不住每格:重复构图(两格几乎一样)、混入平视、景别单一 |
+| **分格生成 + PIL 拼接** | 每格 prompt 独立,机位/动作/景别全部可锁 |
 
-- 拼接：`Image.new` + 6px 白缝，9 格 1024 → 成品 3096×3096
+- 拼接:`Image.new` + 6px 白缝,9 格 1024 → 成品 3096×3096
 
 **3. 人脸一致性的做法**
-- 先单独生成第 1 格定人，第 2-9 格全部带 `input_image=cell1.jpg`，prompt 补一句"保持参考图中同一位女性的面部特征与发型一致"
+- 先单独生成第 1 格定人,第 2-9 格全部带 `input_image=cell1.jpg`,prompt 补一句"保持参考图中同一位女性的面部特征与发型一致"
 
-**4. 特写/远景格必须裸跑（关键坑）**
-- 实测：第 5 格（鞋尖特写）、第 8 格（桥塔远景小人物）**带人脸参考图 → 都被带成全身人像**，连改两轮才通
-- 处置：特写/远景格**不传 input_image**，只写景别与主体；这类格子不需要人脸一致性
+**4. 特写/远景格必须裸跑(关键坑)**
+- 实测:第 5 格(鞋尖特写)、第 8 格(桥塔远景小人物)**带人脸参考图 → 都被带成全身人像**,连改两轮才通
+- 处置:特写/远景格**不传 input_image**,只写景别与主体;这类格子不需要人脸一致性
 
 **5. 参考图有姿态惯性**
-- 定人参考图是"迈步"姿态时，后续格子即使 prompt 写别的动作也容易全变行走
-- 处置：分格 prompt 显式写「人物必须静止站立，双脚站稳不迈步，不要行走动作」，并把 `行走、迈步` 放进禁止词
+- 定人参考图是"迈步"姿态时,后续格子即使 prompt 写别的动作也容易全变行走
+- 处置:分格 prompt 显式写「人物必须静止站立,双脚站稳不迈步,不要行走动作」,并把 `行走、迈步` 放进禁止词
 
 **6. 华为通道尺寸上限**
-- 面积上限 **4,624,220 像素**：2048×2048（4,194,304）✅ 可；`4K-square` ❌ 报 `InvalidParameter: image area must be at most 4624220 pixels`
-- CLI `--size` choices **不含 2048x2048**，需直调 provider：`generate_image(prompt=..., size='2048x2048', channel='huawei_sse')`
+- 面积上限 **4,624,220 像素**:2048×2048(4,194,304)✅ 可;`4K-square` ❌ 报 `InvalidParameter: image area must be at most 4624220 pixels`
+- CLI `--size` choices **不含 2048x2048**,需直调 provider:`generate_image(prompt=..., size='2048x2048', channel='huawei_sse')`
 
 **7. 分镜 prompt 结构模板**
-- 统一前缀（摄影语言+人物+穿搭+场景+画质要求+禁止项）+ 本格分镜描述（动作/机位/景别）
-- 禁止项必备：平视、行走迈步（除动态格外）、畸形手脚、扭曲鞋跟、塑料皮肤、CG感、文字、水印
+- 统一前缀(摄影语言+人物+穿搭+场景+画质要求+禁止项)+ 本格分镜描述(动作/机位/景别)
+- 禁止项必备:平视、行走迈步(除动态格外)、畸形手脚、扭曲鞋跟、塑料皮肤、CG感、文字、水印
 
-### 性化描写分级处置：内衣换品类 vs 日常穿搭只删描写（2026-11-13 固化）
+### 性化描写分级处置:内衣换品类 vs 日常穿搭只删描写(2026-11-13 固化)
 
-**核心结论：禁的是「身体量化/解剖定位描写」，不是服装本身。**
+**核心结论:禁的是「身体量化/解剖定位描写」,不是服装本身。**
 
 | 品级 | 例子 | 处置 |
 |---|---|---|
-| **内衣/情趣类** | 成套内衣、蕾丝胸衣 | 必须**换品类**（→真丝缎吊带家居裙），改描写也拦 |
-| **日常穿搭/泳装类** | 针织挂脖U领短上衣+低腰运动短裤、连体泳衣 | **只删身体量化描写**，款式细节与画面意图全保留即可过 |
+| **内衣/情趣类** | 成套内衣、蕾丝胸衣 | 必须**换品类**(→真丝缎吊带家居裙),改描写也拦 |
+| **日常穿搭/泳装类** | 针织挂脖U领短上衣+低腰运动短裤、连体泳衣 | **只删身体量化描写**,款式细节与画面意图全保留即可过 |
 
-**必删的三类词（实测触发审核）：**
-- 杯数："视觉约 D–E 杯" → 改"身材匀称"
-- 胸腰差："胸腰差明显" → 改"胸腰差自然"或删
-- 解剖定位："开口最低点下探至胸骨下端、剑突上方约两指处" → 改"圆弧开口"
+**必删的三类词(实测触发审核):**
+- 杯数:"视觉约 D-E 杯" → 改"身材匀称"
+- 胸腰差:"胸腰差明显" → 改"胸腰差自然"或删
+- 解剖定位:"开口最低点下探至胸骨下端、剑突上方约两指处" → 改"圆弧开口"
 
-**可保留的（不算性化）：**
-- 款式结构：挂脖、细针织、罗纹收腰、短下摆、低腰弧边、侧边窄滚条
-- 材质质感：针织纹理、缎面光泽、哑光泳料
+**可保留的(不算性化):**
+- 款式结构:挂脖、细针织、罗纹收腰、短下摆、低腰弧边、侧边窄滚条
+- 材质质感:针织纹理、缎面光泽、哑光泳料
 - 场景/姿态/机位/光线/景别全部照写
 
-**实测案例（2026-11-13）：** 便利店临窗坐姿写真，原文含 D–E 杯 + 剑突定位，删改后 `huawei_sse --size 9:16` **一次过**（1080×1920），穿搭细节零损失。
+**实测案例(2026-11-13):** 便利店临窗坐姿写真,原文含 D-E 杯 + 剑突定位,删改后 `huawei_sse --size 9:16` **一次过**(1080×1920),穿搭细节零损失。
 
 **处置顺序：** 先判断品级 → 内衣类换品类；日常类只删三类量化词 → 仍拦再考虑换通道。
 
-### 生图提示词·否定式约束优先（2026-11-13 固化·三版实测）
+**执行流程（2026-11-15 并入原「先出第一版再决定改」条）：** 先出第一版再决定改——第一版只删露骨量化词四类（①胸部重量感/弧度 ②胸腰差/黄金比例 ③臀部S曲线/饱满 ④超薄微透/如第二层肌肤），其余款式、材质、颜色、场景、光线、动作、机位、镜头参数、风格词一个字不动，删处用中性词顶替（身材匀称/体形自然/体态优雅/轻薄透气垂坠）；出图后交用户看效果，由用户决定是否继续调整。底线不变：露骨量化词仍不写进提示词，区别只是“少改先出”而非“大改再出”。
 
-**核心：模型对「不要什么」比「要什么」敏感得多。**
+### 生图提示词·否定式约束优先(2026-11-13 固化·三版实测)
+
+**核心:模型对「不要什么」比「要什么」敏感得多。**
 
 | 目标 | 无效写法 | 生效写法 |
 |---|---|---|
-| 双腿分开不交叠 | "双腿分开不交叠" | "**绝对不要双腿交叠、绝对不要跷二郎腿、绝对不要一条腿压在另一条腿上**"（三连否定，一次生效）|
-| 裁到膝下 | "下缘至膝下" | "**画面下缘裁切在膝盖下方一点，不拍到小腿、不拍到脚、不要全身照**" |
-| 人物静止 | "静止站立" | "**人物必须静止站立，双脚站稳不迈步，不要行走动作**"（配合禁止词列"行走、迈步"）|
+| 双腿分开不交叠 | "双腿分开不交叠" | "**绝对不要双腿交叠、绝对不要跷二郎腿、绝对不要一条腿压在另一条腿上**"(三连否定,一次生效)|
+| 裁到膝下 | "下缘至膝下" | "**画面下缘裁切在膝盖下方一点,不拍到小腿、不拍到脚、不要全身照**" |
+| 人物静止 | "静止站立" | "**人物必须静止站立,双脚站稳不迈步,不要行走动作**"(配合禁止词列"行走、迈步")|
 
-**要点：**
-1. 关键约束用**否定句重复 2-3 遍**，换不同说法砸（交叠/跷二郎腿/腿压腿），单句肯定描述常被忽略
-2. 景别/裁切也用否定式兜底（"不拍到脚"），否则模型倾向给全身
-3. 否定词同时写进「禁止」清单，双通道施压
+**要点:**
+1. 关键约束用**否定句重复 2-3 遍**,换不同说法砸(交叠/跷二郎腿/腿压腿),单句肯定描述常被忽略
+2. 景别/裁切也用否定式兜底("不拍到脚"),否则模型倾向给全身
+3. 否定词同时写进「禁止」清单,双通道施压
 
-**用户设定矛盾要先指出（2026-11-13 案例）：**
-- "双脚稳落脚踏"与"下缘至膝下"物理冲突——裁到膝下必然拍不到脚。遇到这类内部矛盾先点出来问用户保哪个，不要闷头生成再解释。
+**用户设定矛盾要先指出(2026-11-13 案例):**
+- "双脚稳落脚踏"与"下缘至膝下"物理冲突--裁到膝下必然拍不到脚。遇到这类内部矛盾先点出来问用户保哪个,不要闷头生成再解释。
 
-**连带实测：** 便利店坐姿写真三版迭代——第1版手/扭转对但腿交叠；第2版加三连否定腿分开但拍全身；第3版补否定式景别约束才完全对上。
+**连带实测:** 便利店坐姿写真三版迭代--第1版手/扭转对但腿交叠;第2版加三连否定腿分开但拍全身;第3版补否定式景别约束才完全对上。
 
-### 巡检脚本硬编码误报修复法（2026-11-14 固化·第二次同类坑）
+### 巡检脚本硬编码误报修复法(2026-11-14 固化·第二次同类坑)
 
-**现象：** 健康巡检/检查脚本硬编码期望目录或模块清单（如 `["pipeline","planner","capability"]`），其中含虚构或早已不存在的名字，导致每次巡检稳定误报缺失。
+**现象:** 健康巡检/检查脚本硬编码期望目录或模块清单(如 `["pipeline","planner","capability"]`),其中含虚构或早已不存在的名字,导致每次巡检稳定误报缺失。
 
-**案例（两次同类坑）：**
+**案例(两次同类坑):**
 | 时间 | 脚本 | 误报项 |
 |---|---|---|
 | 2026-09-22 | galaxyos claw_health | modules ❌ |
-| 2026-11-14 | daily_maintenance.py | core/planner、core/capability（git 全历史从未存在）|
+| 2026-11-14 | daily_maintenance.py | core/planner、core/capability(git 全历史从未存在)|
 
-**修法（通用，2026-11-14 落地）：** 把硬编码期望清单改为**动态检查真实来源**——目录类用 `git ls-tree -d --name-only HEAD core/` 拿 git 实际追踪项，只有"git 有记录但本地缺失"才算真缺失；git 不可用时回退只查核心项。**禁止凭空硬编码目录/模块名进期望清单。**
+**修法(通用,2026-11-14 落地):** 把硬编码期望清单改为**动态检查真实来源**--目录类用 `git ls-tree -d --name-only HEAD core/` 拿 git 实际追踪项,只有"git 有记录但本地缺失"才算真缺失;git 不可用时回退只查核心项。**禁止凭空硬编码目录/模块名进期望清单。**
 
-**验证：** issues 2→0，`health_check()` 状态 ok，subsystem 追踪 57 目录 missing 0。
+**验证:** issues 2→0,`health_check()` 状态 ok,subsystem 追踪 57 目录 missing 0。
 
-**涉及文件：** scripts/_archived/daily_maintenance.py（备份 .bak-20261114-healthfix，提交 990c927）
+**涉及文件:** scripts/_archived/daily_maintenance.py(备份 .bak-20261114-healthfix,提交 990c927)
 
-### costume-reference 服装换装参考图库使用法（2026-11-14 固化）
+### costume-reference 服装换装参考图库使用法(2026-11-14 固化)
 
-**定位：** ai-pose-gallery 9 技能包里管"穿什么"的那套，与姿势参考（管怎么摆）、人像参考（管脸和发型）配套成换装闭环。
+**定位:** ai-pose-gallery 9 技能包里管"穿什么"的那套,与姿势参考(管怎么摆)、人像参考(管脸和发型)配套成换装闭环。
 
-**素材规模：** `costume-reference` 提供 **1068 套整套穿搭**，每张图是**无人物**的平铺/悬浮展示造型（完整一套含鞋包配饰）。分季：
+**素材规模:** `costume-reference` 提供 **1068 套整套穿搭**,每张图是**无人物**的平铺/悬浮展示造型(完整一套含鞋包配饰)。分季:
 | 分类 | 套数 | 常见单品/风格标签 |
 |---|---|---|
 | 春季 | 215 | 白色/针织/吊带衫/开衫/连衣裙/牛仔 |
@@ -2448,188 +2435,155 @@ Eligible 371 = 442 候选中满足加载条件的（其余为缺依赖/不满足
 | 派对礼服 | 48 | 缎面/丝绒/雪纺/薄纱/高跟鞋 |
 | 泳装度假 | 54 | 泳衣/荷叶边/墨镜/礼帽/碎花 |
 
-**图片位置：** `/home/sandbox/pose-gallery/img/costume/`（实测 1407 张 webp）。
+**图片位置:** `/home/sandbox/pose-gallery/img/costume/`(实测 1407 张 webp)。
 
-**检索：** `skills/costume-reference/references/catalog.csv`（1068 行）按「服装名称/标签/英文关键词」列 grep 多关键词取交集，挑 1-3 套给用户选；勿整份读入上下文。
+**检索:** `skills/costume-reference/references/catalog.csv`(1068 行)按「服装名称/标签/英文关键词」列 grep 多关键词取交集,挑 1-3 套给用户选;勿整份读入上下文。
 
-**用法：** 取该行图片列当**换装参考图**喂生图/生视频模型，prompt 注明"仅参考服装款式与配色，不参考人物脸部、发型、姿势与背景"，并附该行英文关键词提升还原度。
+**用法:** 取该行图片列当**换装参考图**喂生图/生视频模型,prompt 注明"仅参考服装款式与配色,不参考人物脸部、发型、姿势与背景",并附该行英文关键词提升还原度。
 
-**组合闭环：** 服装图(costume-reference)管穿什么 + 人像图(portrait-reference)管脸和发型 + 姿势图(pose-reference)管怎么摆——三张参考图各管一件事，同时有角色图时角色图负责脸、服装图负责穿搭。
+**组合闭环:** 服装图(costume-reference)管穿什么 + 人像图(portrait-reference)管脸和发型 + 姿势图(pose-reference)管怎么摆--三张参考图各管一件事,同时有角色图时角色图负责脸、服装图负责穿搭。
 
-**另两套服装技能：** `costume-reference-anime`（440 套二次元服装，图需联网读 CharaDB 原站）、`costume-reference-sexy`（339 套内衣睡衣+性感穿搭，成人向 18+，默认安全模式，合规学习参考）。
+**另两套服装技能:** `costume-reference-anime`(440 套二次元服装,图需联网读 CharaDB 原站)、`costume-reference-sexy`(339 套内衣睡衣+性感穿搭,成人向 18+,默认安全模式,合规学习参考)。
 
-**注意：** 参考图仅用于服装特征参考，遵守平台内容规范；图片著作权归原作者ギア，仅供个人创作参考，不得商用。
+**注意:** 参考图仅用于服装特征参考,遵守平台内容规范;图片著作权归原作者ギア,仅供个人创作参考,不得商用。
 
-### 面部性化元素合规改写：拉丝/湿感 → 釉面光泽（2026-11-14 固化）
+### 面部性化元素合规改写:拉丝/湿感 → 釉面光泽(2026-11-14 固化)
 
-**现象：** 唇部"拉丝液体""垂落水滴""微湿"是**露骨湿感性暗示**，平台审核拦、也不该出，但可直接用**质感词替换**保留时尚水光氛围。
+**现象:** 唇部"拉丝液体""垂落水滴""微湿"是**露骨湿感性暗示**,平台审核拦、也不该出,但可直接用**质感词替换**保留时尚水光氛围。
 
-**替换法（保留质感、去掉性暗示）：**
+**替换法(保留质感、去掉性暗示):**
 | 你要的 | 合规写法 |
 |---|---|
 | 水润光泽 | "唇面泛着**莹润光泽与细腻高光反射**" |
-| 唇釉质感 | "**镜面光泽唇釉质感**，莹润透亮" |
-| 高级亮面 | "**唇部带柔和润泽高光**，细腻反光" |
-| 时尚大片 | "**凝露般透亮的光泽**，广告级唇部细节" |
+| 唇釉质感 | "**镜面光泽唇釉质感**,莹润透亮" |
+| 高级亮面 | "**唇部带柔和润泽高光**,细腻反光" |
+| 时尚大片 | "**凝露般透亮的光泽**,广告级唇部细节" |
 
-**规避词（仍偏性暗示，不用）：** 拉丝、垂落水滴、晶莹液体桥接、微湿、湿润、水珠、溢出、亮晶晶拉丝、透明黏液。
+**规避词(仍偏性暗示,不用):** 拉丝、垂落水滴、晶莹液体桥接、微湿、湿润、水珠、溢出、亮晶晶拉丝、透明黏液。
 
-**否定式兜底（关键）：** 替换后加"**干净清爽，不沾湿、不垂滴、不要任何液体或水珠**"——模型看到"光泽"有时会自己画出拉丝/水珠，用否定句压住（与「否定式约束优先」同一原理）。
+**否定式兜底(关键):** 替换后加"**干净清爽,不沾湿、不垂滴、不要任何液体或水珠**"--模型看到"光泽"有时会自己画出拉丝/水珠,用否定句压住(与「否定式约束优先」同一原理)。
 
-**实测（2026-11-14）：** 原含"拉丝液体+末端水滴"→ 替换为釉面光泽+否定句，华为 9:16 **一次过**，唇釉高光泽但完全干净无拉丝无水珠。
+**实测(2026-11-14):** 原含"拉丝液体+末端水滴"→ 替换为釉面光泽+否定句,华为 9:16 **一次过**,唇釉高光泽但完全干净无拉丝无水珠。
 
-**与既有条目的关系：** "性化描写分级处置"管服装/身体量化词（内衣换品类、日常只删描写）；本条管**唇部/面部湿感类感官性化**，同属合规改写方法论，两者互补。
+**与既有条目的关系:** "性化描写分级处置"管服装/身体量化词(内衣换品类、日常只删描写);本条管**唇部/面部湿感类感官性化**,同属合规改写方法论,两者互补。
 
-### 表情情绪跑偏纠正：紧绷 → 松弛沉醉 + 正向锚点优先（2026-11-14 固化 · 二次修正合并）
+### 表情情绪跑偏纠正:紧绷 → 松弛沉醉 + 正向锚点优先(2026-11-14 固化 · 二次修正合并)
 
-**现象：** 提示词写"面部肌肉紧绷、眼睑用力、眉头紧锁、肌肉挤压"描述强烈情绪时，模型会**往痛苦/哭泣方向跑**（实测翻车：出满脸泪痕的悲伤脸）。
+**现象:** 提示词写"面部肌肉紧绷、眼睑用力、眉头紧锁、肌肉挤压"描述强烈情绪时,模型会**往痛苦/哭泣方向跑**(实测翻车:出满脸泪痕的悲伤脸)。
 
-**修法一（词表替换）：**
-| 原写法（跑偏成痛苦） | 换成（出松弛沉醉） |
+**修法一(词表替换):**
+| 原写法(跑偏成痛苦) | 换成(出松弛沉醉) |
 |---|---|
 | 眼睑用力、紧闭使劲 | **眼睑放松、轻闭不使劲** |
-| 眉头紧锁、肌肉挤压、眉心起皱 | **眉头微蹙后舒展，眉心不挤成皱纹** |
+| 眉头紧锁、肌肉挤压、眉心起皱 | **眉头微蹙后舒展,眉心不挤成皱纹** |
 | 面部肌肉紧绷 | **面部肌肉完全放松** |
 | 强烈情绪张力 | **松弛而沉醉 / 微怔失神 / 睡醒迷糊** |
 
-**修法二（关键，实测更管用）：给正向情绪锚点**
-- 最有效一句：**"嘴角微微上扬，带一丝慵懒笑意"**
-- 配情绪词：**"宁静、愉悦、惬意、放松、安然"**
-- 实测：眼周无紧绷、眉头舒展无皱纹、脸颊光洁无泪痕、嘴角有笑意
+**修法二(关键,实测更管用):给正向情绪锚点**
+- 最有效一句:**"嘴角微微上扬,带一丝慵懒笑意"**
+- 配情绪词:**"宁静、愉悦、惬意、放松、安然"**
+- 实测:眼周无紧绷、眉头舒展无皱纹、脸颊光洁无泪痕、嘴角有笑意
 
-**两个踩坑点：**
-1. **"若有若无的轻颤/呼吸感"是哭泣触发器**——会被模型理解成抽泣，必须去掉
-2. **纯否定句压不住**——实测写"眼睑放松、眉头舒展、不要哭泣、不要泪痕、不要鼻头泛红"整串否定句，出来的还是哭泣脸；模型需要"别的去处"，否则仍默认哭泣
+**两个踩坑点:**
+1. **"若有若无的轻颤/呼吸感"是哭泣触发器**--会被模型理解成抽泣,必须去掉
+2. **纯否定句压不住**--实测写"眼睑放松、眉头舒展、不要哭泣、不要泪痕、不要鼻头泛红"整串否定句,出来的还是哭泣脸;模型需要"别的去处",否则仍默认哭泣
 
-**结论：闭眼+微张嘴高危组合，正向情绪锚点（笑意/愉悦）> 堆否定句。** 否定句（不要哭泣、不要痛苦、不要流泪、不要紧咬牙关、不要皱眉用力）作兜底保留，但决定成败的是给模型明确的非哭泣表情落点。
+**结论:闭眼+微张嘴高危组合,正向情绪锚点(笑意/愉悦)> 堆否定句。** 否定句(不要哭泣、不要痛苦、不要流泪、不要紧咬牙关、不要皱眉用力)作兜底保留,但决定成败的是给模型明确的非哭泣表情落点。
 
-**实测（2026-11-14）：** 反向复刻版写"肌肉紧绷+眼睑用力"出哭泣脸 → 换松弛词+否定句出放松沉醉 → 同提示词连出两版哭泣脸（仅否定句）→ 加"嘴角微扬带笑意+宁静愉悦"后一次成功（`近景肖像_眼神迷离版_20261114.jpg`）。
+**实测(2026-11-14):** 反向复刻版写"肌肉紧绷+眼睑用力"出哭泣脸 → 换松弛词+否定句出放松沉醉 → 同提示词连出两版哭泣脸(仅否定句)→ 加"嘴角微扬带笑意+宁静愉悦"后一次成功(`近景肖像_眼神迷离版_20261114.jpg`)。
 
-**与既有条目的关系：** "否定式约束优先"管动作/景别/裁切；本条管**情绪倾向**，同属否定式方法论，维度不同互补。
+**与既有条目的关系:** "否定式约束优先"管动作/景别/裁切;本条管**情绪倾向**,同属否定式方法论,维度不同互补。
 
-### 液体元素合规落点判断法（2026-11-14 固化·按图写提示词版）
+### 液体元素合规落点判断法(2026-11-14 固化·按图写提示词版)
 
-**核心：** 同一个"液体/水滴/湿润"，**合规与否取决于它挂在哪，不在词本身**。
+**核心:** 同一个"液体/水滴/湿润",**合规与否取决于它挂在哪,不在词本身**。
 
-**落点判定表：**
+**落点判定表:**
 | 液体落点 | 判定 | 说明 |
 |---|---|---|
-| 眼角/脸颊/下巴/颈部（泪/汗） | ✅ 可写 | 情绪叙事，写实健康 |
+| 眼角/脸颊/下巴/颈部(泪/汗) | ✅ 可写 | 情绪叙事,写实健康 |
 | 唇部"湿润亮面唇彩/水润光泽" | ✅ 可写 | 是质感不是液体 |
-| 唇间/嘴角液桥、垂滴、丝状液体 | ❌ 不可 | 唾液性暗示，不写 |
+| 唇间/嘴角液桥、垂滴、丝状液体 | ❌ 不可 | 唾液性暗示,不写 |
 
-**按图写提示词的要点：**
-1. 图本身液体就在安全落点（泪/汗）时，**如实描述 + 把液体位置写明确**（"从眼角滑落→脸颊→下巴悬珠→颈部水珠"），就天然合规
-2. 此时**不需要堆"不沾湿/不垂滴/不要液体水珠"防御性否定句**——液体本就不在唇间，如实写就是安全的
-3. 只有液体位置可能滑向唇间时才需要防御句（见"拉丝/湿感→釉面光泽"）
+**按图写提示词的要点:**
+1. 图本身液体就在安全落点(泪/汗)时,**如实描述 + 把液体位置写明确**("从眼角滑落→脸颊→下巴悬珠→颈部水珠"),就天然合规
+2. 此时**不需要堆"不沾湿/不垂滴/不要液体水珠"防御性否定句**--液体本就不在唇间,如实写就是安全的
+3. 只有液体位置可能滑向唇间时才需要防御句(见"拉丝/湿感→釉面光泽")
 
-**与既有条目的关系：** "拉丝/湿感→釉面光泽"给**替换词**；本条给更普适的**落点判断框架**。两者互补：先判断落点合不合规，再决定替换词还是如实写。
+**与既有条目的关系:** "拉丝/湿感→釉面光泽"给**替换词**;本条给更普适的**落点判断框架**。两者互补:先判断落点合不合规,再决定替换词还是如实写。
 
-**实测（2026-11-14）：** 两张泪痕湿润图（液体在眼/下巴/颈部、唇部仅润泽）+ 用户要求"不要特意加否定句"，纯按图如实写、不加防御句，仍完全合规。判断依据是液体落点而非是否堆否定词。
-
-### 性化描写分级处置·执行流程优化：先出第一版再决定改（2026-11-14 固化）
-
-**流程调整（2026-11-14 俞哥定）：** 遇到含性化描写的生图提示词，**不再一上来就大改**，改为"**先出第一版，出完再决定改哪儿**"。
-
-**第一版做法（最小改动原则）：**
-- 只删**露骨量化词**四类：①胸部重量感/弧度 ②胸腰差/黄金比例 ③臀部S曲线/饱满描写 ④超薄微透/如第二层肌肤
-- **其余原样保留**：款式、材质、颜色、场景、光线、动作、机位、镜头参数、风格词，一个字不动
-- 删处用中性词顶替（"身材匀称、体形自然、体态优雅、轻薄透气垂坠"），不做额外发挥
-- 出图后交用户看效果，由用户决定是否继续调整（鞋、发型、裙型、虚化度等细节问题留到第二版一起改）
-
-**底线不变：** 露骨量化词仍不写进提示词，区别只是"**少改先出**"而非"大改再出"。
-
-**收益：** 保留更多原意、减少来回改、用户能先看到实际效果再判断，避免过度改写导致画面偏离预期。
-
-**关联：** 与「性化描写分级处置」（判定标准）、「液体元素合规落点判断法」（液体判定）配套，本条只管**执行顺序**。
+**实测(2026-11-14):** 两张泪痕湿润图(液体在眼/下巴/颈部、唇部仅润泽)+ 用户要求"不要特意加否定句",纯按图如实写、不加防御句,仍完全合规。判断依据是液体落点而非是否堆否定词。
 
 ### 生图四通道关系与画质能力（2026-11-14 固化）
 
-**通道关系（实际三条独立来源）：**
+**通道关系(实际三条独立来源):**
 | 通道 | 来源 | 协议 |
 |---|---|---|
-| `huawei_sse` | **小艺云端（华为）** | SSE 直连 |
-| `xiaoyi_pro` | **小艺云 Pro**（华为侧能力，**风控独立**）| skill-execute / SeedreamPro_5 |
+| `huawei_sse` | **小艺云端(华为)** | SSE 直连 |
+| `xiaoyi_pro` | **小艺云 Pro**(华为侧能力,**风控独立**)| skill-execute / SeedreamPro_5 |
 | `ark` | 火山方舟 | OpenAI |
 | `siliconflow` | 硅基流动 | OpenAI |
 
-**注意：** `huawei_sse` 与 `xiaoyi_pro` **同属小艺云端（华为侧能力）**，但不是别名——**模型、协议、风控三者独立**：`huawei_sse` 走 SSE 直连，`xiaoyi_pro` 走 skill-execute + `SeedreamPro_5` 模型 + **独立风控**。所以别把"同属小艺云"误解为"同一套审核换个门"（详见「xiaoyi_pro = 小艺云 Pro·独立风控」条）。
+**注意:** `huawei_sse` 与 `xiaoyi_pro` **同属小艺云端(华为侧能力)**,但不是别名--**模型、协议、风控三者独立**:`huawei_sse` 走 SSE 直连,`xiaoyi_pro` 走 skill-execute + `SeedreamPro_5` 模型 + **独立风控**。所以别把"同属小艺云"误解为"同一套审核换个门"(详见「xiaoyi_pro = 小艺云 Pro·独立风控」条)。
 
-**画质能力差异（关键）：**
+**画质能力差异(关键):**
 | 通道 | 最大分辨率 | 档位 |
 |---|---|---|
-| huawei_sse | 1600×2400 封顶 | 最低（面积上限 4,624,220px）|
-| xiaoyi_pro | 仅 1K / 2K（1440×2880）| 中高 |
-| ark / siliconflow | **4096×4096 / 3072×4096 竖版** | 4K，画质吊打 |
+| huawei_sse | 1600×2400 封顶 | 最低(面积上限 4,624,220px)|
+| xiaoyi_pro | 仅 1K / 2K(1440×2880)| 中高 |
+| ark / siliconflow | **4096×4096 / 3072×4096 竖版** | 4K,画质吊打 |
 
-**选通道铁律：高清出图默认走 `ark` 或 `siliconflow` 的 2K/4K 竖版，禁止无脑锁 `huawei_sse`（画质最低）。**
+**选通道铁律:高清出图默认走 `ark` 或 `siliconflow` 的 2K/4K 竖版,禁止无脑锁 `huawei_sse`(画质最低)。**
 
-**尺寸档位：** 逐尺寸实测详见上方「生图画质档位速查表」；常用档：1K=1024×1024、2K=1440×2880、4K-portrait=3072×4096、4K-square=4096×4096。
+**尺寸档位:** 逐尺寸实测详见上方「生图画质档位速查表」;常用档:1K=1024×1024、2K=1440×2880、4K-portrait=3072×4096、4K-square=4096×4096。
 
-**来源：** seedream_provider `_load_all_channel_configs()`（华为→ARK→SiliconFlow 顺序，D通道 xiaoyi_pro 复用华为域名凭证）。
+**来源:** seedream_provider `_load_all_channel_configs()`(华为→ARK→SiliconFlow 顺序,D通道 xiaoyi_pro 复用华为域名凭证)。
 
-### 跨通道合规差异·ARK 实测发现（2026-11-14 固化）
+### 跨通道合规差异·ARK 实测发现(2026-11-14 固化)
 
-**实测场景：** 用火山引擎（ark）重出"泪痕湿润版"提示词——液体只在眼/下巴/颈部写明，唇间没提。结果三条关键差异：
+**实测场景:** 用火山引擎(ark)重出"泪痕湿润版"提示词--液体只在眼/下巴/颈部写明,唇间没提。结果三条关键差异:
 
 | 项 | 华为 huawei_sse | 火山 ark |
 |---|---|---|
-| 审核尺度 | 湿感卡得严 | **放行**（湿感直接过）|
-| 模型对湿感的倾向 | 唇间干净 | **自动画唇间拉丝**（下唇到下巴补液桥）|
-| 提示词适应性 | 液体落点写清即可 | **需加强唇间防御句**，否则模型自发补湿感 |
-| 分辨率（请求4K） | — | 实际返回 **2K（1440×2880）** |
+| 审核尺度 | 湿感卡得严 | **放行**(湿感直接过)|
+| 模型对湿感的倾向 | 唇间干净 | **自动画唇间拉丝**(下唇到下巴补液桥)|
+| 提示词适应性 | 液体落点写清即可 | **需加强唇间防御句**,否则模型自发补湿感 |
+| 分辨率(请求4K) | - | 实际返回 **2K(1440×2880)** |
 
-**教训：**
-1. **跨通道合规需重测——已验证成立**：不同通道的模型行为 + 审核尺度都不同，选通道要连带重调提示词
-2. 走 ark / 硅基流动等第三方通道时，**必须加强唇间防御句**（"唇间干净、不挂任何液体"），光写液体在眼/下巴/颈部不够
-3. **不能照搬华为版提示词**到其他通道，需按通道特性重新校准
+**教训:**
+1. **跨通道合规需重测--已验证成立**:不同通道的模型行为 + 审核尺度都不同,选通道要连带重调提示词
+2. 走 ark / 硅基流动等第三方通道时,**必须加强唇间防御句**("唇间干净、不挂任何液体"),光写液体在眼/下巴/颈部不够
+3. **不能照搬华为版提示词**到其他通道,需按通道特性重新校准
 
-**关联：** 与「液体落点判断法」「生图四通道画质」配套，本条补"跨通道实测差异"维度。
+**关联:** 与「液体落点判断法」「生图四通道画质」配套,本条补"跨通道实测差异"维度。
 
-### 服装品类三分法·执行前先判品类（2026-11-14 固化）
-
-**背景：** 2026-11-14 实战误判——用户提示词写"黑色比基尼式内裤"，我一看是短款贴身就当成内衣处理、换成"运动短裤"，被俞哥纠正"品类你要分清楚"。实测同样款式按**泳装表述**（比基尼泳裤）在火山通道直接过审，证明是**泳装不是内衣**。
-
-**三分法（执行前必须先判品类）：**
-| 品类 | 典型词 | 处理策略 |
-|---|---|---|
-| **泳装** | 比基尼、泳衣、泳裤、连体泳衣、沙滩度假风 | **审核宽松，不必自我阉割，原款式保留** |
-| **内衣/情趣** | 文胸、内裤、吊袜带、情趣内衣 | **审核封死，换品类**（→家居服/吊带睡裙） |
-| **日常穿搭/贴身** | 吊带、背心、裙装、紧身衣 | 只删三类量化词（胸/胸腰差/臀），款式全保留 |
-
-**判断要点：**
-1. **"比基尼/泳裤"属泳装不是内衣**——带"泳/沙滩/度假"属性词一律归泳装
-2. **禁止一看"短款/贴身/暴露"就直接当内衣阉割**——先看有没有泳装属性
-3. **执行顺序：先判品类 → 再定处理策略**
-
-**关联：** 与「泳衣 vs 内衣审核尺度不同」（讲尺度）互补，本条讲**怎么判、判错什么后果**。
 ### 生图不擅自改提示词（2026-11-14 固化）
 
-**规则：** 生图时能按原提示词出的**一个字不改**——款式、场景、光线、措辞、细节全保留原样（俞哥原话"生图不要擅自改提示词"）。
+**规则:** 生图时能按原提示词出的**一个字不改**--款式、场景、光线、措辞、细节全保留原样(俞哥原话"生图不要擅自改提示词")。
 
-**执行分层：**
-1. **合规内容** → 尽量一个字不改，原样出图
-2. **确需改**（被审核拦 / 边界问题 / 合理细节调整）→ **先向俞哥说明改哪里、为什么、怎么改，征得同意后再动**，不自作主张、不默默替换
-3. **边界内例外** → 露骨量化性化词（胸部重量感/胸腰黄金比例/臀部S曲线/超薄微透/唇间液体）不写的底线不变，这类会拦下说明等定夺，**不算"擅自改"**
+**执行分层:**
+1. **合规内容** → 尽量一个字不改,原样出图
+2. **确需改**(被审核拦 / 边界问题 / 合理细节调整)→ **先向俞哥说明改哪里、为什么、怎么改,征得同意后再动**,不自作主张、不默默替换
+3. **边界内例外** → 露骨量化性化词(胸部重量感/胸腰黄金比例/臀部S曲线/超薄微透/唇间液体)不写的底线不变,这类会拦下说明等定夺,**不算"擅自改"**
 
-**关联：** 与「先出第一版再决定改」「服装品类三分法」流程配套——先判品类、少改、改前说明，三者一致。
+**关联:** 与「先出第一版再决定改」「服装品类三分法」流程配套--先判品类、少改、改前说明,三者一致。
 
-### xiaoyi_pro = 小艺云 Pro·独立风控（2026-11-14 固化）
+### xiaoyi_pro = 小艺云 Pro·独立风控(2026-11-14 固化)
 
-**定位：** `xiaoyi_pro` 是**小艺云 Pro 档**，后端模型 `SeedreamPro_5`，走 skill-execute 协议。
+**定位:** `xiaoyi_pro` 是**小艺云 Pro 档**,后端模型 `SeedreamPro_5`,走 skill-execute 协议。
 
-**与 huawei_sse 的关系（关键，别搞混）：**
+**与 huawei_sse 的关系(关键,别搞混):**
 | 项 | huawei_sse | xiaoyi_pro |
 |---|---|---|
-| 归属 | 小艺云（华为侧）| 小艺云（华为侧）|
-| 模型 | Seedream（SSE 直连）| **SeedreamPro_5** |
+| 归属 | 小艺云(华为侧)| 小艺云(华为侧)|
+| 模型 | Seedream(SSE 直连)| **SeedreamPro_5** |
 | 协议 | SSE | skill-execute |
 | **风控** | 主风控 | **独立风控** |
 
-**核心结论：同属小艺云，但不是别名——模型、协议、风控三者独立。** 不能理解为"同一套审核换个门"。
+**核心结论:同属小艺云,但不是别名--模型、协议、风控三者独立。** 不能理解为"同一套审核换个门"。
 
-**正因为风控独立**，它才能过 huawei_sse/ARK 过不了的内容：2026-11-14 实测「墨绿蕾丝连体衣 + 吊袜带丝袜 + 尖头高跟」——华为/ARK 连拦 5 轮，**Pro 一次过**，且**出图无 AI 水印**。
+**正因为风控独立**,它才能过 huawei_sse/ARK 过不了的内容:2026-11-14 实测「墨绿蕾丝连体衣 + 吊袜带丝袜 + 尖头高跟」--华为/ARK 连拦 5 轮,**Pro 一次过**,且**出图无 AI 水印**。
 
-**特性：** 仅接受 1K / 2K；无水印；作为降级链最后一环兜底。
+**特性:** 仅接受 1K / 2K;无水印;作为降级链最后一环兜底。
 
-**表述纪律：** 描述 xiaoyi_pro 时**不要只说"同域名同凭证仅协议不同"**——这句会让人误以为共用一套审核，必须补明"**风控独立**"。
+**表述纪律:** 描述 xiaoyi_pro 时**不要只说"同域名同凭证仅协议不同"**--这句会让人误以为共用一套审核,必须补明"**风控独立**"。
