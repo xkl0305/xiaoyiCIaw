@@ -666,38 +666,21 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - **SILICONFLOW_API_URL**: `https://api.siliconflow.cn/v1/images/generations`
 - **SILICONFLOW_API_KEY**: `sk-vcurqmwacuchmdxbnbtphtjqqmcnojtyhdmemycndzrmsmat`
 
-### ARK 通道静默退化修复：.xiaoyienv 丢 SEEDREAM + 兜底标题不匹配（2026-10-27 固化）
+### Seedream 通道排错·ARK 静默退化体检与补回（2026-11-15 合并精简，原 08-08/10-27 两条）
 
-**背景:** 2026-10-27 人格定制出图时 `generate_image(channel='ark')` 报 `channel_not_found`（指定通道"ark"无一可用），此前 ARK 直连一直正常 → 诊断发现 ark 通道从 channel 列表消失。
+**症状：** 指定通道报 `channel_not_found`，或 `_load_all_channel_configs()` 只返回 `['huawei_sse']` 单通道（ARK 静默退化、无报错）。
 
-**现象:** `_load_all_channel_configs()` 只返回 `huawei_sse` 单通道，ark(及 siliconflow)无 —— **ARK 静默退化单通道且无报错**，与 445 行记载的退化一致。
+**根因：** `.xiaoyienv`（不在 git，升级可能被覆写）丢 SEEDREAM_API_URL/KEY/ENDPOINT_ID 三键；provider 兜底正则若与 TOOLS.md 备份区标题不匹配也会补不回。
 
-**根因（双因叠加）:**
-1. `.xiaoyienv` 里 SEEDREAM_API_URL/KEY/ENDPOINT_ID 三键丢失（该文件不在 git，可能被覆写/升级清掉）
-2. `seedream_provider.py` `_read_xiaoyi_env()` 的 TOOLS.md 兜底正则找 `### Seedream ARK 通道配置`，但 TOOLS.md 实际章节标题是 `### Seedream 通道配置备份` → `re.search` 匹配失败 → section=None → 兜底补不回 key → ark 起不来
-
-**修复（两步）:**
-1. 兜底正则改 `r'### Seedream[^\n]*通道配置.*?\n(.*?)(?:###|\Z)'` 匹配实际标题,使未来 .xiaoyienv 再丢 key 时 TOOLS.md 兜底能自愈
-2. 从 TOOLS.md 备份(Seedream 通道配置备份区)把 SEEDREAM_API_URL/KEY/ENDPOINT_ID 三键补回 `.xiaoyienv`(追加,不覆盖原有变量)
-
-**验证:** 修复后 `_load_all_channel_configs()` 恢复 `['huawei_sse','ark']` 双通道,ARK 直连出图成功(channel=ark、status=generated)。siliconflow 因未补第三通道缺失,非人格出图路径不受影响。
-
-**排查定位法(可复用):** 遇"指定通道无一可用" → `_load_all_channel_configs()` 列各通道 api_key 是否 present → 读 `_read_xiaoyi_env()` 兜底逻辑 → 比对 TOOLS.md 实际章节标题与兜底正则。备份 `.bak-envfix`。
-
-### Seedream 双通道体检与补回(2026-08-08)
-
-**背景:** 人格视角出图 bridge 传 `channel='ark,huawei_sse'`,但 `.xiaoyienv` 里 ARK 配置(SEEDREAM_API_URL/KEY/ENDPOINT_ID)丢失时,provider 会**静默退化成仅 huawei_sse 单通道**,双通道名存实亡且无报错,只剩华为一根线裸奔。
-
-**体检方法(怀疑双通道失效时):**
+**体检命令：**
 ```bash
 python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); from providers import seedream_provider as s; cfg=s._load_all_channel_configs(); print('通道数:', len(cfg), [c['name'] for c in cfg])"
 ```
-- 返回 `['huawei_sse']`(1张)→ ARK 配置丢失,需补回
-- 返回 `['huawei_sse','ark']`(2张)→ 正常
+- `['huawei_sse']` 1张 → ARK 配置丢失需补回；`['huawei_sse','ark']` 2张 → 正常
 
-**补回来源:** `.xiaoyienv` 不在 git、升级会被覆写,丢失时用上方「Seedream 通道配置备份」里的 ARK 配置补写回 `/home/sandbox/.openclaw/.xiaoyienv`。
+**补回：** 从上方「Seedream 通道配置备份」区块取 ARK 三键补写回 `.xiaoyienv`（先 `cp` 备份 `.xiaoyienv.bak-`，追加不覆盖）。`_read_xiaoyi_env()` 兜底正则 `### Seedream[^\n]*通道配置` 会自动从 TOOLS.md 备份区提取，.xiaoyienv 丢 key 时可自愈。
 
-**注意:** 改 `.xiaoyienv` 前先 `cp` 备份一份(`.xiaoyienv.bak-`),再追加而非覆盖原文。
+**排查定位法：** 遇"指定通道无一可用" → `_load_all_channel_configs()` 列各通道 api_key → 读 `_read_xiaoyi_env()` 兜底逻辑 → 比对 TOOLS.md 实际章节标题与兜底正则。
 
 ### 人格视角出图系统 CLI 出图链路=双通道 + 介绍须实查纪律(2026-11-01 固化)
 
