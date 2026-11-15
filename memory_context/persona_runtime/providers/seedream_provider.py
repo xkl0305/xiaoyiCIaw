@@ -846,7 +846,7 @@ def generate_image(
     endpoint_id = os.environ.get('SEEDREAM_ENDPOINT_ID') or _file_env2.get('SEEDREAM_ENDPOINT_ID') or ''
     ark_model = endpoint_id or MODEL_ID
     # 硅基流动用自家模型名(火山 doubao-* 在硅基流动不存在会 404)
-    sf_model = os.environ.get('SILICONFLOW_MODEL') or _file_env2.get('SILICONFLOW_MODEL') or 'Kwai-Kolors/Kolors'
+    sf_model = os.environ.get('SILICONFLOW_MODEL') or _file_env2.get('SILICONFLOW_MODEL') or 'Tongyi-MAI/Z-Image-Turbo'
 
     for ch_cfg in channels:
         ch_name = ch_cfg['name']
