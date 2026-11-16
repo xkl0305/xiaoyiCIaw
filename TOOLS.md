@@ -576,6 +576,10 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 
 **教训:** 介绍参数能力前必须实测,禁止凭 SKILL.md 文字推断下"没有某选项"式结论(与「介绍技能前必须实查」纪律同源)。
 
+### 小艺图像创作默认正方形出图偏好(2026-11-16 固化)
+
+**规则:** 用 seedream-image_gen 生图时,prompt 默认开头写"正方形构图,1:1画幅"(fast 模式下稳定出 2048×2048 方图);俞哥明确要 1024×1024 标准尺寸时用 `--optimize-prompt-mode standard --size 1K` + prompt 写正方形三条件;俞哥当次明确要求横版/竖版/其他画幅时按当次要求执行,默认偏好让位。
+
 ### seedream-provider 多通道调用规则
 
 `seedream_provider.generate_image()` 的 `channel` 参数支持逗号分隔列表:
