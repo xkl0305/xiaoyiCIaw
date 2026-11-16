@@ -593,22 +593,6 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 | seedream-image-gen skill | 不传 | 四通道 | huawei_sse → ark → siliconflow → xiaoyi_pro |
 | 人格视角出图(桥接层) | `"ark,huawei_sse"` | 双通道 | ark → huawei_sse(无 siliconflow) |
 
-### xiaoyi_pro 通道(小艺云端 Seedream Pro,2026-11-12 接入实测)
-
-**定位:** 第四条通道,与 huawei_sse **同域名同凭证**(`https://celia-claw-drcn.ai.dbankcloud.cn` + PERSONAL_UID / PERSONAL_API_KEY),但协议不同--走 skill-execute SSE 而非图片直连,后端是独立 skill `seedreamPro`。
-
-| 项 | 值 |
-|---|---|
-| 请求 | `POST {SERVICE_URL}/celia-claw/v1/sse-api/skill/execute`,stream=True |
-| 必需头 | `x-skill-id: seedreamPro`、`x-uid`、`x-api-key`、`x-request-from: openclaw`、`x-hag-trace-id` |
-| payload | `actions[0].actionExecutorTask{actionName: SeedreamPro_5, content{prompt,size,watermark:false,response_format:url}, pluginId}` |
-| 响应解析 | SSE `data:` 行 → `abilityInfos[0].actionExecutorResult.reply.items`(图片 URL 列表),`streamInfo.streamType == 'final'` 时取 |
-| 尺寸 | **只支持 1K / 2K**;其它尺寸按面积映射(≥200 万像素 → 2K) |
-| 参考图 | ✅ **支持**(2026-11-12 18:48 合并 B 版能力,直连三阶段 prepare→upload→complete 上传换 URL;`--input-image` 可传) |
-| 费用 | 6 点/张(比 Flash 贵) |
-
-**2026-11-12 18:48 合并 B 版能力(唯一 Pro 入口):** xiaoyi_pro 已合并原 `seedream_image_gen`(B 版,573 行)的参考图能力,成为**唯一 Pro 入口**;B 版已标记停用(`user-invocable: false`,保留兼容)。统一用法:`seedream-image-gen --channel xiaoyi_pro [--input-image 图] --size 2K`。**注意边界:** 参考图对内衣/贴身服饰图**依然会被拦**(与 B 版同一后端 seedreamPro 审核),合并解决的是入口统一,不是审核放行。
-
 ### huawei_sse 两个已修 bug + ark key 失效(2026-11-13 固化)
 
 **1. `--size 9:16` 未映射(已修)**
@@ -637,33 +621,6 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 **用途:** 华为 SSE / ARK 对内衣、贴身服饰类输出图审核严(`OutputImageSensitiveContentDetected`),Pro 是独立 skill 独立风控,实测宽松可过。作为降级链最后一环兜底。
 
 **实测:** `--channel xiaoyi_pro` 直连 21 秒出图 1248×832;默认通道华为优先不受影响;输出落 `workspace/generated-images/pro_*.jpg`。
-
-### 三个同名 seedream 目录辨析与整理(2026-11-12 固化)
-
-**背景:** `skills/` 下三个名字只差连字符/下划线的目录,肉眼难分,此前曾把「文件大、日期新」误判为「新版主用」而建议删除真正在用的三通道版,被俞哥指正。
-
-| 目录 | SKILL.md name | 是什么 | 怎么用 | 行数 |
-|---|---|---|---|---|
-| `seedream-image-gen` | `seedream-image-gen` | 四通道 API 直连版,日常主用 | `--channel huawei_sse/ark/siliconflow/xiaoyi_pro` | 64 |
-| `seedream-image_gen` | **`seedream-pro`**(2026-11-12 由同名改为独立名;**18:48 已合并停用**) | Flash/Pro 档位版,走小艺云端 skill-execute | [已停用] 能力并入四通道 xiaoyi_pro,统一入口:`seedream-image-gen --channel xiaoyi_pro` | 573 |
-| `seedream_image_gen` | `seedream_image_gen` | Python import 兼容壳,无 CLI | 仅供老代码/tests import,勿直接用 | 3 |
-
-**命名差别:** 1与2差一个下划线(`image-gen` vs `image_gen`);2与3差连字符位置(`seedream-image_gen` vs `seedream_image_gen`)。
-
-**整理动作(已提交 bc49d8b):**
-1. 2的 SKILL.md name 由 `seedream-image-gen` 改为 `seedream-pro`,消除同名冲突(技能列表重复、路由歧义)
-2. 3的 SKILL.md 描述标注「勿直接当技能调用」
-3. 1的 SKILL.md 「三通道切换」章节更新为「四通道」,并加入本辨析表
-4. 1的 `--dry-run` 修复:原强制要求 `--prompt`,改为可省略(非 dry-run 时仍校验)
-
-**依赖边界(禁止删除/改名):**
-- 1的 `scripts/generate_seedream_legacy_v11146.py`(604 行):被 `xiaoyi_persona_visual/diagnostics/` 下 3 个诊断脚本引用,删除会导致诊断报错
-- 3兼容壳:被 `tests/test_v111_52_non_persona_foundation.py` import
-- 2的目录名不改(只改 SKILL.md name):`orchestration/INTEGRATION_REGISTRY.json` 的 `seedream_image_gen` id 指向 provider,与目录无关
-
-**选型口诀:** 普通出图免扣点 → 1(留空走 huawei_sse);要 Pro 或参考图+Pro → 1 `--channel xiaoyi_pro`;2已停用;3别碰。
-
-**加新通道时**:在 `_load_all_channel_configs()` 里加配置即可,各调用方的默认优先级通过改其传的 channel 值控制,不需要动 provider 内部。
 
 ### Seedream 通道配置备份
 > 以下配置在 `.xiaoyienv` 中,不在 git 里,系统升级可能被覆写。此处为备份,供 `seedream_provider.py` 兜底读取。
@@ -701,42 +658,6 @@ python3 -c "import sys; sys.path.insert(0,'memory_context/persona_runtime'); fro
 - 后端均华为 seedream(同一 backend,仅接入方式不同),与 TOOLS.md 既有 bridge 层双通道(ark→huawei_sse)一致。
 
 **硬纪律(反复型教训·执行层强制):** 介绍任何技能/系统(尤其通道、链路、版本类)前,**必须1实查实际源码/出图链路确认,2先读 TOOLS.md 已固化的相关经验并关联引用**,严禁凭推断/记忆拍"单/多通道"式结论。同类问题已反复两次:351行(介绍 seedream-image-gen 漏关联已固化三通道)+本次(介绍人格视角出图系统拍"单通道无分支",被俞哥"出图单通道吗"质疑后实查纠正为双通道),机制层固化此纪律不再靠自觉。
-
-### seedream 生图排错与 size 支持实测(2026-09-26)
-
-**背景:** seedream 生图失败逐层排查,实测出 `huawei_sse` 通道各 size 支持边界(通道本身可用,是 size 参数问题)。
-
-**size 支持实测矩阵(huawei_sse,同 prompt 唯一变量 size):**
-
-| size | 结果 |
-|:----:|:----:|
-| 2K / 3K | ✅ generated |
-| 4K / 4K-square / 4K-wide / 4K-portrait | ❌ `provider_returned_no_image` |
-
-**结论:** `huawei_sse` 通道**仅支持 2K/3K**;`4K` 系(4K/4K-square/4K-wide/4K-portrait)**全不支持**,报 `provider_returned_no_image`(无报错、容易误判成通道挂了)。**横/竖/正方形三形态统一靠 prompt 构图词实现**(2026-10-01 实测全通过):竖版写"竖长海报/竖版构图"、横版写"横向宽画幅横幅构图"、默认不写即方形;**勿靠 `--size` 参数控比例**--4K 系在 huawei_sse 全 no_image,只用 2K/3K(含 max-images 组图场景同样适用)。
-
-**真·比例像素证据(2026-10-21 实测补充,纠正"仅构图引导、像素实为方图"的旧认知):** prompt 构图词不仅引导构图,华为 SSE 会输出**硬件对应比例**--横屏 `3K`+"横屏宽幅/超广角"= **4704×2016**;竖屏 `3K`+"竖版构图/竖屏壁纸"= **2304×4096**;方形 默认 `2K`= **2048×2048**。即用户要某比例→直接给"横屏/竖屏/方形+主题"生成即可,无需裁切。注:各 size 默认方图尺寸为 2048×2048(`_SIZE_MAP` 的 1440×2880 等仅对 ark/siliconflow 生效,华为 SE 读 prompt 意图、不吃该映射)。
-
-**完整像素矩阵(2026-10-21 晚补齐,全面实测 2K/3K × 横/竖/方 6 组):**
-
-| size | 横屏(≈2.33:1) | 竖屏(≈9:16) | 方形(1:1) |
-|:--:|:--:|:--:|:--:|
-| **2K** | 3136×1344 | 1600×2848 | 2048×2048 |
-| **3K** | 4704×2016 | 2304×4096 | 3072×3072 |
-
-**规律:** 1画幅方向由 prompt 词定,稳定可预期(横≈2.33:1 / 竖≈9:16 / 方=1:1);2`3K` 分辨率≈`2K` 的 1.5 倍线距(高分辨率用 3K,省资源用 2K);3精确像素为服务端按 prompt 意图+size 自主给定、非固定组,但画幅比例稳定。
-
-**像素边界(2026-10-21 晚实测补充):** 华为 size 硬性锚定 **2K档(最小) ~ 3K档(最大)** 两档,`prompt 写"8K超高清极致分辨率"也无法突破 3K`(实测 3K+超高清引导仍输出 3072×3072),4K 系(4K/4K-wide/portrait/square)在华为全 no_image。故最大=3K档(横4704×2016/竖2304×4096/方3072×3072),最小=2K档(横3136×1344/竖1600×2848/方2048×2048);要更大只有等 ark/siliconflow key 修复(才吃 4K 系)。
-
-**排错顺序(生图失败时):**
-1. 看 `channel_count` / `available_channels`:退化成单通道(仅 huawei_sse)= `.xiaoyienv` 各通道 API key 配置全空,用「Seedream 通道配置备份」补回 ARK/SILICONFLOW
-2. 排除 size 参数影响:`--channel huawei_sse` + 精简 prompt + **不带 size** 单测,能出图 = 通道可用
-3. 带完整 prompt / 预期 size 前,先确认该 size 在目标通道支持范围内(见矩阵)
-4. 逐个变量隔离(通道 / size / negative / prompt),勿叠加下结论、勿盲目重试
-
-**实测方法:** 循环换 `--size`,保持同 prompt 同通道,仅变 size,对比 status 定性。
-
-**已知触发 no_image 的 prompt 组合(2026-10-01 实测):** `huawei_sse` 对 **"红色背景 + 金色五角星"组合** 的 prompt 稳定返回 `provider_returned_no_image`--单独出现"红色"或单独"五角星"都能正常生成,一组合就挂;换"鲜红/中国红"等词也绕不开(疑服务端对红金国旗类视觉组合的生成/审核拦截)。**规避:** 改用烟花/城市夜景/红灯笼/金色光影/Q版气球等同样节庆感元素,避免"红色背景+五角星"同时出现。**定位法:** 单类词逐个测试(烟花/红/国庆/五角星均 pass,"红色背景+金色五角星" fail),再收拢组合。
 
 ### 记忆系统双数据源排查指南
 
@@ -1881,7 +1802,7 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 | **表情与情绪** | 表情情绪跑偏纠正(紧绷→松弛+正向锚点优先)|
 | **姿势与参考图** | 生图姿态调优八条经验 / 人格视角出图支持姿势参考 / 白模参考图出图方向核对 / costume-reference 服装换装参考图库 |
 | **工作流程** | 生图前必须先问档位+通道 / 生图默认工作流先低精度后高精度 / 多张独立图需逐张跑 / 九宫格分镜出图方法论 |
-| **排错** | seedream 出图 SSE 假成功（含根因与双层修复）/ Seedream 通道排错·ARK 静默退化体检与补回 / seedream 生图排错与 size 支持实测 |
+| **排错** | seedream 出图 SSE 假成功（含根因与双层修复）/ Seedream 通道排错·ARK 静默退化体检与补回 |
 
 ### 生图通道正确分类(2026-11-01 固化)
 
@@ -1987,53 +1908,6 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 3. 报结果时如实报"本次哪个通道过/拦",不拿历史结论套现在
 
 **实证背景:** 同一套墨绿蕾丝套装词,11-14 xiaoyi_pro 一次过/huawei_sse+ark 连拦 5 轮;11-16 反转为 xiaoyi_pro 连拦 3 次/ark 一次过。
-
-### seedream 三目录精确映射 + 调用纪律(2026-11-16 18:17 固化)
-
-**三个同名目录反复踩坑,以脚本行数区分最可靠:**
-
-| 目录 | 脚本行数 | SKILL name | 真实身份 |
-|---|---|---|---|
-| `seedream-image_gen`(连字符+image_gen) | 573 | seedream-pro | **官方 Flash/Pro 主用** |
-| `seedream-image-gen`(全连字符) | 64 | seedream-image-gen | 四通道版 |
-| `seedream_image_gen`(全下划线) | 3 | seedream_image_gen | **兼容壳,无 __main__,cd 进去跑啥也不出** |
-
-**调用纪律:** 出图默认显式带 `--optimize-prompt-mode standard`,要比例就写 `--size`(1K=1024×1024 方、2K=竖版);不传则 fast 强制 1440×2880 竖。
-
-**不改官方脚本默认值:** 避免技能更新覆盖 + standard 全局变慢 3 倍。
-
-### seedream_image_gen 尺寸控制与直调绕法(2026-11-16 17:32 实测)
-
-**`--size` 只在 `--optimize-prompt-mode standard` 下生效;fast(默认)模式下被静默忽略,强制走 Flash 默认 2K 竖版 1440×2880。**
-
-| 调用方式 | 实际输出 |
-|---|---|
-| 不传 size + fast(默认) | 1440×2880 竖(1:2) |
-| `--size 1K` + standard | **1024×1024 方** ✅ 实测 |
-| `--size 2K` + standard | 待验证 |
-| `--size 2K` + fast | 无效,仍走默认 |
-
-**命令行入口静默失效的绕法:** CLI 跑出 EXIT=0 但无输出无图时,改直调函数——
-```
-PYTHONPATH=/home/sandbox/.openclaw/workspace python3 -u -c "import sys; sys.path.insert(0,'scripts'); import generate_seedream as g; r=g.generate_image(prompt='...', model='Flash', size='1K', optimize_prompt_mode='standard'); print(r.get('generated_image_path'))"
-```
-
-### 官方版 seedream_image_gen 实现层 + CLI 坑 + 通道审核跨天反转(2026-11-16 08:26 实测)
-
-**① 官方版底层实际走四通道 provider(修正“纯官方”定性的实现层):**
-- `seedream_image_gen/scripts/generate_seedream.py` 的 `generate_image(prompt=..., model='Flash')` 实测返回: `provider=huawei_xiaoyi`、`model=seedreamBatch5`、`channel_used=huawei_sse`、`channels_available=[huawei_sse,ark,siliconflow,xiaoyi_pro]`
-- 定性:SKILL 与扣点规则是官方,但**运行时经本地 `memory_context.persona_runtime.providers.seedream_provider` 包装**——Flash→huawei_sse、Pro→xiaoyi_pro
-- 二次坐实 `huawei_sse = Flash 档`
-
-**② CLI 坑(2026-11-16 18:17 更正):** 之前记的"`--model Pro --optimize-prompt-mode standard --size 2K` 静默无输出、无图无报错、需 PYTHONPATH"**根因归错了**——真实原因是 **cd 到了 3 行的兼容壳目录 `seedream_image_gen`(全下划线)**,那个壳无 `__main__`,跑起来什么都不出,技能本身没 bug。正确目录是 `seedream-image_gen`(连字符+image_gen,573 行)。详见下方三目录映射条。
-
-**③ 通道审核跨天反转(同套词):**
-| 日期 | 结果 |
-|---|---|
-| 2026-11-14 | xiaoyi_pro 一次过;huawei_sse/ark 连拦 5 轮 |
-| 2026-11-16 | xiaoyi_pro **连拦 3 次**;ark **一次过**(4K-portrait 3072×4096 → 裁 9:16=2304×4096) |
-
-墨绿蕾丝套装+吊袜带+黑丝袜+尖头高跟。**结论:历史通道结论不能当默认路径,必须现场试;同通道 3 次全拦才判定为策略收紧而非波动。**
 
 ### 技能来源定性规则 + 三特征核实法(2026-11-16 07:22 固化)
 
