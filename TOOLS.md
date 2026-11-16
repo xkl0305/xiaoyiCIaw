@@ -603,10 +603,10 @@ standard模式(--size生效):
 
 | 调用方 | channel 参数 | 生效通道 | fallback 顺序 |
 |:------|:------------:|:--------:|:-------------|
-| seedream-image-gen skill(原版) | 不适用 | 单链路·小艺云端 skill-execute(np://claw-skill 管道→主进程 SkillApiProxy) | 无多通道;仅 Flash/Pro 两模型档,代码不 import seedream_provider |
+| seedream-image-gen skill(2026-11-16 22:15 改造后) | 不传=云端; `--channel ark`/`siliconflow`=直连 | **3通道可选**: 默认小艺云端 skill-execute(np://claw-skill 管道,Flash/Pro,扣点制) + ark/siliconflow 直连(seedream_provider,API key 制,最高4K) | 云端分支无 fallback;通道分支单通道直连 |
 | 人格视角出图(桥接层) | `"ark,huawei_sse"` | 双通道 | ark → huawei_sse(无 siliconflow) |
 
-**修正说明(2026-11-16 20:31):** 原表"seedream-image-gen skill → 四通道 huawei_sse→ark→siliconflow→xiaoyi_pro"为旧四通道 CLI 版记录(该版本 6238f4c 已删);原版重装后实查 generate_seedream.py/config.py,走小艺云端 skill-execute 单链路,无 seedream_provider 引用。多通道 fallback 只属于 seedream_provider 调用方(如人格视角出图);要用火山引擎(ark)4K 画质须走 seedream_provider channel="ark",不经本技能。
+**修正说明(2026-11-16 22:24 二次更新):** 20:31 曾修正为"原版单链路无多通道"(基于当时实查);22:15 俞哥确认设计后改造 generate_seedream.py 新增 --channel 分支(aa7cc72+2e80304),技能现为 3 通道可选。**设计决策:** 华为侧能力(huawei_sse/xiaoyi_pro)不接入 --channel,避免与默认云端链路重复建设;第三方 4K 需求走 ark/siliconflow。**实测:** ark 4K-square 出图 4096×4096 ✅,云端默认链路回归正常 ✅。通道分支 --size 支持 3K/4K/4K-wide/4K-portrait/4K-square/16:9/9:16/4:5;云端分支仅 1K/2K(fast 下仍被忽略)。
 
 ### huawei_sse 两个已修 bug + ark key 失效(2026-11-13 固化)
 
