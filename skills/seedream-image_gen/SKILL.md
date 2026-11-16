@@ -52,7 +52,8 @@ description: 小艺图像创作，基于Seedream5的AI图片生成，支持文�
 | `--image` | string | - | ❌ | 参考图片，支持远程URL或本地文件路径，可多次传入（`Flash` 和 `Pro` 均最多10张） |
 | `--model` | string | `Flash` | ❌ | 模型选择：`Flash` 或 `Pro`。`Flash` 仅支持单图生成，速度快，成本低；`Pro` 仅支持单图生成，速度相对较慢，但生成效果更好。两者均**不支持组图生成**。 |
 | `--optimize-prompt-mode` | string | `fast` | ❌ | 提示词优化模式：`fast`（快速优化，默认），`standard`（质量最优但耗时为fast的接近3倍），仅当用户**明确提出**需要高质量图片时传递 `standard` 参数 |
-| `--size` | string | `Flash`: `2K`, `Pro`: `1K` | ❌ | 输出图像尺寸：`1K` 或 `2K`。`fast`模式下指定`size`无效, 使用默认参数; 仅当**用户显式指定**, 且给出的尺寸在有效范围内时传递该参数改变默认尺寸, 不可自行更改尺寸|
+| `--size` | string | `Flash`: `2K`, `Pro`: `1K` | ❌ | 输出图像尺寸：云端链路仅支持 `1K` 或 `2K`。`fast`模式下指定`size`无效, 使用默认参数; 仅当**用户显式指定**, 且给出的尺寸在有效范围内时传递该参数改变默认尺寸, 不可自行更改尺寸。通道链路（`--channel`）额外支持 `3K`/`4K`/`4K-wide`/`4K-portrait`/`4K-square`/`16:9`/`9:16`/`4:5` |
+| `--channel` | string | 空 | ❌ | 第三方直连通道：`ark`（火山引擎，最高4K）或 `siliconflow`（硅基流动，最高4K）。**不传（默认）走小艺云端 skill-execute 链路（Flash/Pro，扣点制）**；传入后走 seedream_provider 直连对应通道（API key 制，不占小艺扣点）。华为侧能力（huawei_sse/xiaoyi_pro）不在此暴露，避免与云端链路重复 |
 | `--output-path` | string | 当前工作路径 | ❌ | 输出目录。用户未指定时使用默认路径，指定时按指定路径输出 |
 
 ## 模型路由规则
@@ -73,7 +74,7 @@ description: 小艺图像创作，基于Seedream5的AI图片生成，支持文�
 ## 使用示例
 
 ```bash
-# 文生图
+# 文生图（默认云端链路）
 python3 scripts/generate_seedream.py --prompt '一个凌乱的办公桌桌面。桌面上有一台开着的笔记本电脑，屏幕显示绿色代码；旁边一个马克杯，杯上写着“Developer”，杯口冒出热气；一本摊开的书，页面是维恩图，展示三个圆的嵌套关系，三个圆分别为灰色、蓝色和浅绿色；一个便签贴，上面画着一个思维导图，思维导图是上下结构，分为3层结构；一支钢笔，笔帽掉在旁边；钢笔旁边是一个手机，屏幕显示一条新消息通知，桌子角落是一小盆多肉植物。背景是模糊的书架。阳光从右侧照射，在桌上形成光影。'
 
 # 单图参考生成
@@ -81,6 +82,12 @@ python3 scripts/generate_seedream.py --prompt '去掉女生的帽子' --image /p
 
 # 多图参考生成，指定输出目录
 python3 scripts/generate_seedream.py --prompt '让图一人物穿上图二的服装' --image https://a.png --image /path/to/b.png --output-path /path/to/output
+
+# 4K高清：火山引擎直连通道（不走云端扣点）
+python3 scripts/generate_seedream.py --prompt '正方形构图,1:1画幅。一只白色小猫' --channel ark --size 4K-square
+
+# 4K竖版：硅基流动通道
+python3 scripts/generate_seedream.py --prompt '竖幅长画幅,9:16竖屏构图。一只白色小猫' --channel siliconflow --size 4K-portrait
 
 # 多图参考生成单图（多图融合）
 python3 scripts/generate_seedream.py --prompt '保留第一张图的人物设定，融合第二张图的水彩风格，生成一张表现秋季场景的艺术作品，角色保持一致、配色统一' --image /path/to/a.png --image /path/to/b.png
