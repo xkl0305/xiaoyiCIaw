@@ -521,7 +521,7 @@ def main():
         type=validate_image_input,
         help="Remote image URL (HTTP/HTTPS) or local file path. Repeat for multiple images."
     )
-    parser.add_argument("--size", default=None, choices=["1K", "2K"], help="Output image size (default: Flash=2K, Pro=1K)")
+    parser.add_argument("--size", default=None, choices=["1K", "2K", "3K", "4K", "4K-wide", "4K-portrait", "4K-square", "16:9", "9:16", "4:5"], help="Output image size. Cloud pipeline (no --channel): only 1K/2K (default Flash=2K, Pro=1K; ignored under fast mode). Channel pipeline (--channel ark/siliconflow): full list supported")
     parser.add_argument("--output-path", default='.', help="Output file path")
     parser.add_argument("--watermark", action=argparse.BooleanOptionalAction, default=True,
                     help="Add watermark to generated image")
@@ -529,8 +529,50 @@ def main():
                     help="Model to use: 'Flash' (faster, cheaper, single image only) or 'Pro' (higher quality, single image only). Default: Flash")
     parser.add_argument("--optimize-prompt-mode", default="fast", choices=["fast", "standard"],
                     help="Prompt optimization mode: 'fast' (default, Flash auto-maps to 'disabled'), or 'standard' (higher quality)")
+    parser.add_argument("--channel", default="", choices=["", "ark", "siliconflow"],
+                    help="Third-party direct channel: 'ark' (Volcano Engine, up to 4K) or 'siliconflow' (SiliconFlow, up to 4K). "
+                         "Default (empty) uses the original Xiaoyi cloud skill-execute pipeline (Flash/Pro)")
     
     args = parser.parse_args()
+
+    # ── Third-party channel branch: ark / siliconflow direct via seedream_provider ──
+    # Design (2026-11-16): Huawei-side capability stays on the default cloud pipeline;
+    # only ark/siliconflow are exposed here to avoid duplication.
+    if args.channel:
+        wd = Path(__file__).resolve().parents[3]  # scripts -> seedream-image_gen -> skills -> workspace
+        if str(wd) not in sys.path:
+            sys.path.insert(0, str(wd))
+        from memory_context.persona_runtime.providers.seedream_provider import generate_image as provider_generate_image
+
+        input_image = args.image[0] if args.image else ""
+        reference_images = args.image[1:] if args.image and len(args.image) > 1 else None
+        res = provider_generate_image(
+            prompt=args.prompt or "",
+            input_image=input_image,
+            reference_images=reference_images,
+            size=args.size or "2K",
+            channel=args.channel,
+        )
+        print(json.dumps(res, ensure_ascii=False, indent=2, default=str))
+        if res.get("status") != "generated":
+            sys.exit(1)
+
+        # Copy generated files to the requested output dir when it differs
+        output_dir = Path(args.output_path).expanduser()
+        generated = res.get("generated_image_paths") or ([res["generated_image_path"]] if res.get("generated_image_path") else [])
+        if str(output_dir.resolve()) != str(Path(generated[0]).parent.resolve()) if generated else False:
+            output_dir.mkdir(parents=True, exist_ok=True)
+            import shutil
+            for src in generated:
+                shutil.copy2(src, output_dir / Path(src).name)
+                print(f"Copied to: {output_dir / Path(src).name}")
+        return
+
+    # ── Default branch: original Xiaoyi cloud skill-execute pipeline (unchanged) ──
+    if args.size and args.size not in ("1K", "2K"):
+        print(f"Error: --size {args.size} is only supported with --channel ark/siliconflow. "
+              f"The cloud pipeline only supports 1K/2K.")
+        sys.exit(1)
     
     # Generate images
     cfg = Config.load()
