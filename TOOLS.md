@@ -603,8 +603,10 @@ standard模式(--size生效):
 
 | 调用方 | channel 参数 | 生效通道 | fallback 顺序 |
 |:------|:------------:|:--------:|:-------------|
-| seedream-image-gen skill | 不传 | 四通道 | huawei_sse → ark → siliconflow → xiaoyi_pro |
+| seedream-image-gen skill(原版) | 不适用 | 单链路·小艺云端 skill-execute(np://claw-skill 管道→主进程 SkillApiProxy) | 无多通道;仅 Flash/Pro 两模型档,代码不 import seedream_provider |
 | 人格视角出图(桥接层) | `"ark,huawei_sse"` | 双通道 | ark → huawei_sse(无 siliconflow) |
+
+**修正说明(2026-11-16 20:31):** 原表"seedream-image-gen skill → 四通道 huawei_sse→ark→siliconflow→xiaoyi_pro"为旧四通道 CLI 版记录(该版本 6238f4c 已删);原版重装后实查 generate_seedream.py/config.py,走小艺云端 skill-execute 单链路,无 seedream_provider 引用。多通道 fallback 只属于 seedream_provider 调用方(如人格视角出图);要用火山引擎(ark)4K 画质须走 seedream_provider channel="ark",不经本技能。
 
 ### huawei_sse 两个已修 bug + ark key 失效(2026-11-13 固化)
 
