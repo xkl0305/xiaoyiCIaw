@@ -557,6 +557,25 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - 禁止使用 `openclaw gateway restart` `openclaw gateway stop`  `openclaw gateway start`
 - `openclaw-gateway` 重启必须使用  `python3 -m supervisor.supervisorctl restart openclaw-gateway`
 
+### seedream-image-gen 原版画幅与尺寸控制实测(2026-11-16 固化)
+
+**背景:** 原版重装后(Flash/Pro双档,skill-execute链路)实测画幅/尺寸控制;修正此前"没正方形选项"的未实测断言(俞哥纠正:1K/2K实测了吗就说没正方形)。
+
+**实测矩阵:**
+| 模式 | --size | 画幅提示词 | 实际输出 |
+|---|---|---|---|
+| fast(默认) | 1K | 无 | 2368×1776 横版(size被忽略) |
+| fast(默认) | 2K | 无 | 1776×2368 竖版 |
+| fast(默认) | 1K | 正方形1:1 | 2048×2048(size被忽略) |
+| standard | 1K | 正方形1:1 | 1024×1024 |
+
+**三条结论:**
+1. 画幅比例(横/竖/方)由 prompt 意图控制--prompt 开头写"正方形构图,1:1画幅"稳定出方图;场景描述会带出横竖版
+2. 分辨率档由 --size 控制,但 **fast 模式下 --size 被脚本强制忽略**(generate_seedream.py 299-302行),永远走默认(Flash=2K/Pro=1K)
+3. 要 1024×1024 标准方图: `--optimize-prompt-mode standard --size 1K` + prompt 写正方形,三条件缺一不可
+
+**教训:** 介绍参数能力前必须实测,禁止凭 SKILL.md 文字推断下"没有某选项"式结论(与「介绍技能前必须实查」纪律同源)。
+
 ### seedream-provider 多通道调用规则
 
 `seedream_provider.generate_image()` 的 `channel` 参数支持逗号分隔列表:
