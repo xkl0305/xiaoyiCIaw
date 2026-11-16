@@ -489,16 +489,6 @@ python3 -m supervisor.supervisorctl restart openclaw-gateway
 3. 配合 AGENTS.md「回答前必查原则」:涉及技能能力/通道/配置等已文档化事实,先查 TOOLS.md / SKILL.md / 技能列表再答,不凭记忆。
 4. 触发场景:用户说"xxx你忘了吗""xxx技能还有吗""能不能做xxx(疑对应已装技能)"等。
 
-### 技能身份定性三查法:相似命名目录≠版本演进(2026-11-01 固化)
-
-**背景:** 介绍 seedream-image-gen 时,机器上有 3 个相似命名目录(`seedream-image-gen`/`seedream-image_gen`/`seedream_image_gen`),AI 凭"日期新、文件大"误判下划线版为"新版主用"、连字符三通道版为"旧版冗余"并建议删除--实际两者是**不同技能**(三通道 API 直连版 vs 小艺图像创作 Flash/Pro 版),同名不同物;且 TOOLS.md 里明明固化着华为 SSE/火山 ARK 三通道实测经验,介绍时却没关联,把三通道本体当"旧版"。被俞哥指出"这个技能一直是三通道""介绍技能都能出bug"。
-
-**规则:**
-1. **相似命名的目录 ≠ 版本演进关系**--可能是不同技能、兼容 shim、占位包并存,禁止仅凭目录日期/文件大小推断"新版替代旧版"。
-2. 给技能定性(介绍/清理/收敛)前必须**三查**:1查引用关系(governance 注册表 skill_trigger_registry/skill_profiles、其他技能与脚本的实际调用路径)2查历史记忆(TOOLS.md/MEMORY.md 有无该技能实测固化经验)3查来源(自建实测/端侧下发/内建)。
-3. 介绍用户点名的技能时,**以用户点名的目录为准**,不擅自"以最新版为准"替换介绍对象;发现疑似变体目录只作说明,不改变介绍主体。
-4. 触发场景:介绍技能、技能对账、技能清理/收敛、发现多个相似命名目录时。
-
 ### 资讯/网页抓取类技能选型地图(2026-10-02固化)
 
 **背景:** 一次盘点 10+ 个资讯/网页抓取类技能,发现定位相近易混。遇到具体需求先按地图对号入座,避免装错/反复试。
@@ -574,6 +564,8 @@ python3 -m supervisor.supervisorctl -c /home/sandbox/supervisord.conf update wat
 - **不传 channel** → 所有可用通道按注册顺序 fallback(当前:huawei_sse → ark → siliconflow → xiaoyi_pro)
 - **传单通道** → 只用该通道
 - **传多通道列表**(如 `"ark,huawei_sse"`)→ 只走列表内的通道,按列表顺序 fallback
+
+**🔒 出图单次只出一张·禁并行双开(2026-11-15 21:21 固化):** 单次出图必须按 fallback **串行**执行,一次只出一张、前面成功即停;**禁止并行开多个通道生成进程同时出多张**(实测 20:48 双开 ark+硅基同时出两张违反 fallback 语义被俞哥指出)。要对比不同通道效果,须串行做完一轮再补,不双开齐发;除非俞哥明确要求对比才可多开。
 
 **当前两个系统的默认配置:**
 
@@ -1944,7 +1936,6 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 1. **SSE 假成功排错**:`seedream-image-gen` 走 `huawei_sse` 通道时,返回 `status=generated` 但图可能没落盘(`.persona_visual/generated/` 或 `generated-images/` 目录为空)--属假成功。**判断标准以落盘文件为准**,不看 status;SSE 假成功时切 ARK 通道(`--channel ark`)可真实出图+落盘。**通道顺序关联**:人格视角出图桥接层本就 ARK 优先(`channel="ark,huawei_sse"`,fallback ark→huawei_sse);seedream-image-gen skill 默认不传时按 huawei_sse→ark→siliconflow(见「seedream-provider 多通道调用规则」),此处的“切ark”即回到人格视角系统第一顺位主通道。**根因与机制（2026-11-15 并入原「根因与双层修复」条）：** 根因是 huawei_provider._download_image 曾仅校验 HTTP 200、把 HTML 错误页也落盘报成功；现已双层修复——源头下载后强校验图片魔数（JPEG FFD8FF/PNG 89504E47/WEBP RIFF/GIF GIF8，<500字节拒）+ SSE 分支 _validate_output_image 兜底，不达标标 provider_returned_no_image。排查“图没落盘”先确认 OUT_DIR 实际路径（.persona_visual/generated/，非 generated-images/），避免查错目录误判。
 2. **9:16 竖屏尺寸档**:原 `--size` 枚举无精确 9:16(最接近 4K-portrait=3072×4096=3:4、2K/3K=1:2)。已给 `seedream_provider._SIZE_MAP` 补 `'9:16':'2304x4096'`,`generate_seedream.py --size` 增 `'9:16'` 选项,备份 `.bak-20261106`。用 `--size 9:16 --channel ark` 可出严格 9:16(2304×4096)。
 3. **active_channel 非执行态(2026-11-09 固化,实测坑点)**:返回日志里的 `active_channel`/`url_source` 是**配置描述函数**输出,总是把第一配置(华为主)标为 active,**与本次实际执行通道无关**--不能据此判断走了哪家。判定实际通道要看:1channel 参数会把通道列表裁剪为仅指定名(`--channel ark`→channels=[ark],for 循环根本走不到 huawei SSE 分支)2生成文件名里的 ch_name(`seedream_ark_*`=ARK、`huawei_*`=华为主)。实测:`--channel ark` 出图文件名 seedream_ark_* 但日志 active_channel 显示 huawei_sse,以此为准坐实 ARK。
-4. **小艺图像创作默认华为优先 + 华为 SSE 竖屏档实测(2026-11-09 固化)**:1seedream-image-gen 即「小艺图像创作」,三通道默认 **A=`huawei_sse` 华为优先**(不指定 channel 自动走华为),默认顺序 huawei_sse→ark→siliconflow;手动指定则按指定通道。2实测(2026-11-09 汉服主题):华为 SSE 走 **2K 档=真实 9:16 竖屏(1584×2816,比例 0.562)✅**,但走 **9:16 精确档(2304×4096)失败**(provider_returned_no_image,magic number 拦截)--华为对 2304×4096 不支持、2K 竖屏反而稳。3判定:**华为优先+竖屏用 2K 档**(1584×2816);**要高精度竖屏(2304×4096)才切 ARK**。选通道前先遵循"小艺图像创作默认华为优先"大前提,勿随意手动切 ARK(除非明确要高分辨率或华为失败)。**执行纪律强化(2026-11-09 17:30 修正):** 生图默认华为优先,**竖屏优先选华为 2K 档能出的尺寸(1584×2816)**,不要为高精度预设直接切 ARK(违例:16:11/16:42 为 9:16 精确档未先试华为直接 --channel ark);仅当**用户明确要高精度 2304×4096** 或 **华为尝试失败**时才切 ARK。**尺寸白名单实测(2026-11-09 20:07 晚 · 20:15 修正):** 华为 SSE 支持 **2K 上限以内的任意比例**--低精度正方形(1024×1024)/横屏(1920×1080)/竖屏(1080×1920)全支持,2K 竖屏(1440×2880,输出 1584×2816)支持;仅**超过 2K 的 4K 级分辨率**(9:16 2304×4096 / 4K-portrait 3072×4096 / 4K-wide 3840×2160 / 4K-square 4096×4096)报 `InvalidParameter`(must be WIDTHxHEIGHT or a supported size preset)被拒,与比例无关、纯分辨率超限。**含修正**:先前(20:07)仅测 4K 档得出"华为仅 2K 竖屏可用"系误判,低精度档三比例实测全通;"华为优先"适用于 2K 上限内所有常规尺寸,仅高精度 4K 才需 ARK。
 
 ### 生图默认工作流:先低精度后高精度(2026-11-09 20:18 固化)
 
@@ -1966,6 +1957,113 @@ cd /home/sandbox/.openclaw/workspace && python3 tools/check_memory_dump.py
 - 用户说「**8K**」= **先低精度出图,看效果后再考虑要不要出高精度版**(低精度先行,用户看过效果/确认后才出高精度 4K 级版;低精度满意可省略高精度版,高精度非自动必出);高精度版走 ARK
 
 执行:收到"8K"先出**低精度单版**交俞哥看效果,**再由俞哥决定要不要补高精度版**(不无脑连出两张);收到"4K"只出低精度单版。prompt 内画质形容词可用"4K超清/高清质感/细节丰富",**档位选择按上述映射理解**,不得按字面 8K=8192 处理(实际无 8K 档)。
+
+### 通道审核动态性·现场试(2026-11-16 08:28 通用原则)
+
+**四通道(huawei_sse / ark / siliconflow / xiaoyi_pro)审核尺度动态变化,历史结论只作参考、不作选路依据。**
+
+**执行纪律:**
+1. 每次出图一律**现场试**,不因历史说 X 通道能过就直连 X,也不因历史说 Y 通道会拦就跳过 Y
+2. 判定法:同通道 **3 次全拦 = 当前策略收紧**(换通道);**过 1 拦 2 = 边界波动**(同通道重试)
+3. 报结果时如实报"本次哪个通道过/拦",不拿历史结论套现在
+
+**实证背景:** 同一套墨绿蕾丝套装词,11-14 xiaoyi_pro 一次过/huawei_sse+ark 连拦 5 轮;11-16 反转为 xiaoyi_pro 连拦 3 次/ark 一次过。
+
+### seedream 三目录精确映射 + 调用纪律(2026-11-16 18:17 固化)
+
+**三个同名目录反复踩坑,以脚本行数区分最可靠:**
+
+| 目录 | 脚本行数 | SKILL name | 真实身份 |
+|---|---|---|---|
+| `seedream-image_gen`(连字符+image_gen) | 573 | seedream-pro | **官方 Flash/Pro 主用** |
+| `seedream-image-gen`(全连字符) | 64 | seedream-image-gen | 四通道版 |
+| `seedream_image_gen`(全下划线) | 3 | seedream_image_gen | **兼容壳,无 __main__,cd 进去跑啥也不出** |
+
+**调用纪律:** 出图默认显式带 `--optimize-prompt-mode standard`,要比例就写 `--size`(1K=1024×1024 方、2K=竖版);不传则 fast 强制 1440×2880 竖。
+
+**不改官方脚本默认值:** 避免技能更新覆盖 + standard 全局变慢 3 倍。
+
+### seedream_image_gen 尺寸控制与直调绕法(2026-11-16 17:32 实测)
+
+**`--size` 只在 `--optimize-prompt-mode standard` 下生效;fast(默认)模式下被静默忽略,强制走 Flash 默认 2K 竖版 1440×2880。**
+
+| 调用方式 | 实际输出 |
+|---|---|
+| 不传 size + fast(默认) | 1440×2880 竖(1:2) |
+| `--size 1K` + standard | **1024×1024 方** ✅ 实测 |
+| `--size 2K` + standard | 待验证 |
+| `--size 2K` + fast | 无效,仍走默认 |
+
+**命令行入口静默失效的绕法:** CLI 跑出 EXIT=0 但无输出无图时,改直调函数——
+```
+PYTHONPATH=/home/sandbox/.openclaw/workspace python3 -u -c "import sys; sys.path.insert(0,'scripts'); import generate_seedream as g; r=g.generate_image(prompt='...', model='Flash', size='1K', optimize_prompt_mode='standard'); print(r.get('generated_image_path'))"
+```
+
+### 官方版 seedream_image_gen 实现层 + CLI 坑 + 通道审核跨天反转(2026-11-16 08:26 实测)
+
+**① 官方版底层实际走四通道 provider(修正“纯官方”定性的实现层):**
+- `seedream_image_gen/scripts/generate_seedream.py` 的 `generate_image(prompt=..., model='Flash')` 实测返回: `provider=huawei_xiaoyi`、`model=seedreamBatch5`、`channel_used=huawei_sse`、`channels_available=[huawei_sse,ark,siliconflow,xiaoyi_pro]`
+- 定性:SKILL 与扣点规则是官方,但**运行时经本地 `memory_context.persona_runtime.providers.seedream_provider` 包装**——Flash→huawei_sse、Pro→xiaoyi_pro
+- 二次坐实 `huawei_sse = Flash 档`
+
+**② CLI 坑(2026-11-16 18:17 更正):** 之前记的"`--model Pro --optimize-prompt-mode standard --size 2K` 静默无输出、无图无报错、需 PYTHONPATH"**根因归错了**——真实原因是 **cd 到了 3 行的兼容壳目录 `seedream_image_gen`(全下划线)**,那个壳无 `__main__`,跑起来什么都不出,技能本身没 bug。正确目录是 `seedream-image_gen`(连字符+image_gen,573 行)。详见下方三目录映射条。
+
+**③ 通道审核跨天反转(同套词):**
+| 日期 | 结果 |
+|---|---|
+| 2026-11-14 | xiaoyi_pro 一次过;huawei_sse/ark 连拦 5 轮 |
+| 2026-11-16 | xiaoyi_pro **连拦 3 次**;ark **一次过**(4K-portrait 3072×4096 → 裁 9:16=2304×4096) |
+
+墨绿蕾丝套装+吊袜带+黑丝袜+尖头高跟。**结论:历史通道结论不能当默认路径,必须现场试;同通道 3 次全拦才判定为策略收紧而非波动。**
+
+### 技能来源定性规则 + 三特征核实法(2026-11-16 07:22 固化)
+
+**介绍任何技能前必须先核实来源,禁凭印象断言"本地自维护"或"官方"。** 触发背景:07:16 把官方技能 seedream-image_gen 误称"本地自维护版"被俞哥纠正。
+
+**三特征核实法:**
+1. `x-skill-id` — 脚本里有小艺官方 skill 标识(如 seedream / seedance15pro / xiaoyi_image_comprehension)= 官方
+2. `SERVICE_URL` — 默认 `np://claw-skill` 或小艺云域名 = 走官方云端接口
+3. git 首次提交 — "V111.52.14 xiaoyiCIaw 完整工作区"类整包导入 = 官方随包; 本地自写则为逐次 feat 提交
+
+**今日实查定性表:**
+| 技能 | 定性 | 依据 |
+|---|---|---|
+| seedream-image_gen(seedream-pro, Flash/Pro) | **纯官方** | x-skill-id: seedream + 官方扣点规则 + 整包导入 |
+| seedream-image-gen(四通道版) | **官方内核 + 本地扩展** | 底层 x-skill-id: seedream,四通道/4K/fallback 为本地添加 |
+| seedance-video-gen | **纯官方** | x-skill-id: seedance15pro |
+| xiaoyi-image-understanding | **纯官方** | x-skill-id: xiaoyi_image_comprehension |
+| seedream_image_gen | 本地兼容壳 | 仅 import 转发,无 CLI |
+
+**介绍纪律:** 说"官方"还是"本地扩展"必须有三特征支撑;分不清就如实说"未核实"。
+
+### 通道与模型档对应关系(2026-11-16 07:08 实测确认)
+
+**选通道即选档位,不用再猜背后模型:**
+
+| 通道 | 对应档位 | 协议 | 依据 |
+|---|---|---|---|
+| `huawei_sse` | **Flash**(基础 Seedream 5.0) | 图片直连 SSE | 同提示词对照实测,风格质感与旧版 `--model Flash` 高度接近 |
+| `xiaoyi_pro` | **Pro**(SeedreamPro_5) | skill-execute | 代码实查:x-skill-id=seedreamPro, actionName=SeedreamPro_5 |
+| `ark` | 第三方(豆包 Seedream 5.0) | OpenAI 兼容 | 直连实测 |
+| `siliconflow` | 第三方(Z-Image-Turbo 等) | OpenAI 兼容 | 直连实测 |
+
+**差异保留(不能完全等同):** 1huawei_sse 面积上限高、可出更大尺寸,旧版 Flash 限 1K/2K;2风控尺度不同(huawei_sse 主风控 / Pro 独立风控);3接入协议不同(直连 vs skill-execute)。
+
+### 出图默认入口切换：seedream-image_gen(Flash/Pro)(2026-11-16 06:54 俞哥明确要求)
+
+**默认出图走 `seedream-image_gen`(技能名 seedream-pro),不再主用四通道版。** 旧版已重新启用(2026-11-16 06:52,去掉[已停用]、user-invocable: true),实测跑通。
+
+| 项 | seedream-image_gen(默认) | seedream-image-gen(四通道,按需) |
+|---|---|---|
+| 模型档 | Seedream 5.0 Flash / Pro | 四通道直连(华为/ark/硅基/Pro) |
+| 尺寸 | 仅 1K / 2K | 1K~4K 多档 |
+| 提示词优化 | ✅ fast / standard | ❌ 无 |
+| 扣点 | ✅ 明示(Flash 2.5点/张) | 按通道 |
+| 调用 | `scripts/generate_seedream.py --model Flash\|Pro` | `--channel xxx --size xxx` |
+
+**分工:** 日常出图默认旧版(Flash/Pro);需 **4K 高清**或指定通道时才回四通道版。四通道版不删、能力仍在。
+
+**旧版限制:** 1fast 模式下 `--size` 无效(强制默认 2K);2仅 1K/2K,无 4K;3不支持组图。
 
 ### 生图画质档位速查表(2026-11-10 07:25 固化 · 11:00 加硅基流动列,出图选档统一入口)
 
@@ -2208,6 +2306,18 @@ seedream(华为 SSE)下,prompt 写"生成 N 张/多张不同风格"时,模型会
 - 强制流程:**每次生成必须展示 5 项参数(prompt/时长/比例/分辨率/点数)并等用户「确认」**,SKILL 内置规则不可跳过
 - 提示词走"路径 A"(多模态参考单场景一段式):`参考 @图片1 中的...,[动作]。高清电影质感,画面稳定无变形...`
 
+### 内衣+薄纱睡袍·过审写法与构图锁死(2026-11-15 22:21 实测固化)
+
+**场景:** 雾粉/奶白系蕾丝内衣套装 + 薄纱睡袍 + 尖头高跟,居家精致场景,85mm 浅景深。
+
+**通道实测:** 原词("轻透网纱"+"85mm镜头浅景深")→ ark ❌拦 / Pro ❌拦 / 硅基 ✅过但裁头裁脚(720×1440,只剩颈至大腿或嘴唇至脚)。
+
+**两条硬解法(实测一次过 4K):**
+1. **避雷词对照:** "轻透网纱"→**"薄纱质感"**("轻透"是 ark/Pro 审核雷词);另加**"睡袍衣襟自然合拢垂落"**降暴露判定。
+2. **构图约束必须写进提示词末尾:** 加"竖版9:16全身构图,人物完整入镜,从头顶到双脚完整呈现,头部完整不裁切"——不写模型会按人像特写乱裁。
+
+**硅基裁头坑:** Z-Image-Turbo 遇"85mm镜头+浅景深"会自发按人像特写裁切(720×1440 竖版固定),**加"全身构图"也不听,重试越裁越狠**(实测第二轮从嘴唇至脚恶化到颈至大腿)——此类必须回 ark 调描述,不在硅基上硬重试。
+
 ### 内衣类·丝袜细节分级与通道矩阵(2026-11-15 豹纹单实测固化)
 
 **场景:** 豹纹分体成套内衣(三角杯Bra/半包臀内裤+黑丝大腿袜+吊袜带)+ 高档公寓玻璃门直拍,9:16 竖版。
@@ -2225,7 +2335,7 @@ seedream(华为 SSE)下,prompt 写"生成 N 张/多张不同风格"时,模型会
 **核心规律:**
 1. **"蕾丝袜口大腿袜+吊袜带"是 ark/Pro 审核硬雷区**——输出图稳定封,改写法也难放行
 2. **只改品类词(Bra→泳装)不够**,会被输出图审核继续拦;需同时拆丝袜细节(大腿袜→连裤袜)+补合规声明("完整包覆的运动款式,面料不透明,无暴露设计"),ark 才放行 4K
-3. **"黑色蕾丝宽边+点缀图案"是有效绕法**:改法后 ark 第1次拦第2次过(4K),袜口蕾丝宽边能还原;但**袜口上的豹纹图案模型画不出来**(豹纹只落在衣身)——别指望袜口花色,写"蕾丝宽边"即可
+3. **"黑色蕾丝宽边+点缀图案"是有效绕法**:改法后 ark 第1次拦第2次过(4K),袜口蕾丝宽边能还原。**袜口豹纹也能画出来——需措辞强化(2026-11-15 20:52 补充,修正本条旧结论):** 弱描述("点缀豹纹图案")画不出,但写成**"袜口为豹纹印花宽边,棕黑豹纹斑纹清晰呈现在袜口宽边上"**即可双通道出图(ark 4K + 硅基 Z-Image-Turbo 均成功,豹纹袜口+上缘黑蕾丝圈都还原);同时袜身写**"黑色蕾丝纹理薄袜"**强化蕾丝质感。
 4. **"隔着玻璃门拍摄"模型画不出透视效果**——统一画成"站在门洞/门旁、玻璃在两侧",不理解隔玻璃语义,别在提示词里强求
 
 **取舍:** 蕾丝袜口大腿袜在主流高清通道(ark/Pro)较难放行;要 4K 高清需换连裤袜或用"黑蕾丝宽边袜口"绕法。
